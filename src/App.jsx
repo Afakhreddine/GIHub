@@ -123,19 +123,23 @@ function ContentSection({ type }) {
     try {
       const raw = await callClaude(
         PROMPTS[type],
-        "You are a medical information curator. Search the web and return only valid JSON arrays as instructed. No markdown, no backticks, no preamble.",
-        true  // useSearch
+        "You are a medical information curator. Search the web for current information and return only a valid JSON array as instructed. No markdown, no backticks, no preamble. Output ONLY the JSON array starting with [ and ending with ].",
+        true
       );
-      const clean = raw.replace(/```json|```/g,"").trim();
-      const parsed = JSON.parse(clean);
-      if(Array.isArray(parsed) && parsed.length>0){
+
+      // Robustly extract JSON array from response
+      const match = raw.match(/\[[\s\S]*\]/);
+      if (!match) throw new Error("No JSON array found in response");
+      const parsed = JSON.parse(match[0]);
+
+      if (Array.isArray(parsed) && parsed.length > 0) {
         setItems(parsed);
         setLastUpdated(new Date());
         setAiActive(true);
       }
-      // If parse fails or empty, silently keep static data
     } catch(e) {
-      console.error("Content fetch failed, using static data:", e);
+      console.error("Content fetch failed, using static data:", e.message);
+      // Silently fall back to static
     }
     setLoading(false);
   }, [type]);
@@ -234,21 +238,29 @@ function QuizSection() {
     setScore(null);
     setSel(topicId);
     const topicLabel = QUIZ_TOPICS.find(t=>t.id===topicId)?.label;
-    const prompt = `Generate 5 challenging board-style multiple choice questions for gastroenterology fellows and attending gastroenterologists on the topic: "${topicLabel}". 
-Questions should be clinical vignette-style, based on current ACG/AGA/ASGE/AASLD guidelines. 
-Return ONLY a JSON array of 5 objects. Each object must have exactly:
+    const prompt = `Generate 1 challenging board-style multiple choice question for gastroenterology fellows and attending gastroenterologists on the topic: "${topicLabel}".
+The question should be a clinical vignette-style, based on current ACG/AGA/ASGE/AASLD guidelines.
+Return ONLY a JSON array containing 1 object. The object must have exactly:
 - question: string (clinical vignette, 3-5 sentences)
 - options: array of exactly 4 strings starting with "A. ", "B. ", "C. ", "D. "
-- correct: string ("A", "B", "C", or "D")
+- correct: string (exactly one of: "A", "B", "C", or "D")
 - explanation: string (2-3 sentences citing guidelines)
-Return ONLY the JSON array, no markdown, no backticks, no other text.`;
+Output ONLY the JSON array starting with [ and ending with ]. No markdown, no backticks, no preamble.`;
     try {
-      const raw = await callClaude(prompt, "You are a gastroenterology board exam question writer. Return only valid JSON arrays. No markdown fences, no preamble.");
-      const clean = raw.replace(/```json|```/g,"").trim();
-      const parsed = JSON.parse(clean);
-      if(Array.isArray(parsed) && parsed.length>0) setQuestions(parsed);
+      const raw = await callClaude(
+        prompt,
+        "You are a gastroenterology board exam question writer. Output ONLY a valid JSON array starting with [ and ending with ]. No markdown fences, no preamble, no explanation outside the JSON.",
+        false
+      );
+      // Robustly extract JSON array
+      const match = raw.match(/\[[\s\S]*\]/);
+      if (!match) throw new Error("No JSON array in response: " + raw.slice(0,200));
+      const parsed = JSON.parse(match[0]);
+      if (Array.isArray(parsed) && parsed.length > 0) setQuestions(parsed);
+      else throw new Error("Parsed result is empty or not an array");
     } catch(e) {
-      console.error(e);
+      console.error("Quiz generation failed:", e.message);
+      setQuestions([]);
     }
     setLoading(false);
   }
@@ -296,7 +308,7 @@ Return ONLY the JSON array, no markdown, no backticks, no other text.`;
       {submitted&&score!==null&&(
         <div style={{background:score>=4?"rgba(76,175,61,0.1)":score>=3?"rgba(224,154,42,0.1)":"rgba(224,82,82,0.1)",border:`1px solid ${score>=4?"#4caf7d":score>=3?"#e09a2a":"#e05252"}55`,borderRadius:12,padding:"16px 22px",marginBottom:24,display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:10}}>
           <div>
-            <div style={{fontSize:18,fontWeight:700,color:score>=4?"#4caf7d":score>=3?"#e09a2a":"#e05252"}}>{score}/{questions.length} — {score===questions.length?"Perfect! 🏆":score>=4?"Excellent! 🎉":score>=3?"Good effort 👍":"Keep studying 📚"}</div>
+            <div style={{fontSize:18,fontWeight:700,color:score===1?"#4caf7d":"#e05252"}}>{score===1?"Correct! 🎉":"Incorrect 📚"}</div>
             <div style={{fontSize:12,color:"#3a5070",marginTop:3}}>Review the explanations below. Generate new questions for more practice.</div>
           </div>
           <button onClick={()=>generateQuestions(sel)} style={{background:"rgba(91,138,240,0.12)",border:"1px solid rgba(91,138,240,0.3)",color:"#8aafff",padding:"8px 16px",borderRadius:8,fontSize:13,fontWeight:600,cursor:"pointer"}}>New Questions →</button>
@@ -356,7 +368,7 @@ Return ONLY the JSON array, no markdown, no backticks, no other text.`;
                   <div style={{fontSize:11,color:"#3a5070",fontFamily:"monospace"}}>{h.date} · {h.time}</div>
                   <div style={{fontSize:12,fontWeight:600,color:"#6a8aaa"}}>{h.topic}</div>
                   <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:4}}>
-                    <div style={{fontSize:18,fontWeight:700,color:col}}>{pct}%</div>
+                    <div style={{fontSize:18,fontWeight:700,color:h.score===1?"#4caf7d":"#e05252"}}>{h.score===1?"✓":"✗"}</div>
                     <div style={{fontSize:11,color:"#2a3a50"}}>{h.score}/{h.total}</div>
                   </div>
                   <div style={{height:4,background:"rgba(255,255,255,0.06)",borderRadius:2,marginTop:4}}><div style={{height:"100%",width:`${pct}%`,background:col,borderRadius:2,transition:"width 0.4s"}}/></div>
