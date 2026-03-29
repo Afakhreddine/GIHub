@@ -54,21 +54,15 @@ const sentimentColor= { Positive:"#4caf7d",Neutral:"#8899aa",Mixed:"#e09a2a" };
 const STATIC_DATA   = { guidelines:STATIC_GUIDELINES, articles:STATIC_ARTICLES, news:STATIC_NEWS };
 
 // ── CLAUDE API ──────────────────────────────────────────────────────────────
-async function callClaude(prompt, systemPrompt) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
+async function callClaude(prompt, systemPrompt, useSearch=false) {
+  const res = await fetch("/api/claude", {
     method:"POST",
     headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify({
-      model:"claude-sonnet-4-20250514",
-      max_tokens:1000,
-      system: systemPrompt,
-      messages:[{ role:"user", content:prompt }],
-      tools:[{ type:"web_search_20250305", name:"web_search" }]
-    })
+    body: JSON.stringify({ prompt, system: systemPrompt, useSearch }),
   });
   const data = await res.json();
-  const text = data.content?.filter(b=>b.type==="text").map(b=>b.text).join("") || "";
-  return text;
+  if (!res.ok) throw new Error(JSON.stringify(data.error) || "API error");
+  return data.text;
 }
 
 // ── SHARED UI ───────────────────────────────────────────────────────────────
@@ -115,18 +109,22 @@ function ContentSection({ type }) {
   const [lastUpdated,setLastUpdated]=useState(null);
   const [aiActive,setAiActive]=useState(false);
 
+  // Auto-fetch on page load
+  useEffect(() => { refresh(); }, []);
+
   const PROMPTS = {
     guidelines:`Search for the most recent clinical practice guidelines published by ACG, AGA, ASGE, or AASLD in gastroenterology and hepatology from the past 6 months. Return a JSON array of up to 8 guidelines. Each object must have exactly these fields: org (string), year (string), month (string), topic (string), urgency ("High"|"Moderate"|"Routine"), title (string), summary (string, 2 sentences), url (string). Return ONLY the JSON array, no other text.`,
     articles:`Search for the most impactful gastroenterology research articles published in the past 4 weeks in journals like Gastroenterology, AJG, Gut, UEG Journal, NEJM, Lancet. Return a JSON array of up to 6 articles. Each object must have exactly these fields: journal (string), date (string), topic (string), impactLevel ("Practice-changing"|"High Impact"|"Noteworthy"), title (string), authors (string), summary (string, 2 sentences), url (string). Return ONLY the JSON array, no other text.`,
     news:`Search for the latest gastroenterology and hepatology news from the past 2 weeks: FDA approvals, drug approvals, policy changes, major research announcements. Return a JSON array of up to 6 news items. Each object must have exactly these fields: source (string), date (string), category ("FDA Approval"|"Drug News"|"Research"|"Industry"|"Policy"|"Technology"), sentiment ("Positive"|"Neutral"|"Mixed"|"Negative"), headline (string), summary (string, 2 sentences), url (string). Return ONLY the JSON array, no other text.`
   };
 
-  async function refresh() {
+  const refresh = useCallback(async () => {
     setLoading(true);
     try {
       const raw = await callClaude(
         PROMPTS[type],
-        "You are a medical information curator. Search the web and return only valid JSON arrays as instructed. No markdown, no backticks, no preamble."
+        "You are a medical information curator. Search the web and return only valid JSON arrays as instructed. No markdown, no backticks, no preamble.",
+        true  // useSearch
       );
       const clean = raw.replace(/```json|```/g,"").trim();
       const parsed = JSON.parse(clean);
@@ -135,11 +133,12 @@ function ContentSection({ type }) {
         setLastUpdated(new Date());
         setAiActive(true);
       }
+      // If parse fails or empty, silently keep static data
     } catch(e) {
-      console.error(e);
+      console.error("Content fetch failed, using static data:", e);
     }
     setLoading(false);
-  }
+  }, [type]);
 
   const filtered = items.filter(i=>!search||JSON.stringify(i).toLowerCase().includes(search.toLowerCase()));
 
@@ -149,21 +148,20 @@ function ContentSection({ type }) {
         <div>
           <h1 style={{fontSize:21,fontWeight:700,color:"#c8d8f0"}}>{meta.icon} {meta.label}</h1>
           <p style={{marginTop:4,fontSize:12,color:"#2e4060",display:"flex",alignItems:"center",gap:8}}>
-            {aiActive
-              ? <><span style={{color:"#4caf7d",fontWeight:700}}>● AI Live</span> · Updated {lastUpdated?.toLocaleTimeString()}</>
-              : "Static content · Click Refresh for live AI-generated content"}
+            {loading
+              ? <><Spinner size={10} color="#5a6a88"/> Searching for latest content…</>
+              : aiActive
+              ? <><span style={{color:"#4caf7d",fontWeight:700}}>● Live</span> · Updated {lastUpdated?.toLocaleTimeString()}</>
+              : <><span style={{color:"#5a6a88",fontWeight:700}}>● Cached</span> · Showing curated content</>}
           </p>
         </div>
-        <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
+        <div style={{display:"flex",gap:8,alignItems:"center"}}>
+          {loading&&<div style={{display:"flex",alignItems:"center",gap:6,fontSize:11,color:"#3a5878"}}><Spinner size={11}/> Fetching latest…</div>}
           <div style={{position:"relative"}}>
             <span style={{position:"absolute",left:9,top:"50%",transform:"translateY(-50%)",fontSize:12,color:"#2a3a50",pointerEvents:"none"}}>🔍</span>
             <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Filter…"
               style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:8,color:"#90b0d0",fontSize:12,padding:"8px 12px 8px 28px",outline:"none",width:150}}/>
           </div>
-          <button onClick={refresh} disabled={loading}
-            style={{background:loading?"rgba(255,255,255,0.05)":"linear-gradient(135deg,#1a3a6a,#2a5a9a)",border:"1px solid #2a5a9a55",color:loading?"#3a5070":"#90c0ff",padding:"8px 16px",borderRadius:8,fontSize:12,fontWeight:700,cursor:loading?"not-allowed":"pointer",display:"flex",alignItems:"center",gap:6,transition:"all 0.2s",whiteSpace:"nowrap"}}>
-            {loading?<><Spinner size={12}/> Fetching…</>:<>⚡ AI Refresh</>}
-          </button>
         </div>
       </div>
       {search&&<div style={{marginBottom:14,fontSize:12,color:"#3a5878",fontFamily:"monospace"}}>{filtered.length} result{filtered.length!==1?"s":""} for "{search}" <button onClick={()=>setSearch("")} style={{background:"none",border:"none",color:"#5b8af0",fontSize:12,cursor:"pointer"}}>✕</button></div>}
