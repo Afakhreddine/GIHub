@@ -340,7 +340,7 @@ Output ONLY the JSON array starting with [ and ending with ]. No markdown, no ba
           <div style={{marginTop:16,fontSize:14,color:"#3a5878"}}>Generating fresh board questions…</div>
           <div style={{marginTop:6,fontSize:12,color:"#2a3a50"}}>Claude is crafting clinical vignettes based on current guidelines</div>
         </div>
-      )}
+      
 
       {submitted&&score!==null&&(
         <div style={{background:score>=4?"rgba(76,175,61,0.1)":score>=3?"rgba(224,154,42,0.1)":"rgba(224,82,82,0.1)",border:`1px solid ${score>=4?"#4caf7d":score>=3?"#e09a2a":"#e05252"}55`,borderRadius:12,padding:"16px 22px",marginBottom:24,display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:10}}>
