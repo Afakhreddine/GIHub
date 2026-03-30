@@ -109,8 +109,12 @@ function ContentSection({ type }) {
   const [lastUpdated,setLastUpdated]=useState(null);
   const [aiActive,setAiActive]=useState(false);
 
-  // Auto-fetch on page load
-  useEffect(() => { refresh(); }, []);
+  // Auto-fetch on tab select with staggered delay
+  useEffect(() => {
+    const delay = type === "guidelines" ? 0 : type === "articles" ? 2000 : 4000;
+    const timer = setTimeout(() => { refresh(); }, delay);
+    return () => clearTimeout(timer);
+  }, []);
 
   const PROMPTS = {
     guidelines:`Search for the most recent clinical practice guidelines published by ACG, AGA, ASGE, or AASLD in gastroenterology and hepatology from the past 6 months. Return a JSON array of up to 8 guidelines. Each object must have exactly these fields: org (string), year (string), month (string), topic (string), urgency ("High"|"Moderate"|"Routine"), title (string), summary (string, 2 sentences), url (string). Return ONLY the JSON array, no other text.`,
@@ -218,6 +222,7 @@ function QuizSection() {
   const [submitted,setSubmitted]=useState(false);
   const [score,setScore]=useState(null);
   const [loading,setLoading]=useState(false);
+  const [quizError,setQuizError]=useState(null);
   const [history,setHistory]=useState(()=>{
     try { return JSON.parse(localStorage.getItem("gihub_quiz_history")||"[]"); } catch{ return []; }
   });
@@ -236,6 +241,7 @@ function QuizSection() {
     setAnswers({});
     setSubmitted(false);
     setScore(null);
+    setQuizError(null);
     setSel(topicId);
     const topicLabel = QUIZ_TOPICS.find(t=>t.id===topicId)?.label;
     const prompt = `Generate 1 challenging board-style multiple choice question for gastroenterology fellows and attending gastroenterologists on the topic: "${topicLabel}".
@@ -252,15 +258,41 @@ Output ONLY the JSON array starting with [ and ending with ]. No markdown, no ba
         "You are a gastroenterology board exam question writer. Output ONLY a valid JSON array starting with [ and ending with ]. No markdown fences, no preamble, no explanation outside the JSON.",
         false
       );
-      // Robustly extract JSON array
-      const match = raw.match(/\[[\s\S]*\]/);
-      if (!match) throw new Error("No JSON array in response: " + raw.slice(0,200));
-      const parsed = JSON.parse(match[0]);
-      if (Array.isArray(parsed) && parsed.length > 0) setQuestions(parsed);
-      else throw new Error("Parsed result is empty or not an array");
+
+      console.log("Quiz raw response:", raw);
+
+      // Try multiple extraction strategies
+      let parsed = null;
+
+      // Strategy 1: direct parse
+      try { parsed = JSON.parse(raw.trim()); } catch {}
+
+      // Strategy 2: extract [...] with regex
+      if (!parsed) {
+        const m = raw.match(/\[[\s\S]*\]/);
+        if (m) try { parsed = JSON.parse(m[0]); } catch {}
+      }
+
+      // Strategy 3: extract {...} and wrap in array
+      if (!parsed) {
+        const m = raw.match(/\{[\s\S]*\}/);
+        if (m) try { parsed = [JSON.parse(m[0])]; } catch {}
+      }
+
+      // Strategy 4: strip backticks then parse
+      if (!parsed) {
+        const clean = raw.replace(/```json|```/gi,"").trim();
+        try { parsed = JSON.parse(clean); } catch {}
+      }
+
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        setQuestions(parsed);
+      } else {
+        setQuizError(`Unexpected response format. Raw: ${raw.slice(0,300)}`);
+      }
     } catch(e) {
       console.error("Quiz generation failed:", e.message);
-      setQuestions([]);
+      setQuizError(`Error: ${e.message}`);
     }
     setLoading(false);
   }
@@ -297,7 +329,12 @@ Output ONLY the JSON array starting with [ and ending with ]. No markdown, no ba
         ))}
       </div>
 
-      {loading&&(
+      {quizError&&(
+        <div style={{background:"rgba(224,82,82,0.08)",border:"1px solid #e0525244",borderRadius:10,padding:"14px 18px",marginBottom:20}}>
+          <div style={{fontSize:12,fontWeight:700,color:"#e05252",fontFamily:"monospace",marginBottom:6}}>DEBUG — Quiz Error</div>
+          <div style={{fontSize:11,color:"#a05050",fontFamily:"monospace",wordBreak:"break-all",whiteSpace:"pre-wrap"}}>{quizError}</div>
+        </div>
+      )}
         <div style={{textAlign:"center",padding:"60px 0"}}>
           <Spinner size={32} color="#5b8af0"/>
           <div style={{marginTop:16,fontSize:14,color:"#3a5878"}}>Generating fresh board questions…</div>
@@ -428,9 +465,9 @@ export default function GIHub() {
       </div>
 
       <div style={{maxWidth:1100,margin:"0 auto",padding:"32px 32px 0"}}>
-        {active==="guidelines"&&<ContentSection type="guidelines"/>}
-        {active==="articles"  &&<ContentSection type="articles"/>}
-        {active==="news"      &&<ContentSection type="news"/>}
+        {active==="guidelines"&&<ContentSection key="guidelines" type="guidelines"/>}
+        {active==="articles"  &&<ContentSection key="articles" type="articles"/>}
+        {active==="news"      &&<ContentSection key="news" type="news"/>}
         {active==="education" &&<EducationSection/>}
         {active==="quiz"      &&<QuizSection/>}
       </div>
