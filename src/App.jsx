@@ -57,9 +57,9 @@ const categoryColor   = { "FDA Approval":"#5b8af0", "Drug News":"#9c6af0", Resea
 const sentimentColor  = { Positive:"#4caf7d", Neutral:"#8899aa", Mixed:"#e09a2a" };
 
 const PROMPTS = {
-  guidelines: `Search for the most recent clinical practice guidelines published by ACG, AGA, ASGE, or AASLD in gastroenterology and hepatology from the past 6 months. Return a JSON array of up to 8 guidelines. Each object must have exactly these fields: org (string), year (string), month (string), topic (string), urgency ("High"|"Moderate"|"Routine"), title (string), summary (string 2 sentences), url (string). Output ONLY the JSON array starting with [ and ending with ]. No markdown, no backticks, no preamble.`,
-  articles:   `Search for the most impactful gastroenterology research articles published in the past 4 weeks in journals like Gastroenterology, AJG, Gut, UEG Journal, NEJM, Lancet. Return a JSON array of up to 6 articles. Each object must have exactly these fields: journal (string), date (string), topic (string), impactLevel ("Practice-changing"|"High Impact"|"Noteworthy"), title (string), authors (string), summary (string 2 sentences), url (string). Output ONLY the JSON array starting with [ and ending with ]. No markdown, no backticks, no preamble.`,
-  news:       `Search for the latest gastroenterology and hepatology news from the past 2 weeks: FDA approvals, drug approvals, policy changes, major research announcements. Return a JSON array of up to 6 news items. Each object must have exactly these fields: source (string), date (string), category ("FDA Approval"|"Drug News"|"Research"|"Industry"|"Policy"|"Technology"), sentiment ("Positive"|"Neutral"|"Mixed"|"Negative"), headline (string), summary (string 2 sentences), url (string). Output ONLY the JSON array starting with [ and ending with ]. No markdown, no backticks, no preamble.`,
+  guidelines: `Search recent ACG/AGA/ASGE/AASLD GI guidelines (past 6 months). Return JSON array, max 5 items. Fields: org, year, month, topic, urgency("High"|"Moderate"|"Routine"), title, summary(1 sentence), url. ONLY output the JSON array.`,
+  articles:   `Search recent high-impact GI research articles (past 4 weeks). Return JSON array, max 4 items. Fields: journal, date, topic, impactLevel("Practice-changing"|"High Impact"|"Noteworthy"), title, authors, summary(1 sentence), url. ONLY output the JSON array.`,
+  news:       `Search latest GI/hepatology news (past 2 weeks). Return JSON array, max 4 items. Fields: source, date, category("FDA Approval"|"Drug News"|"Research"|"Industry"|"Policy"), sentiment("Positive"|"Neutral"|"Mixed"), headline, summary(1 sentence), url. ONLY output the JSON array.`,
 };
 
 // ── API ───────────────────────────────────────────────────────────────────────
@@ -162,10 +162,8 @@ function ContentSection({ type }) {
   }, [type]);
 
   useEffect(() => {
-    const delay = type === "guidelines" ? 0 : type === "articles" ? 4000 : 8000;
-    const timer = setTimeout(() => refresh(), delay);
-    return () => clearTimeout(timer);
-  }, []);
+    refresh();
+  }, [type]);
 
   const filtered = items.filter(i => !search || JSON.stringify(i).toLowerCase().includes(search.toLowerCase()));
 
@@ -280,7 +278,7 @@ function QuizSection() {
     setQuizError(null);
     setSel(topicId);
     const topicLabel = QUIZ_TOPICS.find(t => t.id === topicId)?.label;
-    const prompt = `Generate 1 challenging board-style multiple choice question for gastroenterology fellows and attending gastroenterologists on the topic: "${topicLabel}". The question should be a clinical vignette-style, based on current ACG/AGA/ASGE/AASLD guidelines. Return ONLY a JSON array containing 1 object with exactly these fields: question (string, clinical vignette 3-5 sentences), options (array of exactly 4 strings starting with "A. " "B. " "C. " "D. "), correct (string, exactly one of "A" "B" "C" "D"), explanation (string, 2-3 sentences citing guidelines). Output ONLY the JSON array starting with [ and ending with ]. No markdown, no backticks, no preamble.`;
+    const prompt = `Generate 1 board-style MCQ for a GI fellow on: "${topicLabel}". Clinical vignette format, based on ACG/AGA/ASGE guidelines. Return ONLY a JSON array with 1 object: question(string), options(array of 4 strings starting with "A. " "B. " "C. " "D. "), correct(string "A"|"B"|"C"|"D"), explanation(string). ONLY output the JSON array.`;
     try {
       const raw = await callClaude(
         prompt,
@@ -522,8 +520,7 @@ export default function GIHub() {
         {active === "articles"   && <ContentSection key="articles"   type="articles" />}
         {active === "news"       && <ContentSection key="news"       type="news" />}
         {active === "education"  && <EducationSection />}
-        {active === "quiz"       && <QuizSection />}
-      </div>
+        {active === "quiz"       && <QuizSection />}      </div>
 
       <div style={{ maxWidth:1100, margin:"52px auto 0", padding:"16px 32px 0", borderTop:"1px solid rgba(255,255,255,0.04)" }}>
         <p style={{ fontSize:10.5, color:"#141e2c", textAlign:"center", lineHeight:2, fontFamily:"monospace" }}>
