@@ -83,12 +83,16 @@ export default async function handler(req, res) {
   const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
   if (!apiKey) return res.status(500).json({ error: "API key not configured" });
 
-  const { type, section, topic } = req.body;
+  const { type, section, topic, prompt, system } = req.body;
+
+  // Support both old format ({ prompt, system }) and new format ({ type, section/topic })
+  const requestType = type || (topic ? "quiz" : section ? "content" : null);
+  if (!requestType) return res.status(400).json({ error: "Missing request type" });
 
   try {
     // ── CONTENT (guidelines / articles / news) ──────────────────────────────
-    if (type === "content") {
-      if (!SECTION_PROMPTS[section]) return res.status(400).json({ error: "Invalid section" });
+    if (requestType === "content") {
+      if (!section || !SECTION_PROMPTS[section]) return res.status(400).json({ error: "Invalid section: " + section });
 
       // Return cache if fresh
       const cached = CACHE[section];
@@ -121,14 +125,14 @@ export default async function handler(req, res) {
 
       const prompt = `Generate 1 board-style MCQ for a GI fellow on "${topic}" based on ACG/AGA/ASGE guidelines. Return ONLY a JSON array with 1 object: {"question":"clinical vignette","options":["A. ...","B. ...","C. ...","D. ..."],"correct":"A|B|C|D","explanation":"guideline-based explanation"}`;
 
-      const raw = await callAnthropic(QUIZ_SYSTEM, prompt, apiKey, false);
+      const raw = await callAnthropic(QUIZ_SYSTEM, quizPrompt, apiKey, false);
       const data = extractJSON(raw);
       if (!Array.isArray(data) || data.length === 0) throw new Error("Invalid quiz response");
 
       return res.status(200).json({ data });
     }
 
-    return res.status(400).json({ error: "Invalid request type" });
+    return res.status(400).json({ error: "Invalid request type: " + requestType });
 
   } catch (err) {
     console.error("Handler error:", err.message);
