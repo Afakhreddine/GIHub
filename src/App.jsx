@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 
-// ── STATIC FALLBACK DATA ──────────────────────────────────────────────────────
+// ── SESSION CACHE ─────────────────────────────────────────────────────────────
+const sessionCache = {};
+
+
 const STATIC = {
   guidelines: [
     { org:"AGA", year:"2025", month:"Nov", topic:"Barrett's Esophagus", urgency:"High", title:"AGA Clinical Practice Guideline on Surveillance of Barrett's Esophagus", summary:"Evidence-based recommendations on endoscopic surveillance for Barrett's esophagus using GRADE methodology.", url:"https://www.gastrojournal.org/article/S0016-5085(25)06013-5/fulltext" },
@@ -104,40 +107,53 @@ function ContentCard({ item, type }) {
 // ── CONTENT SECTION ───────────────────────────────────────────────────────────
 function ContentSection({ type }) {
   const meta = SECTION_META[type];
-  const [search, setSearch]       = useState("");
-  const [items, setItems]         = useState(STATIC[type]);
-  const [loading, setLoading]     = useState(true);
-  const [status, setStatus]       = useState("loading"); // loading | live | cached | error
+  const [search, setSearch]         = useState("");
+  const [items, setItems]           = useState(STATIC[type]);
+  const [loading, setLoading]       = useState(true);
+  const [status, setStatus]         = useState("loading");
+  const [ageHours, setAgeHours]     = useState(null);
 
   useEffect(() => {
-    let cancelled = false;
     async function load() {
+      // Return cached data immediately if available
+      if (sessionCache[type]) {
+        setItems(sessionCache[type].data);
+        setAgeHours(sessionCache[type].ageHours);
+        setStatus("live");
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       setStatus("loading");
       try {
         const result = await apiCall({ type: "content", section: type });
-        if (!cancelled && Array.isArray(result.data) && result.data.length > 0) {
+        console.log(`${type} result:`, result);
+        if (Array.isArray(result.data) && result.data.length > 0) {
+          sessionCache[type] = { data: result.data, ageHours: result.ageHours };
           setItems(result.data);
-          setStatus(result.cached ? "cached" : "live");
+          setAgeHours(result.ageHours);
+          setStatus("live");
+        } else {
+          console.warn(`${type}: empty data array, using static fallback`);
+          setStatus("error");
         }
       } catch (e) {
         console.error(`${type} fetch failed:`, e.message);
-        if (!cancelled) setStatus("error");
+        setStatus("error");
+      } finally {
+        setLoading(false);
       }
-      if (!cancelled) setLoading(false);
     }
     load();
-    return () => { cancelled = true; };
   }, [type]);
 
   const filtered = items.filter(i => !search || JSON.stringify(i).toLowerCase().includes(search.toLowerCase()));
 
   const statusEl = {
-    loading: <><Spinner size={10} color="#5a6a88"/> Searching for latest content…</>,
-    live:    <><span style={{ color:"#4caf7d", fontWeight:700 }}>● Live</span> · Fetched from web</>,
-    cached:  <><span style={{ color:"#e09a2a", fontWeight:700 }}>● Cached</span> · Updated earlier today</>,
-    error:   <><span style={{ color:"#5a6a88", fontWeight:700 }}>● Fallback</span> · Showing curated content</>,
-  }[status];
+    loading: <><Spinner size={10} color="#5a6a88"/> Loading…</>,
+    live:    <><span style={{ color:"#4caf7d", fontWeight:700 }}>● Live</span> · {ageHours !== null ? `Updated ${ageHours}h ago` : "Fresh from web"}</>,
+    error:   <><span style={{ color:"#5a6a88", fontWeight:700 }}>● Fallback</span> · Showing curated content · Live data updates daily</>,
+  }[status] || null;
 
   return (
     <div>
