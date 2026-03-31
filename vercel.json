@@ -3,15 +3,21 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "functions": {
-    "api/claude.js": { "maxDuration": 30 },
-    "api/cron.js":   { "maxDuration": 120 }
+    "api/claude.js":          { "maxDuration": 30 },
+    "api/cron-guidelines.js": { "maxDuration": 60 },
+    "api/cron-articles.js":   { "maxDuration": 60 },
+    "api/cron-news.js":       { "maxDuration": 60 }
   },
   "crons": [
-    { "path": "/api/cron", "schedule": "0 6 * * *" }
+    { "path": "/api/cron-guidelines", "schedule": "0 6 * * *" },
+    { "path": "/api/cron-articles",   "schedule": "2 6 * * *" },
+    { "path": "/api/cron-news",       "schedule": "4 6 * * *" }
   ],
   "rewrites": [
-    { "source": "/api/claude", "destination": "/api/claude" },
-    { "source": "/api/cron",   "destination": "/api/cron"   },
-    { "source": "/(.*)",       "destination": "/index.html" }
+    { "source": "/api/claude",          "destination": "/api/claude" },
+    { "source": "/api/cron-guidelines", "destination": "/api/cron-guidelines" },
+    { "source": "/api/cron-articles",   "destination": "/api/cron-articles" },
+    { "source": "/api/cron-news",       "destination": "/api/cron-news" },
+    { "source": "/(.*)",                "destination": "/index.html" }
   ]
 }
