@@ -57,7 +57,7 @@ export default async function handler(req, res) {
   for (const section of ["guidelines", "articles", "news"]) {
     try {
       console.log(`Fetching ${section}...`);
-      if (section !== "guidelines") await new Promise(r => setTimeout(r, 8000)); // stagger calls
+      if (section !== "guidelines") await new Promise(r => setTimeout(r, 35000)); // 35s between calls
       const data = await fetchSection(section, apiKey);
       await redisSet(`gihub:${section}`, { data, fetchedAt: Date.now() });
       results[section] = `${data.length} items saved`;

@@ -3,12 +3,15 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "functions": {
-    "api/claude.js": {
-      "maxDuration": 30
-    }
+    "api/claude.js": { "maxDuration": 30 },
+    "api/cron.js":   { "maxDuration": 120 }
   },
+  "crons": [
+    { "path": "/api/cron", "schedule": "0 6 * * *" }
+  ],
   "rewrites": [
     { "source": "/api/claude", "destination": "/api/claude" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/api/cron",   "destination": "/api/cron"   },
+    { "source": "/(.*)",       "destination": "/index.html" }
   ]
 }
