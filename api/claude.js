@@ -9,7 +9,15 @@ async function redisGet(key) {
   if (!res.ok) return null;
   const json = await res.json();
   if (!json.result) return null;
-  try { return JSON.parse(json.result); } catch { return null; }
+  // Handle both single and double-stringified values
+  let parsed = json.result;
+  if (typeof parsed === "string") {
+    try { parsed = JSON.parse(parsed); } catch { return null; }
+  }
+  if (typeof parsed === "string") {
+    try { parsed = JSON.parse(parsed); } catch { return null; }
+  }
+  return parsed;
 }
 
 export default async function handler(req, res) {
