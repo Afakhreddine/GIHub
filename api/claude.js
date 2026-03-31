@@ -1,78 +1,3 @@
-// api/claude.js
-// Handles two jobs:
-//   POST { type: "content", section: "guidelines"|"articles"|"news" }
-//     → returns cached content if fresh (<24h), otherwise fetches via web search
-//   POST { type: "quiz", topic: string }
-//     → generates a single MCQ using Claude (no web search)
-
-const CACHE = {};   // In-memory cache: { [section]: { data, fetchedAt } }
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
-
-const SECTION_PROMPTS = {
-  guidelines: `You are a GI medical curator. Using your knowledge up to your training cutoff plus any available information, list the 6 most important recent clinical practice guidelines from ACG, AGA, ASGE, or AASLD in gastroenterology/hepatology from 2024-2025. Return ONLY a JSON array. Each item: {"org":"","year":"","month":"","topic":"","urgency":"High|Moderate|Routine","title":"","summary":"1-2 sentence summary","url":""}`,
-  articles:   `You are a GI medical curator. List 5 high-impact gastroenterology research articles from top journals (Gastroenterology, AJG, Gut, NEJM, Lancet) published in 2025-2026. Return ONLY a JSON array. Each item: {"journal":"","date":"","topic":"","impactLevel":"Practice-changing|High Impact|Noteworthy","title":"","authors":"","summary":"1-2 sentence summary","url":""}`,
-  news:       `You are a GI medical curator. List 5 important recent gastroenterology and hepatology news items from 2025-2026 including FDA approvals, drug news, policy changes. Return ONLY a JSON array. Each item: {"source":"","date":"","category":"FDA Approval|Drug News|Research|Industry|Policy","sentiment":"Positive|Neutral|Mixed|Negative","headline":"","summary":"1-2 sentence summary","url":""}`,
-};
-
-const QUIZ_SYSTEM = `You are a gastroenterology board exam question writer. Output ONLY a valid JSON array with one object. No markdown, no backticks, no preamble.`;
-
-async function callAnthropic(system, userPrompt, apiKey, useWebSearch = false) {
-  const headers = {
-    "Content-Type": "application/json",
-    "x-api-key": apiKey,
-    "anthropic-version": "2023-06-01",
-  };
-
-  const body = {
-    model: "claude-haiku-4-5-20251001",
-    max_tokens: 1500,
-    system,
-    messages: [{ role: "user", content: userPrompt }],
-  };
-
-  if (useWebSearch) {
-    headers["anthropic-beta"] = "web-search-2025-03-05";
-    body.tools = [{ type: "web_search_20250305", name: "web_search" }];
-    body.model = "claude-sonnet-4-20250514"; // Web search needs Sonnet
-    body.max_tokens = 2000;
-  }
-
-  // Retry up to 3 times on 429
-  for (let attempt = 0; attempt < 3; attempt++) {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers,
-      body: JSON.stringify(body),
-    });
-    const data = await res.json();
-    if (res.status === 429) {
-      if (attempt < 2) {
-        await new Promise(r => setTimeout(r, (attempt + 1) * 5000));
-        continue;
-      }
-    }
-    if (!res.ok) throw new Error(JSON.stringify(data?.error || data));
-    const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("");
-    return text;
-  }
-}
-
-function extractJSON(raw) {
-  if (!raw) throw new Error("Empty response");
-  // Try direct parse
-  try { return JSON.parse(raw.trim()); } catch {}
-  // Extract array
-  const arrMatch = raw.match(/\[[\s\S]*\]/);
-  if (arrMatch) { try { return JSON.parse(arrMatch[0]); } catch {} }
-  // Extract object and wrap
-  const objMatch = raw.match(/\{[\s\S]*\}/);
-  if (objMatch) { try { return [JSON.parse(objMatch[0])]; } catch {} }
-  // Strip backticks
-  const clean = raw.replace(/```json|```/gi, "").trim();
-  try { return JSON.parse(clean); } catch {}
-  throw new Error("Could not parse JSON from: " + raw.slice(0, 200));
-}
-
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -83,59 +8,116 @@ export default async function handler(req, res) {
   const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
   if (!apiKey) return res.status(500).json({ error: "API key not configured" });
 
-  const { type, section, topic, prompt, system } = req.body;
+  // Safely parse body — Vercel sometimes passes it unparsed
+  let body;
+  try {
+    body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+  } catch (e) {
+    return res.status(400).json({ error: "Invalid JSON body" });
+  }
 
-  // Support both old format ({ prompt, system }) and new format ({ type, section/topic })
-  const requestType = type || (topic ? "quiz" : section ? "content" : null);
-  if (!requestType) return res.status(400).json({ error: "Missing request type" });
+  const { type, section, topic } = body || {};
+  console.log("Request:", { type, section, topic });
 
   try {
-    // ── CONTENT (guidelines / articles / news) ──────────────────────────────
-    if (requestType === "content") {
-      if (!section || !SECTION_PROMPTS[section]) return res.status(400).json({ error: "Invalid section: " + section });
+    if (type === "content") {
+      const prompts = {
+        guidelines: `List 6 important recent GI/hepatology clinical practice guidelines from ACG, AGA, ASGE, or AASLD published in 2024-2025. Return ONLY a JSON array. Each item must have: org, year, month, topic, urgency (High|Moderate|Routine), title, summary, url.`,
+        articles:   `List 5 high-impact gastroenterology research articles from 2025-2026 in major journals. Return ONLY a JSON array. Each item must have: journal, date, topic, impactLevel (Practice-changing|High Impact|Noteworthy), title, authors, summary, url.`,
+        news:       `List 5 important recent GI/hepatology news items from 2025-2026 including FDA approvals and policy changes. Return ONLY a JSON array. Each item must have: source, date, category (FDA Approval|Drug News|Research|Industry|Policy), sentiment (Positive|Neutral|Mixed|Negative), headline, summary, url.`,
+      };
 
-      // Return cache if fresh
-      const cached = CACHE[section];
-      const now = Date.now();
-      if (cached && (now - cached.fetchedAt) < CACHE_TTL_MS) {
-        console.log(`Serving cached ${section}, age: ${Math.round((now - cached.fetchedAt) / 60000)}min`);
-        return res.status(200).json({ data: cached.data, cached: true, fetchedAt: cached.fetchedAt });
+      if (!prompts[section]) {
+        return res.status(400).json({ error: "Invalid section: " + section });
       }
 
-      // Fetch fresh via web search
-      console.log(`Fetching fresh ${section} via web search...`);
-      const raw = await callAnthropic(
-        "You are a GI medical information curator. Search the web for current information. Return ONLY a valid JSON array. No markdown, no backticks, no preamble.",
-        SECTION_PROMPTS[section],
-        apiKey,
-        true  // useWebSearch
-      );
+      console.log("Fetching content for section:", section);
 
-      const data = extractJSON(raw);
-      if (!Array.isArray(data) || data.length === 0) throw new Error("Empty or invalid data returned");
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "anthropic-beta": "web-search-2025-03-05",
+        },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 2000,
+          system: "You are a GI medical information curator. Search the web for current information. Return ONLY a valid JSON array with no markdown, no backticks, no extra text.",
+          messages: [{ role: "user", content: prompts[section] }],
+          tools: [{ type: "web_search_20250305", name: "web_search" }],
+        }),
+      });
 
-      CACHE[section] = { data, fetchedAt: now };
-      console.log(`Cached fresh ${section}: ${data.length} items`);
-      return res.status(200).json({ data, cached: false, fetchedAt: now });
+      const data = await response.json();
+      console.log("Anthropic status:", response.status);
+
+      if (!response.ok) {
+        console.error("Anthropic error:", JSON.stringify(data));
+        return res.status(response.status).json({ error: data?.error?.message || "Anthropic error" });
+      }
+
+      const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("");
+      console.log("Response text preview:", text.slice(0, 150));
+
+      const match = text.match(/\[[\s\S]*\]/);
+      if (!match) return res.status(500).json({ error: "No JSON array in response", raw: text.slice(0, 300) });
+
+      const parsed = JSON.parse(match[0]);
+      return res.status(200).json({ data: parsed, cached: false });
     }
 
-    // ── QUIZ ────────────────────────────────────────────────────────────────
     if (type === "quiz") {
       if (!topic) return res.status(400).json({ error: "Missing topic" });
 
-      const prompt = `Generate 1 board-style MCQ for a GI fellow on "${topic}" based on ACG/AGA/ASGE guidelines. Return ONLY a JSON array with 1 object: {"question":"clinical vignette","options":["A. ...","B. ...","C. ...","D. ..."],"correct":"A|B|C|D","explanation":"guideline-based explanation"}`;
+      console.log("Generating quiz for topic:", topic);
 
-      const raw = await callAnthropic(QUIZ_SYSTEM, quizPrompt, apiKey, false);
-      const data = extractJSON(raw);
-      if (!Array.isArray(data) || data.length === 0) throw new Error("Invalid quiz response");
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+        },
+        body: JSON.stringify({
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 1000,
+          system: "You are a gastroenterology board exam question writer. Return ONLY a valid JSON array. No markdown, no backticks.",
+          messages: [{
+            role: "user",
+            content: `Generate 1 board-style MCQ for a GI fellow on "${topic}" based on current ACG/AGA/ASGE guidelines. Return ONLY a JSON array with 1 object: {"question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":"A|B|C|D","explanation":"..."}`
+          }],
+        }),
+      });
 
-      return res.status(200).json({ data });
+      const data = await response.json();
+      console.log("Quiz Anthropic status:", response.status);
+
+      if (!response.ok) {
+        console.error("Quiz Anthropic error:", JSON.stringify(data));
+        return res.status(response.status).json({ error: data?.error?.message || "Anthropic error" });
+      }
+
+      const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("");
+      console.log("Quiz text preview:", text.slice(0, 150));
+
+      let parsed = null;
+      try { parsed = JSON.parse(text.trim()); } catch {}
+      if (!parsed) { const m = text.match(/\[[\s\S]*\]/); if (m) try { parsed = JSON.parse(m[0]); } catch {} }
+      if (!parsed) { const m = text.match(/\{[\s\S]*\}/); if (m) try { parsed = [JSON.parse(m[0])]; } catch {} }
+
+      if (!parsed || !parsed.length) {
+        return res.status(500).json({ error: "Could not parse quiz response", raw: text.slice(0, 300) });
+      }
+
+      return res.status(200).json({ data: parsed });
     }
 
-    return res.status(400).json({ error: "Invalid request type: " + requestType });
+    return res.status(400).json({ error: "Invalid type: " + type });
 
   } catch (err) {
-    console.error("Handler error:", err.message);
+    console.error("Unhandled error:", err.message, err.stack);
     return res.status(500).json({ error: err.message });
   }
 }
