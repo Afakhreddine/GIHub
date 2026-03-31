@@ -3,7 +3,7 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "functions": {
-    "api/claude.js":          { "maxDuration": 30 },
+    "api/debug.js":           { "maxDuration": 10 },
     "api/cron-guidelines.js": { "maxDuration": 60 },
     "api/cron-articles.js":   { "maxDuration": 60 },
     "api/cron-news.js":       { "maxDuration": 60 }
@@ -14,6 +14,7 @@
     { "path": "/api/cron-news",       "schedule": "4 6 * * *" }
   ],
   "rewrites": [
+    { "source": "/api/debug",          "destination": "/api/debug" },
     { "source": "/api/claude",          "destination": "/api/claude" },
     { "source": "/api/cron-guidelines", "destination": "/api/cron-guidelines" },
     { "source": "/api/cron-articles",   "destination": "/api/cron-articles" },
