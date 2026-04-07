@@ -9,9 +9,9 @@
     "api/cron-news.js":       { "maxDuration": 60 }
   },
   "crons": [
-    { "path": "/api/cron-guidelines", "schedule": "0 6 * * *" },
-    { "path": "/api/cron-articles",   "schedule": "2 6 * * *" },
-    { "path": "/api/cron-news",       "schedule": "4 6 * * *" }
+    { "path": "/api/cron-guidelines", "schedule": "0 6 * * 0" },
+    { "path": "/api/cron-articles",   "schedule": "2 6 * * 0" },
+    { "path": "/api/cron-news",       "schedule": "4 6 * * 0" }
   ],
   "rewrites": [
     { "source": "/api/debug",          "destination": "/api/debug" },
