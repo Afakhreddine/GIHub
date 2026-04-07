@@ -52,6 +52,18 @@ const impactColor    = { "Practice-changing":"#5b8af0", "High Impact":"#9c6af0",
 const categoryColor  = { "FDA Approval":"#5b8af0", "Drug News":"#9c6af0", Research:"#4caf7d", Industry:"#e09a2a", Policy:"#e05252", Technology:"#00b8d4" };
 const sentimentColor = { Positive:"#4caf7d", Neutral:"#8899aa", Mixed:"#e09a2a", Negative:"#e05252" };
 
+// ── DATE SORTING ──────────────────────────────────────────────────────────────
+function parseDateStr(item) {
+  const raw = item.date || item.month && item.year ? `${item.month} ${item.year}` : null;
+  if (!raw) return 0;
+  const d = new Date(raw);
+  return isNaN(d) ? 0 : d.getTime();
+}
+
+function sortByDate(items) {
+  return [...items].sort((a, b) => parseDateStr(b) - parseDateStr(a));
+}
+
 // ── API CALL ──────────────────────────────────────────────────────────────────
 async function apiCall(body) {
   const res = await fetch("/api/claude", {
@@ -108,7 +120,7 @@ function ContentCard({ item, type }) {
 function ContentSection({ type }) {
   const meta = SECTION_META[type];
   const [search, setSearch]         = useState("");
-  const [items, setItems]           = useState(STATIC[type]);
+  const [items, setItems]           = useState(() => sortByDate(STATIC[type]));
   const [loading, setLoading]       = useState(true);
   const [status, setStatus]         = useState("loading");
   const [ageHours, setAgeHours]     = useState(null);
@@ -129,8 +141,9 @@ function ContentSection({ type }) {
         const result = await apiCall({ type: "content", section: type });
         console.log(`${type} result:`, result);
         if (Array.isArray(result.data) && result.data.length > 0) {
-          sessionCache[type] = { data: result.data, ageHours: result.ageHours };
-          setItems(result.data);
+          const sorted = sortByDate(result.data);
+          sessionCache[type] = { data: sorted, ageHours: result.ageHours };
+          setItems(sorted);
           setAgeHours(result.ageHours);
           setStatus("live");
         } else {
