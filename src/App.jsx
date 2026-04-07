@@ -175,7 +175,7 @@ function ContentSection({ type }) {
       )}
       {filtered.length === 0
         ? <div style={{ textAlign:"center", padding:"40px 0", color:"#1e2e40" }}>No results for "{search}"</div>
-        : <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(440px,1fr))", gap:14 }}>
+        :         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(440px,1fr))", gap:14 }}>
             {filtered.map((item, i) => <ContentCard key={i} item={item} type={type} />)}
           </div>
       }
