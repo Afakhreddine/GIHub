@@ -8,28 +8,61 @@ const PROMPTS = {
 
 export async function fetchSection(section, apiKey) {
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY not set");
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "anthropic-beta": "web-search-2025-03-05",
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 2000,
-      system: "You are a GI medical curator. Search the web and return ONLY a valid JSON array. No markdown, no backticks, no extra text.",
-      messages: [{ role: "user", content: PROMPTS[section] }],
-      tools: [{ type: "web_search_20250305", name: "web_search" }],
-    }),
-  });
-  const data = await response.json();
-  if (!response.ok) throw new Error(JSON.stringify(data?.error));
-  const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("");
-  const match = text.match(/\[[\s\S]*\]/);
-  if (!match) throw new Error(`No JSON array in response: ${text.slice(0, 200)}`);
-  return JSON.parse(match[0]);
+
+  // Retry up to 3 times with 60s delay on empty results or rate limit
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt > 0) {
+      console.log(`Retry ${attempt} for ${section} after 60s...`);
+      await new Promise(r => setTimeout(r, 60000));
+    }
+
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-beta": "web-search-2025-03-05",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 2000,
+        system: "You are a GI medical curator. Search the web and return ONLY a valid JSON array. No markdown, no backticks, no extra text.",
+        messages: [{ role: "user", content: PROMPTS[section] }],
+        tools: [{ type: "web_search_20250305", name: "web_search" }],
+      }),
+    });
+
+    const data = await response.json();
+
+    // Retry on rate limit
+    if (response.status === 429) {
+      console.log(`Rate limited on attempt ${attempt}, retrying...`);
+      continue;
+    }
+
+    if (!response.ok) throw new Error(JSON.stringify(data?.error));
+
+    const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("");
+    const match = text.match(/\[[\s\S]*\]/);
+    if (!match) {
+      console.log(`No JSON array on attempt ${attempt}, retrying...`);
+      continue;
+    }
+
+    const parsed = JSON.parse(match[0]);
+
+    // Retry if empty array returned
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      console.log(`Empty array on attempt ${attempt}, retrying...`);
+      continue;
+    }
+
+    console.log(`✓ ${section}: ${parsed.length} items on attempt ${attempt}`);
+    return parsed;
+  }
+
+  throw new Error(`Failed to get results for ${section} after 3 attempts`);
 }
 
 export async function redisSet(key, value) {
