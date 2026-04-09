@@ -232,6 +232,233 @@ function EducationSection() {
   );
 }
 
+// ── SCHEDULE ──────────────────────────────────────────────────────────────────
+const CALENDAR_EVENTS = [
+  // Tuesdays
+  { date:"2026-03-31", day:"Tue", label:"Han Zhang, MD — Esophageal Strictures & Dilation",     topic:"Esophageal Strictures & Dilation",        slug:"esophageal-strictures-dilation",      color:"#e05252" },
+  { date:"2026-04-07", day:"Tue", label:"Grand Rounds Practice — Senior Fellows",                topic:null,                                        slug:null,                                  color:"#e05252" },
+  { date:"2026-04-14", day:"Tue", label:"Quan Nhu, MD — Non-EoE Inflammatory Esophageal Diseases", topic:"Non-EoE Inflammatory Esophageal Diseases", slug:"non-eoe-inflammatory-esophageal",    color:"#e05252" },
+  { date:"2026-04-21", day:"Tue", label:"Frank Tsai, MD — Barrett's Esophagus Therapies",       topic:"Barrett's Esophagus Therapies",             slug:"barretts-esophagus-therapies",        color:"#e05252" },
+  { date:"2026-04-28", day:"Tue", label:"Walt Coyle, MD — Neuroendocrine Tumors (NETs)",        topic:"Neuroendocrine Tumors (NETs)",              slug:"neuroendocrine-tumors",                color:"#e05252" },
+  // Thursdays
+  { date:"2026-04-02", day:"Thu", label:"Dr. Pockros, Dr. Chow (R-Mercy)",                      topic:null, slug:null, color:"#e09a2a" },
+  { date:"2026-04-09", day:"Thu", label:"Dr. Nhu, Dr. Choi",                                    topic:null, slug:null, color:"#e09a2a" },
+  { date:"2026-04-16", day:"Thu", label:"Dr. Mayemura, Dr. Gilazgi (R)",                        topic:null, slug:null, color:"#e09a2a" },
+  { date:"2026-04-23", day:"Thu", label:"Dr. Heffernan, Dr. Wiseman (Navy)",                    topic:null, slug:null, color:"#e09a2a" },
+  { date:"2026-04-30", day:"Thu", label:"Dr. Worsey/Beiermeister, Dr. Lanser",                  topic:null, slug:null, color:"#e09a2a" },
+  // Fridays
+  { date:"2026-04-03", day:"Fri", label:"Wellness Lunch",                                        topic:null, slug:null, color:"#e05252" },
+  { date:"2026-04-10", day:"Fri", label:"Fouad Moawad, MD — GERD / Medical & Dietary Management", topic:"GERD / Medical & Dietary Management",    slug:"gerd-medical-dietary-management",     color:"#e05252" },
+  { date:"2026-04-17", day:"Fri", label:"SDGI Society Fellows Research Forum Practice Session",  topic:null, slug:null, color:"#e05252" },
+  { date:"2026-04-24", day:"Fri", label:"Board Review — Esophagus",                             topic:null, slug:null, color:"#e05252" },
+];
+
+const MONTH_DAYS = Array.from({ length: 35 }, (_, i) => {
+  const d = new Date("2026-03-29");
+  d.setDate(d.getDate() + i);
+  return d.toISOString().split("T")[0];
+});
+
+const DAY_LABELS = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+
+function LectureDetailPanel({ event, onClose }) {
+  const [data, setData]       = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      try {
+        const result = await apiCall({ type: "lecture", topic: event.slug });
+        setData(result);
+      } catch (e) {
+        console.error("Lecture fetch failed:", e.message);
+      }
+      setLoading(false);
+    }
+    load();
+  }, [event.slug]);
+
+  const ac = "#5b8af0";
+  const noData = !loading && (!data || ((!data.guideline || data.guideline.length === 0) && (!data.articles || data.articles.length === 0) && (!data.news || data.news.length === 0)));
+
+  return (
+    <div style={{ position:"fixed", top:0, right:0, bottom:0, width:"min(600px,100vw)", background:"#0c1526", borderLeft:"1px solid rgba(255,255,255,0.1)", zIndex:200, overflowY:"auto", boxShadow:"-8px 0 32px rgba(0,0,0,0.4)" }}>
+      {/* Header */}
+      <div style={{ position:"sticky", top:0, background:"rgba(12,21,38,0.97)", borderBottom:"1px solid rgba(255,255,255,0.07)", padding:"18px 24px", display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:12 }}>
+        <div>
+          <div style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace", marginBottom:4 }}>{new Date(event.date + "T12:00:00").toLocaleDateString("en-US", { weekday:"long", month:"long", day:"numeric", year:"numeric" })}</div>
+          <div style={{ fontSize:16, fontWeight:700, color:"#c8d8f0", lineHeight:1.4 }}>{event.topic}</div>
+        </div>
+        <button onClick={onClose} style={{ background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", color:"#6a8aaa", width:32, height:32, borderRadius:8, cursor:"pointer", fontSize:16, flexShrink:0 }}>✕</button>
+      </div>
+
+      <div style={{ padding:"24px" }}>
+        {loading && (
+          <div style={{ textAlign:"center", padding:"60px 0" }}>
+            <Spinner size={28} color="#5b8af0" />
+            <div style={{ marginTop:14, fontSize:13, color:"#3a5878" }}>Loading lecture content…</div>
+          </div>
+        )}
+
+        {noData && (
+          <div style={{ textAlign:"center", padding:"60px 0", color:"#2a3a50" }}>
+            <div style={{ fontSize:32, marginBottom:12 }}>📭</div>
+            <div style={{ fontSize:13 }}>No content available yet. Run the schedule cron to populate.</div>
+          </div>
+        )}
+
+        {!loading && data && (
+          <div style={{ display:"flex", flexDirection:"column", gap:32 }}>
+
+            {/* Guideline */}
+            {data.guideline && data.guideline.length > 0 && (
+              <div>
+                <div style={{ fontSize:12, fontWeight:700, color:"#5b8af0", fontFamily:"monospace", letterSpacing:1, marginBottom:12 }}>⚕️ RELEVANT GUIDELINE</div>
+                {data.guideline.map((g, i) => (
+                  <div key={i} onClick={() => g.url && window.open(g.url, "_blank")}
+                    style={{ background:"rgba(91,138,240,0.06)", border:"1px solid rgba(91,138,240,0.2)", borderLeft:"3px solid #5b8af0", borderRadius:10, padding:"14px 16px", cursor:g.url?"pointer":"default" }}>
+                    <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:8 }}>
+                      <span style={{ fontSize:11, fontWeight:700, color:"#fff", background:"#1a2535", padding:"2px 8px", borderRadius:12 }}>{g.org}</span>
+                      <span style={{ fontSize:11, fontWeight:700, color:"#fff", background:g.urgency==="High"?"#e05252":g.urgency==="Moderate"?"#e09a2a":"#4caf7d", padding:"2px 8px", borderRadius:12 }}>{g.urgency}</span>
+                      <span style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace" }}>{g.month} {g.year}</span>
+                    </div>
+                    <div style={{ fontSize:14, fontWeight:600, color:"#c8d8f0", lineHeight:1.5, marginBottom:6 }}>{g.title}</div>
+                    <div style={{ fontSize:12, color:"#6a7a90", lineHeight:1.7 }}>{g.summary}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Articles */}
+            {data.articles && data.articles.length > 0 && (
+              <div>
+                <div style={{ fontSize:12, fontWeight:700, color:"#9c6af0", fontFamily:"monospace", letterSpacing:1, marginBottom:12 }}>📄 RECENT ARTICLES</div>
+                <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                  {data.articles.map((a, i) => (
+                    <div key={i} onClick={() => a.url && window.open(a.url, "_blank")}
+                      style={{ background:"rgba(156,106,240,0.05)", border:"1px solid rgba(156,106,240,0.15)", borderLeft:"3px solid #9c6af0", borderRadius:10, padding:"12px 14px", cursor:a.url?"pointer":"default" }}>
+                      <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:6 }}>
+                        <span style={{ fontSize:11, fontWeight:700, color:"#fff", background:"#1a2535", padding:"2px 8px", borderRadius:12 }}>{a.journal}</span>
+                        <span style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace" }}>{a.date}</span>
+                      </div>
+                      <div style={{ fontSize:13, fontWeight:600, color:"#c8d8f0", lineHeight:1.5, marginBottom:4 }}>{a.title}</div>
+                      {a.authors && <div style={{ fontSize:11, color:"#445570", fontStyle:"italic", marginBottom:4 }}>{a.authors}</div>}
+                      <div style={{ fontSize:12, color:"#6a7a90", lineHeight:1.7 }}>{a.summary}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* News */}
+            {data.news && data.news.length > 0 && (
+              <div>
+                <div style={{ fontSize:12, fontWeight:700, color:"#00b8d4", fontFamily:"monospace", letterSpacing:1, marginBottom:12 }}>📡 RELATED NEWS</div>
+                <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                  {data.news.map((n, i) => (
+                    <div key={i} onClick={() => n.url && window.open(n.url, "_blank")}
+                      style={{ background:"rgba(0,184,212,0.05)", border:"1px solid rgba(0,184,212,0.15)", borderLeft:"3px solid #00b8d4", borderRadius:10, padding:"12px 14px", cursor:n.url?"pointer":"default" }}>
+                      <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:6 }}>
+                        <span style={{ fontSize:11, fontWeight:700, color:"#fff", background:"#1a2535", padding:"2px 8px", borderRadius:12 }}>{n.source}</span>
+                        <span style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace" }}>{n.date}</span>
+                      </div>
+                      <div style={{ fontSize:13, fontWeight:600, color:"#c8d8f0", lineHeight:1.5, marginBottom:4 }}>{n.headline}</div>
+                      <div style={{ fontSize:12, color:"#6a7a90", lineHeight:1.7 }}>{n.summary}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ScheduleSection() {
+  const [selectedEvent, setSelectedEvent] = useState(null);
+
+  const eventMap = {};
+  CALENDAR_EVENTS.forEach(e => { eventMap[e.date] = e; });
+
+  return (
+    <div>
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:22, flexWrap:"wrap", gap:12 }}>
+        <div>
+          <h1 style={{ fontSize:21, fontWeight:700, color:"#c8d8f0" }}>📅 Schedule</h1>
+          <p style={{ marginTop:4, fontSize:12, color:"#2e4060" }}>April 2026 · Click highlighted lectures for guidelines, articles & news</p>
+        </div>
+        <div style={{ display:"flex", gap:12, alignItems:"center", fontSize:11, color:"#3a5070" }}>
+          <span><span style={{ display:"inline-block", width:10, height:10, borderRadius:2, background:"#e05252", marginRight:4 }}/>Lecture</span>
+          <span><span style={{ display:"inline-block", width:10, height:10, borderRadius:2, background:"#e09a2a", marginRight:4 }}/>Conference</span>
+          <span><span style={{ display:"inline-block", width:10, height:10, borderRadius:2, background:"rgba(91,138,240,0.4)", border:"1px solid #5b8af0", marginRight:4 }}/>Clickable</span>
+        </div>
+      </div>
+
+      {/* Calendar grid */}
+      <div style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:14, overflow:"hidden" }}>
+        {/* Day headers */}
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", borderBottom:"1px solid rgba(255,255,255,0.07)" }}>
+          {DAY_LABELS.map(d => (
+            <div key={d} style={{ padding:"10px 0", textAlign:"center", fontSize:11, fontWeight:700, color:"#2a4060", fontFamily:"monospace", letterSpacing:1 }}>{d}</div>
+          ))}
+        </div>
+
+        {/* Weeks */}
+        {Array.from({ length: 5 }, (_, week) => (
+          <div key={week} style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", borderBottom:week < 4 ? "1px solid rgba(255,255,255,0.05)" : "none" }}>
+            {Array.from({ length: 7 }, (_, day) => {
+              const dateStr = MONTH_DAYS[week * 7 + day];
+              const d = new Date(dateStr + "T12:00:00");
+              const isApril = d.getMonth() === 3;
+              const event = eventMap[dateStr];
+              const isClickable = event?.slug != null;
+
+              return (
+                <div key={day}
+                  onClick={() => isClickable && setSelectedEvent(event)}
+                  style={{
+                    minHeight:90, padding:"8px", borderRight:day < 6 ? "1px solid rgba(255,255,255,0.05)" : "none",
+                    background:isClickable ? "rgba(91,138,240,0.04)" : "transparent",
+                    cursor:isClickable ? "pointer" : "default",
+                    transition:"background 0.15s",
+                  }}
+                  onMouseEnter={e => { if (isClickable) e.currentTarget.style.background = "rgba(91,138,240,0.1)"; }}
+                  onMouseLeave={e => { if (isClickable) e.currentTarget.style.background = "rgba(91,138,240,0.04)"; }}
+                >
+                  <div style={{ fontSize:12, fontWeight:600, color:isApril ? "#4a6080" : "#1e2e40", marginBottom:4 }}>{d.getDate()}</div>
+                  {event && (
+                    <div style={{
+                      fontSize:10.5, lineHeight:1.4, padding:"4px 6px", borderRadius:5,
+                      background: isClickable ? "rgba(91,138,240,0.15)" : event.color + "22",
+                      border: isClickable ? "1px solid rgba(91,138,240,0.3)" : `1px solid ${event.color}33`,
+                      color: isClickable ? "#90b8ff" : event.color,
+                      fontWeight: isClickable ? 600 : 400,
+                    }}>
+                      {isClickable && <span style={{ marginRight:3 }}>🔗</span>}
+                      {event.label}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+
+      {/* Detail panel */}
+      {selectedEvent && (
+        <>
+          <div onClick={() => setSelectedEvent(null)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", zIndex:199 }} />
+          <LectureDetailPanel event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+        </>
+      )}
+    </div>
+  );
+}
+
 // ── QUIZ ──────────────────────────────────────────────────────────────────────
 function QuizSection() {
   const [sel, setSel]             = useState(null);
@@ -418,6 +645,7 @@ const TABS = [
   { id:"articles",   label:"Top Articles",        icon:"📄" },
   { id:"news",       label:"GI News",             icon:"📡" },
   { id:"education",  label:"Education",           icon:"🎓" },
+  { id:"schedule",   label:"Schedule",            icon:"📅" },
   { id:"quiz",       label:"Quiz",                icon:"🧠" },
 ];
 

@@ -100,6 +100,14 @@ export default async function handler(req, res) {
       return res.status(200).json({ data: parsed });
     }
 
+    // ── LECTURE: read topic content from Redis ────────────────────────────
+    if (type === "lecture") {
+      if (!topic) return res.status(400).json({ error: "Missing topic slug" });
+      const cached = await redisGet(`gihub:lecture:${topic}`);
+      if (cached) return res.status(200).json(cached);
+      return res.status(200).json({ guideline: [], articles: [], news: [], fetchedAt: null });
+    }
+
     return res.status(400).json({ error: "Invalid type: " + type });
 
   } catch (err) {
