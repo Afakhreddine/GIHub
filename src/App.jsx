@@ -1,32 +1,6 @@
 import { useState, useEffect } from "react";
 import { CALENDAR_EVENTS, CALENDAR_MONTH } from "./scheduleConfig.js";
 
-// ── SESSION CACHE ─────────────────────────────────────────────────────────────
-const sessionCache = {};
-
-
-const STATIC = {
-  guidelines: [
-    { org:"AGA", year:"2025", month:"Nov", topic:"Barrett's Esophagus", urgency:"High", title:"AGA Clinical Practice Guideline on Surveillance of Barrett's Esophagus", summary:"Evidence-based recommendations on endoscopic surveillance for Barrett's esophagus using GRADE methodology.", url:"https://www.gastrojournal.org/article/S0016-5085(25)06013-5/fulltext" },
-    { org:"AGA", year:"2025", month:"Oct", topic:"Gastroparesis", urgency:"High", title:"AGA Clinical Practice Guideline on Management of Gastroparesis", summary:"Evidence-based recommendations for diagnosis and treatment of idiopathic and diabetic gastroparesis.", url:"https://www.gastrojournal.org/article/S0016-5085(25)05857-3/fulltext" },
-    { org:"ACG", year:"2025", month:"Jun", topic:"Ulcerative Colitis", urgency:"High", title:"ACG Clinical Guideline Update: Ulcerative Colitis in Adults", summary:"Updated recommendations for adult UC covering biologics, small molecules, and treat-to-target strategies.", url:"https://pubmed.ncbi.nlm.nih.gov/40701556/" },
-    { org:"ACG", year:"2025", month:"Jun", topic:"Crohn's Disease", urgency:"High", title:"ACG Clinical Guideline: Management of Crohn's Disease in Adults", summary:"Comprehensive updated recommendations for adult CD management with GRADE-level evidence assessment.", url:"https://pubmed.ncbi.nlm.nih.gov/40701562/" },
-    { org:"ASGE", year:"2025", month:"Feb", topic:"GERD", urgency:"Moderate", title:"ASGE Guideline on the Diagnosis and Management of GERD", summary:"Updates 2014 ASGE GERD guideline addressing post-sleeve gastrectomy and post-POEM populations.", url:"https://pubmed.ncbi.nlm.nih.gov/39692638/" },
-    { org:"ACG", year:"2024", month:"Sep", topic:"H. pylori", urgency:"High", title:"ACG Clinical Guideline: Treatment of Helicobacter pylori Infection", summary:"Recommends bismuth quadruple or concomitant therapy as first-line given rising clarithromycin resistance.", url:"https://gi.org/guidelines/" },
-  ],
-  articles: [
-    { journal:"Gastroenterology", date:"Mar 2026", topic:"Pancreatic Cancer", impactLevel:"Practice-changing", title:"Selective Urokinase Inhibition Plus Chemotherapy in PDAC", authors:"AGA Research Group et al.", summary:"Novel strategy combining urokinase inhibition with chemotherapy demonstrates improved survival endpoints.", url:"https://www.gastrojournal.org" },
-    { journal:"UEG Journal", date:"Mar 2026", topic:"Colonoscopy", impactLevel:"High Impact", title:"Cold Snare Polypectomy for Colorectal Polyps ≤10mm: TACOS RCT", authors:"Chang LC et al.", summary:"Multicenter RCT evaluating cold snare polypectomy for diminutive polyps with high complete resection rates.", url:"https://onlinelibrary.wiley.com/journal/20506414" },
-    { journal:"AJG", date:"Mar 2026", topic:"IBD", impactLevel:"High Impact", title:"Vedolizumab Safety in Pregnancy: OTIS Prospective Cohort", authors:"Chambers CD et al.", summary:"Prospective study of 275 pregnant women found no significant increase in major birth defects with vedolizumab.", url:"https://journals.lww.com/ajg/pages/default.aspx" },
-    { journal:"AJG", date:"Mar 2026", topic:"MASLD", impactLevel:"Noteworthy", title:"Cardiovascular Risk Prediction Tools in MASLD: US Cohort Validation", authors:"TARGET-NASH Investigators", summary:"CV risk tools performed poorly in MASLD patients, highlighting need for disease-specific models.", url:"https://journals.lww.com/ajg/pages/default.aspx" },
-  ],
-  news: [
-    { source:"FDA", date:"Mar 16, 2026", category:"FDA Approval", sentiment:"Positive", headline:"FDA Approves Durvalumab + FLOT for Early-Stage Gastric and GEJ Cancers", summary:"First immunotherapy approval in the perioperative setting for resectable gastric and GEJ adenocarcinoma.", url:"https://www.ajmc.com" },
-    { source:"AGA/ABIM", date:"Mar 13, 2026", category:"Policy", sentiment:"Positive", headline:"ABIM Launching GI Longitudinal Knowledge Assessment with Hepatology Focus in July 2026", summary:"New GI LKA launches July 2026, allowing hepatology-focused gastroenterologists to earn relevant MOC credit.", url:"https://gastro.org/news/new-lka-with-hepatology-focus-coming-in-2026/" },
-    { source:"ACG", date:"Mar 9, 2026", category:"Policy", sentiment:"Mixed", headline:"2026 Medicare GI Reimbursement Shifts: Impact on Endoscopy Payments", summary:"ACG flagged significant Medicare reimbursement changes affecting GI practices in 2026.", url:"https://gi.org/journals-publications/acg-blog/" },
-  ],
-};
-
 const EDU_LINKS = [
   { org:"AGA", color:"#1a6dd4", gradient:"linear-gradient(135deg,#0d4a9e,#1a6dd4)", logo:"AGA", name:"AGA Universe", url:"https://www.agauniversity.org/", description:"AGA's comprehensive learning platform offering CME courses, board review, practice guidelines, and GI-focused educational content.", features:["CME Courses","Board Review","Practice Resources","Webinars"] },
   { org:"ACG", color:"#c49a0a", gradient:"linear-gradient(135deg,#8b6508,#d4a017)", logo:"ACG", name:"ACG Education Universe", url:"https://education.gi.org/", description:"Self-assessment programs, case-based learning, MOC resources, and GI fellowship training tools.", features:["Self-Assessment (SAPS)","MOC Resources","Case Studies","Fellowship Tools"] },
