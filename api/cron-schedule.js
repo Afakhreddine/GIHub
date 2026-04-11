@@ -33,17 +33,16 @@ async function redisPop(key) {
   return json.result || null;
 }
 
-async function redisPush(key, ...values) {
-  const url = `${process.env.UPSTASH_REDIS_REST_URL}/rpush/${key}`;
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(values),
-  });
-  return res.ok;
+async function redisPush(key, values) {
+  // Push each value individually using pipeline
+  for (const val of values) {
+    const url = `${process.env.UPSTASH_REDIS_REST_URL}/rpush/${key}/${encodeURIComponent(val)}`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}` },
+    });
+    if (!res.ok) console.error(`Failed to push ${val}:`, await res.text());
+  }
 }
 
 async function redisDel(key) {
@@ -101,14 +100,14 @@ export default async function handler(req, res) {
   // ?reset=true clears the queue and re-seeds (use when updating calendar each month)
   if (req.query?.reset === "true") {
     await redisDel(QUEUE_KEY);
-    await redisPush(QUEUE_KEY, ...LECTURE_TOPICS.map(t => t.slug));
+    await redisPush(QUEUE_KEY, LECTURE_TOPICS.map(t => t.slug));
     return res.status(200).json({ ok: true, action: "reset", queued: LECTURE_TOPICS.map(t => t.slug) });
   }
 
   // Seed queue if empty
   let queue = await redisList(QUEUE_KEY);
   if (queue.length === 0) {
-    await redisPush(QUEUE_KEY, ...LECTURE_TOPICS.map(t => t.slug));
+    await redisPush(QUEUE_KEY, LECTURE_TOPICS.map(t => t.slug));
     queue = LECTURE_TOPICS.map(t => t.slug);
     console.log("Queue seeded with", queue.length, "topics");
   }
