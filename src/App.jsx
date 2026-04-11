@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { CALENDAR_EVENTS, CALENDAR_MONTH } from "./scheduleConfig.js";
 
 // ── SESSION CACHE ─────────────────────────────────────────────────────────────
 const sessionCache = {};
@@ -233,31 +234,18 @@ function EducationSection() {
 }
 
 // ── SCHEDULE ──────────────────────────────────────────────────────────────────
-const CALENDAR_EVENTS = [
-  // Tuesdays
-  { date:"2026-03-31", day:"Tue", label:"Han Zhang, MD — Esophageal Strictures & Dilation",     topic:"Esophageal Strictures & Dilation",        slug:"esophageal-strictures-dilation",      color:"#e05252" },
-  { date:"2026-04-07", day:"Tue", label:"Grand Rounds Practice — Senior Fellows",                topic:null,                                        slug:null,                                  color:"#e05252" },
-  { date:"2026-04-14", day:"Tue", label:"Quan Nhu, MD — Non-EoE Inflammatory Esophageal Diseases", topic:"Non-EoE Inflammatory Esophageal Diseases", slug:"non-eoe-inflammatory-esophageal",    color:"#e05252" },
-  { date:"2026-04-21", day:"Tue", label:"Frank Tsai, MD — Barrett's Esophagus Therapies",       topic:"Barrett's Esophagus Therapies",             slug:"barretts-esophagus-therapies",        color:"#e05252" },
-  { date:"2026-04-28", day:"Tue", label:"Walt Coyle, MD — Neuroendocrine Tumors (NETs)",        topic:"Neuroendocrine Tumors (NETs)",              slug:"neuroendocrine-tumors",                color:"#e05252" },
-  // Thursdays
-  { date:"2026-04-02", day:"Thu", label:"Dr. Pockros, Dr. Chow (R-Mercy)",                      topic:null, slug:null, color:"#e09a2a" },
-  { date:"2026-04-09", day:"Thu", label:"Dr. Nhu, Dr. Choi",                                    topic:null, slug:null, color:"#e09a2a" },
-  { date:"2026-04-16", day:"Thu", label:"Dr. Mayemura, Dr. Gilazgi (R)",                        topic:null, slug:null, color:"#e09a2a" },
-  { date:"2026-04-23", day:"Thu", label:"Dr. Heffernan, Dr. Wiseman (Navy)",                    topic:null, slug:null, color:"#e09a2a" },
-  { date:"2026-04-30", day:"Thu", label:"Dr. Worsey/Beiermeister, Dr. Lanser",                  topic:null, slug:null, color:"#e09a2a" },
-  // Fridays
-  { date:"2026-04-03", day:"Fri", label:"Wellness Lunch",                                        topic:null, slug:null, color:"#e05252" },
-  { date:"2026-04-10", day:"Fri", label:"Fouad Moawad, MD — GERD / Medical & Dietary Management", topic:"GERD / Medical & Dietary Management",    slug:"gerd-medical-dietary-management",     color:"#e05252" },
-  { date:"2026-04-17", day:"Fri", label:"SDGI Society Fellows Research Forum Practice Session",  topic:null, slug:null, color:"#e05252" },
-  { date:"2026-04-24", day:"Fri", label:"Board Review — Esophagus",                             topic:null, slug:null, color:"#e05252" },
-];
 
+// Derive calendar grid: find the Sunday on or before the first event date
+const firstDate = new Date(CALENDAR_EVENTS[0].date + "T12:00:00");
+const gridStart = new Date(firstDate);
+gridStart.setDate(gridStart.getDate() - gridStart.getDay());
 const MONTH_DAYS = Array.from({ length: 35 }, (_, i) => {
-  const d = new Date("2026-03-29");
+  const d = new Date(gridStart);
   d.setDate(d.getDate() + i);
   return d.toISOString().split("T")[0];
 });
+
+const DISPLAY_MONTH = firstDate.getMonth();
 
 const DAY_LABELS = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
 
@@ -385,10 +373,10 @@ function ScheduleSection() {
 
   return (
     <div>
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:22, flexWrap:"wrap", gap:12 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:22, flexWrap:"wrap", gap:12 }}>
         <div>
           <h1 style={{ fontSize:21, fontWeight:700, color:"#c8d8f0" }}>📅 Schedule</h1>
-          <p style={{ marginTop:4, fontSize:12, color:"#2e4060" }}>April 2026 · Click highlighted lectures for guidelines, articles & news</p>
+          <p style={{ marginTop:4, fontSize:12, color:"#2e4060" }}>{CALENDAR_MONTH} · Click highlighted lectures for guidelines, articles & news</p>
         </div>
         <div style={{ display:"flex", gap:12, alignItems:"center", fontSize:11, color:"#3a5070" }}>
           <span><span style={{ display:"inline-block", width:10, height:10, borderRadius:2, background:"#e05252", marginRight:4 }}/>Lecture</span>
@@ -412,7 +400,7 @@ function ScheduleSection() {
             {Array.from({ length: 7 }, (_, day) => {
               const dateStr = MONTH_DAYS[week * 7 + day];
               const d = new Date(dateStr + "T12:00:00");
-              const isApril = d.getMonth() === 3;
+                                const isApril = d.getMonth() === DISPLAY_MONTH;
               const event = eventMap[dateStr];
               const isClickable = event?.slug != null;
 
