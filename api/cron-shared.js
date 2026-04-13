@@ -1,5 +1,22 @@
+// Shared guidelines prompt — used by both cron-shared and cron-schedule
+const GUIDELINES_PROMPT = `Search for clinical guidelines published by ACG, AGA, ASGE, or AASLD in the current year first, then prior years if needed. For each guideline found, confirm its publication date before including it. Return only the 10 most recently published, sorted newest to oldest. Do not stop searching after finding 10 results — verify that no more recent guidelines exist before finalizing the list.
+
+Use the following sources for each society, combining primary sources with Guideline Central as a cross-check:
+
+ACG — Primary: PubMed search 'ACG clinical guideline [current year] "American Journal of Gastroenterology"[Journal]' sorted by date descending. Also check 'ACG clinical guideline [current year] "Clinical and Translational Gastroenterology"[Journal]'. Cross-check against https://www.guidelinecentral.com/guidelines/acg/ to catch anything missed.
+
+AGA — Primary: PubMed search 'AGA clinical practice guideline [current year] Gastroenterology[Journal] OR "Clinical Gastroenterology and Hepatology"[Journal]' sorted by date descending. Cross-check against https://www.guidelinecentral.com/guidelines/aga/
+
+ASGE — Primary: fetch https://www.asge.org/home/resources/publications/guidelines directly — this page renders fully and includes quality indicator documents (ERCP, upper GI, colonoscopy) that Guideline Central does not consistently index. Cross-check against https://www.guidelinecentral.com/guidelines/asge/ to catch any discrepancies.
+
+AASLD — Primary: fetch https://www.aasld.org/practice-guidelines directly — this page renders fully and lists all guidelines by disease topic. Confirm publication dates via PubMed: 'AASLD [guideline title] Hepatology[Journal] OR "Liver Transplantation"[Journal]'.
+
+After compiling and cross-checking results from all sources, merge and deduplicate — joint society guidelines (e.g., ACG/ASGE, AASLD/IDSA) count once. Sort by confirmed print publication date, newest to oldest.
+
+Return ONLY a JSON array. Each item: {"org":"","year":"","month":"","topic":"","urgency":"High|Moderate|Routine","title":"","summary":"1-2 sentences","url":""}`;
+
 const PROMPTS = {
-  guidelines: `Search for clinical guidelines published by ACG, AGA, ASGE, or AASLD in the current year first, then prior years if needed. For each guideline found, confirm its publication date before including it. Return only the 10 most recently published, sorted newest to oldest. Do not stop searching after finding 10 results — verify that no more recent guidelines exist before finalizing the list. Return ONLY a JSON array. Each item: {"org":"","year":"","month":"","topic":"","urgency":"High|Moderate|Routine","title":"","summary":"1-2 sentences","url":""}`,
+  guidelines: GUIDELINES_PROMPT,
 
   articles: `Search for high-impact gastroenterology and hepatology research articles published in the past 4 weeks in these journals: NEJM, Lancet, Lancet Gastroenterology & Hepatology, Gut, Gastroenterology, American Journal of Gastroenterology, Clinical Gastroenterology and Hepatology, Gastrointestinal Endoscopy, and Hepatology. Return the 10 most impactful results. Prioritize RCTs and phase 3 trials first, then large prospective or multicenter studies, then registry analyses. Sort by publication date, newest first. Confirm each article was published within the past 4 weeks before including it. Return ONLY a JSON array. Each item: {"journal":"","date":"","topic":"","impactLevel":"Practice-changing|High Impact|Noteworthy","title":"","authors":"","summary":"2-3 sentences describing study design and key finding","url":""}`,
 
