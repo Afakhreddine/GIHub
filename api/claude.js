@@ -36,6 +36,24 @@ export default async function handler(req, res) {
   console.log("Request:", { type, section, topic });
 
   try {
+    // ── GUIDELINES: serve from repository with pagination ─────────────────
+    if (type === "content" && section === "guidelines") {
+      const page    = parseInt(body.page || 1);
+      const perPage = 10;
+      const repo    = await redisGet("gihub:guidelines:repo");
+
+      if (Array.isArray(repo) && repo.length > 0) {
+        const total  = repo.length;
+        const pages  = Math.ceil(total / perPage);
+        const start  = (page - 1) * perPage;
+        const data   = repo.slice(start, start + perPage);
+        return res.status(200).json({ data, page, pages, total, fromRepo: true });
+      }
+
+      // Fall back to empty so frontend uses static
+      return res.status(200).json({ data: [], page: 1, pages: 1, total: 0, fromRepo: false });
+    }
+
     // ── CONTENT: read from Redis cache ────────────────────────────────────
     if (type === "content") {
       if (!["guidelines", "articles", "news"].includes(section)) {
@@ -54,7 +72,39 @@ export default async function handler(req, res) {
       return res.status(200).json({ data: [], fetchedAt: null, ageHours: null });
     }
 
-    // ── QUIZ: Claude Haiku, no web search ─────────────────────────────────
+    // ── LECTURE QUIZ: generate 5 MCQs from guideline content ─────────────
+    if (type === "lecture-quiz") {
+      if (!topic) return res.status(400).json({ error: "Missing guideline content" });
+
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+        },
+        body: JSON.stringify({
+          model: "claude-haiku-4-5-20251001",
+          max_tokens: 2000,
+          system: "You are a gastroenterology board exam question writer. Return ONLY a valid JSON array. No markdown, no backticks.",
+          messages: [{
+            role: "user",
+            content: `Based on this clinical practice guideline: "${topic}", generate exactly 5 board-style multiple choice questions that test the key clinical recommendations. Each question should be a clinical vignette testing a specific guideline recommendation. Return a JSON array of 5 objects: {"question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":"A|B|C|D","explanation":"cite the specific guideline recommendation"}`,
+          }],
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) return res.status(response.status).json({ error: data?.error?.message });
+
+      const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("");
+      let parsed = null;
+      try { parsed = JSON.parse(text.trim()); } catch {}
+      if (!parsed) { const m = text.match(/\[[\s\S]*\]/); if (m) try { parsed = JSON.parse(m[0]); } catch {} }
+      if (!parsed?.length) return res.status(500).json({ error: "Could not parse quiz", raw: text.slice(0, 200) });
+
+      return res.status(200).json({ data: parsed });
+    }
     if (type === "quiz") {
       if (!topic) return res.status(400).json({ error: "Missing topic" });
 
@@ -100,12 +150,41 @@ export default async function handler(req, res) {
       return res.status(200).json({ data: parsed });
     }
 
-    // ── LECTURE: read topic content from Redis ────────────────────────────
+    // ── LECTURE: guideline from repo, articles/news from Redis ───────────
     if (type === "lecture") {
       if (!topic) return res.status(400).json({ error: "Missing topic slug" });
+
+      // Load cached lecture content (articles + news)
       const cached = await redisGet(`gihub:lecture:${topic}`);
-      if (cached) return res.status(200).json(cached);
-      return res.status(200).json({ guideline: [], articles: [], news: [], fetchedAt: null });
+
+      // Load guidelines repo and find most relevant by topic matching
+      const repo = await redisGet("gihub:guidelines:repo");
+      let guideline = [];
+      if (Array.isArray(repo) && repo.length > 0) {
+        // Get slug label from topic slug (convert slug back to words)
+        const topicWords = topic.replace(/-/g, " ").toLowerCase().split(" ");
+
+        // Score each guideline by keyword overlap with topic
+        const scored = repo.map(g => {
+          const text = `${g.title} ${g.topic} ${g.summary}`.toLowerCase();
+          const score = topicWords.filter(w => w.length > 3 && text.includes(w)).length;
+          return { ...g, _score: score };
+        }).filter(g => g._score > 0);
+
+        // Sort by score desc, then by date desc
+        scored.sort((a, b) => b._score - a._score || 0);
+        if (scored.length > 0) {
+          const { _score, ...best } = scored[0];
+          guideline = [best];
+        }
+      }
+
+      return res.status(200).json({
+        guideline,
+        articles:  cached?.articles  || [],
+        news:      cached?.news      || [],
+        fetchedAt: cached?.fetchedAt || null,
+      });
     }
 
     return res.status(400).json({ error: "Invalid type: " + type });
