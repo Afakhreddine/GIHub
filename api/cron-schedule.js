@@ -1,4 +1,4 @@
-// Fetches all lecture topics in one run — possible now with 800s timeout
+// fetches all lecture topics in one run — possible now with 800s timeout
 // ?reset=true — re-fetches all topics from scratch
 
 import { claudeFetch, redisSet } from "./cron-shared.js";
