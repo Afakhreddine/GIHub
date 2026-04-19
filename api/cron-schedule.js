@@ -1,137 +1,63 @@
-// Self-contained — no imports from src/
-// LECTURE_TOPICS is the only thing to keep in sync with src/scheduleConfig.js
+// Fetches all lecture topics in one run — possible now with 800s timeout
+// ?reset=true — re-fetches all topics from scratch
+
+import { claudeFetch, redisSet } from "./cron-shared.js";
+
+const PRIORITY_JOURNALS = "NEJM, JAMA, Lancet, Lancet Gastroenterology & Hepatology, Gut, Gastroenterology, American Journal of Gastroenterology, Clinical Gastroenterology and Hepatology, Gastrointestinal Endoscopy, Hepatology, Neurogastroenterology and Motility, World Journal of Gastroenterology, Liver Transplantation, Clinical Liver Disease, Journal of Hepatology, JHEP Reports, and Alimentary Pharmacology & Therapeutics";
 
 const LECTURE_TOPICS = [
-  { slug:"esophageal-strictures-dilation",      label:"Esophageal Strictures & Dilation"        },
-  { slug:"non-eoe-inflammatory-esophageal",      label:"Non-EoE Inflammatory Esophageal Diseases" },
-  { slug:"barretts-esophagus-therapies",         label:"Barrett's Esophagus Therapies"           },
-  { slug:"neuroendocrine-tumors",                label:"Neuroendocrine Tumors (NETs)"            },
-  { slug:"gerd-medical-dietary-management",      label:"GERD / Medical & Dietary Management"     },
-  { slug:"board-review-esophagus",               label:"Board Review — Esophagus"                },
+  { slug: "esophageal-strictures-dilation",   label: "Esophageal Strictures & Dilation"        },
+  { slug: "non-eoe-inflammatory-esophageal",   label: "Non-EoE Inflammatory Esophageal Diseases" },
+  { slug: "barretts-esophagus-therapies",      label: "Barrett's Esophagus Therapies"           },
+  { slug: "neuroendocrine-tumors",             label: "Neuroendocrine Tumors (NETs)"            },
+  { slug: "gerd-medical-dietary-management",   label: "GERD / Medical & Dietary Management"     },
+  { slug: "board-review-esophagus",            label: "Board Review — Esophagus"                },
 ];
 
-const QUEUE_KEY = "gihub:schedule:queue";
-
-// ── REDIS HELPERS ─────────────────────────────────────────────────────────────
-function redisUrl(path) {
-  return `${process.env.UPSTASH_REDIS_REST_URL}${path}`;
-}
-function redisHeaders() {
-  return { Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}` };
-}
-
-async function redisList(key) {
-  const res = await fetch(redisUrl(`/lrange/${key}/0/-1`), { headers: redisHeaders() });
-  const json = await res.json();
-  return Array.isArray(json.result) ? json.result : [];
-}
-
-async function redisPop(key) {
-  const res = await fetch(redisUrl(`/lpop/${key}`), { method:"POST", headers: redisHeaders() });
-  const json = await res.json();
-  return json.result || null;
-}
-
-async function redisDel(key) {
-  await fetch(redisUrl(`/del/${key}`), { method:"POST", headers: redisHeaders() });
-}
-
-async function redisPushOne(key, value) {
-  const res = await fetch(redisUrl(`/rpush/${key}/${encodeURIComponent(value)}`), {
-    method: "POST",
-    headers: redisHeaders(),
-  });
-  return res.ok;
-}
-
-async function redisSet(key, value) {
-  const res = await fetch(redisUrl(`/set/${key}`), {
-    method: "POST",
-    headers: { ...redisHeaders(), "Content-Type": "application/json" },
-    body: JSON.stringify(value),
-  });
-  if (!res.ok) throw new Error(`Redis set failed for ${key}: ${await res.text()}`);
-}
-
-// ── FETCH TOPIC CONTENT ───────────────────────────────────────────────────────
-async function fetchOne(prompt, apiKey) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "anthropic-beta": "web-search-2025-03-05",
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 2000,
-      system: "You are a GI medical curator. Search the web and return ONLY a valid JSON array. No markdown, no backticks, no extra text.",
-      messages: [{ role:"user", content:prompt }],
-      tools: [{ type:"web_search_20250305", name:"web_search" }],
-    }),
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(JSON.stringify(data?.error));
-  const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("");
-  const match = text.match(/\[[\s\S]*\]/);
-  return match ? JSON.parse(match[0]) : [];
-}
-
-async function fetchTopicContent(label, apiKey) {
-  const [guideline, articles, news] = await Promise.allSettled([
-    fetchOne(`Search for the most recent relevant clinical practice guideline from ACG, AGA, ASGE, or AASLD related to "${label}". Return ONLY a JSON array with 1 object: {"org":"","year":"","month":"","topic":"","urgency":"High|Moderate|Routine","title":"","summary":"2-3 sentences","url":""}`, apiKey),
-    fetchOne(`Search for high-impact GI research articles published in the past 4 weeks specifically about "${label}". Return up to 5, newest first. JSON array: {"journal":"","date":"","topic":"","impactLevel":"Practice-changing|High Impact|Noteworthy","title":"","authors":"","summary":"2-3 sentences","url":""}`, apiKey),
-    fetchOne(`Search for recent GI news from the past 4 weeks related to "${label}". Include FDA approvals, drug news, policy changes. Return up to 5. JSON array: {"source":"","date":"","category":"FDA Approval|Drug News|Research|Industry|Policy","sentiment":"Positive|Neutral|Mixed|Negative","headline":"","summary":"1-2 sentences","url":""}`, apiKey),
-  ]);
+function buildPrompts(label) {
   return {
-    guideline: guideline.status === "fulfilled" ? guideline.value : [],
-    articles:  articles.status  === "fulfilled" ? articles.value  : [],
-    news:      news.status      === "fulfilled" ? news.value      : [],
+    articles: `Search for high-impact GI and hepatology research articles published in the past 1 year specifically related to "${label}". First search these priority journals: ${PRIORITY_JOURNALS}. If fewer than 5 results, expand to other peer-reviewed GI journals. Assess impact by cross-referencing news.gastro.org, Healio Gastroenterology, and Doximity trending articles. Prioritize RCTs and phase 3 trials, then large prospective studies. Sort newest first. Return ONLY a JSON array of up to 5 items: {"journal":"","date":"","topic":"","impactLevel":"Practice-changing|High Impact|Noteworthy","title":"","authors":"","summary":"2-3 sentences","url":""}`,
+
+    news: `Search for GI and hepatology news from the past 3 months specifically related to "${label}". Include only: FDA approvals and safety alerts; drug development milestones (phase 2/3 results, PDUFA dates, NDA submissions, accelerated approvals, label expansions); health policy changes (CMS, Medicare, Medicaid); society and conference news (AGA, ACG, ASGE, AASLD, DDW). Exclude primary research articles. Return ONLY a JSON array of up to 5 items sorted newest first: {"source":"","date":"","category":"FDA Approval|Drug News|Research|Industry|Policy","sentiment":"Positive|Neutral|Mixed|Negative","headline":"","summary":"1-2 sentences","url":""}`,
   };
 }
 
-// ── HANDLER ───────────────────────────────────────────────────────────────────
 export default async function handler(req, res) {
   const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) return res.status(500).json({ error:"ANTHROPIC_API_KEY not set" });
-  if (!process.env.UPSTASH_REDIS_REST_URL) return res.status(500).json({ error:"Redis not configured" });
+  if (!apiKey) return res.status(500).json({ error: "API key not configured" });
 
-  // ?reset=true — clears queue and re-seeds (use when updating calendar each month)
-  if (req.query?.reset === "true") {
-    await redisDel(QUEUE_KEY);
-    for (const t of LECTURE_TOPICS) await redisPushOne(QUEUE_KEY, t.slug);
-    return res.status(200).json({ ok:true, action:"reset", queued:LECTURE_TOPICS.map(t => t.slug) });
+  const results = {};
+  const errors  = {};
+
+  for (const { slug, label } of LECTURE_TOPICS) {
+    console.log(`Fetching schedule content for: ${label}`);
+    const prompts = buildPrompts(label);
+    const content = { fetchedAt: Date.now() };
+
+    for (const [key, prompt] of Object.entries(prompts)) {
+      try {
+        content[key] = await claudeFetch(prompt, apiKey);
+        console.log(`  ✓ ${slug}/${key}: ${content[key].length} items`);
+      } catch (e) {
+        console.error(`  ✗ ${slug}/${key}:`, e.message);
+        content[key] = [];
+        if (!errors[slug]) errors[slug] = {};
+        errors[slug][key] = e.message;
+      }
+    }
+
+    try {
+      await redisSet(`gihub:lecture:${slug}`, content);
+      results[slug] = { articles: content.articles?.length, news: content.news?.length };
+    } catch (e) {
+      console.error(`  ✗ Redis save ${slug}:`, e.message);
+    }
   }
-
-  // Seed queue if empty
-  let queue = await redisList(QUEUE_KEY);
-  if (queue.length === 0) {
-    for (const t of LECTURE_TOPICS) await redisPushOne(QUEUE_KEY, t.slug);
-    queue = LECTURE_TOPICS.map(t => t.slug);
-    console.log("Queue seeded:", queue);
-  }
-
-  // Pop one slug and process it
-  const slug = await redisPop(QUEUE_KEY);
-  if (!slug) return res.status(200).json({ ok:true, message:"Queue empty" });
-
-  const lecture = LECTURE_TOPICS.find(t => t.slug === slug);
-  if (!lecture) return res.status(200).json({ ok:true, message:`Unknown slug: ${slug}` });
-
-  console.log(`Processing: ${lecture.label}`);
-  const content = await fetchTopicContent(lecture.label, apiKey);
-  await redisSet(`gihub:lecture:${slug}`, { ...content, fetchedAt:Date.now() });
-
-  const remaining = await redisList(QUEUE_KEY);
-  console.log(`✓ Done: ${slug}. Remaining: ${remaining.length}`);
 
   return res.status(200).json({
     ok: true,
-    processed: slug,
-    label: lecture.label,
-    counts: { guideline:content.guideline.length, articles:content.articles.length, news:content.news.length },
-    remaining: remaining.length,
-    remainingTopics: remaining,
+    results,
+    errors,
+    timestamp: new Date().toISOString(),
   });
 }
