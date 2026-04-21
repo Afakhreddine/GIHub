@@ -29,10 +29,10 @@ async function redisGet(key) {
 }
 
 async function redisSet(key, value) {
-  await fetch(`${redisBase()}/set/${encodeURIComponent(key)}`, {
+  const encoded = encodeURIComponent(JSON.stringify(value));
+  await fetch(`${redisBase()}/set/${encodeURIComponent(key)}/${encoded}`, {
     method: "POST",
-    headers: { ...redisHdrs(), "Content-Type": "application/json" },
-    body: JSON.stringify([JSON.stringify(value)]),
+    headers: redisHdrs(),
   });
 }
 
@@ -155,37 +155,41 @@ export default async function handler(req, res) {
 
   console.log(`Processing: ${lecture.label}`);
 
-  // Run all three fetches in parallel
-  const [guidelineResult, articlesResult, newsResult] = await Promise.allSettled([
-    pickGuideline(lecture.label, apiKey),
-    claudeWebSearch(
+  // Guideline: Haiku, no web search
+  let guideline = [];
+  try {
+    guideline = await pickGuideline(lecture.label, apiKey);
+  } catch(e) { console.error("  ✗ guideline:", e.message); }
+
+  // Articles: Sonnet web search
+  let articles = [];
+  try {
+    articles = await claudeWebSearch(
       `Find up to 3 high-impact gastroenterology journal articles published in the past 12 months specifically about "${lecture.label}". ` +
       `Focus on: NEJM, Lancet, Gastroenterology, Gut, AJG, CGH, GIE, Hepatology. ` +
       `Return ONLY a JSON array, no markdown: ` +
       `[{"journal":"","date":"","topic":"","impactLevel":"Practice-changing|High Impact|Noteworthy","title":"","authors":"","summary":"2-3 sentences","url":""}]`,
       apiKey
-    ),
-    claudeWebSearch(
+    );
+  } catch(e) { console.error("  ✗ articles:", e.message); }
+
+  // Small delay between Sonnet calls to avoid rate limiting
+  await new Promise(r => setTimeout(r, 3000));
+
+  // News: Sonnet web search
+  let news = [];
+  try {
+    news = await claudeWebSearch(
       `Find up to 3 recent GI news items from the past 12 months specifically related to "${lecture.label}". ` +
       `Include FDA approvals, drug approvals, phase 3 trial results, policy changes. ` +
       `Return ONLY a JSON array, no markdown: ` +
       `[{"source":"","date":"","category":"FDA Approval|Drug News|Research|Industry|Policy","sentiment":"Positive|Neutral|Mixed|Negative","headline":"","summary":"1-2 sentences","url":""}]`,
       apiKey
-    ),
-  ]);
+    );
+  } catch(e) { console.error("  ✗ news:", e.message); }
 
-  if (guidelineResult.status === "rejected") console.error(`  ✗ guideline:`, guidelineResult.reason?.message);
-  if (articlesResult.status  === "rejected") console.error(`  ✗ articles:`,  articlesResult.reason?.message);
-  if (newsResult.status      === "rejected") console.error(`  ✗ news:`,      newsResult.reason?.message);
-
-  const content = {
-    guideline: guidelineResult.status === "fulfilled" ? guidelineResult.value : [],
-    articles:  articlesResult.status  === "fulfilled" ? articlesResult.value  : [],
-    news:      newsResult.status      === "fulfilled" ? newsResult.value      : [],
-    fetchedAt: Date.now(),
-  };
-
-  console.log(`  ✓ guideline:${content.guideline.length} articles:${content.articles.length} news:${content.news.length}`);
+  const content = { guideline, articles, news, fetchedAt: Date.now() };
+  console.log(`  ✓ guideline:${guideline.length} articles:${articles.length} news:${news.length}`);
   await redisSet(`gihub:lecture:${slug}`, content);
 
   const remaining = await redisList(QUEUE_KEY);
@@ -195,7 +199,7 @@ export default async function handler(req, res) {
     ok: true,
     processed: slug,
     label: lecture.label,
-    counts: { guideline: content.guideline.length, articles: content.articles.length, news: content.news.length },
+    counts: { guideline: guideline.length, articles: articles.length, news: news.length },
     remaining: remaining.length,
     remainingTopics: remaining,
   });
