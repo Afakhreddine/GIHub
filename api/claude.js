@@ -66,6 +66,7 @@ export default async function handler(req, res) {
       const cached = await redisGet(`gihub:lecture:${topic}`);
       return res.status(200).json({
         guideline: cached?.guideline || [],
+        quiz:      cached?.quiz      || [],
         articles:  cached?.articles  || [],
         news:      cached?.news      || [],
         fetchedAt: cached?.fetchedAt || null,
