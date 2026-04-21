@@ -1,5 +1,5 @@
 // api/cron-schedule.js — ONE topic per invocation, never times out
-// Fetches: guideline (Haiku, from repo), articles + news (Sonnet, web search)
+// Fetches: guidelines (Haiku, from repo), articles, news (Sonnet, web search), quiz (Haiku)
 
 const LECTURE_TOPICS = [
   { slug:"esophageal-strictures-dilation",      label:"Esophageal Strictures & Dilation"        },
@@ -56,8 +56,8 @@ async function redisDel(key) {
   await fetch(`${redisBase()}/del/${key}`, { method: "POST", headers: redisHdrs() });
 }
 
-// ── GUIDELINE PICKER (Haiku, no web search, reads from repo) ─────────────────
-async function pickGuideline(topicLabel, apiKey) {
+// ── GUIDELINE PICKER (Haiku, no web search, returns all strong matches) ───────
+async function pickGuidelines(topicLabel, apiKey) {
   const repo = await redisGet("gihub:guidelines:repo");
   if (!Array.isArray(repo) || repo.length === 0) {
     console.log("  guideline: repo empty, skipping");
@@ -77,12 +77,13 @@ async function pickGuideline(topicLabel, apiKey) {
     },
     body: JSON.stringify({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 10,
+      max_tokens: 20,
       messages: [{
         role: "user",
         content:
-          `Which guideline index (0-${repo.length - 1}) is most relevant to a GI lecture on "${topicLabel}"? ` +
-          `Reply with only the number, nothing else.\n\n${repoSummary}`,
+          `List the indices (0-${repo.length - 1}) of ALL guidelines that are strongly and directly relevant to a GI lecture on "${topicLabel}". ` +
+          `Only include guidelines with a clear topical match — do not include loosely related ones. ` +
+          `Reply with only a comma-separated list of numbers, nothing else. If none match well, reply with the single best index.\n\n${repoSummary}`,
       }],
     }),
   });
@@ -90,13 +91,59 @@ async function pickGuideline(topicLabel, apiKey) {
   const data = await res.json();
   if (!res.ok) throw new Error(data.error?.message || "Haiku error");
   const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("").trim();
-  const idx  = parseInt(text, 10);
-  if (isNaN(idx) || idx < 0 || idx >= repo.length) {
-    console.log(`  guideline: bad index "${text}", skipping`);
+
+  const indices = text.split(",")
+    .map(s => parseInt(s.trim(), 10))
+    .filter(n => !isNaN(n) && n >= 0 && n < repo.length);
+
+  if (indices.length === 0) {
+    console.log(`  guideline: no valid indices in "${text}", skipping`);
     return [];
   }
-  console.log(`  guideline: picked index ${idx} — ${repo[idx].title}`);
-  return [repo[idx]];
+
+  const picked = indices.map(i => repo[i]);
+  console.log(`  guideline: picked ${indices.length} — ${picked.map(g => g.title).join(" | ")}`);
+  return picked;
+}
+
+// ── QUIZ GENERATOR (Haiku, factual recall from guideline content) ─────────────
+async function generateQuiz(guidelines, topicLabel, apiKey) {
+  if (!guidelines || guidelines.length === 0) return [];
+
+  const guidelineContext = guidelines.map(g =>
+    `${g.org} ${g.year} — ${g.title}: ${g.summary}`
+  ).join("\n\n");
+
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 2000,
+      messages: [{
+        role: "user",
+        content:
+          `Based on the following GI guideline(s), write exactly 5 multiple choice questions for a GI fellow. ` +
+          `Each question must test recall of a specific fact, number, recommendation, or classification directly stated in the guideline — not a clinical scenario or vignette. ` +
+          `The explanation must quote the relevant guideline text word for word. ` +
+          `Return ONLY a JSON array of 5 objects, no markdown:\n` +
+          `[{"question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":"A|B|C|D","explanation":"..."}]\n\n` +
+          `Guidelines:\n${guidelineContext}`,
+      }],
+    }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message || "Haiku quiz error");
+  const text  = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("");
+  const clean = text.replace(/```json|```/g, "").trim();
+  const match = clean.match(/\[[\s\S]*\]/);
+  if (!match) throw new Error("No JSON array in quiz response");
+  return JSON.parse(match[0]);
 }
 
 // ── WEB SEARCH (Sonnet) ───────────────────────────────────────────────────────
@@ -155,18 +202,27 @@ export default async function handler(req, res) {
 
   console.log(`Processing: ${lecture.label}`);
 
-  // Guideline: Haiku, no web search
+  // 1. Guidelines — Haiku picks all strong matches from repo
   let guideline = [];
   try {
-    guideline = await pickGuideline(lecture.label, apiKey);
+    guideline = await pickGuidelines(lecture.label, apiKey);
   } catch(e) { console.error("  ✗ guideline:", e.message); }
 
-  // Articles: Sonnet web search
+  // 2. Quiz — Haiku generates 5 factual recall questions from the guideline(s)
+  let quiz = [];
+  try {
+    quiz = await generateQuiz(guideline, lecture.label, apiKey);
+    console.log(`  quiz: ${quiz.length} questions generated`);
+  } catch(e) { console.error("  ✗ quiz:", e.message); }
+
+  // 3. Articles — Sonnet web search, explicitly excludes guidelines
   let articles = [];
   try {
     articles = await claudeWebSearch(
-      `Find up to 3 high-impact gastroenterology journal articles published in the past 12 months specifically about "${lecture.label}". ` +
-      `Focus on: NEJM, Lancet, Gastroenterology, Gut, AJG, CGH, GIE, Hepatology. ` +
+      `Find up to 3 high-impact original research articles published in the past 12 months specifically about "${lecture.label}". ` +
+      `Only include primary research: RCTs, cohort studies, meta-analyses. ` +
+      `Do NOT include clinical practice guidelines, consensus statements, or expert reviews. ` +
+      `Focus on journals: NEJM, Lancet, Gastroenterology, Gut, AJG, CGH, GIE, Hepatology. ` +
       `Return ONLY a JSON array, no markdown: ` +
       `[{"journal":"","date":"","topic":"","impactLevel":"Practice-changing|High Impact|Noteworthy","title":"","authors":"","summary":"2-3 sentences","url":""}]`,
       apiKey
@@ -176,7 +232,7 @@ export default async function handler(req, res) {
   // Small delay between Sonnet calls to avoid rate limiting
   await new Promise(r => setTimeout(r, 3000));
 
-  // News: Sonnet web search
+  // 4. News — Sonnet web search
   let news = [];
   try {
     news = await claudeWebSearch(
@@ -188,8 +244,8 @@ export default async function handler(req, res) {
     );
   } catch(e) { console.error("  ✗ news:", e.message); }
 
-  const content = { guideline, articles, news, fetchedAt: Date.now() };
-  console.log(`  ✓ guideline:${guideline.length} articles:${articles.length} news:${news.length}`);
+  const content = { guideline, quiz, articles, news, fetchedAt: Date.now() };
+  console.log(`  ✓ guideline:${guideline.length} quiz:${quiz.length} articles:${articles.length} news:${news.length}`);
   await redisSet(`gihub:lecture:${slug}`, content);
 
   const remaining = await redisList(QUEUE_KEY);
@@ -199,7 +255,7 @@ export default async function handler(req, res) {
     ok: true,
     processed: slug,
     label: lecture.label,
-    counts: { guideline: guideline.length, articles: articles.length, news: news.length },
+    counts: { guideline: guideline.length, quiz: quiz.length, articles: articles.length, news: news.length },
     remaining: remaining.length,
     remainingTopics: remaining,
   });
