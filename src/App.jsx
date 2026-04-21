@@ -84,7 +84,6 @@ const categoryColor  = { "FDA Approval":"#5b8af0", "Drug News":"#9c6af0", Resear
 const sentimentColor = { Positive:"#4caf7d", Neutral:"#8899aa", Mixed:"#e09a2a", Negative:"#e05252" };
 const DAY_LABELS     = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
 
-// ── DATE HELPERS ──────────────────────────────────────────────────────────────
 function parseDateStr(item) {
   const raw = item.date || (item.month && item.year ? `${item.month} ${item.year}` : null);
   if (!raw) return 0;
@@ -93,7 +92,6 @@ function parseDateStr(item) {
 }
 function sortByDate(items) { return [...items].sort((a,b) => parseDateStr(b) - parseDateStr(a)); }
 
-// ── API ───────────────────────────────────────────────────────────────────────
 async function apiCall(body) {
   const res = await fetch("/api/claude", {
     method:"POST",
@@ -105,7 +103,6 @@ async function apiCall(body) {
   return data;
 }
 
-// ── SHARED UI ─────────────────────────────────────────────────────────────────
 function Badge({ label, color }) {
   return <span style={{ display:"inline-block", padding:"2px 10px", borderRadius:20, fontSize:11, fontWeight:700, color:"#fff", background:color||"#334", whiteSpace:"nowrap" }}>{label}</span>;
 }
@@ -141,7 +138,6 @@ function ContentCard({ item, type }) {
   );
 }
 
-// ── CONTENT SECTION ───────────────────────────────────────────────────────────
 function ContentSection({ type }) {
   const meta = SECTION_META[type];
   const [search, setSearch]     = useState("");
@@ -149,19 +145,14 @@ function ContentSection({ type }) {
   const [loading, setLoading]   = useState(true);
   const [status, setStatus]     = useState("loading");
   const [ageHours, setAgeHours] = useState(null);
-  // Pagination (guidelines repo only)
   const [page, setPage]   = useState(1);
   const [pages, setPages] = useState(1);
   const [total, setTotal] = useState(0);
 
-  useEffect(() => {
-    setPage(1);
-  }, [type]);
+  useEffect(() => { setPage(1); }, [type]);
 
   useEffect(() => {
     async function load() {
-      // Session cache for non-guidelines sections
-      const cacheKey = `${type}-${page}`;
       if (type !== "guidelines" && sessionCache[type]) {
         setItems(sessionCache[type].data);
         setAgeHours(sessionCache[type].ageHours);
@@ -175,9 +166,7 @@ function ContentSection({ type }) {
         const result = await apiCall({ type:"content", section:type, page });
         if (Array.isArray(result.data) && result.data.length > 0) {
           const sorted = type === "guidelines" ? result.data : sortByDate(result.data);
-          if (type !== "guidelines") {
-            sessionCache[type] = { data:sorted, ageHours:result.ageHours };
-          }
+          if (type !== "guidelines") sessionCache[type] = { data:sorted, ageHours:result.ageHours };
           setItems(sorted);
           setAgeHours(result.ageHours);
           setStatus("live");
@@ -224,25 +213,19 @@ function ContentSection({ type }) {
         :<div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(440px,1fr))", gap:14 }}>
            {filtered.map((item,i)=><ContentCard key={i} item={item} type={type}/>)}
          </div>}
-      {/* Pagination — guidelines only */}
       {type === "guidelines" && pages > 1 && !search && (
         <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:12, marginTop:28 }}>
           <button onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page===1||loading}
-            style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.1)", color:page===1?"#1e2e40":"#6a8aaa", padding:"8px 16px", borderRadius:8, fontSize:13, cursor:page===1?"not-allowed":"pointer" }}>
-            ← Prev
-          </button>
+            style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.1)", color:page===1?"#1e2e40":"#6a8aaa", padding:"8px 16px", borderRadius:8, fontSize:13, cursor:page===1?"not-allowed":"pointer" }}>← Prev</button>
           <span style={{ fontSize:12, color:"#3a5878", fontFamily:"monospace" }}>Page {page} of {pages}</span>
           <button onClick={()=>setPage(p=>Math.min(pages,p+1))} disabled={page===pages||loading}
-            style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.1)", color:page===pages?"#1e2e40":"#6a8aaa", padding:"8px 16px", borderRadius:8, fontSize:13, cursor:page===pages?"not-allowed":"pointer" }}>
-            Next →
-          </button>
+            style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.1)", color:page===pages?"#1e2e40":"#6a8aaa", padding:"8px 16px", borderRadius:8, fontSize:13, cursor:page===pages?"not-allowed":"pointer" }}>Next →</button>
         </div>
       )}
     </div>
   );
 }
 
-// ── EDUCATION ─────────────────────────────────────────────────────────────────
 function EduCard({ edu }) {
   const [hov, setHov] = useState(false);
   return (
@@ -278,7 +261,6 @@ function EducationSection() {
   );
 }
 
-// ── SCHEDULE ──────────────────────────────────────────────────────────────────
 const firstDate  = new Date(CALENDAR_EVENTS[0].date + "T12:00:00");
 const gridStart  = new Date(firstDate);
 gridStart.setDate(gridStart.getDate() - gridStart.getDay());
@@ -288,16 +270,82 @@ const MONTH_DAYS = Array.from({ length:35 }, (_,i) => {
 });
 const DISPLAY_MONTH = firstDate.getMonth();
 
-function LectureDetailPanel({ event, onClose }) {
-  const [data, setData]           = useState(null);
-  const [loading, setLoading]     = useState(true);
-  const [quiz, setQuiz]           = useState(null);
-  const [quizLoading, setQuizLoading] = useState(false);
+// ── QUIZ DISPLAY (static, pre-generated by cron) ──────────────────────────────
+function QuizDisplay({ quiz }) {
   const [quizIndex, setQuizIndex] = useState(0);
   const [answers, setAnswers]     = useState({});
   const [revealed, setRevealed]   = useState({});
 
+  function selectAnswer(idx, letter) {
+    if (answers[idx]) return;
+    setAnswers(a => ({ ...a, [idx]: letter }));
+    setRevealed(r => ({ ...r, [idx]: true }));
+  }
+
+  const currentQ = quiz[quizIndex];
+  if (!currentQ) return null;
+
+  return (
+    <div style={{ marginTop:16 }}>
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
+        <div style={{ fontSize:12, fontWeight:700, color:"#5b8af0", fontFamily:"monospace", letterSpacing:1 }}>🧠 GUIDELINE QUIZ</div>
+        <div style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace" }}>Question {quizIndex+1} of {quiz.length}</div>
+      </div>
+      <div style={{ background:"rgba(255,255,255,0.025)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:12, padding:"16px" }}>
+        <div style={{ fontSize:13, color:"#c8d8f0", lineHeight:1.7, marginBottom:14 }}>{currentQ.question}</div>
+        <div style={{ display:"flex", flexDirection:"column", gap:7 }}>
+          {currentQ.options.map((opt,oi)=>{
+            const letter = ["A","B","C","D"][oi];
+            const isChosen   = answers[quizIndex] === letter;
+            const isRight    = letter === currentQ.correct;
+            const isRevealed = revealed[quizIndex];
+            let bg="#rgba(255,255,255,0.03)", border="rgba(255,255,255,0.08)", color="#8898b0";
+            if (isRevealed) {
+              if (isRight)          { bg="rgba(76,175,61,0.12)";  border="#4caf7d55"; color="#4caf7d"; }
+              else if (isChosen)    { bg="rgba(224,82,82,0.1)";   border="#e0525255"; color="#e05252"; }
+            } else if (isChosen)    { bg="rgba(91,138,240,0.13)"; border="#5b8af088"; color="#5b8af0"; }
+            return (
+              <div key={oi} onClick={()=>selectAnswer(quizIndex, letter)}
+                style={{ background:bg, border:`1px solid ${border}`, borderRadius:8, padding:"8px 12px", fontSize:12, color, cursor:isRevealed?"default":"pointer", transition:"all 0.15s", display:"flex", alignItems:"center", gap:8 }}>
+                <span style={{ fontWeight:700, fontFamily:"monospace", fontSize:11, minWidth:14 }}>{letter}</span>
+                <span>{opt.replace(/^[A-D][\.\)]\s*/i,"")}</span>
+                {isRevealed&&isRight  &&<span style={{ marginLeft:"auto" }}>✓</span>}
+                {isRevealed&&isChosen&&!isRight&&<span style={{ marginLeft:"auto" }}>✗</span>}
+              </div>
+            );
+          })}
+        </div>
+        {revealed[quizIndex]&&(
+          <div style={{ marginTop:12, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:8, padding:"10px 12px" }}>
+            <div style={{ fontSize:10, fontWeight:700, color:"#4a6a8a", fontFamily:"monospace", marginBottom:4, letterSpacing:0.5 }}>EXPLANATION</div>
+            <div style={{ fontSize:12, color:"#6a8aaa", lineHeight:1.7 }}>{currentQ.explanation}</div>
+          </div>
+        )}
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginTop:12 }}>
+          <button onClick={()=>setQuizIndex(i=>Math.max(0,i-1))} disabled={quizIndex===0}
+            style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", color:quizIndex===0?"#1e2e40":"#6a8aaa", padding:"6px 14px", borderRadius:7, fontSize:12, cursor:quizIndex===0?"not-allowed":"pointer" }}>← Prev</button>
+          <div style={{ display:"flex", gap:6 }}>
+            {quiz.map((_,i)=>(
+              <div key={i} onClick={()=>setQuizIndex(i)}
+                style={{ width:8, height:8, borderRadius:"50%", background:i===quizIndex?"#5b8af0":answers[i]?(answers[i]===quiz[i].correct?"#4caf7d":"#e05252"):"rgba(255,255,255,0.1)", cursor:"pointer", transition:"all 0.15s" }}/>
+            ))}
+          </div>
+          <button onClick={()=>setQuizIndex(i=>Math.min(quiz.length-1,i+1))} disabled={quizIndex===quiz.length-1}
+            style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", color:quizIndex===quiz.length-1?"#1e2e40":"#6a8aaa", padding:"6px 14px", borderRadius:7, fontSize:12, cursor:quizIndex===quiz.length-1?"not-allowed":"pointer" }}>Next →</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── LECTURE DETAIL PANEL ──────────────────────────────────────────────────────
+function LectureDetailPanel({ event, onClose }) {
+  const [data, setData]       = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [showQuiz, setShowQuiz] = useState(false);
+
   useEffect(() => {
+    setShowQuiz(false);
     async function load() {
       setLoading(true);
       try {
@@ -309,31 +357,8 @@ function LectureDetailPanel({ event, onClose }) {
     load();
   }, [event.slug]);
 
-  async function generateQuiz(guideline) {
-    setQuizLoading(true);
-    setQuiz(null);
-    setQuizIndex(0);
-    setAnswers({});
-    setRevealed({});
-    try {
-      const result = await apiCall({
-        type: "lecture-quiz",
-        topic: `${guideline.title} — ${guideline.summary}`,
-      });
-      if (result.data?.length > 0) setQuiz(result.data);
-    } catch(e) { console.error("Quiz gen failed:", e.message); }
-    setQuizLoading(false);
-  }
-
-  function selectAnswer(idx, letter) {
-    if (answers[idx]) return;
-    setAnswers(a => ({ ...a, [idx]: letter }));
-    setRevealed(r => ({ ...r, [idx]: true }));
-  }
-
   const noData = !loading && (!data || (!data.guideline?.length && !data.articles?.length && !data.news?.length));
-  const currentQ = quiz?.[quizIndex];
-  const ti = { color:"#5b8af0" };
+  const hasQuiz = data?.quiz?.length > 0;
 
   return (
     <div style={{ position:"fixed", top:0, right:0, bottom:0, width:"min(600px,100vw)", background:"#0c1526", borderLeft:"1px solid rgba(255,255,255,0.1)", zIndex:200, overflowY:"auto", boxShadow:"-8px 0 32px rgba(0,0,0,0.4)" }}>
@@ -344,20 +369,22 @@ function LectureDetailPanel({ event, onClose }) {
         </div>
         <button onClick={onClose} style={{ background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", color:"#6a8aaa", width:32, height:32, borderRadius:8, cursor:"pointer", fontSize:16, flexShrink:0 }}>✕</button>
       </div>
+
       <div style={{ padding:24 }}>
         {loading&&<div style={{ textAlign:"center", padding:"60px 0" }}><Spinner size={28}/><div style={{ marginTop:14, fontSize:13, color:"#3a5878" }}>Loading lecture content…</div></div>}
-        {noData&&<div style={{ textAlign:"center", padding:"60px 0", color:"#2a3a50" }}><div style={{ fontSize:32, marginBottom:12 }}>📭</div><div style={{ fontSize:13 }}>No content yet. Trigger the schedule cron to populate.</div></div>}
+        {noData&&<div style={{ textAlign:"center", padding:"60px 0", color:"#2a3a50" }}><div style={{ fontSize:32, marginBottom:12 }}>📭</div><div style={{ fontSize:13 }}>No content yet. Run the schedule cron to populate.</div></div>}
+
         {!loading&&data&&(
           <div style={{ display:"flex", flexDirection:"column", gap:32 }}>
 
-            {/* Guideline */}
+            {/* Guidelines — may be multiple */}
             {data.guideline?.length>0&&(
               <div>
-                <div style={{ fontSize:12, fontWeight:700, color:"#5b8af0", fontFamily:"monospace", letterSpacing:1, marginBottom:12 }}>⚕️ RELEVANT GUIDELINE</div>
-                {data.guideline.map((g,i)=>(
-                  <div key={i}>
-                    <div onClick={()=>g.url&&window.open(g.url,"_blank")}
-                      style={{ background:"rgba(91,138,240,0.06)", border:"1px solid rgba(91,138,240,0.2)", borderLeft:"3px solid #5b8af0", borderRadius:10, padding:"14px 16px", cursor:g.url?"pointer":"default", marginBottom:12 }}>
+                <div style={{ fontSize:12, fontWeight:700, color:"#5b8af0", fontFamily:"monospace", letterSpacing:1, marginBottom:12 }}>⚕️ RELEVANT GUIDELINE{data.guideline.length>1?"S":""}</div>
+                <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+                  {data.guideline.map((g,i)=>(
+                    <div key={i} onClick={()=>g.url&&window.open(g.url,"_blank")}
+                      style={{ background:"rgba(91,138,240,0.06)", border:"1px solid rgba(91,138,240,0.2)", borderLeft:"3px solid #5b8af0", borderRadius:10, padding:"14px 16px", cursor:g.url?"pointer":"default" }}>
                       <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:8 }}>
                         <span style={{ fontSize:11, fontWeight:700, color:"#fff", background:"#1a2535", padding:"2px 8px", borderRadius:12 }}>{g.org}</span>
                         <span style={{ fontSize:11, fontWeight:700, color:"#fff", background:g.urgency==="High"?"#e05252":g.urgency==="Moderate"?"#e09a2a":"#4caf7d", padding:"2px 8px", borderRadius:12 }}>{g.urgency}</span>
@@ -366,72 +393,19 @@ function LectureDetailPanel({ event, onClose }) {
                       <div style={{ fontSize:14, fontWeight:600, color:"#c8d8f0", lineHeight:1.5, marginBottom:6 }}>{g.title}</div>
                       <div style={{ fontSize:12, color:"#6a7a90", lineHeight:1.7 }}>{g.summary}</div>
                     </div>
+                  ))}
+                </div>
 
-                    {/* Quiz generator button */}
-                    {!quiz&&!quizLoading&&(
-                      <button onClick={()=>generateQuiz(g)}
-                        style={{ background:"linear-gradient(135deg,#1a3a6a,#2a5a9a)", border:"1px solid #2a5a9a55", color:"#90c0ff", padding:"8px 16px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:6 }}>
-                        🧠 Generate Guideline Quiz
-                      </button>
-                    )}
-                    {quizLoading&&(
-                      <div style={{ display:"flex", alignItems:"center", gap:8, fontSize:12, color:"#3a5878" }}><Spinner size={14}/>Generating 5 questions from guideline…</div>
-                    )}
-
-                    {/* Quiz */}
-                    {quiz&&currentQ&&(
-                      <div style={{ marginTop:16 }}>
-                        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
-                          <div style={{ fontSize:12, fontWeight:700, color:"#5b8af0", fontFamily:"monospace", letterSpacing:1 }}>🧠 GUIDELINE QUIZ</div>
-                          <div style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace" }}>Question {quizIndex+1} of {quiz.length}</div>
-                        </div>
-                        <div style={{ background:"rgba(255,255,255,0.025)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:12, padding:"16px" }}>
-                          <div style={{ fontSize:13, color:"#c8d8f0", lineHeight:1.7, marginBottom:14 }}>{currentQ.question}</div>
-                          <div style={{ display:"flex", flexDirection:"column", gap:7 }}>
-                            {currentQ.options.map((opt,oi)=>{
-                              const letter=["A","B","C","D"][oi];
-                              const isChosen=answers[quizIndex]===letter;
-                              const isRight=letter===currentQ.correct;
-                              const isRevealed=revealed[quizIndex];
-                              let bg="rgba(255,255,255,0.03)", border="rgba(255,255,255,0.08)", color="#8898b0";
-                              if(isRevealed){ if(isRight){bg="rgba(76,175,61,0.12)";border="#4caf7d55";color="#4caf7d";} else if(isChosen){bg="rgba(224,82,82,0.1)";border="#e0525255";color="#e05252";} }
-                              else if(isChosen){bg="#5b8af022";border="#5b8af088";color="#5b8af0";}
-                              return (
-                                <div key={oi} onClick={()=>selectAnswer(quizIndex,letter)}
-                                  style={{ background:bg, border:`1px solid ${border}`, borderRadius:8, padding:"8px 12px", fontSize:12, color, cursor:isRevealed?"default":"pointer", transition:"all 0.15s", display:"flex", alignItems:"center", gap:8 }}>
-                                  <span style={{ fontWeight:700, fontFamily:"monospace", fontSize:11, minWidth:14 }}>{letter}</span>
-                                  <span>{opt.replace(/^[A-D][\.\)]\s*/i,"")}</span>
-                                  {isRevealed&&isRight&&<span style={{ marginLeft:"auto" }}>✓</span>}
-                                  {isRevealed&&isChosen&&!isRight&&<span style={{ marginLeft:"auto" }}>✗</span>}
-                                </div>
-                              );
-                            })}
-                          </div>
-                          {revealed[quizIndex]&&(
-                            <div style={{ marginTop:12, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:8, padding:"10px 12px" }}>
-                              <div style={{ fontSize:10, fontWeight:700, color:"#4a6a8a", fontFamily:"monospace", marginBottom:4, letterSpacing:0.5 }}>EXPLANATION</div>
-                              <div style={{ fontSize:12, color:"#6a8aaa", lineHeight:1.7 }}>{currentQ.explanation}</div>
-                            </div>
-                          )}
-                          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginTop:12 }}>
-                            <button onClick={()=>setQuizIndex(i=>Math.max(0,i-1))} disabled={quizIndex===0}
-                              style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", color:quizIndex===0?"#1e2e40":"#6a8aaa", padding:"6px 14px", borderRadius:7, fontSize:12, cursor:quizIndex===0?"not-allowed":"pointer" }}>← Prev</button>
-                            <div style={{ display:"flex", gap:6 }}>
-                              {quiz.map((_,i)=>(
-                                <div key={i} onClick={()=>setQuizIndex(i)}
-                                  style={{ width:8, height:8, borderRadius:"50%", background:i===quizIndex?"#5b8af0":answers[i]?(answers[i]===quiz[i].correct?"#4caf7d":"#e05252"):"rgba(255,255,255,0.1)", cursor:"pointer", transition:"all 0.15s" }}/>
-                              ))}
-                            </div>
-                            {quizIndex<quiz.length-1
-                              ? <button onClick={()=>setQuizIndex(i=>i+1)} style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", color:"#6a8aaa", padding:"6px 14px", borderRadius:7, fontSize:12, cursor:"pointer" }}>Next →</button>
-                              : <button onClick={()=>generateQuiz(g)} style={{ background:"linear-gradient(135deg,#3a6fd8,#7c4af0)", border:"none", color:"#fff", padding:"6px 14px", borderRadius:7, fontSize:12, fontWeight:700, cursor:"pointer" }}>New Quiz ↺</button>
-                            }
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                {/* Quiz button — only shown if quiz data exists */}
+                {hasQuiz&&!showQuiz&&(
+                  <button onClick={()=>setShowQuiz(true)}
+                    style={{ marginTop:14, background:"linear-gradient(135deg,#1a3a6a,#2a5a9a)", border:"1px solid #2a5a9a55", color:"#90c0ff", padding:"8px 16px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:6 }}>
+                    🧠 Show Guideline Quiz
+                  </button>
+                )}
+                {hasQuiz&&showQuiz&&(
+                  <QuizDisplay quiz={data.quiz}/>
+                )}
               </div>
             )}
 
@@ -475,6 +449,7 @@ function LectureDetailPanel({ event, onClose }) {
                 </div>
               </div>
             )}
+
           </div>
         )}
       </div>
@@ -545,7 +520,6 @@ function ScheduleSection() {
   );
 }
 
-// ── QUIZ ──────────────────────────────────────────────────────────────────────
 function QuizSection() {
   const [sel, setSel]             = useState(null);
   const [question, setQuestion]   = useState(null);
@@ -660,7 +634,6 @@ function QuizSection() {
   );
 }
 
-// ── MAIN APP ──────────────────────────────────────────────────────────────────
 const TABS = [
   { id:"guidelines", label:"Clinical Guidelines", icon:"⚕️" },
   { id:"articles",   label:"Top Articles",        icon:"📄" },
