@@ -276,6 +276,12 @@ function QuizDisplay({ quiz }) {
   const [answers, setAnswers]     = useState({});
   const [revealed, setRevealed]   = useState({});
 
+  useEffect(() => {
+    setQuizIndex(0);
+    setAnswers({});
+    setRevealed({});
+  }, [quiz]);
+
   function selectAnswer(idx, letter) {
     if (answers[idx]) return;
     setAnswers(a => ({ ...a, [idx]: letter }));

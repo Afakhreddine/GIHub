@@ -128,8 +128,12 @@ async function generateQuiz(guidelines, topicLabel, apiKey) {
         role: "user",
         content:
           `Based on the following GI guideline(s), write exactly 5 multiple choice questions for a GI fellow. ` +
-          `Each question must test recall of a specific fact, number, recommendation, or classification directly stated in the guideline — not a clinical scenario or vignette. ` +
-          `The explanation must quote the relevant guideline text word for word. ` +
+          `STRICT RULES:\n` +
+          `1. Every question, every answer choice, and the correct answer MUST be directly supported by the guideline text provided — do NOT invent or infer any specific numbers, thresholds, drug doses, classifications, or recommendations not explicitly present in the text.\n` +
+          `2. If the guideline text does not contain enough specific facts for a question, ask a conceptual or definitional question instead — never fabricate details.\n` +
+          `3. All four answer choices must be plausible but only one correct; wrong choices should be clearly distinct from the correct guideline value.\n` +
+          `4. The explanation must quote the exact phrase from the guideline that supports the correct answer.\n` +
+          `5. Each question must test recall of a specific fact, recommendation, or classification — not a clinical scenario or vignette.\n` +
           `Return ONLY a JSON array of 5 objects, no markdown:\n` +
           `[{"question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":"A|B|C|D","explanation":"..."}]\n\n` +
           `Guidelines:\n${guidelineContext}`,
