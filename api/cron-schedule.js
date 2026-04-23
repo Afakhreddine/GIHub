@@ -127,13 +127,13 @@ async function generateQuiz(guidelines, topicLabel, apiKey) {
       messages: [{
         role: "user",
         content:
-          `Based on the following GI guideline(s), write exactly 5 multiple choice questions for a GI fellow. ` +
+          `Based on the following GI guideline(s), write exactly 5 high-yield multiple choice questions for a GI fellow preparing for boards. ` +
+          `FOCUS: Each question must test a KEY SUMMARY STATEMENT or GRADED RECOMMENDATION from the guideline — e.g. a strong recommendation (Grade A/1A/Strong), a specific threshold, a defined first-line vs second-line distinction, or a named classification system. ` +
           `STRICT RULES:\n` +
-          `1. Every question, every answer choice, and the correct answer MUST be directly supported by the guideline text provided — do NOT invent or infer any specific numbers, thresholds, drug doses, classifications, or recommendations not explicitly present in the text.\n` +
-          `2. If the guideline text does not contain enough specific facts for a question, ask a conceptual or definitional question instead — never fabricate details.\n` +
-          `3. All four answer choices must be plausible but only one correct; wrong choices should be clearly distinct from the correct guideline value.\n` +
-          `4. The explanation must quote the exact phrase from the guideline that supports the correct answer.\n` +
-          `5. Each question must test recall of a specific fact, recommendation, or classification — not a clinical scenario or vignette.\n` +
+          `1. Base every question, every answer choice, and the correct answer ONLY on text explicitly present in the provided guideline — do not invent values, doses, or thresholds.\n` +
+          `2. Distractors must be medically plausible and closely related (e.g. wrong numbers from the same domain, adjacent recommendation grades, rival treatments) — not obviously wrong.\n` +
+          `3. Avoid simple definitional recall. Prefer questions that distinguish between two similar options a fellow might confuse (e.g. "strongly recommended" vs "conditionally recommended", 3 cm vs 5 cm threshold).\n` +
+          `4. The explanation must quote the exact recommendation or summary statement from the guideline verbatim.\n` +
           `Return ONLY a JSON array of 5 objects, no markdown:\n` +
           `[{"question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":"A|B|C|D","explanation":"..."}]\n\n` +
           `Guidelines:\n${guidelineContext}`,

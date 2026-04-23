@@ -274,22 +274,21 @@ const DISPLAY_MONTH = firstDate.getMonth();
 function QuizDisplay({ quiz }) {
   const [quizIndex, setQuizIndex] = useState(0);
   const [answers, setAnswers]     = useState({});
-  const [revealed, setRevealed]   = useState({});
 
   useEffect(() => {
     setQuizIndex(0);
     setAnswers({});
-    setRevealed({});
   }, [quiz]);
 
   function selectAnswer(idx, letter) {
     if (answers[idx]) return;
     setAnswers(a => ({ ...a, [idx]: letter }));
-    setRevealed(r => ({ ...r, [idx]: true }));
   }
 
   const currentQ = quiz[quizIndex];
   if (!currentQ) return null;
+
+  const hasAnswered = !!answers[quizIndex];
 
   return (
     <div style={{ marginTop:16 }}>
@@ -302,26 +301,25 @@ function QuizDisplay({ quiz }) {
         <div style={{ display:"flex", flexDirection:"column", gap:7 }}>
           {currentQ.options.map((opt,oi)=>{
             const letter = ["A","B","C","D"][oi];
-            const isChosen   = answers[quizIndex] === letter;
-            const isRight    = letter === currentQ.correct;
-            const isRevealed = revealed[quizIndex];
-            let bg="#rgba(255,255,255,0.03)", border="rgba(255,255,255,0.08)", color="#8898b0";
-            if (isRevealed) {
+            const isChosen = answers[quizIndex] === letter;
+            const isRight  = letter === currentQ.correct;
+            let bg="rgba(255,255,255,0.03)", border="rgba(255,255,255,0.08)", color="#8898b0";
+            if (hasAnswered) {
               if (isRight)          { bg="rgba(76,175,61,0.12)";  border="#4caf7d55"; color="#4caf7d"; }
               else if (isChosen)    { bg="rgba(224,82,82,0.1)";   border="#e0525255"; color="#e05252"; }
             } else if (isChosen)    { bg="rgba(91,138,240,0.13)"; border="#5b8af088"; color="#5b8af0"; }
             return (
               <div key={oi} onClick={()=>selectAnswer(quizIndex, letter)}
-                style={{ background:bg, border:`1px solid ${border}`, borderRadius:8, padding:"8px 12px", fontSize:12, color, cursor:isRevealed?"default":"pointer", transition:"all 0.15s", display:"flex", alignItems:"center", gap:8 }}>
+                style={{ background:bg, border:`1px solid ${border}`, borderRadius:8, padding:"8px 12px", fontSize:12, color, cursor:hasAnswered?"default":"pointer", transition:"all 0.15s", display:"flex", alignItems:"center", gap:8 }}>
                 <span style={{ fontWeight:700, fontFamily:"monospace", fontSize:11, minWidth:14 }}>{letter}</span>
                 <span>{opt.replace(/^[A-D][\.\)]\s*/i,"")}</span>
-                {isRevealed&&isRight  &&<span style={{ marginLeft:"auto" }}>✓</span>}
-                {isRevealed&&isChosen&&!isRight&&<span style={{ marginLeft:"auto" }}>✗</span>}
+                {hasAnswered&&isRight  &&<span style={{ marginLeft:"auto" }}>✓</span>}
+                {hasAnswered&&isChosen&&!isRight&&<span style={{ marginLeft:"auto" }}>✗</span>}
               </div>
             );
           })}
         </div>
-        {revealed[quizIndex]&&(
+        {hasAnswered&&(
           <div style={{ marginTop:12, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:8, padding:"10px 12px" }}>
             <div style={{ fontSize:10, fontWeight:700, color:"#4a6a8a", fontFamily:"monospace", marginBottom:4, letterSpacing:0.5 }}>EXPLANATION</div>
             <div style={{ fontSize:12, color:"#6a8aaa", lineHeight:1.7 }}>{currentQ.explanation}</div>
