@@ -39,7 +39,7 @@ export async function claudeFetch(prompt, apiKey, useWebSearch = true) {
     "anthropic-version": "2023-06-01",
   };
   const body = {
-    model: "claude-sonnet-4-20250514",
+    model: "claude-sonnet-4-6",
     max_tokens: 4000,
     system: "You are a GI medical curator. Search the web thoroughly and return ONLY a valid JSON array. No markdown, no backticks, no extra text.",
     messages: [{ role: "user", content: prompt }],
