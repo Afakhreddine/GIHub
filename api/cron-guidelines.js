@@ -14,8 +14,8 @@ const JSON_SCHEMA = `{"org":"ACG|AGA|ASGE|AASLD","year":"YYYY","month":"full mon
 const INIT_PROMPTS = {
   ASGE:  `Fetch https://www.asge.org/home/resources/publications/guidelines and extract ALL clinical practice guidelines and quality indicator documents listed, including both "Guidelines" and "Quality in Endoscopy" sections, published from 2000 to present. For each document confirm the publication year. Return ONLY a JSON array. Each item: ${JSON_SCHEMA}`,
   AASLD: `Fetch https://www.aasld.org/practice-guidelines and extract ALL clinical practice guidelines listed by disease topic, published from 2000 to present. Confirm publication year for each. Return ONLY a JSON array. Each item: ${JSON_SCHEMA}`,
-  AGA:   `Search https://www.guidelinecentral.com/guidelines/aga/ and list ALL AGA clinical practice guidelines published from 2000 to present. Cross-check against https://gastro.org/clinical-guidance. Return ONLY a JSON array. Each item: ${JSON_SCHEMA}`,
-  ACG:   `Search https://www.guidelinecentral.com/guidelines/acg/ and list ALL ACG clinical practice guidelines published from 2000 to present. Cross-check against https://gi.org/guidelines. Return ONLY a JSON array. Each item: ${JSON_SCHEMA}`,
+  AGA:   `Search the web for all AGA (American Gastroenterological Association) clinical practice guidelines, clinical practice updates, and technical reviews published from 2000 to present. Use search queries such as "AGA clinical practice guideline site:gastro.org", "AGA clinical practice update gastroenterology", and search by year (2020, 2021, 2022, 2023, 2024, 2025) to ensure comprehensive coverage. Confirm the publication year for each. Return ONLY a JSON array. Each item: ${JSON_SCHEMA}`,
+  ACG:   `Fetch https://gi.org/guidelines and extract ALL ACG clinical guidelines and clinical practice updates published from 2000 to present. Confirm the publication year for each. Return ONLY a JSON array. Each item: ${JSON_SCHEMA}`,
 };
 
 const UPDATE_PROMPTS = {
@@ -127,26 +127,33 @@ export default async function handler(req, res) {
     }
   }
 
-  // Default: weekly update — checks all 4 for new guidelines
+  // Default: weekly update — checks all 4 for new guidelines (past 60 days)
   const existing = (await redisGet(REPO_KEY)) || [];
+  console.log(`Weekly update starting. Repo has ${existing.length} existing guidelines.`);
   const results = {};
   const errors = {};
   let newCount = 0;
 
   for (const [soc, prompt] of Object.entries(UPDATE_PROMPTS)) {
     try {
+      console.log(`  Checking ${soc}...`);
       const fetched = await claudeFetch(prompt, apiKey);
       results[soc] = fetched.length;
       newCount += fetched.length;
       if (fetched.length > 0) existing.push(...fetched);
+      console.log(`  ✓ ${soc}: ${fetched.length} new`);
     } catch (e) {
       errors[soc] = e.message;
+      console.error(`  ✗ ${soc}:`, e.message);
     }
   }
 
   if (newCount > 0) {
     const merged = sortNewestFirst(dedup(existing));
     await redisSet(REPO_KEY, merged);
+    console.log(`✓ Repo updated: ${merged.length} total guidelines (+${newCount} new)`);
+  } else {
+    console.log(`No new guidelines found. Repo unchanged at ${existing.length}.`);
   }
 
   return res.status(200).json({ ok: true, action: "weekly-update", newGuidelines: newCount, results, errors });
