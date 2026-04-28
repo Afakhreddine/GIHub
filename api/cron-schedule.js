@@ -127,13 +127,10 @@ async function generateQuiz(guidelines, topicLabel, apiKey) {
       messages: [{
         role: "user",
         content:
-          `Based on the following GI guideline(s), write exactly 5 high-yield multiple choice questions for a GI fellow preparing for boards. ` +
-          `FOCUS: Each question must test a KEY SUMMARY STATEMENT or GRADED RECOMMENDATION from the guideline — e.g. a strong recommendation (Grade A/1A/Strong), a specific threshold, a defined first-line vs second-line distinction, or a named classification system. ` +
-          `STRICT RULES:\n` +
-          `1. Base every question, every answer choice, and the correct answer ONLY on text explicitly present in the provided guideline — do not invent values, doses, or thresholds.\n` +
-          `2. Distractors must be medically plausible and closely related (e.g. wrong numbers from the same domain, adjacent recommendation grades, rival treatments) — not obviously wrong.\n` +
-          `3. Avoid simple definitional recall. Prefer questions that distinguish between two similar options a fellow might confuse (e.g. "strongly recommended" vs "conditionally recommended", 3 cm vs 5 cm threshold).\n` +
-          `4. The explanation must quote the exact recommendation or summary statement from the guideline verbatim.\n` +
+          `Using the following GI guideline(s), generate five technical knowledge audit questions designed as self-assessments for a gastroenterology fellow. ` +
+          `Each question must be multiple choice with no clinical vignettes. Questions must be based on verbatim quotes from the guideline text. ` +
+          `Target algorithms, quality metrics, and practice-changing recommendations. ` +
+          `The explanation must include the exact verbatim quote from the guideline that supports the correct answer. ` +
           `Return ONLY a JSON array of 5 objects, no markdown:\n` +
           `[{"question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":"A|B|C|D","explanation":"..."}]\n\n` +
           `Guidelines:\n${guidelineContext}`,
