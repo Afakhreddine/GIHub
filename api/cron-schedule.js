@@ -110,9 +110,14 @@ async function pickGuidelines(topicLabel, apiKey) {
 async function generateQuiz(guidelines, topicLabel, apiKey) {
   if (!guidelines || guidelines.length === 0) return [];
 
-  const guidelineContext = guidelines.map(g =>
-    `${g.org} ${g.year} — ${g.title}: ${g.summary}`
-  ).join("\n\n");
+  const MONTHS = {january:1,february:2,march:3,april:4,may:5,june:6,july:7,august:8,september:9,october:10,november:11,december:12};
+  const newest = guidelines.slice().sort((a, b) => {
+    const aScore = parseInt(a.year||0)*100 + (MONTHS[a.month?.toLowerCase()]||0);
+    const bScore = parseInt(b.year||0)*100 + (MONTHS[b.month?.toLowerCase()]||0);
+    return bScore - aScore;
+  })[0];
+
+  const guidelineContext = `${newest.org} ${newest.year} — ${newest.title}: ${newest.summary}`;
 
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
