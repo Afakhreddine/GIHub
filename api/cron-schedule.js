@@ -2,12 +2,10 @@
 // Fetches: guidelines (Haiku, from repo), articles, news (Sonnet, web search), quiz (Haiku)
 
 const LECTURE_TOPICS = [
-  { slug:"esophageal-strictures-dilation",      label:"Esophageal Strictures & Dilation"        },
-  { slug:"non-eoe-inflammatory-esophageal",      label:"Non-EoE Inflammatory Esophageal Diseases" },
-  { slug:"barretts-esophagus-therapies",         label:"Barrett's Esophagus Therapies"           },
-  { slug:"neuroendocrine-tumors",                label:"Neuroendocrine Tumors (NETs)"            },
-  { slug:"gerd-medical-dietary-management",      label:"GERD / Medical & Dietary Management"     },
-  { slug:"board-review-esophagus",               label:"Board Review — Esophagus"                },
+  { slug:"irritable-bowel-syndrome",           label:"IBS"                                  },
+  { slug:"ai-for-gi-update",                   label:"AI for GI Update"                     },
+  { slug:"gastric-submucosal-lesions",          label:"Gastric Submucosal Lesions"           },
+  { slug:"postoperative-anatomy-pitfalls",      label:"Postoperative Anatomy and Pitfalls"   },
 ];
 
 const QUEUE_KEY = "gihub:schedule:queue";

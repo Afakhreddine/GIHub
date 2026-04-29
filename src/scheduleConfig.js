@@ -3,26 +3,25 @@
 // Add events with a topic+slug for clickable lectures, leave topic/slug null otherwise.
 // Slugs must be lowercase, hyphenated, no special characters.
 
-export const CALENDAR_MONTH = "April 2026";
+export const CALENDAR_MONTH = "May 2026";
 
 export const CALENDAR_EVENTS = [
   // ── TUESDAYS ──
-  { date:"2026-03-31", label:"Han Zhang, MD — Esophageal Strictures & Dilation",        topic:"Esophageal Strictures & Dilation",         slug:"esophageal-strictures-dilation"       },
-  { date:"2026-04-07", label:"Grand Rounds Practice — Senior Fellows",                   topic:null,                                        slug:null                                   },
-  { date:"2026-04-14", label:"Quan Nhu, MD — Non-EoE Inflammatory Esophageal Diseases", topic:"Non-EoE Inflammatory Esophageal Diseases",  slug:"non-eoe-inflammatory-esophageal"      },
-  { date:"2026-04-21", label:"Frank Tsai, MD — Barrett's Esophagus Therapies",          topic:"Barrett's Esophagus Therapies",             slug:"barretts-esophagus-therapies"         },
-  { date:"2026-04-28", label:"Walt Coyle, MD — Neuroendocrine Tumors (NETs)",           topic:"Neuroendocrine Tumors (NETs)",              slug:"neuroendocrine-tumors"                 },
+  { date:"2026-05-05", label:"Nabil El Chehade — M&M",             topic:null,                               slug:null                              },
+  { date:"2026-05-12", label:"Emily Singh — IBS",                   topic:"IBS",                              slug:"irritable-bowel-syndrome"        },
+  { date:"2026-05-19", label:"Vandan Patel — M&M",                  topic:null,                               slug:null                              },
+  { date:"2026-05-26", label:"John Lyons — Billing (Fellows Only)", topic:null,                               slug:null                              },
   // ── THURSDAYS ──
-  { date:"2026-04-02", label:"Dr. Pockros, Dr. Chow (R-Mercy)",                         topic:null, slug:null },
-  { date:"2026-04-09", label:"Dr. Nhu, Dr. Choi",                                       topic:null, slug:null },
-  { date:"2026-04-16", label:"Dr. Mayemura, Dr. Gilazgi (R)",                           topic:null, slug:null },
-  { date:"2026-04-23", label:"Dr. Heffernan, Dr. Wiseman (Navy)",                       topic:null, slug:null },
-  { date:"2026-04-30", label:"Dr. Worsey/Beiermeister, Dr. Lanser",                     topic:null, slug:null },
+  { date:"2026-05-07", label:"Dr. Mansour, Dr. Hamamah (R)",        topic:null, slug:null },
+  { date:"2026-05-14", label:"Dr. Chehade, Dr. Patel",              topic:null, slug:null },
+  { date:"2026-05-21", label:"No surg path — CCC",                  topic:null, slug:null },
+  { date:"2026-05-28", label:"Dr. Worsey/Beiermeister, Dr. Badaoui (R)", topic:null, slug:null },
   // ── FRIDAYS ──
-  { date:"2026-04-03", label:"Wellness Lunch",                                           topic:null, slug:null },
-  { date:"2026-04-10", label:"Fouad Moawad, MD — GERD / Medical & Dietary Management", topic:"GERD / Medical & Dietary Management",     slug:"gerd-medical-dietary-management"      },
-  { date:"2026-04-17", label:"SDGI Society Fellows Research Forum Practice Session",     topic:null, slug:null },
-  { date:"2026-04-24", label:"Board Review — Esophagus",                                topic:null, slug:null },
+  { date:"2026-05-01", label:"No Lecture — DDW",                                   topic:null,                                     slug:null                              },
+  { date:"2026-05-08", label:"Cam Zenger and Matt Skinner — AI for GI Update",     topic:"AI for GI Update",                       slug:"ai-for-gi-update"                },
+  { date:"2026-05-15", label:"Katie Choi — Gastric Submucosal Lesions",            topic:"Gastric Submucosal Lesions",             slug:"gastric-submucosal-lesions"       },
+  { date:"2026-05-22", label:"Jonathan Fisher — Postoperative Anatomy and Pitfalls", topic:"Postoperative Anatomy and Pitfalls",   slug:"postoperative-anatomy-pitfalls"   },
+  { date:"2026-05-29", label:"Board Review",                                        topic:null,                                     slug:null                              },
 ];
 
 // Derived: only events with a topic (clickable lectures)
