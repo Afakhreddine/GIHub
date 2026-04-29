@@ -21,7 +21,7 @@ const INIT_PROMPTS = {
 const UPDATE_PROMPTS = {
   ASGE:  `Fetch https://www.asge.org/home/resources/publications/guidelines and identify any documents listed under "Newly Published" or published in the past 7 days. Return ONLY a JSON array of new items ([] if none). Each item: ${JSON_SCHEMA}`,
   AASLD: `Fetch https://www.aasld.org/news and identify any new or updated AASLD practice guidelines in the past 7 days. Return ONLY a JSON array of new items ([] if none). Each item: ${JSON_SCHEMA}`,
-  AGA:   `Check https://gastro.org/clinical-guidance and https://www.guidelinecentral.com/guidelines/aga/ for new AGA guidelines in the past 7 days. Return ONLY a JSON array ([] if none). Each item: ${JSON_SCHEMA}`,
+  AGA:   `Fetch this PubMed search which filters for AGA guidelines published in the past 7 days: https://pubmed.ncbi.nlm.nih.gov/?term=%28%22Gastroenterology%22%5BJournal%5D%29+AND+%28Guideline%5BPublication+Type%5D%29&datetype=pdat&reldate=7. Include ONLY articles whose title contains "Guideline" or "Clinical Practice", and exclude non-AGA organizations. For any results found, fetch the abstract at https://pubmed.ncbi.nlm.nih.gov/{PMID}/ and use it to write a 1-2 sentence summary. Return ONLY a JSON array of new items ([] if none). Each item: ${JSON_SCHEMA}`,
   ACG:   `Check https://gi.org/guidelines and https://www.guidelinecentral.com/guidelines/acg/ for new ACG guidelines in the past 7 days. Return ONLY a JSON array ([] if none). Each item: ${JSON_SCHEMA}`,
 };
 
