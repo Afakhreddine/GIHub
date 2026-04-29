@@ -14,7 +14,7 @@ const JSON_SCHEMA = `{"org":"ACG|AGA|ASGE|AASLD","year":"YYYY","month":"full mon
 const INIT_PROMPTS = {
   ASGE:  `Fetch https://www.asge.org/home/resources/publications/guidelines and extract ALL clinical practice guidelines and quality indicator documents listed, including both "Guidelines" and "Quality in Endoscopy" sections, published from 2000 to present. For each document confirm the publication year. Return ONLY a JSON array. Each item: ${JSON_SCHEMA}`,
   AASLD: `Fetch https://www.aasld.org/practice-guidelines and extract ALL clinical practice guidelines listed by disease topic, published from 2000 to present. Confirm publication year for each. Return ONLY a JSON array. Each item: ${JSON_SCHEMA}`,
-  AGA:   `Fetch all 4 pages of this PubMed search (use &page=1, &page=2, &page=3, &page=4 with &size=200): https://pubmed.ncbi.nlm.nih.gov/?term=%28%22Gastroenterology%22%5BJournal%5D%29+AND+%28Guideline%5BPublication+Type%5D%29&size=200&page=1. From all pages combined, include ONLY articles whose title contains the word "Guideline" or the phrase "Clinical Practice". Exclude any article from a non-AGA organization (e.g. Canadian Association, Multi-Society Task Force). For each included article, write a 1-2 sentence summary based on the title. Return ONLY a JSON array. Each item: ${JSON_SCHEMA}`,
+  AGA:   `Fetch all 4 pages of this PubMed search (use &page=1, &page=2, &page=3, &page=4 with &size=200): https://pubmed.ncbi.nlm.nih.gov/?term=%28%22Gastroenterology%22%5BJournal%5D%29+AND+%28Guideline%5BPublication+Type%5D%29&size=200&page=1. From all pages combined, collect the title and PMID for each result. Include ONLY articles whose title contains the word "Guideline" or the phrase "Clinical Practice", and exclude articles from non-AGA organizations (e.g. Canadian Association, Multi-Society Task Force). For each included article, fetch its abstract page at https://pubmed.ncbi.nlm.nih.gov/{PMID}/ and use the abstract text to write a 1-2 sentence summary. Return ONLY a JSON array. Each item: ${JSON_SCHEMA}`,
   ACG:   `Fetch https://gi.org/guidelines and extract ALL ACG clinical guidelines and clinical practice updates published from 2000 to present. Confirm the publication year for each. Return ONLY a JSON array. Each item: ${JSON_SCHEMA}`,
 };
 
@@ -82,7 +82,7 @@ async function claudeFetch(prompt, apiKey) {
     },
     body: JSON.stringify({
       model: "claude-sonnet-4-6",
-      max_tokens: 8000,
+      max_tokens: 16000,
       system: "You are a GI medical guideline curator. Fetch and search the web thoroughly. Return ONLY a valid JSON array. No markdown, no backticks, no extra text.",
       messages: [{ role: "user", content: prompt }],
       tools: [{ type: "web_search_20250305", name: "web_search" }],
