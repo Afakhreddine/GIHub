@@ -214,43 +214,91 @@ function ContentSection({ type }) {
   );
 }
 
+const SOCIETY_FALLBACK_URLS = {
+  ACG:   "https://gi.org/guidelines",
+  AGA:   "https://gastro.org/clinical-guidance",
+  ASGE:  "https://www.asge.org/home/resources/publications/guidelines",
+  AASLD: "https://www.aasld.org/practice-guidelines",
+};
+
+function resolveUrl(g) {
+  if (!g.url || g.url.includes("guidelinecentral.com"))
+    return SOCIETY_FALLBACK_URLS[g.org] || null;
+  return g.url;
+}
+
 function SocietyWidget({ org, guidelines }) {
   const [visibleCount, setVisibleCount] = useState(3);
+  const [search, setSearch]             = useState("");
+  const [newOnly, setNewOnly]           = useState(false);
   const sentinelRef  = useRef(null);
   const containerRef = useRef(null);
   const sc = SOCIETY_COLORS[org] || SOCIETY_COLORS.AGA;
-  const visible = guidelines.slice(0, visibleCount);
-  const hasMore = visibleCount < guidelines.length;
 
-  useEffect(() => { setVisibleCount(3); }, [guidelines]);
+  useEffect(() => { setVisibleCount(3); setSearch(""); setNewOnly(false); }, [guidelines]);
+
+  const threeMonthsAgo = new Date();
+  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+  const isRecent = g => { const d = new Date(`${g.month} ${g.year}`); return !isNaN(d) && d >= threeMonthsAgo; };
+  const newCount = guidelines.filter(isRecent).length;
+
+  const filtered = guidelines.filter(g => {
+    if (newOnly && !isRecent(g)) return false;
+    if (search) return (g.title + " " + (g.topic||"") + " " + (g.summary||"")).toLowerCase().includes(search.toLowerCase());
+    return true;
+  });
+
+  const isFiltering = newOnly || !!search;
+  const visible  = isFiltering ? filtered : filtered.slice(0, visibleCount);
+  const hasMore  = !isFiltering && visibleCount < filtered.length;
 
   useEffect(() => {
     if (!sentinelRef.current || !containerRef.current || !hasMore) return;
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setVisibleCount(c => Math.min(c + 3, guidelines.length)); },
+      ([entry]) => { if (entry.isIntersecting) setVisibleCount(c => Math.min(c + 3, filtered.length)); },
       { root: containerRef.current, threshold: 0 }
     );
     observer.observe(sentinelRef.current);
     return () => observer.disconnect();
-  }, [hasMore, guidelines.length]);
+  }, [hasMore, filtered.length]);
 
   return (
     <div style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:14, overflow:"hidden", display:"flex", flexDirection:"column" }}>
-      <div style={{ background:sc.bg, borderBottom:`1px solid ${sc.border}`, padding:"12px 18px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+      {/* Header */}
+      <div style={{ background:sc.bg, borderBottom:`1px solid ${sc.border}`, padding:"11px 16px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
         <span style={{ fontSize:15, fontWeight:800, color:sc.color, letterSpacing:0.5 }}>{org}</span>
         <span style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace" }}>{guidelines.length} guidelines</span>
       </div>
-      <div ref={containerRef} style={{ overflowY:"auto", maxHeight:520 }}>
-        {visible.map((g, i) => (
-          <div key={i} onClick={()=>g.url&&window.open(g.url,"_blank")}
-            style={{ padding:"13px 18px", borderBottom:i<visible.length-1?"1px solid rgba(255,255,255,0.04)":"none", cursor:g.url?"pointer":"default" }}
-            onMouseEnter={e=>g.url&&(e.currentTarget.style.background="rgba(255,255,255,0.03)")}
-            onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
-            <div style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace", marginBottom:4 }}>{g.month} {g.year}</div>
-            <div style={{ fontSize:13, fontWeight:600, color:"#c0d0e8", lineHeight:1.5, marginBottom:5 }}>{g.title}</div>
-            <div style={{ fontSize:12, color:"#5a6a80", lineHeight:1.65 }}>{g.summary}</div>
-          </div>
-        ))}
+      {/* Controls */}
+      <div style={{ display:"flex", gap:7, alignItems:"center", padding:"8px 12px", borderBottom:"1px solid rgba(255,255,255,0.04)", background:"rgba(0,0,0,0.12)" }}>
+        <div style={{ position:"relative", flex:1 }}>
+          <span style={{ position:"absolute", left:8, top:"50%", transform:"translateY(-50%)", fontSize:11, color:"#2a3a50", pointerEvents:"none" }}>🔍</span>
+          <input value={search} onChange={e=>{setSearch(e.target.value);setVisibleCount(3);}} placeholder="Search…"
+            style={{ width:"100%", background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:7, color:"#90b0d0", fontSize:11, padding:"5px 8px 5px 24px", outline:"none" }}/>
+        </div>
+        <button onClick={()=>{setNewOnly(n=>!n);setVisibleCount(3);}}
+          style={{ background:newOnly?sc.bg:"rgba(255,255,255,0.04)", border:`1px solid ${newOnly?sc.border:"rgba(255,255,255,0.08)"}`, color:newOnly?sc.color:"#3a5878", fontSize:11, fontWeight:700, padding:"5px 10px", borderRadius:7, cursor:"pointer", whiteSpace:"nowrap" }}>
+          {newOnly&&"● "}New{newCount>0?` (${newCount})`:""}
+        </button>
+      </div>
+      {/* List */}
+      <div ref={containerRef} style={{ overflowY:"auto", maxHeight:480 }}>
+        {visible.length === 0
+          ? <div style={{ padding:"24px 18px", fontSize:12, color:"#2a3a50", textAlign:"center" }}>No results</div>
+          : visible.map((g, i) => {
+              const url = resolveUrl(g);
+              return (
+                <div key={i} onClick={()=>url&&window.open(url,"_blank")}
+                  style={{ padding:"13px 18px", borderBottom:i<visible.length-1?"1px solid rgba(255,255,255,0.04)":"none", cursor:url?"pointer":"default" }}
+                  onMouseEnter={e=>url&&(e.currentTarget.style.background="rgba(255,255,255,0.03)")}
+                  onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                  <div style={{ fontSize:12, fontWeight:700, color:"#8aafcf", fontFamily:"monospace", marginBottom:5, letterSpacing:0.3 }}>{g.month} {g.year}</div>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#c0d0e8", lineHeight:1.5, marginBottom:5 }}>{g.title}</div>
+                  <div style={{ fontSize:12, color:"#5a6a80", lineHeight:1.65 }}>{g.summary}</div>
+                </div>
+              );
+            })
+        }
         {hasMore && <div ref={sentinelRef} style={{ height:20 }}/>}
       </div>
     </div>
