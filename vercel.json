@@ -5,10 +5,11 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "functions": {
-    "api/debug.js":           { "maxDuration": 10 },
-    "api/cron-guidelines.js": { "maxDuration": 120 },
-    "api/cron-articles.js":   { "maxDuration": 60 },
-    "api/cron-news.js":       { "maxDuration": 120 }
+    "api/debug.js":           { "maxDuration": 10  },
+    "api/cron-guidelines.js": { "maxDuration": 300 },
+    "api/cron-articles.js":   { "maxDuration": 300 },
+    "api/cron-news.js":       { "maxDuration": 300 },
+    "api/cron-schedule.js":   { "maxDuration": 300 }
   },
   "crons": [
     { "path": "/api/cron-guidelines", "schedule": "0 6 * * 0" },

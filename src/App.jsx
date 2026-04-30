@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { CALENDAR_MONTH, CALENDAR_EVENTS } from "./scheduleConfig.js";
 
 // ── SESSION CACHE ─────────────────────────────────────────────────────────────
@@ -215,9 +215,26 @@ function ContentSection({ type }) {
 }
 
 function SocietyWidget({ org, guidelines }) {
-  const [expanded, setExpanded] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(3);
+  const sentinelRef = useRef(null);
   const sc = SOCIETY_COLORS[org] || SOCIETY_COLORS.AGA;
-  const visible = expanded ? guidelines : guidelines.slice(0, 3);
+  const visible = guidelines.slice(0, visibleCount);
+  const hasMore = visibleCount < guidelines.length;
+
+  useEffect(() => {
+    setVisibleCount(3);
+  }, [guidelines]);
+
+  useEffect(() => {
+    if (!sentinelRef.current || !hasMore) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setVisibleCount(c => Math.min(c + 3, guidelines.length)); },
+      { threshold: 0.1 }
+    );
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [hasMore, guidelines.length, visibleCount]);
+
   return (
     <div style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:14, overflow:"hidden", display:"flex", flexDirection:"column" }}>
       <div style={{ background:sc.bg, borderBottom:`1px solid ${sc.border}`, padding:"12px 18px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
@@ -236,14 +253,7 @@ function SocietyWidget({ org, guidelines }) {
           </div>
         ))}
       </div>
-      {guidelines.length > 3 && (
-        <div style={{ borderTop:"1px solid rgba(255,255,255,0.04)", padding:"9px 18px", marginTop:"auto" }}>
-          <button onClick={()=>setExpanded(e=>!e)}
-            style={{ background:"none", border:"none", color:sc.color, fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"monospace", padding:0 }}>
-            {expanded ? "Show less ↑" : `Show ${guidelines.length - 3} more ↓`}
-          </button>
-        </div>
-      )}
+      {hasMore && <div ref={sentinelRef} style={{ height:1 }}/>}
     </div>
   );
 }
