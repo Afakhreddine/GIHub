@@ -82,8 +82,8 @@ async function claudeFetch(prompt, apiKey) {
     },
     body: JSON.stringify({
       model: "claude-sonnet-4-6",
-      max_tokens: 16000,
-      system: "You are a GI medical guideline curator. Fetch and search the web thoroughly. Return ONLY a valid JSON array. No markdown, no backticks, no extra text.",
+      max_tokens: 32000,
+      system: "You are a GI medical guideline curator. Fetch and search the web thoroughly. Your entire response must be a single valid JSON array starting with '[' and ending with ']'. No preamble, no explanation, no markdown, no backticks — only the JSON array.",
       messages: [{ role: "user", content: prompt }],
       tools: [{ type: "web_search_20250305", name: "web_search" }],
     }),
@@ -91,9 +91,17 @@ async function claudeFetch(prompt, apiKey) {
   const data = await res.json();
   if (!res.ok) throw new Error(JSON.stringify(data?.error));
   const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("");
-  const match = text.match(/\[[\s\S]*\]/);
-  if (!match) throw new Error(`No JSON array: ${text.slice(0, 200)}`);
-  return JSON.parse(match[0]);
+  // Try complete array first; if truncated, close it and parse what we have
+  const fullMatch = text.match(/\[[\s\S]*\]/);
+  if (fullMatch) return JSON.parse(fullMatch[0]);
+  const partialMatch = text.match(/\[[\s\S]*/);
+  if (partialMatch) {
+    try {
+      const repaired = partialMatch[0].replace(/,\s*$/, "") + "]";
+      return JSON.parse(repaired);
+    } catch { /* fall through */ }
+  }
+  throw new Error(`No JSON array: ${text.slice(0, 200)}`);
 }
 
 // ── HANDLER ───────────────────────────────────────────────────────────────────
