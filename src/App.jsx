@@ -216,24 +216,23 @@ function ContentSection({ type }) {
 
 function SocietyWidget({ org, guidelines }) {
   const [visibleCount, setVisibleCount] = useState(3);
-  const sentinelRef = useRef(null);
+  const sentinelRef  = useRef(null);
+  const containerRef = useRef(null);
   const sc = SOCIETY_COLORS[org] || SOCIETY_COLORS.AGA;
   const visible = guidelines.slice(0, visibleCount);
   const hasMore = visibleCount < guidelines.length;
 
-  useEffect(() => {
-    setVisibleCount(3);
-  }, [guidelines]);
+  useEffect(() => { setVisibleCount(3); }, [guidelines]);
 
   useEffect(() => {
-    if (!sentinelRef.current || !hasMore) return;
+    if (!sentinelRef.current || !containerRef.current || !hasMore) return;
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) setVisibleCount(c => Math.min(c + 3, guidelines.length)); },
-      { threshold: 0.1 }
+      { root: containerRef.current, threshold: 0 }
     );
     observer.observe(sentinelRef.current);
     return () => observer.disconnect();
-  }, [hasMore, guidelines.length, visibleCount]);
+  }, [hasMore, guidelines.length]);
 
   return (
     <div style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:14, overflow:"hidden", display:"flex", flexDirection:"column" }}>
@@ -241,7 +240,7 @@ function SocietyWidget({ org, guidelines }) {
         <span style={{ fontSize:15, fontWeight:800, color:sc.color, letterSpacing:0.5 }}>{org}</span>
         <span style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace" }}>{guidelines.length} guidelines</span>
       </div>
-      <div>
+      <div ref={containerRef} style={{ overflowY:"auto", maxHeight:520 }}>
         {visible.map((g, i) => (
           <div key={i} onClick={()=>g.url&&window.open(g.url,"_blank")}
             style={{ padding:"13px 18px", borderBottom:i<visible.length-1?"1px solid rgba(255,255,255,0.04)":"none", cursor:g.url?"pointer":"default" }}
@@ -252,8 +251,8 @@ function SocietyWidget({ org, guidelines }) {
             <div style={{ fontSize:12, color:"#5a6a80", lineHeight:1.65 }}>{g.summary}</div>
           </div>
         ))}
+        {hasMore && <div ref={sentinelRef} style={{ height:20 }}/>}
       </div>
-      {hasMore && <div ref={sentinelRef} style={{ height:1 }}/>}
     </div>
   );
 }
