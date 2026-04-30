@@ -227,15 +227,14 @@ function resolveUrl(g) {
   return g.url;
 }
 
-function SocietyWidget({ org, guidelines }) {
+function SocietyWidget({ org, guidelines, search }) {
   const [visibleCount, setVisibleCount] = useState(3);
-  const [search, setSearch]             = useState("");
   const [newOnly, setNewOnly]           = useState(false);
   const sentinelRef  = useRef(null);
   const containerRef = useRef(null);
   const sc = SOCIETY_COLORS[org] || SOCIETY_COLORS.AGA;
 
-  useEffect(() => { setVisibleCount(3); setSearch(""); setNewOnly(false); }, [guidelines]);
+  useEffect(() => { setVisibleCount(3); setNewOnly(false); }, [guidelines]);
 
   const threeMonthsAgo = new Date();
   threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
@@ -271,14 +270,9 @@ function SocietyWidget({ org, guidelines }) {
       </div>
       {/* Controls */}
       <div style={{ display:"flex", gap:7, alignItems:"center", padding:"8px 12px", borderBottom:"1px solid rgba(255,255,255,0.04)", background:"rgba(0,0,0,0.12)" }}>
-        <div style={{ position:"relative", flex:1 }}>
-          <span style={{ position:"absolute", left:8, top:"50%", transform:"translateY(-50%)", fontSize:11, color:"#2a3a50", pointerEvents:"none" }}>🔍</span>
-          <input value={search} onChange={e=>{setSearch(e.target.value);setVisibleCount(3);}} placeholder="Search…"
-            style={{ width:"100%", background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:7, color:"#90b0d0", fontSize:11, padding:"5px 8px 5px 24px", outline:"none" }}/>
-        </div>
         <button onClick={()=>{setNewOnly(n=>!n);setVisibleCount(3);}}
           style={{ background:newOnly?sc.bg:"rgba(255,255,255,0.04)", border:`1px solid ${newOnly?sc.border:"rgba(255,255,255,0.08)"}`, color:newOnly?sc.color:"#3a5878", fontSize:11, fontWeight:700, padding:"5px 10px", borderRadius:7, cursor:"pointer", whiteSpace:"nowrap" }}>
-          {newOnly&&"● "}New{newCount>0?` (${newCount})`:""}
+          {newOnly&&"● "}Last 3 months ({newCount})
         </button>
       </div>
       {/* List */}
@@ -309,6 +303,7 @@ function GuidelinesSection() {
   const [grouped, setGrouped] = useState(null);
   const [status, setStatus]   = useState("loading");
   const [total, setTotal]     = useState(0);
+  const [search, setSearch]   = useState("");
 
   function buildGrouped(list) {
     const g = {};
@@ -347,17 +342,25 @@ function GuidelinesSection() {
 
   return (
     <div>
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:22, flexWrap:"wrap", gap:12 }}>
-        <div>
-          <h1 style={{ fontSize:21, fontWeight:700, color:"#c8d8f0" }}>⚕️ Clinical Guidelines</h1>
-          <p style={{ marginTop:4, fontSize:12, color:"#2e4060", display:"flex", alignItems:"center", gap:8 }}>{statusEl}</p>
+      <div style={{ marginBottom:20 }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:14, flexWrap:"wrap", gap:12 }}>
+          <div>
+            <h1 style={{ fontSize:21, fontWeight:700, color:"#c8d8f0" }}>⚕️ Clinical Guidelines</h1>
+            <p style={{ marginTop:4, fontSize:12, color:"#2e4060", display:"flex", alignItems:"center", gap:8 }}>{statusEl}</p>
+          </div>
+        </div>
+        <div style={{ position:"relative", maxWidth:380 }}>
+          <span style={{ position:"absolute", left:10, top:"50%", transform:"translateY(-50%)", fontSize:13, color:"#2a3a50", pointerEvents:"none" }}>🔍</span>
+          <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search all guidelines…"
+            style={{ width:"100%", background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:9, color:"#90b0d0", fontSize:13, padding:"9px 12px 9px 32px", outline:"none" }}/>
+          {search && <button onClick={()=>setSearch("")} style={{ position:"absolute", right:10, top:"50%", transform:"translateY(-50%)", background:"none", border:"none", color:"#5b8af0", fontSize:13, cursor:"pointer", padding:0 }}>✕</button>}
         </div>
       </div>
       {status === "loading" && <div style={{ textAlign:"center", padding:"60px 0" }}><Spinner size={28}/></div>}
       {grouped && (
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(440px,1fr))", gap:16 }}>
           {["ACG","AGA","ASGE","AASLD"].map(org =>
-            grouped[org]?.length > 0 ? <SocietyWidget key={org} org={org} guidelines={grouped[org]}/> : null
+            grouped[org]?.length > 0 ? <SocietyWidget key={org} org={org} guidelines={grouped[org]} search={search}/> : null
           )}
         </div>
       )}
