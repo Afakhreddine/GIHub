@@ -43,6 +43,8 @@ export default async function handler(req, res) {
         const repo = await redisGet("gihub:guidelines:repo");
         if (!Array.isArray(repo) || repo.length === 0)
           return res.status(200).json({ data: [], status: "empty" });
+        if (page === "all")
+          return res.status(200).json({ data: repo, total: repo.length });
         const PAGE_SIZE = 20;
         const total = repo.length;
         const pages = Math.ceil(total / PAGE_SIZE);

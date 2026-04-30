@@ -130,10 +130,13 @@ async function generateQuiz(guidelines, topicLabel, apiKey) {
       messages: [{
         role: "user",
         content:
-          `Using the following GI guideline(s), generate five technical knowledge audit questions designed as self-assessments for a gastroenterology fellow. ` +
-          `Each question must be multiple choice with no clinical vignettes. Questions must be based on verbatim quotes from the guideline text. ` +
-          `Target algorithms, quality metrics, and practice-changing recommendations. ` +
-          `The explanation must include the exact verbatim quote from the guideline that supports the correct answer. ` +
+          `Using the following GI guideline, generate five high-difficulty multiple choice questions for a gastroenterology fellow self-assessment. ` +
+          `No clinical vignettes. Every question must be derived from a verbatim quote in the guideline text. ` +
+          `Target exclusively: specific numerical thresholds and cutoffs, treatment algorithm decision points and step sequences, scoring systems and their interpretation, ` +
+          `dosing regimens and monitoring intervals, red flag criteria with exact definitions, quality indicator metrics, and specific grade or strength of recommendations. ` +
+          `Questions must be specific and technical — not definitional or conceptual. ` +
+          `Distractors must be medically plausible near-misses (adjacent numbers, similar drug names, wrong algorithm step, inverted thresholds). ` +
+          `The explanation must cite the verbatim guideline text that supports the correct answer. ` +
           `Return ONLY a JSON array of 5 objects, no markdown:\n` +
           `[{"question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":"A|B|C|D","explanation":"..."}]\n\n` +
           `Guidelines:\n${guidelineContext}`,

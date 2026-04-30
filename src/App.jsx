@@ -64,6 +64,12 @@ const urgencyColor   = { High:"#e05252", Moderate:"#e09a2a", Routine:"#4caf7d" }
 const impactColor    = { "Practice-changing":"#5b8af0", "High Impact":"#9c6af0", Noteworthy:"#4caf7d" };
 const categoryColor  = { "FDA Approval":"#5b8af0", "Drug News":"#9c6af0", Research:"#4caf7d", Industry:"#e09a2a", Policy:"#e05252", Technology:"#00b8d4" };
 const sentimentColor = { Positive:"#4caf7d", Neutral:"#8899aa", Mixed:"#e09a2a", Negative:"#e05252" };
+const SOCIETY_COLORS = {
+  ACG:   { color:"#e08c3a", bg:"rgba(224,140,58,0.08)",  border:"rgba(224,140,58,0.2)"  },
+  AGA:   { color:"#5b8af0", bg:"rgba(91,138,240,0.08)",  border:"rgba(91,138,240,0.2)"  },
+  ASGE:  { color:"#9c6af0", bg:"rgba(156,106,240,0.08)", border:"rgba(156,106,240,0.2)" },
+  AASLD: { color:"#4caf7d", bg:"rgba(76,175,61,0.08)",   border:"rgba(76,175,61,0.2)"  },
+};
 const DAY_LABELS     = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
 
 function parseDateStr(item) {
@@ -208,6 +214,100 @@ function ContentSection({ type }) {
   );
 }
 
+function SocietyWidget({ org, guidelines }) {
+  const [expanded, setExpanded] = useState(false);
+  const sc = SOCIETY_COLORS[org] || SOCIETY_COLORS.AGA;
+  const visible = expanded ? guidelines : guidelines.slice(0, 3);
+  return (
+    <div style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:14, overflow:"hidden", display:"flex", flexDirection:"column" }}>
+      <div style={{ background:sc.bg, borderBottom:`1px solid ${sc.border}`, padding:"12px 18px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+        <span style={{ fontSize:15, fontWeight:800, color:sc.color, letterSpacing:0.5 }}>{org}</span>
+        <span style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace" }}>{guidelines.length} guidelines</span>
+      </div>
+      <div>
+        {visible.map((g, i) => (
+          <div key={i} onClick={()=>g.url&&window.open(g.url,"_blank")}
+            style={{ padding:"13px 18px", borderBottom:i<visible.length-1?"1px solid rgba(255,255,255,0.04)":"none", cursor:g.url?"pointer":"default" }}
+            onMouseEnter={e=>g.url&&(e.currentTarget.style.background="rgba(255,255,255,0.03)")}
+            onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+            <div style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace", marginBottom:4 }}>{g.month} {g.year}</div>
+            <div style={{ fontSize:13, fontWeight:600, color:"#c0d0e8", lineHeight:1.5, marginBottom:5 }}>{g.title}</div>
+            <div style={{ fontSize:12, color:"#5a6a80", lineHeight:1.65 }}>{g.summary}</div>
+          </div>
+        ))}
+      </div>
+      {guidelines.length > 3 && (
+        <div style={{ borderTop:"1px solid rgba(255,255,255,0.04)", padding:"9px 18px", marginTop:"auto" }}>
+          <button onClick={()=>setExpanded(e=>!e)}
+            style={{ background:"none", border:"none", color:sc.color, fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"monospace", padding:0 }}>
+            {expanded ? "Show less ↑" : `Show ${guidelines.length - 3} more ↓`}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function GuidelinesSection() {
+  const [grouped, setGrouped] = useState(null);
+  const [status, setStatus]   = useState("loading");
+  const [total, setTotal]     = useState(0);
+
+  function buildGrouped(list) {
+    const g = {};
+    list.forEach(item => {
+      if (!g[item.org]) g[item.org] = [];
+      g[item.org].push(item);
+    });
+    return g;
+  }
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const result = await apiCall({ type:"content", section:"guidelines", page:"all" });
+        if (Array.isArray(result.data) && result.data.length > 0) {
+          setGrouped(buildGrouped(result.data));
+          setTotal(result.total || result.data.length);
+          setStatus("live");
+        } else {
+          setGrouped(buildGrouped(STATIC.guidelines));
+          setStatus("error");
+        }
+      } catch(e) {
+        setGrouped(buildGrouped(STATIC.guidelines));
+        setStatus("error");
+      }
+    }
+    load();
+  }, []);
+
+  const statusEl = {
+    loading: <><Spinner size={10} color="#5a6a88"/> Loading…</>,
+    live:    <><span style={{ color:"#4caf7d", fontWeight:700 }}>● Repository</span> · {total} guidelines</>,
+    error:   <><span style={{ color:"#5a6a88", fontWeight:700 }}>● Fallback</span> · Showing curated content · Live data updates weekly</>,
+  }[status];
+
+  return (
+    <div>
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:22, flexWrap:"wrap", gap:12 }}>
+        <div>
+          <h1 style={{ fontSize:21, fontWeight:700, color:"#c8d8f0" }}>⚕️ Clinical Guidelines</h1>
+          <p style={{ marginTop:4, fontSize:12, color:"#2e4060", display:"flex", alignItems:"center", gap:8 }}>{statusEl}</p>
+        </div>
+      </div>
+      {status === "loading" && <div style={{ textAlign:"center", padding:"60px 0" }}><Spinner size={28}/></div>}
+      {grouped && (
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(440px,1fr))", gap:16 }}>
+          {["ACG","AGA","ASGE","AASLD"].map(org =>
+            grouped[org]?.length > 0 ? <SocietyWidget key={org} org={org} guidelines={grouped[org]}/> : null
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function EduCard({ edu }) {
   const [hov, setHov] = useState(false);
   return (
@@ -326,12 +426,14 @@ function QuizDisplay({ quiz }) {
 
 // ── LECTURE DETAIL PANEL ──────────────────────────────────────────────────────
 function LectureDetailPanel({ event, onClose }) {
-  const [data, setData]       = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [showQuiz, setShowQuiz] = useState(false);
+  const [data, setData]                   = useState(null);
+  const [loading, setLoading]             = useState(true);
+  const [showQuiz, setShowQuiz]           = useState(false);
+  const [showAllGuidelines, setShowAllGuidelines] = useState(false);
 
   useEffect(() => {
     setShowQuiz(false);
+    setShowAllGuidelines(false);
     async function load() {
       setLoading(true);
       try {
@@ -363,24 +465,34 @@ function LectureDetailPanel({ event, onClose }) {
         {!loading&&data&&(
           <div style={{ display:"flex", flexDirection:"column", gap:32 }}>
 
-            {/* Guidelines — may be multiple */}
-            {data.guideline?.length>0&&(
+            {/* Guidelines — most recent shown by default, expand for rest */}
+            {data.guideline?.length>0&&(()=>{
+              const sorted = sortByDate(data.guideline);
+              const visible = showAllGuidelines ? sorted : [sorted[0]];
+              return (
               <div>
                 <div style={{ fontSize:12, fontWeight:700, color:"#5b8af0", fontFamily:"monospace", letterSpacing:1, marginBottom:12 }}>⚕️ RELEVANT GUIDELINE{data.guideline.length>1?"S":""}</div>
-                <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-                  {data.guideline.map((g,i)=>(
+                <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                  {visible.map((g,i)=>{
+                    const sc = SOCIETY_COLORS[g.org] || { color:"#5b8af0", border:"rgba(91,138,240,0.2)" };
+                    return (
                     <div key={i} onClick={()=>g.url&&window.open(g.url,"_blank")}
-                      style={{ background:"rgba(91,138,240,0.06)", border:"1px solid rgba(91,138,240,0.2)", borderLeft:"3px solid #5b8af0", borderRadius:10, padding:"14px 16px", cursor:g.url?"pointer":"default" }}>
+                      style={{ background:"rgba(91,138,240,0.04)", border:`1px solid ${sc.border}`, borderLeft:`3px solid ${sc.color}`, borderRadius:10, padding:"14px 16px", cursor:g.url?"pointer":"default" }}>
                       <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:8 }}>
-                        <span style={{ fontSize:11, fontWeight:700, color:"#fff", background:"#1a2535", padding:"2px 8px", borderRadius:12 }}>{g.org}</span>
-                        <span style={{ fontSize:11, fontWeight:700, color:"#fff", background:g.urgency==="High"?"#e05252":g.urgency==="Moderate"?"#e09a2a":"#4caf7d", padding:"2px 8px", borderRadius:12 }}>{g.urgency}</span>
+                        <span style={{ fontSize:11, fontWeight:700, color:sc.color, background:sc.bg||"rgba(91,138,240,0.12)", padding:"2px 8px", borderRadius:12 }}>{g.org}</span>
                         <span style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace" }}>{g.month} {g.year}</span>
                       </div>
                       <div style={{ fontSize:14, fontWeight:600, color:"#c8d8f0", lineHeight:1.5, marginBottom:6 }}>{g.title}</div>
                       <div style={{ fontSize:12, color:"#6a7a90", lineHeight:1.7 }}>{g.summary}</div>
                     </div>
-                  ))}
+                  );})}
                 </div>
+                {sorted.length > 1 && (
+                  <button onClick={()=>setShowAllGuidelines(s=>!s)}
+                    style={{ marginTop:10, background:"none", border:"none", color:"#5b8af0", fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"monospace", padding:0 }}>
+                    {showAllGuidelines ? "Show less ↑" : `Show ${sorted.length - 1} more guideline${sorted.length>2?"s":""} ↓`}
+                  </button>
+                )}
 
                 {/* Quiz button — only shown if quiz data exists */}
                 {hasQuiz&&!showQuiz&&(
@@ -393,7 +505,8 @@ function LectureDetailPanel({ event, onClose }) {
                   <QuizDisplay quiz={data.quiz}/>
                 )}
               </div>
-            )}
+            );
+          })()}
 
             {/* Articles */}
             {data.articles?.length>0&&(
@@ -664,7 +777,7 @@ export default function GIHub() {
         </div>
       </div>
       <div style={{ maxWidth:1100, margin:"0 auto", padding:"32px 32px 0" }}>
-        {active==="guidelines"&&<ContentSection key="guidelines" type="guidelines"/>}
+        {active==="guidelines"&&<GuidelinesSection/>}
         {active==="articles"  &&<ContentSection key="articles"   type="articles"/>}
         {active==="news"      &&<ContentSection key="news"       type="news"/>}
         {active==="education" &&<EducationSection/>}
