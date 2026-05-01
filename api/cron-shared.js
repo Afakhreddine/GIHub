@@ -1,10 +1,36 @@
 const PRIORITY_JOURNALS = "NEJM, JAMA, Lancet, Lancet Gastroenterology & Hepatology, Gut, Gastroenterology, American Journal of Gastroenterology, Clinical Gastroenterology and Hepatology, Gastrointestinal Endoscopy, Hepatology, Neurogastroenterology and Motility, World Journal of Gastroenterology, Liver Transplantation, Clinical Liver Disease, Journal of Hepatology, JHEP Reports, and Alimentary Pharmacology & Therapeutics";
 
-export const PROMPTS = {
-  articles: `Search for high-impact gastroenterology and hepatology research articles published in the past 4 weeks. First search only these priority journals: ${PRIORITY_JOURNALS}. If fewer than 10 results are found, expand to other peer-reviewed GI and hepatology journals. For all results, assess impact by cross-referencing mentions in: news.gastro.org, Healio Gastroenterology (healio.com/gastroenterology), and Doximity trending articles in gastroenterology. Prioritize articles mentioned across multiple sources. Among equal articles, prioritize RCTs and phase 3 trials first, then large prospective or multicenter studies, then registry analyses. Sort newest first. Return ONLY a JSON array of up to 10 items: {"journal":"","date":"","topic":"","impactLevel":"Practice-changing|High Impact|Noteworthy","title":"","authors":"","summary":"1-2 sentences","url":""}`,
+function dateWindow() {
+  const today = new Date();
+  const cutoff = new Date(today);
+  cutoff.setDate(cutoff.getDate() - 7);
+  const fmt = d => d.toISOString().split("T")[0];
+  return { today: fmt(today), cutoff: fmt(cutoff) };
+}
 
-  news: `Search for recent GI and hepatology news from the past 2 weeks. Include only: FDA approvals and safety alerts; drug development milestones (phase 2/3 trial results, PDUFA dates, NDA submissions, accelerated approvals, label expansions); health policy and reimbursement changes (CMS, Medicare, Medicaid); society and conference news (AGA, ACG, ASGE, AASLD, DDW). Exclude all primary research articles and study summaries. Confirm publication date for each item. Return ONLY a JSON array of up to 10 items sorted newest first: {"source":"","date":"","category":"FDA Approval|Drug News|Research|Industry|Policy","sentiment":"Positive|Neutral|Mixed|Negative","headline":"","summary":"1-2 sentences","url":""}`,
-};
+export function buildPrompts() {
+  const { today, cutoff } = dateWindow();
+  return {
+    articles:
+      `Today is ${today}. Search for high-impact gastroenterology and hepatology research articles published strictly between ${cutoff} and ${today} (last 7 days only). ` +
+      `Search these priority journals first: ${PRIORITY_JOURNALS}. ` +
+      `STRICT DATE RULE: Every item must have a confirmed publication date between ${cutoff} and ${today}. ` +
+      `Do not include any article published before ${cutoff} or from any prior year. If the exact publication date cannot be verified, exclude the item. ` +
+      `Prioritize RCTs and phase 3 trials, then large prospective or multicenter studies, then registry analyses. ` +
+      `Cross-reference mentions in news.gastro.org and Healio Gastroenterology to gauge impact. Sort newest first. ` +
+      `Return ONLY a JSON array of up to 10 items: {"journal":"","date":"","topic":"","impactLevel":"Practice-changing|High Impact|Noteworthy","title":"","authors":"","summary":"1-2 sentences","url":""}`,
+
+    news:
+      `Today is ${today}. Search for GI and hepatology news published strictly between ${cutoff} and ${today} (last 7 days only). ` +
+      `Include only: FDA approvals and safety alerts; drug development milestones (phase 2/3 trial results, PDUFA dates, NDA submissions, accelerated approvals, label expansions); ` +
+      `health policy and reimbursement changes (CMS, Medicare, Medicaid); society and conference news (AGA, ACG, ASGE, AASLD, DDW). ` +
+      `STRICT DATE RULE: Every item must have a confirmed publication date between ${cutoff} and ${today}. ` +
+      `Do not include any news item published before ${cutoff} or from any prior year. Exclude all primary research articles. ` +
+      `Return ONLY a JSON array of up to 10 items sorted newest first: {"source":"","date":"","category":"FDA Approval|Drug News|Research|Industry|Policy","sentiment":"Positive|Neutral|Mixed|Negative","headline":"","summary":"1-2 sentences","url":""}`,
+  };
+}
+
+export const PROMPTS = buildPrompts();
 
 // ── REDIS HELPERS ─────────────────────────────────────────────────────────────
 const rh = () => ({ Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}` });

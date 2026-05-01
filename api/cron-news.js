@@ -1,11 +1,11 @@
-import { claudeFetch, redisSet, PROMPTS } from "./cron-shared.js";
+import { claudeFetch, redisSet, buildPrompts } from "./cron-shared.js";
 
 export default async function handler(req, res) {
   const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
   if (!apiKey) return res.status(500).json({ error: "API key not configured" });
   try {
     console.log("Fetching news...");
-    const data = await claudeFetch(PROMPTS.news, apiKey);
+    const data = await claudeFetch(buildPrompts().news, apiKey);
     await redisSet("gihub:news", { data, fetchedAt: Date.now() });
     console.log(`✓ news: ${data.length} items`);
     return res.status(200).json({ ok: true, section: "news", count: data.length });
