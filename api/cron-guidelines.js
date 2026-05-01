@@ -81,7 +81,7 @@ async function claudeFetch(prompt, apiKey) {
       "anthropic-beta": "web-search-2025-03-05",
     },
     body: JSON.stringify({
-      model: "claude-haiku-4-5-20251001",
+      model: "claude-sonnet-4-6",
       max_tokens: 32000,
       system: "You are a GI medical guideline curator. Fetch and search the web thoroughly. Your entire response must be a single valid JSON array starting with '[' and ending with ']'. No preamble, no explanation, no markdown, no backticks — only the JSON array.",
       messages: [{ role: "user", content: prompt }],
