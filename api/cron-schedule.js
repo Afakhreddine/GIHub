@@ -125,8 +125,8 @@ async function generateQuiz(guidelines, topicLabel, apiKey) {
       "anthropic-version": "2023-06-01",
     },
     body: JSON.stringify({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 2000,
+      model: "claude-opus-4-7",
+      max_tokens: 4000,
       messages: [{
         role: "user",
         content:
