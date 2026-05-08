@@ -123,6 +123,7 @@ async function generateQuiz(guidelines, topicLabel, apiKey) {
       "Content-Type": "application/json",
       "x-api-key": apiKey,
       "anthropic-version": "2023-06-01",
+      "anthropic-beta": "interleaved-thinking-2025-05-14",
     },
     body: JSON.stringify({
       model: "claude-opus-4-7",
@@ -146,7 +147,8 @@ async function generateQuiz(guidelines, topicLabel, apiKey) {
   });
 
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error?.message || "Opus quiz error");
+  console.log(`  quiz API status: ${res.status}, content blocks: ${data.content?.length}`);
+  if (!res.ok) throw new Error(JSON.stringify(data.error) || "Opus quiz error");
   // Filter out thinking blocks — only join text blocks
   const text  = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("");
   const clean = text.replace(/```json|```/g, "").trim();
