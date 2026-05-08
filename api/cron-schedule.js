@@ -126,7 +126,8 @@ async function generateQuiz(guidelines, topicLabel, apiKey) {
     },
     body: JSON.stringify({
       model: "claude-opus-4-7",
-      max_tokens: 4000,
+      max_tokens: 16000,
+      thinking: { type: "enabled", budget_tokens: 10000 },
       messages: [{
         role: "user",
         content:
@@ -145,7 +146,8 @@ async function generateQuiz(guidelines, topicLabel, apiKey) {
   });
 
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error?.message || "Haiku quiz error");
+  if (!res.ok) throw new Error(data.error?.message || "Opus quiz error");
+  // Filter out thinking blocks — only join text blocks
   const text  = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("");
   const clean = text.replace(/```json|```/g, "").trim();
   const match = clean.match(/\[[\s\S]*\]/);

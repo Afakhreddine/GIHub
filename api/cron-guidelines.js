@@ -71,6 +71,24 @@ function dedup(arr) {
   });
 }
 
+function dedupAggressive(arr) {
+  const seen = new Set();
+  return arr.filter(g => {
+    // Normalize: strip punctuation/articles, collapse whitespace, first 80 chars
+    const normalized = (g.title || "")
+      .toLowerCase()
+      .replace(/[^\w\s]/g, " ")
+      .replace(/\b(the|a|an|on|of|in|for|and|or|with|to)\b/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 80);
+    const key = `${(g.org||"").toUpperCase()}|${g.year||""}|${normalized}`;
+    if (!normalized || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 async function claudeFetch(prompt, apiKey) {
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -109,6 +127,18 @@ export default async function handler(req, res) {
   const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
   if (!apiKey) return res.status(500).json({ error: "API key not configured" });
 
+  // ?dedup=true — remove duplicates from the repo and report
+  if (req.query?.dedup === "true") {
+    const existing = (await redisGet(REPO_KEY)) || [];
+    const afterExact = dedup(existing);
+    const afterAggressive = dedupAggressive(afterExact);
+    const removed = existing.length - afterAggressive.length;
+    if (removed > 0) {
+      await redisSet(REPO_KEY, sortNewestFirst(afterAggressive));
+    }
+    return res.status(200).json({ ok: true, action: "dedup", before: existing.length, after: afterAggressive.length, removed });
+  }
+
   // ?reset=true — clear the repo
   if (req.query?.reset === "true") {
     await redisSet(REPO_KEY, []);
@@ -125,7 +155,7 @@ export default async function handler(req, res) {
       console.log(`Fetching ${society}...`);
       const fetched = await claudeFetch(INIT_PROMPTS[society], apiKey);
       const existing = (await redisGet(REPO_KEY)) || [];
-      const merged = sortNewestFirst(dedup([...existing, ...fetched]));
+      const merged = sortNewestFirst(dedupAggressive(dedup([...existing, ...fetched])));
       await redisSet(REPO_KEY, merged);
       console.log(`✓ ${society}: ${fetched.length} items. Repo total: ${merged.length}`);
       return res.status(200).json({ ok: true, society, fetched: fetched.length, repoTotal: merged.length });
