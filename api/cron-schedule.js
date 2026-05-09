@@ -217,12 +217,16 @@ export default async function handler(req, res) {
     guideline = await pickGuidelines(lecture.label, apiKey);
   } catch(e) { console.error("  ✗ guideline:", e.message); }
 
-  // 2. Quiz — Haiku generates 5 factual recall questions from the guideline(s)
+  // 2. Quiz — Opus generates 5 high-difficulty questions from the guideline
   let quiz = [];
+  let quizError = null;
   try {
     quiz = await generateQuiz(guideline, lecture.label, apiKey);
     console.log(`  quiz: ${quiz.length} questions generated`);
-  } catch(e) { console.error("  ✗ quiz:", e.message); }
+  } catch(e) {
+    quizError = e.message;
+    console.error("  ✗ quiz:", e.message);
+  }
 
   // 3. Articles — Sonnet web search, explicitly excludes guidelines
   let articles = [];
@@ -262,6 +266,7 @@ export default async function handler(req, res) {
 
   return res.status(200).json({
     ok: true,
+    quizError,
     processed: slug,
     label: lecture.label,
     counts: { guideline: guideline.length, quiz: quiz.length, articles: articles.length, news: news.length },
