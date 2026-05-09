@@ -83,7 +83,7 @@ const INDEX_URLS = new Set([
 
 const TITLE_STOPWORDS = /\b(the|a|an|on|of|in|for|and|or|with|to)\b/g;
 
-function normalizeUrl(raw) {
+export function normalizeUrl(raw) {
   if (!raw) return "";
   return raw.trim().toLowerCase()
     .replace(/^https?:\/\//, "")
@@ -92,7 +92,7 @@ function normalizeUrl(raw) {
     .replace(/\/$/, "");
 }
 
-function isIndexUrl(url) {
+export function isIndexUrl(url) {
   return INDEX_URLS.has(url) || url.includes("guidelinecentral.com");
 }
 
@@ -106,7 +106,7 @@ function normalizeTitle(title) {
     .slice(0, 80);
 }
 
-function identityTokens(g) {
+export function identityTokens(g) {
   const tokens = [];
   const url = normalizeUrl(g.url);
 
@@ -130,7 +130,7 @@ function identityTokens(g) {
   return tokens;
 }
 
-function dedupByIdentity(arr) {
+export function dedupByIdentity(arr) {
   const seen = new Set();
   return arr.filter(g => {
     const tokens = identityTokens(g);
