@@ -1,6 +1,9 @@
 import { claudeFetch, redisSet, buildPrompts } from "./cron-shared.js";
+import { requireCronAuth } from "./cron-auth.js";
 
 export default async function handler(req, res) {
+  if (!requireCronAuth(req, res)) return;
+
   const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
   if (!apiKey) return res.status(500).json({ error: "API key not configured" });
   try {

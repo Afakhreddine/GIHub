@@ -1,4 +1,8 @@
+import { requireCronAuth } from "./cron-auth.js";
+
 export default async function handler(req, res) {
+  if (!requireCronAuth(req, res)) return;
+
   const results = {};
 
   results.hasRedisUrl   = !!process.env.UPSTASH_REDIS_REST_URL;
