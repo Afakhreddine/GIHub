@@ -62,15 +62,18 @@ function sortNewestFirst(arr) {
 }
 
 // ── DEDUP ─────────────────────────────────────────────────────────────────────
-// Two guidelines are duplicates if they share ANY identity token. Tokens are
-// layered so we use the strongest available signal:
+// Two guidelines are duplicates if they share ANY identity token. Each entry
+// gets the strongest signal available; the title fallback is only used when no
+// stronger identifier exists, to avoid collapsing distinct publications that
+// happen to share an org/year/title-prefix:
 //   1. pmid:   PubMed ID. Globally unique per publication, never reused.
 //   2. pii:    Journal article identifier (e.g. S0016-5085(25)06013-5).
 //   3. url:    Canonical URL bound to year. Year-bound so revisions of
 //              "living guidelines" at a stable society URL across years are
 //              kept as separate entries.
-//   4. title:  Org + year + normalized title prefix. Fallback for entries
-//              that only point at a society index page (gi.org/guidelines etc).
+//   4. title:  Org + year + normalized title prefix. Used ONLY when none of
+//              the above are present — typically entries whose `url` is a
+//              society index page (gi.org/guidelines etc).
 const INDEX_URLS = new Set([
   "gi.org/guidelines",
   "gastro.org/clinical-guidance",
@@ -84,6 +87,7 @@ function normalizeUrl(raw) {
   if (!raw) return "";
   return raw.trim().toLowerCase()
     .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "")
     .replace(/[?#].*$/, "")
     .replace(/\/$/, "");
 }
@@ -116,9 +120,11 @@ function identityTokens(g) {
     tokens.push(`url:${url}|${g.year || ""}`);
   }
 
-  const norm = normalizeTitle(g.title);
-  if (norm) {
-    tokens.push(`title:${(g.org || "").toUpperCase()}|${g.year || ""}|${norm}`);
+  if (tokens.length === 0) {
+    const norm = normalizeTitle(g.title);
+    if (norm) {
+      tokens.push(`title:${(g.org || "").toUpperCase()}|${g.year || ""}|${norm}`);
+    }
   }
 
   return tokens;
