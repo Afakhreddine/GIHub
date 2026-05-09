@@ -18,6 +18,10 @@ export function buildPrompts() {
       `Do not include any article published before ${cutoff} or from any prior year. If the exact publication date cannot be verified, exclude the item. ` +
       `Prioritize RCTs and phase 3 trials, then large prospective or multicenter studies, then registry analyses. ` +
       `Cross-reference mentions in news.gastro.org and Healio Gastroenterology to gauge impact. Sort newest first. ` +
+      `Use this taxonomy for impactLevel: ` +
+      `"Practice-changing" = novel mechanism, first-in-class drug, or head-to-head between top therapies in NEJM/Lancet/Gastroenterology (e.g. resmetirom in MASH, risankizumab vs ustekinumab in Crohn's). ` +
+      `"High Impact" = incremental but solid — safety data, comparative effectiveness, long-term outcomes (e.g. atezolizumab+bevacizumab OS update, vedolizumab in pregnancy). ` +
+      `"Noteworthy" = good journals but smaller scope — single-center registries, AI-assistance studies, validation work. ` +
       `Return ONLY a JSON array of up to 10 items: {"journal":"","date":"","topic":"","impactLevel":"Practice-changing|High Impact|Noteworthy","title":"","authors":"","summary":"1-2 sentences","url":""}`,
 
     news:
