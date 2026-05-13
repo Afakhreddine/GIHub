@@ -61,30 +61,82 @@ function sortNewestFirst(arr) {
   });
 }
 
-function dedup(arr) {
-  const seen = new Set();
-  return arr.filter(g => {
-    const key = g.title?.toLowerCase().trim();
-    if (!key || seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
+// ── DEDUP ─────────────────────────────────────────────────────────────────────
+// Two guidelines are duplicates if they share ANY identity token. Each entry
+// gets the strongest signal available; the title fallback is only used when no
+// stronger identifier exists, to avoid collapsing distinct publications that
+// happen to share an org/year/title-prefix:
+//   1. pmid:   PubMed ID. Globally unique per publication, never reused.
+//   2. pii:    Journal article identifier (e.g. S0016-5085(25)06013-5).
+//   3. url:    Canonical URL bound to year. Year-bound so revisions of
+//              "living guidelines" at a stable society URL across years are
+//              kept as separate entries.
+//   4. title:  Org + year + normalized title prefix. Used ONLY when none of
+//              the above are present — typically entries whose `url` is a
+//              society index page (gi.org/guidelines etc).
+const INDEX_URLS = new Set([
+  "gi.org/guidelines",
+  "gastro.org/clinical-guidance",
+  "asge.org/home/resources/publications/guidelines",
+  "aasld.org/practice-guidelines",
+]);
+
+const TITLE_STOPWORDS = /\b(the|a|an|on|of|in|for|and|or|with|to)\b/g;
+
+export function normalizeUrl(raw) {
+  if (!raw) return "";
+  return raw.trim().toLowerCase()
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "")
+    .replace(/[?#].*$/, "")
+    .replace(/\/$/, "");
 }
 
-function dedupAggressive(arr) {
+export function isIndexUrl(url) {
+  return INDEX_URLS.has(url) || url.includes("guidelinecentral.com");
+}
+
+function normalizeTitle(title) {
+  return (title || "")
+    .toLowerCase()
+    .replace(/[^\w\s]/g, " ")
+    .replace(TITLE_STOPWORDS, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 80);
+}
+
+export function identityTokens(g) {
+  const tokens = [];
+  const url = normalizeUrl(g.url);
+
+  const pmidMatch = url.match(/pubmed\.ncbi\.nlm\.nih\.gov\/(\d+)/);
+  if (pmidMatch) tokens.push(`pmid:${pmidMatch[1]}`);
+
+  const piiMatch = url.match(/(s\d{4}-\d{4}\(\d{2}\)\d+-[\dx])/i);
+  if (piiMatch) tokens.push(`pii:${piiMatch[1].toLowerCase()}`);
+
+  if (url && !isIndexUrl(url)) {
+    tokens.push(`url:${url}|${g.year || ""}`);
+  }
+
+  if (tokens.length === 0) {
+    const norm = normalizeTitle(g.title);
+    if (norm) {
+      tokens.push(`title:${(g.org || "").toUpperCase()}|${g.year || ""}|${norm}`);
+    }
+  }
+
+  return tokens;
+}
+
+export function dedupByIdentity(arr) {
   const seen = new Set();
   return arr.filter(g => {
-    // Normalize: strip punctuation/articles, collapse whitespace, first 80 chars
-    const normalized = (g.title || "")
-      .toLowerCase()
-      .replace(/[^\w\s]/g, " ")
-      .replace(/\b(the|a|an|on|of|in|for|and|or|with|to)\b/g, " ")
-      .replace(/\s+/g, " ")
-      .trim()
-      .slice(0, 80);
-    const key = `${(g.org||"").toUpperCase()}|${g.year||""}|${normalized}`;
-    if (!normalized || seen.has(key)) return false;
-    seen.add(key);
+    const tokens = identityTokens(g);
+    if (tokens.length === 0) return false;
+    if (tokens.some(t => seen.has(t))) return false;
+    tokens.forEach(t => seen.add(t));
     return true;
   });
 }
@@ -130,13 +182,12 @@ export default async function handler(req, res) {
   // ?dedup=true — remove duplicates from the repo and report
   if (req.query?.dedup === "true") {
     const existing = (await redisGet(REPO_KEY)) || [];
-    const afterExact = dedup(existing);
-    const afterAggressive = dedupAggressive(afterExact);
-    const removed = existing.length - afterAggressive.length;
+    const after = dedupByIdentity(existing);
+    const removed = existing.length - after.length;
     if (removed > 0) {
-      await redisSet(REPO_KEY, sortNewestFirst(afterAggressive));
+      await redisSet(REPO_KEY, sortNewestFirst(after));
     }
-    return res.status(200).json({ ok: true, action: "dedup", before: existing.length, after: afterAggressive.length, removed });
+    return res.status(200).json({ ok: true, action: "dedup", before: existing.length, after: after.length, removed });
   }
 
   // ?reset=true — clear the repo
@@ -155,7 +206,7 @@ export default async function handler(req, res) {
       console.log(`Fetching ${society}...`);
       const fetched = await claudeFetch(INIT_PROMPTS[society], apiKey);
       const existing = (await redisGet(REPO_KEY)) || [];
-      const merged = sortNewestFirst(dedupAggressive(dedup([...existing, ...fetched])));
+      const merged = sortNewestFirst(dedupByIdentity([...existing, ...fetched]));
       await redisSet(REPO_KEY, merged);
       console.log(`✓ ${society}: ${fetched.length} items. Repo total: ${merged.length}`);
       return res.status(200).json({ ok: true, society, fetched: fetched.length, repoTotal: merged.length });
@@ -187,7 +238,7 @@ export default async function handler(req, res) {
   }
 
   if (newCount > 0) {
-    const merged = sortNewestFirst(dedup(existing));
+    const merged = sortNewestFirst(dedupByIdentity(existing));
     await redisSet(REPO_KEY, merged);
     console.log(`✓ Repo updated: ${merged.length} total guidelines (+${newCount} new)`);
   } else {
