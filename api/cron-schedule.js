@@ -236,6 +236,10 @@ export default async function handler(req, res) {
       `Only include primary research: RCTs, cohort studies, meta-analyses. ` +
       `Do NOT include clinical practice guidelines, consensus statements, or expert reviews. ` +
       `Focus on journals: NEJM, Lancet, Gastroenterology, Gut, AJG, CGH, GIE, Hepatology. ` +
+      `Use this taxonomy for impactLevel: ` +
+      `"Practice-changing" = novel mechanism, first-in-class drug, or head-to-head between top therapies in NEJM/Lancet/Gastroenterology (e.g. resmetirom in MASH, risankizumab vs ustekinumab in Crohn's). ` +
+      `"High Impact" = incremental but solid — safety data, comparative effectiveness, long-term outcomes (e.g. atezolizumab+bevacizumab OS update, vedolizumab in pregnancy). ` +
+      `"Noteworthy" = good journals but smaller scope — single-center registries, AI-assistance studies, validation work. ` +
       `Return ONLY a JSON array, no markdown: ` +
       `[{"journal":"","date":"","topic":"","impactLevel":"Practice-changing|High Impact|Noteworthy","title":"","authors":"","summary":"2-3 sentences","url":""}]`,
       apiKey
