@@ -215,7 +215,7 @@ export default async function handler(req, res) {
         fixed++;
       }
     }
-    const merged = sortNewestFirst(dedupAggressive(dedup(existing)));
+    const merged = sortNewestFirst(dedupByIdentity(existing));
     if (fixed > 0) await redisSet(REPO_KEY, merged);
     return res.status(200).json({ ok: true, action: "fixlinks", org, scanned: targets.length, fixed });
   }
