@@ -12,14 +12,14 @@ const REPO_KEY = "gihub:guidelines:repo";
 const JSON_SCHEMA = `{"org":"ACG|AGA|ASGE|AASLD","year":"YYYY","month":"full month name","topic":"short topic","urgency":"High|Moderate|Routine","title":"full title","summary":"1-2 sentences","url":"direct link"}`;
 
 const INIT_PROMPTS = {
-  ASGE:  `Fetch https://www.asge.org/home/resources/publications/guidelines and extract ALL clinical practice guidelines and quality indicator documents listed, including both "Guidelines" and "Quality in Endoscopy" sections, published from 2000 to present. For each document confirm the publication year. Return ONLY a JSON array. Each item: ${JSON_SCHEMA}`,
+  ASGE:  `Fetch https://www.asge.org/home/resources/publications/guidelines and extract ALL clinical practice guidelines and quality indicator documents listed, including both "Guidelines" and "Quality in Endoscopy" sections, published from 2000 to present. For each document, search PubMed (https://pubmed.ncbi.nlm.nih.gov/?term={title}+ASGE+Gastrointestinal+Endoscopy) to find its PMID, then use https://pubmed.ncbi.nlm.nih.gov/{PMID}/ as the url field. Confirm the publication year from PubMed. Return ONLY a JSON array. Each item: ${JSON_SCHEMA}`,
   AASLD: `Fetch https://www.aasld.org/practice-guidelines and extract ALL clinical practice guidelines listed by disease topic, published from 2000 to present. Confirm publication year for each. Return ONLY a JSON array. Each item: ${JSON_SCHEMA}`,
   AGA:   `Fetch all 4 pages of this PubMed search (use &page=1, &page=2, &page=3, &page=4 with &size=200): https://pubmed.ncbi.nlm.nih.gov/?term=%28%22Gastroenterology%22%5BJournal%5D%29+AND+%28Guideline%5BPublication+Type%5D%29&size=200&page=1. From all pages combined, collect the title and PMID for each result. Include ONLY articles whose title contains the word "Guideline" or the phrase "Clinical Practice", and exclude articles from non-AGA organizations (e.g. Canadian Association, Multi-Society Task Force). For each included article, fetch its abstract page at https://pubmed.ncbi.nlm.nih.gov/{PMID}/ and use the abstract text to write a 1-2 sentence summary. Return ONLY a JSON array. Each item: ${JSON_SCHEMA}`,
   ACG:   `Fetch https://gi.org/guidelines and extract ALL ACG clinical guidelines and clinical practice updates published from 2000 to present. Confirm the publication year for each. Return ONLY a JSON array. Each item: ${JSON_SCHEMA}`,
 };
 
 const UPDATE_PROMPTS = {
-  ASGE:  `Fetch https://www.asge.org/home/resources/publications/guidelines and identify any documents listed under "Newly Published" or published in the past 7 days. Return ONLY a JSON array of new items ([] if none). Each item: ${JSON_SCHEMA}`,
+  ASGE:  `Fetch https://www.asge.org/home/resources/publications/guidelines and identify any documents listed under "Newly Published" or published in the past 7 days. For each new document, search PubMed (https://pubmed.ncbi.nlm.nih.gov/?term={title}+ASGE+Gastrointestinal+Endoscopy) to find its PMID, then use https://pubmed.ncbi.nlm.nih.gov/{PMID}/ as the url field. Return ONLY a JSON array of new items ([] if none). Each item: ${JSON_SCHEMA}`,
   AASLD: `Fetch https://www.aasld.org/news and identify any new or updated AASLD practice guidelines in the past 7 days. Return ONLY a JSON array of new items ([] if none). Each item: ${JSON_SCHEMA}`,
   AGA:   `Fetch this PubMed search which filters for AGA guidelines published in the past 7 days: https://pubmed.ncbi.nlm.nih.gov/?term=%28%22Gastroenterology%22%5BJournal%5D%29+AND+%28Guideline%5BPublication+Type%5D%29&datetype=pdat&reldate=7. Include ONLY articles whose title contains "Guideline" or "Clinical Practice", and exclude non-AGA organizations. For any results found, fetch the abstract at https://pubmed.ncbi.nlm.nih.gov/{PMID}/ and use it to write a 1-2 sentence summary. Return ONLY a JSON array of new items ([] if none). Each item: ${JSON_SCHEMA}`,
   ACG:   `Check https://gi.org/guidelines and https://www.guidelinecentral.com/guidelines/acg/ for new ACG guidelines in the past 7 days. Return ONLY a JSON array ([] if none). Each item: ${JSON_SCHEMA}`,
@@ -188,6 +188,36 @@ export default async function handler(req, res) {
       await redisSet(REPO_KEY, sortNewestFirst(after));
     }
     return res.status(200).json({ ok: true, action: "dedup", before: existing.length, after: after.length, removed });
+  }
+
+  // ?fixlinks=ASGE — re-resolve PubMed URLs for all existing entries from a given org
+  if (req.query?.fixlinks) {
+    const org = req.query.fixlinks.toUpperCase();
+    const existing = (await redisGet(REPO_KEY)) || [];
+    const targets = existing.filter(g => g.org?.toUpperCase() === org && !g.url?.includes("pubmed"));
+    console.log(`fixlinks: ${targets.length} ${org} entries without PubMed URLs`);
+    if (targets.length === 0) {
+      return res.status(200).json({ ok: true, action: "fixlinks", org, scanned: 0, fixed: 0 });
+    }
+    const titleList = targets.map((g, i) => `${i}: ${g.title} (${g.year})`).join("\n");
+    const data = await claudeFetch(
+      `For each of the following ${org} clinical guidelines, search PubMed to find its PMID. ` +
+      `Return a JSON array with one object per guideline in the same order, each with: ` +
+      `{"index": <number>, "url": "https://pubmed.ncbi.nlm.nih.gov/<PMID>/"}. ` +
+      `If you cannot find a PMID for an entry, use an empty string for url.\n\n${titleList}`,
+      apiKey
+    );
+    let fixed = 0;
+    for (const item of (data || [])) {
+      const i = item.index;
+      if (typeof i === "number" && targets[i] && item.url?.includes("pubmed")) {
+        targets[i].url = item.url;
+        fixed++;
+      }
+    }
+    const merged = sortNewestFirst(dedupAggressive(dedup(existing)));
+    if (fixed > 0) await redisSet(REPO_KEY, merged);
+    return res.status(200).json({ ok: true, action: "fixlinks", org, scanned: targets.length, fixed });
   }
 
   // ?reset=true — clear the repo
