@@ -12,9 +12,10 @@
     "api/cron-schedule.js":   { "maxDuration": 300 }
   },
   "crons": [
-    { "path": "/api/cron-guidelines", "schedule": "0 6 * * 0" },
-    { "path": "/api/cron-articles",   "schedule": "0 8 * * 0" },
-    { "path": "/api/cron-news",       "schedule": "0 10 * * 0" }
+    { "path": "/api/cron-guidelines", "schedule": "0 6 * * 0"   },
+    { "path": "/api/cron-articles",   "schedule": "0 8 * * 0"   },
+    { "path": "/api/cron-news",       "schedule": "0 10 * * 0"  },
+    { "path": "/api/cron-schedule",   "schedule": "0 13 * * 1-4" }
   ],
   "rewrites": [
     { "source": "/api/debug",          "destination": "/api/debug" },
@@ -22,6 +23,7 @@
     { "source": "/api/cron-guidelines", "destination": "/api/cron-guidelines" },
     { "source": "/api/cron-articles",   "destination": "/api/cron-articles" },
     { "source": "/api/cron-news",       "destination": "/api/cron-news" },
+    { "source": "/api/cron-schedule",   "destination": "/api/cron-schedule" },
     { "source": "/(.*)",                "destination": "/index.html" }
   ]
 }
