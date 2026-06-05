@@ -11,26 +11,24 @@ function dateWindow() {
 export function buildPrompts() {
   const { today, cutoff } = dateWindow();
   return {
-    articles:
-      `Today is ${today}. Search for high-impact gastroenterology and hepatology research articles published strictly between ${cutoff} and ${today} (last 7 days only). ` +
-      `Search these priority journals first: ${PRIORITY_JOURNALS}. ` +
+    weekly:
+      `Today is ${today}. Search these three sources for GI and hepatology stories published between ${cutoff} and ${today}: ` +
+      `(1) https://news.gastro.org/ — PRIMARY source, search thoroughly. ` +
+      `(2) https://www.gastroendonews.com/ ` +
+      `(3) https://www.healio.com/gastroenterology ` +
+      `RULES: ` +
+      `(A) Prioritize in this order: FDA approvals, randomized controlled trial results, society guideline publications — these must appear first. ` +
+      `(B) Include exactly 1-2 opinion pieces or how-to/practice articles sourced from news.gastro.org. ` +
+      `(C) If the same story (same trial, drug approval, or guideline) appears in 2 or more of the three sources, set multiSource:true and impactLevel to at least "High Impact". ` +
+      `(D) For any item reporting on a research study, search PubMed to find the original article's PMID and set pubmedUrl to https://pubmed.ncbi.nlm.nih.gov/{PMID}/. Leave pubmedUrl empty string if not found. ` +
+      `(E) Return exactly 10 items total, sorted by impact (Practice-changing first, then High Impact, then Noteworthy). ` +
       `STRICT DATE RULE: Every item must have a confirmed publication date between ${cutoff} and ${today}. ` +
-      `Do not include any article published before ${cutoff} or from any prior year. If the exact publication date cannot be verified, exclude the item. ` +
-      `Prioritize RCTs and phase 3 trials, then large prospective or multicenter studies, then registry analyses. ` +
-      `Cross-reference mentions in news.gastro.org and Healio Gastroenterology to gauge impact. Sort newest first. ` +
-      `Use this taxonomy for impactLevel: ` +
-      `"Practice-changing" = novel mechanism, first-in-class drug, or head-to-head between top therapies in NEJM/Lancet/Gastroenterology (e.g. resmetirom in MASH, risankizumab vs ustekinumab in Crohn's). ` +
-      `"High Impact" = incremental but solid — safety data, comparative effectiveness, long-term outcomes (e.g. atezolizumab+bevacizumab OS update, vedolizumab in pregnancy). ` +
-      `"Noteworthy" = good journals but smaller scope — single-center registries, AI-assistance studies, validation work. ` +
-      `Return ONLY a JSON array of up to 10 items: {"journal":"","date":"","topic":"","impactLevel":"Practice-changing|High Impact|Noteworthy","title":"","authors":"","summary":"1-2 sentences","url":""}`,
-
-    news:
-      `Today is ${today}. Search for GI and hepatology news published strictly between ${cutoff} and ${today} (last 7 days only). ` +
-      `Include only: FDA approvals and safety alerts; drug development milestones (phase 2/3 trial results, PDUFA dates, NDA submissions, accelerated approvals, label expansions); ` +
-      `health policy and reimbursement changes (CMS, Medicare, Medicaid); society and conference news (AGA, ACG, ASGE, AASLD, DDW). ` +
-      `STRICT DATE RULE: Every item must have a confirmed publication date between ${cutoff} and ${today}. ` +
-      `Do not include any news item published before ${cutoff} or from any prior year. Exclude all primary research articles. ` +
-      `Return ONLY a JSON array of up to 10 items sorted newest first: {"source":"","date":"","category":"FDA Approval|Drug News|Research|Industry|Policy","sentiment":"Positive|Neutral|Mixed|Negative","headline":"","summary":"1-2 sentences","url":""}`,
+      `impactLevel taxonomy: ` +
+      `"Practice-changing" = first-in-class FDA approval, landmark RCT in NEJM/Lancet/Gastroenterology, or major society guideline update. ` +
+      `"High Impact" = multi-source story, phase 3 trial result, label expansion, or solid RCT. ` +
+      `"Noteworthy" = registry analyses, policy news, society announcements, opinion/how-to pieces. ` +
+      `Return ONLY a JSON array of exactly 10 items: ` +
+      `{"type":"Research|FDA|Guideline|News|Opinion","impactLevel":"Practice-changing|High Impact|Noteworthy","multiSource":false,"date":"","topic":"","title":"","authors":"","source":"","summary":"2-3 sentences","url":"","pubmedUrl":""}`,
   };
 }
 

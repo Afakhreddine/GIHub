@@ -11,31 +11,24 @@ const STATIC = {
     { org:"AGA",  year:"2025", month:"Oct", topic:"Gastroparesis",            urgency:"High",     title:"AGA Clinical Practice Guideline on Management of Gastroparesis",                         summary:"Evidence-based recommendations for diagnosis and treatment of idiopathic and diabetic gastroparesis.",                                             url:"https://www.gastrojournal.org/article/S0016-5085(25)05857-3/fulltext" },
     { org:"ACG",  year:"2025", month:"Jun", topic:"Ulcerative Colitis",       urgency:"High",     title:"ACG Clinical Guideline Update: Ulcerative Colitis in Adults",                            summary:"Updated recommendations for adult UC covering biologics, small molecules, and treat-to-target strategies.",                                       url:"https://pubmed.ncbi.nlm.nih.gov/40701556/" },
     { org:"ACG",  year:"2025", month:"Jun", topic:"Crohn's Disease",          urgency:"High",     title:"ACG Clinical Guideline: Management of Crohn's Disease in Adults",                        summary:"Comprehensive updated recommendations for adult CD management with GRADE-level evidence assessment.",                                             url:"https://pubmed.ncbi.nlm.nih.gov/40701562/" },
-    { org:"ACG",  year:"2025", month:"Mar", topic:"Hepatic Encephalopathy",   urgency:"Moderate", title:"ACG Clinical Guidelines: Diagnosis, Management and Prevention of Hepatic Encephalopathy", summary:"Issues 24 recommendations for HE in cirrhosis using GRADE methodology.",                                                                         url:"https://journals.lww.com/ajg/pages/default.aspx" },
+    { org:"ACG",  year:"2025", month:"Mar", topic:"Hepatic Encephalopathy",   urgency:"Moderate", title:"ACG Clinical Guidelines: Diagnosis, Management and Prevention of Hepatic Encephalopathy", summary:"Issues 24 recommendations for HE in cirrhosis using GRADE methodology.",                                                                         url:"" },
     { org:"ASGE", year:"2025", month:"Feb", topic:"GERD",                     urgency:"Moderate", title:"ASGE Guideline on the Diagnosis and Management of GERD",                                 summary:"Updates 2014 ASGE GERD guideline addressing post-sleeve gastrectomy and post-POEM populations.",                                                 url:"https://pubmed.ncbi.nlm.nih.gov/39692638/" },
-    { org:"ACG",  year:"2025", month:"Jan", topic:"IBS",                      urgency:"Moderate", title:"ACG Clinical Guideline: Management of Irritable Bowel Syndrome",                         summary:"Updated IBS recommendations covering low-FODMAP diet, soluble fiber, neuromodulators, and secretagogues.",                                       url:"https://gi.org/guidelines/" },
-    { org:"ACG",  year:"2024", month:"Sep", topic:"H. pylori",                urgency:"High",     title:"ACG Clinical Guideline: Treatment of Helicobacter pylori Infection",                     summary:"Recommends bismuth quadruple or concomitant therapy as first-line given rising clarithromycin resistance.",                                      url:"https://gi.org/guidelines/" },
-    { org:"ACG",  year:"2024", month:"Sep", topic:"CRC Screening",            urgency:"High",     title:"ACG Clinical Guideline: Colorectal Cancer Screening 2024 Update",                        summary:"Reaffirms average-risk CRC screening initiation at age 45 with updated post-polypectomy surveillance intervals.",                                url:"https://gi.org/guidelines/" },
-    { org:"ACG",  year:"2024", month:"Jul", topic:"Alcohol-Associated Liver", urgency:"High",     title:"ACG Clinical Guideline: Alcohol-Associated Liver Disease",                               summary:"Recommendations for alcohol-associated hepatitis and cirrhosis including corticosteroid use and transplantation candidacy.",                      url:"https://gi.org/guidelines/" },
+    { org:"ACG",  year:"2025", month:"Jan", topic:"IBS",                      urgency:"Moderate", title:"ACG Clinical Guideline: Management of Irritable Bowel Syndrome",                         summary:"Updated IBS recommendations covering low-FODMAP diet, soluble fiber, neuromodulators, and secretagogues.",                                       url:"" },
+    { org:"ACG",  year:"2024", month:"Sep", topic:"H. pylori",                urgency:"High",     title:"ACG Clinical Guideline: Treatment of Helicobacter pylori Infection",                     summary:"Recommends bismuth quadruple or concomitant therapy as first-line given rising clarithromycin resistance.",                                      url:"https://pubmed.ncbi.nlm.nih.gov/39626064/" },
+    { org:"ACG",  year:"2024", month:"Sep", topic:"CRC Screening",            urgency:"High",     title:"ACG Clinical Guideline: Colorectal Cancer Screening 2024 Update",                        summary:"Reaffirms average-risk CRC screening initiation at age 45 with updated post-polypectomy surveillance intervals.",                                url:"" },
+    { org:"ACG",  year:"2024", month:"Jul", topic:"Alcohol-Associated Liver", urgency:"High",     title:"ACG Clinical Guideline: Alcohol-Associated Liver Disease",                               summary:"Recommendations for alcohol-associated hepatitis and cirrhosis including corticosteroid use and transplantation candidacy.",                      url:"https://pubmed.ncbi.nlm.nih.gov/38174913/" },
   ],
-  articles: [
-    { journal:"Gastroenterology",  date:"Mar 2026",      topic:"Pancreatic Cancer",  impactLevel:"Practice-changing", title:"Selective Urokinase Inhibition Plus Chemotherapy in PDAC",                            authors:"AGA Research Group et al.",            summary:"Novel strategy combining urokinase inhibition with chemotherapy demonstrates improved survival endpoints in PDAC.",          url:"https://www.gastrojournal.org" },
-    { journal:"NEJM",              date:"Mar 2026",      topic:"IBD",                impactLevel:"Practice-changing", title:"Risankizumab vs Ustekinumab in Moderate-to-Severe Crohn's Disease",                    authors:"Ferrante M et al.",                    summary:"Head-to-head RCT showing superiority of risankizumab over ustekinumab for clinical remission in Crohn's disease.",        url:"https://www.nejm.org" },
-    { journal:"Lancet",            date:"Mar 2026",      topic:"Hepatology",         impactLevel:"Practice-changing", title:"Resmetirom in MASH with Advanced Fibrosis: 2-Year Outcomes",                          authors:"Harrison SA et al.",                   summary:"Extended follow-up of MAESTRO-NASH confirms sustained fibrosis regression with resmetirom at 2 years.",                   url:"https://www.thelancet.com" },
-    { journal:"UEG Journal",       date:"Mar 2026",      topic:"Colonoscopy",        impactLevel:"High Impact",       title:"Cold Snare Polypectomy for Colorectal Polyps ≤10mm: TACOS RCT",                       authors:"Chang LC et al.",                      summary:"Multicenter RCT evaluating cold snare polypectomy for diminutive polyps with high complete resection rates.",             url:"https://onlinelibrary.wiley.com/journal/20506414" },
-    { journal:"AJG",               date:"Mar 2026",      topic:"IBD / Pregnancy",    impactLevel:"High Impact",       title:"Vedolizumab Safety in Pregnancy: OTIS Prospective Cohort",                            authors:"Chambers CD et al.",                   summary:"Prospective study of 275 pregnant women found no significant increase in major birth defects with vedolizumab.",          url:"https://journals.lww.com/ajg/pages/default.aspx" },
-    { journal:"Gut",               date:"Feb 2026",      topic:"MASLD",              impactLevel:"High Impact",       title:"GLP-1 Receptor Agonists and Liver Fibrosis Regression in MASLD",                      authors:"Armstrong MJ et al.",                  summary:"Large multicenter cohort showing significant fibrosis regression with GLP-1 agonist therapy in biopsy-proven MASLD.",     url:"https://gut.bmj.com" },
-    { journal:"Hepatology",        date:"Feb 2026",      topic:"HCC",                impactLevel:"High Impact",       title:"Atezolizumab plus Bevacizumab vs Sorafenib: Updated OS Data",                         authors:"Finn RS et al.",                       summary:"5-year follow-up of IMbrave150 confirms sustained overall survival benefit of atezo-bev over sorafenib in HCC.",          url:"https://journals.lww.com/hep" },
-    { journal:"CGH",               date:"Feb 2026",      topic:"EoE",                impactLevel:"Noteworthy",        title:"Dupilumab Maintenance in Eosinophilic Esophagitis: 52-Week Data",                      authors:"Dellon ES et al.",                     summary:"Real-world registry confirming durable histologic and symptomatic remission with dupilumab maintenance therapy.",          url:"https://www.cghjournal.org" },
-    { journal:"AJG",               date:"Feb 2026",      topic:"MASLD",              impactLevel:"Noteworthy",        title:"Cardiovascular Risk Prediction Tools in MASLD: US Cohort Validation",                  authors:"TARGET-NASH Investigators",            summary:"CV risk tools performed poorly in MASLD patients, highlighting need for disease-specific models.",                         url:"https://journals.lww.com/ajg/pages/default.aspx" },
-    { journal:"GIE",               date:"Jan 2026",      topic:"Endoscopy",          impactLevel:"Noteworthy",        title:"AI-Assisted Colonoscopy and Adenoma Detection: Meta-Analysis of 18 RCTs",              authors:"Hassan C et al.",                      summary:"Updated meta-analysis confirms AI-assisted colonoscopy improves adenoma detection rate by 14%.",                           url:"https://www.giejournal.org" },
-  ],
-  news: [
-    { source:"FDA",                  date:"Mar 16, 2026", category:"FDA Approval", sentiment:"Positive", headline:"FDA Approves Durvalumab + FLOT for Early-Stage Gastric and GEJ Cancers",              summary:"First immunotherapy approval in the perioperative setting for resectable gastric and GEJ adenocarcinoma.",              url:"https://www.fda.gov" },
-    { source:"AGA/ABIM",             date:"Mar 13, 2026", category:"Policy",       sentiment:"Positive", headline:"ABIM Launching GI Longitudinal Knowledge Assessment with Hepatology Focus in July 2026", summary:"New GI LKA launches July 2026, allowing hepatology-focused gastroenterologists to earn relevant MOC credit.",         url:"https://gastro.org/news/new-lka-with-hepatology-focus-coming-in-2026/" },
-    { source:"FDA",                  date:"Mar 10, 2026", category:"Drug News",    sentiment:"Positive", headline:"FDA Grants Priority Review to Obefazimod NDA for Ulcerative Colitis",                  summary:"Abivax's once-daily oral agent receives priority review designation with PDUFA date set for Q3 2026.",                url:"https://www.fda.gov" },
-    { source:"CMS",                  date:"Mar 9, 2026",  category:"Policy",       sentiment:"Mixed",    headline:"2026 Medicare GI Reimbursement Shifts: Impact on Endoscopy and Colonoscopy Payments",   summary:"ACG flagged significant Medicare reimbursement changes affecting GI practices with material rate changes.",            url:"https://gi.org/journals-publications/acg-blog/" },
-    { source:"AASLD",                date:"Mar 7, 2026",  category:"Industry",     sentiment:"Positive", headline:"AASLD Launches Updated HCC Surveillance Quality Metrics Framework",                     summary:"New AASLD quality metrics framework standardizes HCC surveillance reporting and biannual ultrasound documentation.",    url:"https://www.aasld.org" },
+  weekly: [
+    { type:"Guideline", impactLevel:"Practice-changing", multiSource:true,  date:"May 20, 2026", topic:"IBD / Crohn's Disease",  title:"Highlights From ACG's Updated Crohn's Disease Guideline",                                            source:"gastroendonews.com", summary:"The American College of Gastroenterology released comprehensive updated guidance for managing Crohn's disease in adults, covering biologic selection, small molecule therapies, and treat-to-target strategies with GRADE-level evidence grading.",            url:"https://www.gastroendonews.com/Inflammatory-Bowel-Disease/Article/05-26/Crohns-Disease-ACG-Updated-Clinical-Guideline-Highlights/80563", pubmedUrl:"https://pubmed.ncbi.nlm.nih.gov/40701562/" },
+    { type:"Research",  impactLevel:"Practice-changing", multiSource:false, date:"May 25, 2026", topic:"Colorectal Cancer",      title:"Adjuvant Chemoimmunotherapy Sets New Standard in Stage III dMMR Colon Cancer",                          source:"gastroendonews.com", summary:"Adjuvant atezolizumab plus mFOLFOX6 reduced recurrence risk by approximately 50% versus chemotherapy alone in stage III deficient mismatch repair (dMMR) colon cancer in a phase 3 trial presented at ASCO 2026. This establishes a new standard of care for this molecularly defined subgroup.",   url:"https://www.gastroendonews.com/PRN/Article/05-26/Adjuvant-Chemoimmunotherapy-Standard-Stage-III-dMMR-Colon-Cancer/80633", pubmedUrl:"" },
+    { type:"FDA",       impactLevel:"High Impact",       multiSource:false, date:"May 28, 2026", topic:"Hepatology",             title:"FDA Approves Bulevirtide — First-Ever Treatment for Chronic Hepatitis Delta Virus",                      source:"gastroendonews.com", summary:"Bulevirtide received FDA approval as the first therapeutic option for chronic hepatitis Delta virus (HDV) infection in the US, administered via once-daily subcutaneous injection. HDV affects an estimated 5% of the 300 million people living with chronic hepatitis B worldwide.",      url:"https://www.gastroendonews.com/Hepatology-in-Focus/Article/05-26/fda-approves-hepatitis-delta-treatment-Bulevirtide/80664", pubmedUrl:"" },
+    { type:"Research",  impactLevel:"High Impact",       multiSource:true,  date:"May 21, 2026", topic:"IBD",                    title:"'Strikingly Better': Co-antibody Combination Tops Golimumab + Guselkumab in Refractory IBD",               source:"healio.com",        summary:"A phase 2 clinical trial demonstrated that a novel co-antibody combination showed significantly superior efficacy over both golimumab and guselkumab in patients with refractory inflammatory bowel disease. Results were presented at Digestive Disease Week 2026.",                      url:"https://www.healio.com/news/gastroenterology/20260521/strikingly-better-coantibody-combination-tops-golimumab-guselkumab-in-refractory-ibd", pubmedUrl:"" },
+    { type:"Research",  impactLevel:"High Impact",       multiSource:false, date:"Jun 3, 2026",  topic:"Colonoscopy",            title:"Narrow-Band Imaging Reduces Serrated Lesion Miss Rate in Multicenter Randomized Trial",                    source:"news.gastro.org",   summary:"Enhanced imaging during colonoscopy significantly reduced missed sessile serrated lesions and adenomas in a multicenter RCT of average-risk screening patients. The study supports wider adoption of NBI as a standard quality measure during screening colonoscopy.",           url:"https://news.gastro.org/issues/2026/june-2026/narrowband-imaging-may-lower-serrated-lesion-miss-rate/", pubmedUrl:"" },
+    { type:"Research",  impactLevel:"High Impact",       multiSource:true,  date:"May 19, 2026", topic:"EoE",                    title:"Dupilumab Boosts Esophageal Distensibility and Luminal Diameter in EoE — First-Time Structural Evidence",  source:"healio.com",        summary:"Dupilumab significantly improved esophageal distensibility and luminal diameter in patients with eosinophilic esophagitis in a first-of-its-kind analysis presented at DDW 2026. The findings suggest dupilumab confers a structural remodeling benefit beyond eosinophil suppression.",  url:"https://www.healio.com/news/gastroenterology/20260519/dupilumab-boosts-esophageal-distensibility-diameter-for-eoe-in-first-time-showing", pubmedUrl:"" },
+    { type:"FDA",       impactLevel:"High Impact",       multiSource:false, date:"Jun 3, 2026",  topic:"Functional GI",          title:"FDA Expands Linzess Approval to Children Age 2+ for Functional Constipation",                              source:"gastroendonews.com", summary:"The FDA expanded linaclotide (Linzess) approval to treat functional constipation in children aged 2 years and older, extending access from the prior lower age limit of 6 years based on new pediatric safety and pharmacokinetic data.",                                              url:"https://www.gastroendonews.com/Functional-GI-Disorders/Article/05-26/Constipation-Treatment-FDA-Approves-Linzess-for-Children/80698", pubmedUrl:"" },
+    { type:"Research",  impactLevel:"Noteworthy",        multiSource:false, date:"May 18, 2026", topic:"Colorectal Cancer",      title:"Low-Dose Aspirin Cuts Recurrence in PI3K-Mutant Colorectal Cancer",                                          source:"gastroendonews.com", summary:"A randomized controlled trial demonstrated that low-dose aspirin significantly reduced recurrence rates versus placebo specifically in patients with PI3K-mutant colorectal cancer, supporting a precision oncology approach to adjuvant aspirin therapy.",                              url:"https://www.gastroendonews.com/PRN/Article/05-26/Colorectal-Cancer-Aspirin-Low-Dose-Recurrence-Reduction/80557", pubmedUrl:"" },
+    { type:"News",      impactLevel:"Noteworthy",        multiSource:false, date:"Jun 2, 2026",  topic:"IBD",                    title:"Ulcerative Proctitis May Not Raise Rectal Cancer Risk — Swedish Registry Study",                            source:"news.gastro.org",   summary:"A large Swedish registry study found that rectal cancer rates in ulcerative proctitis patients were comparable to the general population over more than a decade of follow-up, challenging the long-held assumption that all IBD subtypes confer elevated colorectal cancer risk.",        url:"https://news.gastro.org/issues/2026/june-2026/ulcerative-proctitis-may-not-raise-rectal-cancer-risk/", pubmedUrl:"" },
+    { type:"Opinion",   impactLevel:"Noteworthy",        multiSource:false, date:"Jun 4, 2026",  topic:"MASH / MASLD",           title:"MASH Label Expansion Adds Few New Semaglutide Candidates",                                                  source:"news.gastro.org",   summary:"A population-based analysis found that the new MASH indication for semaglutide adds relatively few net new candidates, since most patients with fibrotic liver disease already qualify through existing obesity- or diabetes-related indications. Commentary on real-world prescribing implications.",  url:"https://news.gastro.org/issues/2026/june-2026/mash-label-expansion-adds-few-new-semaglutide-candidates/", pubmedUrl:"" },
   ],
 };
 
@@ -55,15 +48,13 @@ const QUIZ_TOPICS = [
 ];
 
 const SECTION_META = {
-  guidelines: { label:"Clinical Guidelines", icon:"⚕️", color:"#5b8af0" },
-  articles:   { label:"Top Articles",        icon:"📄", color:"#9c6af0" },
-  news:       { label:"GI News",             icon:"📡", color:"#00b8d4" },
+  guidelines: { label:"Clinical Guidelines", icon:"⚕️",  color:"#5b8af0" },
+  weekly:     { label:"Weekly Update",       icon:"📰", color:"#e09a2a" },
 };
 
-const urgencyColor   = { High:"#e05252", Moderate:"#e09a2a", Routine:"#4caf7d" };
-const impactColor    = { "Practice-changing":"#5b8af0", "High Impact":"#9c6af0", Noteworthy:"#4caf7d" };
-const categoryColor  = { "FDA Approval":"#5b8af0", "Drug News":"#9c6af0", Research:"#4caf7d", Industry:"#e09a2a", Policy:"#e05252", Technology:"#00b8d4" };
-const sentimentColor = { Positive:"#4caf7d", Neutral:"#8899aa", Mixed:"#e09a2a", Negative:"#e05252" };
+const urgencyColor      = { High:"#e05252", Moderate:"#e09a2a", Routine:"#4caf7d" };
+const impactColor       = { "Practice-changing":"#5b8af0", "High Impact":"#9c6af0", Noteworthy:"#4caf7d" };
+const weeklyTypeColor   = { Research:"#9c6af0", FDA:"#e05252", Guideline:"#5b8af0", News:"#00b8d4", Opinion:"#e09a2a" };
 const SOCIETY_COLORS = {
   ACG:   { color:"#e08c3a", bg:"rgba(224,140,58,0.08)",  border:"rgba(224,140,58,0.2)"  },
   AGA:   { color:"#5b8af0", bg:"rgba(91,138,240,0.08)",  border:"rgba(91,138,240,0.2)"  },
@@ -102,6 +93,7 @@ function Spinner({ size=16, color="#5b8af0" }) {
 function ContentCard({ item, type }) {
   const [hov, setHov] = useState(false);
   const ac = SECTION_META[type]?.color || "#5b8af0";
+  const isWeekly = type === "weekly";
   return (
     <div onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
       onClick={()=>item.url&&window.open(item.url,"_blank")}
@@ -109,19 +101,29 @@ function ContentCard({ item, type }) {
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:8, flexWrap:"wrap" }}>
         <span style={{ fontSize:11, fontWeight:700, color:"#5a6a88", fontFamily:"monospace" }}>
           {type==="guidelines"&&`${item.org} · ${item.month} ${item.year}`}
-          {type==="articles"  &&`${item.journal} · ${item.date}`}
-          {type==="news"      &&`${item.source} · ${item.date}`}
+          {isWeekly&&`${item.source} · ${item.date}`}
         </span>
         <div style={{ display:"flex", gap:5, flexWrap:"wrap" }}>
           {type==="guidelines"&&<><Badge label={item.topic} color="#1a2535"/><Badge label={item.urgency} color={urgencyColor[item.urgency]}/></>}
-          {type==="articles"  &&<><Badge label={item.topic} color="#1a2535"/><Badge label={item.impactLevel} color={impactColor[item.impactLevel]}/></>}
-          {type==="news"      &&<><Badge label={item.category} color={categoryColor[item.category]}/><Badge label={item.sentiment} color={sentimentColor[item.sentiment]}/></>}
+          {isWeekly&&<>
+            <Badge label={item.type} color={weeklyTypeColor[item.type]||"#1a2535"}/>
+            <Badge label={item.impactLevel} color={impactColor[item.impactLevel]}/>
+            {item.multiSource&&<Badge label="MULTI-SOURCE" color="#e09a2a"/>}
+          </>}
         </div>
       </div>
-      <div style={{ fontSize:14.5, fontWeight:600, color:hov?"#e8f0ff":"#c8d8f0", lineHeight:1.5 }}>{type==="news"?item.headline:item.title}</div>
-      {type==="articles"&&item.authors&&<div style={{ fontSize:11.5, color:"#445570", fontStyle:"italic" }}>{item.authors}</div>}
+      <div style={{ fontSize:14.5, fontWeight:600, color:hov?"#e8f0ff":"#c8d8f0", lineHeight:1.5 }}>{item.title||item.headline}</div>
+      {isWeekly&&item.authors&&<div style={{ fontSize:11.5, color:"#445570", fontStyle:"italic" }}>{item.authors}</div>}
       <div style={{ fontSize:13, color:"#6a7a90", lineHeight:1.75 }}>{item.summary}</div>
-      {item.url&&hov&&<div style={{ fontSize:11, color:ac, fontFamily:"monospace", marginTop:2 }}>View source ↗</div>}
+      {hov&&(
+        <div style={{ display:"flex", gap:12, marginTop:2 }}>
+          {item.url&&<span style={{ fontSize:11, color:ac, fontFamily:"monospace" }}>View source ↗</span>}
+          {isWeekly&&item.pubmedUrl&&(
+            <span onClick={e=>{e.stopPropagation();window.open(item.pubmedUrl,"_blank");}}
+              style={{ fontSize:11, color:"#4caf7d", fontFamily:"monospace", cursor:"pointer" }}>PubMed ↗</span>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -178,7 +180,7 @@ function ContentSection({ type }) {
     loading: <><Spinner size={10} color="#5a6a88"/> Loading…</>,
     live:    type === "guidelines"
       ? <><span style={{ color:"#4caf7d", fontWeight:700 }}>● Repository</span> · {total} guidelines · Page {page} of {pages}</>
-      : <><span style={{ color:"#4caf7d", fontWeight:700 }}>● Live</span> · {ageHours!=null?`Updated ${ageHours}h ago`:"Fresh from web"}</>,
+      : <><span style={{ color:"#4caf7d", fontWeight:700 }}>● Live</span> · {ageHours!=null?`Updated ${ageHours}h ago`:"Fresh from web"} · Sources: news.gastro.org · gastroendonews.com · healio.com</>,
     error:   <><span style={{ color:"#5a6a88", fontWeight:700 }}>● Fallback</span> · Showing curated content · Live data updates weekly</>,
   }[status] || null;
 
@@ -222,9 +224,13 @@ const SOCIETY_FALLBACK_URLS = {
 };
 
 function resolveUrl(g) {
-  if (!g.url || g.url.includes("guidelinecentral.com"))
-    return SOCIETY_FALLBACK_URLS[g.org] || null;
-  return g.url;
+  const url = g.url;
+  if (!url) return SOCIETY_FALLBACK_URLS[g.org] || null;
+  const isIndex = url.includes("guidelinecentral.com") ||
+                  /\/guidelines\/?$/.test(url) ||
+                  url.includes("/pages/default.aspx") ||
+                  url.match(/journals\.lww\.com\/[^/]+\/?$/);
+  return isIndex ? (SOCIETY_FALLBACK_URLS[g.org] || null) : url;
 }
 
 function SocietyWidget({ org, guidelines, search }) {
@@ -795,8 +801,7 @@ function QuizSection() {
 
 const TABS = [
   { id:"guidelines", label:"Clinical Guidelines", icon:"⚕️" },
-  { id:"articles",   label:"Top Articles",        icon:"📄" },
-  { id:"news",       label:"GI News",             icon:"📡" },
+  { id:"weekly",     label:"Weekly Update",       icon:"📰" },
   { id:"education",  label:"Education",           icon:"🎓" },
   { id:"schedule",   label:"Schedule",            icon:"📅" },
   { id:"quiz",       label:"Quiz",                icon:"🧠" },
@@ -838,8 +843,7 @@ export default function GIHub() {
       </div>
       <div style={{ maxWidth:1100, margin:"0 auto", padding:"32px 32px 0" }}>
         {active==="guidelines"&&<GuidelinesSection/>}
-        {active==="articles"  &&<ContentSection key="articles"   type="articles"/>}
-        {active==="news"      &&<ContentSection key="news"       type="news"/>}
+        {active==="weekly"    &&<ContentSection key="weekly"     type="weekly"/>}
         {active==="education" &&<EducationSection/>}
         {active==="schedule"  &&<ScheduleSection/>}
         {active==="quiz"      &&<QuizSection/>}
