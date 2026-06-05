@@ -13,18 +13,18 @@ export function buildPrompts() {
   return {
     weekly:
       `Today is ${today}. Search these three sources for GI and hepatology stories published between ${cutoff} and ${today}: ` +
-      `(1) https://news.gastro.org/ — PRIMARY source, search thoroughly. ` +
-      `(2) https://www.gastroendonews.com/ ` +
-      `(3) https://www.healio.com/gastroenterology ` +
+      `(1) https://news.gastro.org/ — PRIMARY source, open access, search thoroughly including article body and references. ` +
+      `(2) https://www.healio.com/gastroenterology — open access, include body and references when fetching. ` +
+      `(3) https://www.gastroendonews.com/ — subscription-gated; use only for headline/summary, do not expect body text access. ` +
       `RULES: ` +
       `(A) EXCLUDE any story whose title contains "Highlights", "Roundup", "Recap", "Top Stories", "Best of", or "Coverage from" — these are conference/guideline summaries, not primary news. ` +
       `(B) Prioritize in this order: FDA approvals first, then RCT/trial results, then other news. Include exactly 1-2 opinion or how-to pieces from news.gastro.org. ` +
       `(C) If the same story (same trial, drug, or approval) appears in 2 or more sources, set multiSource:true. ` +
-      `(D) STUDY LINK — for every item that covers a single research study, you MUST attempt all three steps to find a direct link to the study: ` +
-      `Step 1: Fetch the article page and scan the body text for any hyperlink pointing to the study (journal URL, DOI link, PubMed link). ` +
-      `Step 2: If not found in body, scroll to the bottom of the article and check the References or Citations section for a link to the study. ` +
-      `Step 3: If still not found, search PubMed (https://pubmed.ncbi.nlm.nih.gov/?term={study+title+authors}) to find the PMID and construct https://pubmed.ncbi.nlm.nih.gov/{PMID}/. ` +
-      `Set studyUrl to the best link found from any step. Leave studyUrl empty string only if all three steps fail. ` +
+      `(D) STUDY LINK — for every item that covers a single research study, attempt all three steps: ` +
+      `Step 1: Fetch the article page (open-access sources only) and scan the body text for any hyperlink to the study (journal URL, DOI, PubMed). ` +
+      `Step 2: Check the References or Citations section at the bottom of the same page. ` +
+      `Step 3: Search PubMed (https://pubmed.ncbi.nlm.nih.gov/?term={study+title+first+author}) and use https://pubmed.ncbi.nlm.nih.gov/{PMID}/ if found. ` +
+      `Set studyUrl to the best link found. If the study is only a conference abstract (DDW, ASCO, UEG, ACG meeting) and not yet published in a journal, leave studyUrl empty — do not fabricate a link. ` +
       `(E) Items of type "Guideline" are handled separately — include them so the system can cross-reference the guideline repository, but set org to the publishing society (ACG|AGA|ASGE|AASLD). ` +
       `(F) Return up to 12 items total (10 non-guideline + any detected guidelines). STRICT DATE RULE: every item confirmed between ${cutoff} and ${today}. ` +
       `Return ONLY a JSON array: ` +
