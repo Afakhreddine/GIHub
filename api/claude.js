@@ -39,6 +39,12 @@ export default async function handler(req, res) {
     if (type === "content") {
       if (!section) return res.status(400).json({ error: "Missing section" });
 
+      if (section === "guidelines-new") {
+        const cached = await redisGet("gihub:guidelines:new");
+        const data = Array.isArray(cached) ? cached : [];
+        return res.status(200).json({ data });
+      }
+
       if (section === "guidelines") {
         const repo = await redisGet("gihub:guidelines:repo");
         if (!Array.isArray(repo) || repo.length === 0)

@@ -17,19 +17,18 @@ export function buildPrompts() {
       `(2) https://www.gastroendonews.com/ ` +
       `(3) https://www.healio.com/gastroenterology ` +
       `RULES: ` +
-      `(A) Prioritize in this order: FDA approvals, randomized controlled trial results, society guideline publications — these must appear first. ` +
-      `(B) Include exactly 1-2 opinion pieces or how-to/practice articles sourced from news.gastro.org. ` +
-      `(C) If the same story (same trial, drug approval, or guideline) appears in 2 or more of the three sources, set multiSource:true and impactLevel to at least "High Impact". ` +
-      `(D) For any item reporting on a research study: first check the article body for a direct hyperlink to the study (journal URL, DOI, or PubMed link) and use that as studyUrl. If no link is in the body, search PubMed to find the PMID and use https://pubmed.ncbi.nlm.nih.gov/{PMID}/. Leave studyUrl as empty string only if no study link can be found. ` +
-      `(E) EXCLUDE any story whose title contains words like "Highlights", "Roundup", "Recap", "Top Stories", "Best of", or "Coverage from" — these are summaries, not primary news. ` +
-      `(F) Return exactly 10 items total, sorted by impact (Practice-changing first, then High Impact, then Noteworthy). ` +
-      `STRICT DATE RULE: Every item must have a confirmed publication date between ${cutoff} and ${today}. ` +
-      `impactLevel taxonomy: ` +
-      `"Practice-changing" = first-in-class FDA approval, landmark RCT in NEJM/Lancet/Gastroenterology, or major society guideline update. ` +
-      `"High Impact" = multi-source story, phase 3 trial result, label expansion, or solid RCT. ` +
-      `"Noteworthy" = registry analyses, policy news, society announcements, opinion/how-to pieces. ` +
-      `Return ONLY a JSON array of exactly 10 items: ` +
-      `{"type":"Research|FDA|Guideline|News|Opinion","impactLevel":"Practice-changing|High Impact|Noteworthy","multiSource":false,"date":"","topic":"","title":"","authors":"","source":"","summary":"2-3 sentences","url":"","studyUrl":""}`,
+      `(A) EXCLUDE any story whose title contains "Highlights", "Roundup", "Recap", "Top Stories", "Best of", or "Coverage from" — these are conference/guideline summaries, not primary news. ` +
+      `(B) Prioritize in this order: FDA approvals first, then RCT/trial results, then other news. Include exactly 1-2 opinion or how-to pieces from news.gastro.org. ` +
+      `(C) If the same story (same trial, drug, or approval) appears in 2 or more sources, set multiSource:true. ` +
+      `(D) STUDY LINK — for every item that covers a single research study, you MUST attempt all three steps to find a direct link to the study: ` +
+      `Step 1: Fetch the article page and scan the body text for any hyperlink pointing to the study (journal URL, DOI link, PubMed link). ` +
+      `Step 2: If not found in body, scroll to the bottom of the article and check the References or Citations section for a link to the study. ` +
+      `Step 3: If still not found, search PubMed (https://pubmed.ncbi.nlm.nih.gov/?term={study+title+authors}) to find the PMID and construct https://pubmed.ncbi.nlm.nih.gov/{PMID}/. ` +
+      `Set studyUrl to the best link found from any step. Leave studyUrl empty string only if all three steps fail. ` +
+      `(E) Items of type "Guideline" are handled separately — include them so the system can cross-reference the guideline repository, but set org to the publishing society (ACG|AGA|ASGE|AASLD). ` +
+      `(F) Return up to 12 items total (10 non-guideline + any detected guidelines). STRICT DATE RULE: every item confirmed between ${cutoff} and ${today}. ` +
+      `Return ONLY a JSON array: ` +
+      `{"type":"Research|FDA|Guideline|News|Opinion","org":"ACG|AGA|ASGE|AASLD|","multiSource":false,"date":"","topic":"","title":"","authors":"","source":"","summary":"2-3 sentences","url":"","studyUrl":""}`,
   };
 }
 

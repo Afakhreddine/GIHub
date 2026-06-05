@@ -19,7 +19,7 @@ const STATIC = {
     { org:"ACG",  year:"2024", month:"Jul", topic:"Alcohol-Associated Liver", urgency:"High",     title:"ACG Clinical Guideline: Alcohol-Associated Liver Disease",                               summary:"Recommendations for alcohol-associated hepatitis and cirrhosis including corticosteroid use and transplantation candidacy.",                      url:"https://pubmed.ncbi.nlm.nih.gov/38174913/" },
   ],
   weekly: [
-    { type:"Guideline", impactLevel:"Practice-changing", multiSource:false, date:"May 20, 2026", topic:"IBD / Crohn's Disease",  title:"ACG Releases Updated Clinical Guideline: Management of Crohn's Disease in Adults",                         source:"gastroendonews.com", summary:"The American College of Gastroenterology published comprehensive updated guidance for managing Crohn's disease in adults, covering biologic selection, small molecule therapies, and treat-to-target strategies with GRADE-level evidence grading.",            url:"https://www.gastroendonews.com/Inflammatory-Bowel-Disease/Article/05-26/Crohns-Disease-ACG-Updated-Clinical-Guideline-Highlights/80563", studyUrl:"https://pubmed.ncbi.nlm.nih.gov/40701562/" },
+    { type:"Research",  impactLevel:"Noteworthy",        multiSource:false, date:"May 20, 2026", topic:"MASLD / Pediatrics",     title:"BMI and Metabolic Markers Could Address Steatotic Liver Disease Screening Gap in Youth",                          source:"healio.com",        summary:"A new analysis suggests BMI combined with metabolic markers could identify a significant screening 'blind spot' for steatotic liver disease in children and adolescents, where current adult-derived thresholds may miss early disease. Researchers propose pediatric-specific cutoffs for clinical screening algorithms.",      url:"https://www.healio.com/news/gastroenterology/20260520/bmi-other-markers-could-address-steatotic-liver-disease-screening-blind-spot-in-youth", studyUrl:"" },
     { type:"Research",  impactLevel:"Practice-changing", multiSource:false, date:"May 25, 2026", topic:"Colorectal Cancer",      title:"Adjuvant Chemoimmunotherapy Sets New Standard in Stage III dMMR Colon Cancer",                          source:"gastroendonews.com", summary:"Adjuvant atezolizumab plus mFOLFOX6 reduced recurrence risk by approximately 50% versus chemotherapy alone in stage III deficient mismatch repair (dMMR) colon cancer in a phase 3 trial presented at ASCO 2026. This establishes a new standard of care for this molecularly defined subgroup.",   url:"https://www.gastroendonews.com/PRN/Article/05-26/Adjuvant-Chemoimmunotherapy-Standard-Stage-III-dMMR-Colon-Cancer/80633", studyUrl:"" },
     { type:"FDA",       impactLevel:"High Impact",       multiSource:false, date:"May 28, 2026", topic:"Hepatology",             title:"FDA Approves Bulevirtide — First-Ever Treatment for Chronic Hepatitis Delta Virus",                      source:"gastroendonews.com", summary:"Bulevirtide received FDA approval as the first therapeutic option for chronic hepatitis Delta virus (HDV) infection in the US, administered via once-daily subcutaneous injection. HDV affects an estimated 5% of the 300 million people living with chronic hepatitis B worldwide.",      url:"https://www.gastroendonews.com/Hepatology-in-Focus/Article/05-26/fda-approves-hepatitis-delta-treatment-Bulevirtide/80664", studyUrl:"" },
     { type:"Research",  impactLevel:"High Impact",       multiSource:true,  date:"May 21, 2026", topic:"IBD",                    title:"'Strikingly Better': Co-antibody Combination Tops Golimumab + Guselkumab in Refractory IBD",               source:"healio.com",        summary:"A phase 2 clinical trial demonstrated that a novel co-antibody combination showed significantly superior efficacy over both golimumab and guselkumab in patients with refractory inflammatory bowel disease. Results were presented at Digestive Disease Week 2026.",                      url:"https://www.healio.com/news/gastroenterology/20260521/strikingly-better-coantibody-combination-tops-golimumab-guselkumab-in-refractory-ibd", studyUrl:"" },
@@ -106,9 +106,9 @@ function ContentCard({ item, type }) {
         <div style={{ display:"flex", gap:5, flexWrap:"wrap" }}>
           {type==="guidelines"&&<><Badge label={item.topic} color="#1a2535"/><Badge label={item.urgency} color={urgencyColor[item.urgency]}/></>}
           {isWeekly&&<>
-            <Badge label={item.type} color={weeklyTypeColor[item.type]||"#1a2535"}/>
-            <Badge label={item.impactLevel} color={impactColor[item.impactLevel]}/>
-            {item.multiSource&&<Badge label="MULTI-SOURCE" color="#e09a2a"/>}
+            {item.type==="FDA"    &&<Badge label="FDA Approval" color={weeklyTypeColor.FDA}/>}
+            {item.type==="Opinion"&&<Badge label="Opinion"      color={weeklyTypeColor.Opinion}/>}
+            {item.multiSource     &&<Badge label="High Impact"  color={impactColor["High Impact"]}/>}
           </>}
         </div>
       </div>
@@ -307,11 +307,14 @@ function SocietyWidget({ org, guidelines, search }) {
   );
 }
 
+const ONE_MONTH_MS = 30 * 24 * 3600 * 1000;
+
 function GuidelinesSection() {
-  const [grouped, setGrouped] = useState(null);
-  const [status, setStatus]   = useState("loading");
-  const [total, setTotal]     = useState(0);
-  const [search, setSearch]   = useState("");
+  const [grouped, setGrouped]     = useState(null);
+  const [status, setStatus]       = useState("loading");
+  const [total, setTotal]         = useState(0);
+  const [search, setSearch]       = useState("");
+  const [newAlerts, setNewAlerts] = useState([]);
 
   function buildGrouped(list) {
     const g = {};
@@ -324,6 +327,14 @@ function GuidelinesSection() {
 
   useEffect(() => {
     async function load() {
+      // Load new-guideline banner alerts (non-critical — ignore failures)
+      try {
+        const r = await apiCall({ type:"content", section:"guidelines-new" });
+        if (Array.isArray(r.data)) {
+          setNewAlerts(r.data.filter(a => a.detectedAt && Date.now() - a.detectedAt < ONE_MONTH_MS));
+        }
+      } catch(_) {}
+
       try {
         const result = await apiCall({ type:"content", section:"guidelines", page:"all" });
         if (Array.isArray(result.data) && result.data.length > 0) {
@@ -350,6 +361,21 @@ function GuidelinesSection() {
 
   return (
     <div>
+      {newAlerts.length > 0 && (
+        <div style={{ marginBottom:28, display:"flex", flexDirection:"column", gap:14 }}>
+          {newAlerts.map((alert, i) => (
+            <div key={i} style={{ background:"linear-gradient(135deg,rgba(91,138,240,0.18),rgba(156,106,240,0.12))", border:"2px solid rgba(91,138,240,0.5)", borderLeft:"5px solid #5b8af0", borderRadius:14, padding:"20px 26px", boxShadow:"0 4px 24px rgba(91,138,240,0.15)" }}>
+              <div style={{ fontSize:22, fontWeight:900, color:"#a8d0ff", letterSpacing:0.8, textTransform:"uppercase", lineHeight:1.25 }}>
+                NEW {alert.org} GUIDELINE PUBLISHED
+              </div>
+              <div style={{ fontSize:15, fontWeight:600, color:"#d0e8ff", marginTop:10, lineHeight:1.55 }}>{alert.title}</div>
+              {(alert.month || alert.year) && (
+                <div style={{ fontSize:11, color:"#4a7aaa", marginTop:8, fontFamily:"monospace" }}>{[alert.month, alert.year].filter(Boolean).join(" ")} · Added to repository</div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
       <div style={{ marginBottom:20 }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:14, flexWrap:"wrap", gap:12 }}>
           <div>

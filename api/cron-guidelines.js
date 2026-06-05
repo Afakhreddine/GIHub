@@ -250,8 +250,9 @@ export default async function handler(req, res) {
   const existing = (await redisGet(REPO_KEY)) || [];
   console.log(`Weekly update starting. Repo has ${existing.length} existing guidelines.`);
   const results = {};
-  const errors = {};
-  let newCount = 0;
+  const errors  = {};
+  let newCount  = 0;
+  const allFetched = [];
 
   for (const [soc, prompt] of Object.entries(UPDATE_PROMPTS)) {
     try {
@@ -259,7 +260,7 @@ export default async function handler(req, res) {
       const fetched = await claudeFetch(prompt, apiKey);
       results[soc] = fetched.length;
       newCount += fetched.length;
-      if (fetched.length > 0) existing.push(...fetched);
+      if (fetched.length > 0) { existing.push(...fetched); allFetched.push(...fetched); }
       console.log(`  ✓ ${soc}: ${fetched.length} new`);
     } catch (e) {
       errors[soc] = e.message;
@@ -271,6 +272,17 @@ export default async function handler(req, res) {
     const merged = sortNewestFirst(dedupByIdentity(existing));
     await redisSet(REPO_KEY, merged);
     console.log(`✓ Repo updated: ${merged.length} total guidelines (+${newCount} new)`);
+
+    // Write new-guideline banner notifications
+    const NINETY_DAYS = 90 * 24 * 3600 * 1000;
+    const banners = (await redisGet("gihub:guidelines:new")) || [];
+    const now = Date.now();
+    for (const entry of allFetched) {
+      if (entry.org && entry.title) {
+        banners.push({ org: entry.org, title: entry.title, year: entry.year || "", month: entry.month || "", detectedAt: now });
+      }
+    }
+    await redisSet("gihub:guidelines:new", banners.filter(b => now - b.detectedAt < NINETY_DAYS));
   } else {
     console.log(`No new guidelines found. Repo unchanged at ${existing.length}.`);
   }
