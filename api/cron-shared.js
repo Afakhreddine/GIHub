@@ -20,15 +20,16 @@ export function buildPrompts() {
       `(A) Prioritize in this order: FDA approvals, randomized controlled trial results, society guideline publications — these must appear first. ` +
       `(B) Include exactly 1-2 opinion pieces or how-to/practice articles sourced from news.gastro.org. ` +
       `(C) If the same story (same trial, drug approval, or guideline) appears in 2 or more of the three sources, set multiSource:true and impactLevel to at least "High Impact". ` +
-      `(D) For any item reporting on a research study, search PubMed to find the original article's PMID and set pubmedUrl to https://pubmed.ncbi.nlm.nih.gov/{PMID}/. Leave pubmedUrl empty string if not found. ` +
-      `(E) Return exactly 10 items total, sorted by impact (Practice-changing first, then High Impact, then Noteworthy). ` +
+      `(D) For any item reporting on a research study: first check the article body for a direct hyperlink to the study (journal URL, DOI, or PubMed link) and use that as studyUrl. If no link is in the body, search PubMed to find the PMID and use https://pubmed.ncbi.nlm.nih.gov/{PMID}/. Leave studyUrl as empty string only if no study link can be found. ` +
+      `(E) EXCLUDE any story whose title contains words like "Highlights", "Roundup", "Recap", "Top Stories", "Best of", or "Coverage from" — these are summaries, not primary news. ` +
+      `(F) Return exactly 10 items total, sorted by impact (Practice-changing first, then High Impact, then Noteworthy). ` +
       `STRICT DATE RULE: Every item must have a confirmed publication date between ${cutoff} and ${today}. ` +
       `impactLevel taxonomy: ` +
       `"Practice-changing" = first-in-class FDA approval, landmark RCT in NEJM/Lancet/Gastroenterology, or major society guideline update. ` +
       `"High Impact" = multi-source story, phase 3 trial result, label expansion, or solid RCT. ` +
       `"Noteworthy" = registry analyses, policy news, society announcements, opinion/how-to pieces. ` +
       `Return ONLY a JSON array of exactly 10 items: ` +
-      `{"type":"Research|FDA|Guideline|News|Opinion","impactLevel":"Practice-changing|High Impact|Noteworthy","multiSource":false,"date":"","topic":"","title":"","authors":"","source":"","summary":"2-3 sentences","url":"","pubmedUrl":""}`,
+      `{"type":"Research|FDA|Guideline|News|Opinion","impactLevel":"Practice-changing|High Impact|Noteworthy","multiSource":false,"date":"","topic":"","title":"","authors":"","source":"","summary":"2-3 sentences","url":"","studyUrl":""}`,
   };
 }
 
