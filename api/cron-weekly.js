@@ -2,6 +2,23 @@ import { claudeFetch, redisGet, redisSet, buildPrompts, sortNewestFirst } from "
 
 const NINETY_DAYS = 90 * 24 * 3600 * 1000;
 
+const SOURCE_BASES = {
+  "news.gastro.org":     "https://news.gastro.org",
+  "gastroendonews.com":  "https://www.gastroendonews.com",
+  "healio.com":          "https://www.healio.com",
+};
+
+function normalizeItemUrls(item) {
+  const out = { ...item };
+  const srcKey = Object.keys(SOURCE_BASES).find(k => (out.source || "").includes(k));
+  for (const field of ["url", "studyUrl"]) {
+    const val = out[field];
+    if (!val || val.startsWith("http://") || val.startsWith("https://")) continue;
+    if (val.startsWith("/") && srcKey) out[field] = SOURCE_BASES[srcKey] + val;
+  }
+  return out;
+}
+
 function titleMatch(a, b) {
   const norm = s => (s || "").toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
   const na = norm(a), nb = norm(b);
@@ -38,7 +55,8 @@ export default async function handler(req, res) {
   if (!apiKey) return res.status(500).json({ error: "API key not configured" });
   try {
     console.log("Fetching weekly update...");
-    const allItems = await claudeFetch(buildPrompts().weekly, apiKey);
+    const rawItems = await claudeFetch(buildPrompts().weekly, apiKey);
+    const allItems = rawItems.map(normalizeItemUrls);
 
     const guidelineItems = allItems.filter(d => d.type === "Guideline");
     const weeklyItems    = allItems.filter(d => d.type !== "Guideline").slice(0, 10);
