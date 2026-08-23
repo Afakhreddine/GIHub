@@ -6,7 +6,7 @@ GIHub's Weekly Update section is now **repo-managed**. The website imports weekl
 src/data/weekly.js
 ```
 
-The previous Vercel `/api/cron-weekly` updater has been removed from the repo and is no longer scheduled by `vercel.json`. The frontend and legacy `/api/claude` content route serve weekly-update data from the committed data file.
+The previous Vercel `/api/cron-weekly` updater is no longer scheduled by `vercel.json` and is kept only as an explicit no-op legacy endpoint. The frontend and legacy `/api/claude` content route serve weekly-update data from the committed data file.
 
 ## Source prompt
 
