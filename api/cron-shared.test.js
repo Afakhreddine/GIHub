@@ -1,21 +1,30 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildPrompts } from "./cron-shared.js";
+import { buildPrompts, isCronAuthorized } from "./cron-shared.js";
 
-test("articles prompt defines all three impactLevel tiers", () => {
-  const { articles } = buildPrompts();
-  assert.match(articles, /"Practice-changing"\s*=/);
-  assert.match(articles, /"High Impact"\s*=/);
-  assert.match(articles, /"Noteworthy"\s*=/);
+test("weekly prompt describes the unified GI weekly update feed", () => {
+  const { weekly } = buildPrompts();
+  assert.match(weekly, /news\.gastro\.org/);
+  assert.match(weekly, /healio\.com\/gastroenterology/);
+  assert.match(weekly, /gastroendonews\.com/);
 });
 
-test("articles prompt still emits the JSON schema example", () => {
-  const { articles } = buildPrompts();
-  assert.ok(articles.includes(`"impactLevel":"Practice-changing|High Impact|Noteworthy"`));
+test("weekly prompt requires working study links and forbids fabricated conference-abstract links", () => {
+  const { weekly } = buildPrompts();
+  assert.ok(weekly.includes("STUDY LINK"));
+  assert.ok(weekly.includes("studyUrl"));
+  assert.match(weekly, /do not fabricate a link/i);
 });
 
-test("news prompt is unaffected by the taxonomy change", () => {
-  const { news } = buildPrompts();
-  assert.ok(news.includes(`"category":"FDA Approval|Drug News|Research|Industry|Policy"`));
-  assert.ok(!news.includes("Practice-changing"));
+test("cron authorization is permissive when no CRON_SECRET is configured", () => {
+  assert.equal(isCronAuthorized({ headers: {} }, ""), true);
+});
+
+test("cron authorization accepts matching bearer token when CRON_SECRET is configured", () => {
+  assert.equal(isCronAuthorized({ headers: { authorization: "Bearer test-secret" } }, "test-secret"), true);
+});
+
+test("cron authorization rejects missing or mismatched bearer token when CRON_SECRET is configured", () => {
+  assert.equal(isCronAuthorized({ headers: {} }, "test-secret"), false);
+  assert.equal(isCronAuthorized({ headers: { authorization: "Bearer wrong" } }, "test-secret"), false);
 });

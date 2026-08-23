@@ -34,6 +34,20 @@ export function buildPrompts() {
 
 export const PROMPTS = buildPrompts();
 
+// ── CRON AUTH HELPERS ─────────────────────────────────────────────────────────
+export function isCronAuthorized(req, secret = process.env.CRON_SECRET || "") {
+  const expected = String(secret || "").trim();
+  if (!expected) return true;
+  const auth = req?.headers?.authorization || req?.headers?.Authorization || "";
+  return auth === `Bearer ${expected}`;
+}
+
+export function rejectUnauthorizedCron(req, res, secret = process.env.CRON_SECRET || "") {
+  if (isCronAuthorized(req, secret)) return false;
+  res.status(401).json({ error: "Unauthorized" });
+  return true;
+}
+
 // ── REDIS HELPERS ─────────────────────────────────────────────────────────────
 const rh = () => ({ Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}` });
 const ru = p => `${process.env.UPSTASH_REDIS_REST_URL}${p}`;
