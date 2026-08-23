@@ -488,7 +488,7 @@ function QuizDisplay({ quiz }) {
               <div key={oi} onClick={()=>selectAnswer(quizIndex, letter)}
                 style={{ background:bg, border:`1px solid ${border}`, borderRadius:8, padding:"8px 12px", fontSize:12, color, cursor:hasAnswered?"default":"pointer", transition:"all 0.15s", display:"flex", alignItems:"center", gap:8 }}>
                 <span style={{ fontWeight:700, fontFamily:"monospace", fontSize:11, minWidth:14 }}>{letter}</span>
-                <span>{opt.replace(/^[A-D][\.\)]\s*/i,"")}</span>
+                <span>{opt.replace(/^[A-D][.)]\s*/i,"")}</span>
                 {hasAnswered&&isRight  &&<span style={{ marginLeft:"auto" }}>✓</span>}
                 {hasAnswered&&isChosen&&!isRight&&<span style={{ marginLeft:"auto" }}>✗</span>}
               </div>
@@ -787,7 +787,7 @@ function QuizSection() {
                 <div key={oi} onClick={()=>!submitted&&setAnswer(letter)}
                   style={{ background:bg, border:`1px solid ${border}`, borderRadius:8, padding:"10px 14px", fontSize:13, color, cursor:submitted?"default":"pointer", transition:"all 0.15s", display:"flex", alignItems:"center", gap:10 }}>
                   <span style={{ fontWeight:700, fontFamily:"monospace", fontSize:11, minWidth:14 }}>{letter}</span>
-                  <span>{opt.replace(/^[A-D][\.\)]\s*/i,"")}</span>
+                  <span>{opt.replace(/^[A-D][.)]\s*/i,"")}</span>
                   {submitted&&isRight&&<span style={{ marginLeft:"auto" }}>✓</span>}
                   {submitted&&isChosen&&!isRight&&<span style={{ marginLeft:"auto" }}>✗</span>}
                 </div>

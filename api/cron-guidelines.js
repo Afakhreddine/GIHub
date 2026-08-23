@@ -1,3 +1,5 @@
+import { rejectUnauthorizedCron } from "./cron-shared.js";
+
 // One society per call — no timeouts possible
 // Usage:
 //   ?society=ASGE   — fetch ASGE guidelines and add to repo
@@ -176,6 +178,8 @@ async function claudeFetch(prompt, apiKey) {
 
 // ── HANDLER ───────────────────────────────────────────────────────────────────
 export default async function handler(req, res) {
+  if (rejectUnauthorizedCron(req, res)) return;
+
   const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
   if (!apiKey) return res.status(500).json({ error: "API key not configured" });
 
