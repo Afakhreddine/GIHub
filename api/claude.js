@@ -1,4 +1,5 @@
 // api/claude.js
+import guidelines from "../src/data/guidelines.js";
 
 async function redisGet(key) {
   const res = await fetch(
@@ -23,9 +24,6 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
-  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  if (!apiKey) return res.status(500).json({ error: "API key not configured" });
-
   let body;
   try { body = typeof req.body === "string" ? JSON.parse(req.body) : req.body; }
   catch { return res.status(400).json({ error: "Invalid JSON" }); }
@@ -40,23 +38,18 @@ export default async function handler(req, res) {
       if (!section) return res.status(400).json({ error: "Missing section" });
 
       if (section === "guidelines-new") {
-        const cached = await redisGet("gihub:guidelines:new");
-        const data = Array.isArray(cached) ? cached : [];
-        return res.status(200).json({ data });
+        return res.status(200).json({ data: [] });
       }
 
       if (section === "guidelines") {
-        const repo = await redisGet("gihub:guidelines:repo");
-        if (!Array.isArray(repo) || repo.length === 0)
-          return res.status(200).json({ data: [], status: "empty" });
         if (page === "all")
-          return res.status(200).json({ data: repo, total: repo.length });
+          return res.status(200).json({ data: guidelines, total: guidelines.length, source: "repo" });
         const PAGE_SIZE = 20;
-        const total = repo.length;
+        const total = guidelines.length;
         const pages = Math.ceil(total / PAGE_SIZE);
         const start = (page - 1) * PAGE_SIZE;
-        const data  = repo.slice(start, start + PAGE_SIZE);
-        return res.status(200).json({ data, page, pages, total, ageHours: null });
+        const data  = guidelines.slice(start, start + PAGE_SIZE);
+        return res.status(200).json({ data, page, pages, total, source: "repo" });
       }
 
       const cached = await redisGet(`gihub:${section}`);
@@ -94,6 +87,9 @@ export default async function handler(req, res) {
         : `Write 1 clinical vignette MCQ for a GI fellow on "${quizTopic}" based on current ACG/AGA/ASGE guidelines. ` +
           `Return ONLY a JSON array of 1 object, no markdown: ` +
           `[{"question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":"A|B|C|D","explanation":"..."}]`;
+
+      const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
+      if (!apiKey) return res.status(500).json({ error: "API key not configured" });
 
       const response = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
