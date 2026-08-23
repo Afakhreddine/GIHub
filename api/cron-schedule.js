@@ -1,5 +1,6 @@
 // api/cron-schedule.js — ONE topic per invocation, never times out
 // Fetches: guidelines (Haiku, from repo), articles, news (Sonnet, web search), quiz (Haiku)
+import guidelinesRepo from "../src/data/guidelines.js";
 
 const LECTURE_TOPICS = [
   { slug:"irritable-bowel-syndrome",           label:"IBS"                                  },
@@ -12,19 +13,6 @@ const QUEUE_KEY = "gihub:schedule:queue";
 
 const redisBase = () => process.env.UPSTASH_REDIS_REST_URL;
 const redisHdrs = () => ({ Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}` });
-
-async function redisGet(key) {
-  const res = await fetch(`${redisBase()}/get/${encodeURIComponent(key)}`, { headers: redisHdrs() });
-  if (!res.ok) return null;
-  const json = await res.json();
-  let val = json.result;
-  if (!val) return null;
-  for (let i = 0; i < 3; i++) {
-    if (typeof val === "object") break;
-    try { val = JSON.parse(val); } catch { break; }
-  }
-  return typeof val === "object" ? val : null;
-}
 
 async function redisSet(key, value) {
   const encoded = encodeURIComponent(JSON.stringify(value));
@@ -56,9 +44,9 @@ async function redisDel(key) {
 
 // ── GUIDELINE PICKER (Haiku, no web search, returns all strong matches) ───────
 async function pickGuidelines(topicLabel, apiKey) {
-  const repo = await redisGet("gihub:guidelines:repo");
+  const repo = guidelinesRepo;
   if (!Array.isArray(repo) || repo.length === 0) {
-    console.log("  guideline: repo empty, skipping");
+    console.log("  guideline: repo data empty, skipping");
     return [];
   }
 

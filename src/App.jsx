@@ -1,23 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { CALENDAR_MONTH, CALENDAR_EVENTS } from "./scheduleConfig.js";
+import GUIDELINES from "./data/guidelines.js";
 
 // ── SESSION CACHE ─────────────────────────────────────────────────────────────
 const sessionCache = {};
 
 // ── STATIC FALLBACK DATA ──────────────────────────────────────────────────────
 const STATIC = {
-  guidelines: [
-    { org:"AGA",  year:"2025", month:"Nov", topic:"Barrett's Esophagus",     urgency:"High",     title:"AGA Clinical Practice Guideline on Surveillance of Barrett's Esophagus",                summary:"Evidence-based recommendations on endoscopic surveillance for Barrett's esophagus using GRADE methodology.",                                    url:"https://www.gastrojournal.org/article/S0016-5085(25)06013-5/fulltext" },
-    { org:"AGA",  year:"2025", month:"Oct", topic:"Gastroparesis",            urgency:"High",     title:"AGA Clinical Practice Guideline on Management of Gastroparesis",                         summary:"Evidence-based recommendations for diagnosis and treatment of idiopathic and diabetic gastroparesis.",                                             url:"https://www.gastrojournal.org/article/S0016-5085(25)05857-3/fulltext" },
-    { org:"ACG",  year:"2025", month:"Jun", topic:"Ulcerative Colitis",       urgency:"High",     title:"ACG Clinical Guideline Update: Ulcerative Colitis in Adults",                            summary:"Updated recommendations for adult UC covering biologics, small molecules, and treat-to-target strategies.",                                       url:"https://pubmed.ncbi.nlm.nih.gov/40701556/" },
-    { org:"ACG",  year:"2025", month:"Jun", topic:"Crohn's Disease",          urgency:"High",     title:"ACG Clinical Guideline: Management of Crohn's Disease in Adults",                        summary:"Comprehensive updated recommendations for adult CD management with GRADE-level evidence assessment.",                                             url:"https://pubmed.ncbi.nlm.nih.gov/40701562/" },
-    { org:"ACG",  year:"2025", month:"Mar", topic:"Hepatic Encephalopathy",   urgency:"Moderate", title:"ACG Clinical Guidelines: Diagnosis, Management and Prevention of Hepatic Encephalopathy", summary:"Issues 24 recommendations for HE in cirrhosis using GRADE methodology.",                                                                         url:"" },
-    { org:"ASGE", year:"2025", month:"Feb", topic:"GERD",                     urgency:"Moderate", title:"ASGE Guideline on the Diagnosis and Management of GERD",                                 summary:"Updates 2014 ASGE GERD guideline addressing post-sleeve gastrectomy and post-POEM populations.",                                                 url:"https://pubmed.ncbi.nlm.nih.gov/39692638/" },
-    { org:"ACG",  year:"2025", month:"Jan", topic:"IBS",                      urgency:"Moderate", title:"ACG Clinical Guideline: Management of Irritable Bowel Syndrome",                         summary:"Updated IBS recommendations covering low-FODMAP diet, soluble fiber, neuromodulators, and secretagogues.",                                       url:"" },
-    { org:"ACG",  year:"2024", month:"Sep", topic:"H. pylori",                urgency:"High",     title:"ACG Clinical Guideline: Treatment of Helicobacter pylori Infection",                     summary:"Recommends bismuth quadruple or concomitant therapy as first-line given rising clarithromycin resistance.",                                      url:"https://pubmed.ncbi.nlm.nih.gov/39626064/" },
-    { org:"ACG",  year:"2024", month:"Sep", topic:"CRC Screening",            urgency:"High",     title:"ACG Clinical Guideline: Colorectal Cancer Screening 2024 Update",                        summary:"Reaffirms average-risk CRC screening initiation at age 45 with updated post-polypectomy surveillance intervals.",                                url:"" },
-    { org:"ACG",  year:"2024", month:"Jul", topic:"Alcohol-Associated Liver", urgency:"High",     title:"ACG Clinical Guideline: Alcohol-Associated Liver Disease",                               summary:"Recommendations for alcohol-associated hepatitis and cirrhosis including corticosteroid use and transplantation candidacy.",                      url:"https://pubmed.ncbi.nlm.nih.gov/38174913/" },
-  ],
+  guidelines: GUIDELINES,
   weekly: [
     { type:"Research",  impactLevel:"Noteworthy",        multiSource:false, date:"May 20, 2026", topic:"MASLD / Pediatrics",     title:"BMI and Metabolic Markers Could Address Steatotic Liver Disease Screening Gap in Youth",                          source:"healio.com",        summary:"A new analysis suggests BMI combined with metabolic markers could identify a significant screening 'blind spot' for steatotic liver disease in children and adolescents, where current adult-derived thresholds may miss early disease. Researchers propose pediatric-specific cutoffs for clinical screening algorithms.",      url:"https://www.healio.com/news/gastroenterology/20260520/bmi-other-markers-could-address-steatotic-liver-disease-screening-blind-spot-in-youth", studyUrl:"" },
     { type:"Research",  impactLevel:"Practice-changing", multiSource:false, date:"May 25, 2026", topic:"Colorectal Cancer",      title:"Adjuvant Chemoimmunotherapy Sets New Standard in Stage III dMMR Colon Cancer",                          source:"gastroendonews.com", summary:"Adjuvant atezolizumab plus mFOLFOX6 reduced recurrence risk by approximately 50% versus chemotherapy alone in stage III deficient mismatch repair (dMMR) colon cancer in a phase 3 trial presented at ASCO 2026. This establishes a new standard of care for this molecularly defined subgroup.",   url:"https://www.gastroendonews.com/PRN/Article/05-26/Adjuvant-Chemoimmunotherapy-Standard-Stage-III-dMMR-Colon-Cancer/80633", studyUrl:"" },
@@ -133,19 +123,28 @@ function ContentCard({ item, type }) {
 function ContentSection({ type }) {
   const meta = SECTION_META[type];
   const [search, setSearch]     = useState("");
-  const [items, setItems]       = useState(()=>sortByDate(STATIC[type]));
-  const [loading, setLoading]   = useState(true);
-  const [status, setStatus]     = useState("loading");
+  const [items, setItems]       = useState(()=>type === "guidelines" ? STATIC.guidelines : sortByDate(STATIC[type]));
+  const [loading, setLoading]   = useState(type !== "guidelines");
+  const [status, setStatus]     = useState(type === "guidelines" ? "repo" : "loading");
   const [ageHours, setAgeHours] = useState(null);
   const [page, setPage]   = useState(1);
   const [pages, setPages] = useState(1);
-  const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState(type === "guidelines" ? STATIC.guidelines.length : 0);
 
   useEffect(() => { setPage(1); }, [type]);
 
   useEffect(() => {
     async function load() {
-      if (type !== "guidelines" && sessionCache[type]) {
+      if (type === "guidelines") {
+        setItems(STATIC.guidelines);
+        setAgeHours(null);
+        setStatus("repo");
+        setPages(1);
+        setTotal(STATIC.guidelines.length);
+        setLoading(false);
+        return;
+      }
+      if (sessionCache[type]) {
         setItems(sessionCache[type].data);
         setAgeHours(sessionCache[type].ageHours);
         setStatus("live");
@@ -157,8 +156,8 @@ function ContentSection({ type }) {
       try {
         const result = await apiCall({ type:"content", section:type, page });
         if (Array.isArray(result.data) && result.data.length > 0) {
-          const sorted = type === "guidelines" ? result.data : sortByDate(result.data);
-          if (type !== "guidelines") sessionCache[type] = { data:sorted, ageHours:result.ageHours };
+          const sorted = sortByDate(result.data);
+          sessionCache[type] = { data:sorted, ageHours:result.ageHours };
           setItems(sorted);
           setAgeHours(result.ageHours);
           setStatus("live");
@@ -180,9 +179,8 @@ function ContentSection({ type }) {
 
   const statusEl = {
     loading: <><Spinner size={10} color="#5a6a88"/> Loading…</>,
-    live:    type === "guidelines"
-      ? <><span style={{ color:"#4caf7d", fontWeight:700 }}>● Repository</span> · {total} guidelines · Page {page} of {pages}</>
-      : <><span style={{ color:"#4caf7d", fontWeight:700 }}>● Live</span> · {ageHours!=null?`Updated ${ageHours}h ago`:"Fresh from web"} · Sources: news.gastro.org · gastroendonews.com · healio.com</>,
+    repo:    <><span style={{ color:"#4caf7d", fontWeight:700 }}>● Repo-managed</span> · {total} guidelines · Updated through GitHub</>,
+    live:    <><span style={{ color:"#4caf7d", fontWeight:700 }}>● Live</span> · {ageHours!=null?`Updated ${ageHours}h ago`:"Fresh from web"} · Sources: news.gastro.org · gastroendonews.com · healio.com</>,
     error:   <><span style={{ color:"#5a6a88", fontWeight:700 }}>● Fallback</span> · Showing curated content · Live data updates weekly</>,
   }[status] || null;
 
@@ -307,14 +305,12 @@ function SocietyWidget({ org, guidelines, search }) {
   );
 }
 
-const ONE_MONTH_MS = 30 * 24 * 3600 * 1000;
-
 function GuidelinesSection() {
-  const [grouped, setGrouped]     = useState(null);
-  const [status, setStatus]       = useState("loading");
-  const [total, setTotal]         = useState(0);
+  const grouped = buildGrouped(STATIC.guidelines);
+  const status = "repo";
+  const total = STATIC.guidelines.length;
   const [search, setSearch]       = useState("");
-  const [newAlerts, setNewAlerts] = useState([]);
+  const newAlerts = [];
 
   function buildGrouped(list) {
     const g = {};
@@ -325,38 +321,8 @@ function GuidelinesSection() {
     return g;
   }
 
-  useEffect(() => {
-    async function load() {
-      // Load new-guideline banner alerts (non-critical — ignore failures)
-      try {
-        const r = await apiCall({ type:"content", section:"guidelines-new" });
-        if (Array.isArray(r.data)) {
-          setNewAlerts(r.data.filter(a => a.detectedAt && Date.now() - a.detectedAt < ONE_MONTH_MS));
-        }
-      } catch(_) {}
-
-      try {
-        const result = await apiCall({ type:"content", section:"guidelines", page:"all" });
-        if (Array.isArray(result.data) && result.data.length > 0) {
-          setGrouped(buildGrouped(result.data));
-          setTotal(result.total || result.data.length);
-          setStatus("live");
-        } else {
-          setGrouped(buildGrouped(STATIC.guidelines));
-          setStatus("error");
-        }
-      } catch(e) {
-        setGrouped(buildGrouped(STATIC.guidelines));
-        setStatus("error");
-      }
-    }
-    load();
-  }, []);
-
   const statusEl = {
-    loading: <><Spinner size={10} color="#5a6a88"/> Loading…</>,
-    live:    <><span style={{ color:"#4caf7d", fontWeight:700 }}>● Repository</span> · {total} guidelines</>,
-    error:   <><span style={{ color:"#5a6a88", fontWeight:700 }}>● Fallback</span> · Showing curated content · Live data updates weekly</>,
+    repo:    <><span style={{ color:"#4caf7d", fontWeight:700 }}>● Repo-managed</span> · {total} guidelines · Updated through GitHub</>,
   }[status];
 
   return (
