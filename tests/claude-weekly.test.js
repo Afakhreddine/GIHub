@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import handler from "./cron-weekly.js";
+import handler from "../api/claude.js";
+import weekly from "../src/data/weekly.js";
 
 function mockResponse() {
   const res = {
@@ -15,10 +16,13 @@ function mockResponse() {
   return res;
 }
 
-test("legacy cron-weekly endpoint is a no-op after repo migration", async () => {
+test("/api/claude serves weekly update from repo-managed data", async () => {
+  const req = { method: "POST", body: { type: "content", section: "weekly" } };
   const res = mockResponse();
-  await handler({ method: "POST" }, res);
-  assert.equal(res.statusCode, 410);
-  assert.equal(res.body.ok, false);
-  assert.match(res.body.error, /repo-managed/i);
+
+  await handler(req, res);
+
+  assert.equal(res.statusCode, 200);
+  assert.equal(res.body.source, "repo");
+  assert.deepEqual(res.body.data, weekly);
 });
