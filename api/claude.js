@@ -1,5 +1,6 @@
 // api/claude.js
 import guidelines from "../src/data/guidelines.js";
+import weekly from "../src/data/weekly.js";
 
 async function redisGet(key) {
   const res = await fetch(
@@ -50,6 +51,10 @@ export default async function handler(req, res) {
         const start = (page - 1) * PAGE_SIZE;
         const data  = guidelines.slice(start, start + PAGE_SIZE);
         return res.status(200).json({ data, page, pages, total, source: "repo" });
+      }
+
+      if (section === "weekly") {
+        return res.status(200).json({ data: weekly, total: weekly.length, source: "repo" });
       }
 
       const cached = await redisGet(`gihub:${section}`);
