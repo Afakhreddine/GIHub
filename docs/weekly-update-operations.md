@@ -31,19 +31,26 @@ Hermes owns publication of weekly-update data:
 1. Start from latest `main`.
 2. Use the existing weekly fetch prompt in `api/cron-shared.js`.
 3. Add user-shared articles as supplemental curated inputs when available.
-4. Validate article/source links, using authorized Browserbase sessions only where needed.
-5. Generate a complete JSON array of up to 12 weekly items.
-6. Run:
+4. Build structured evidence cards for each candidate source/article.
+5. Run the source-triage layer to validate links, score impact, and route items:
 
 ```bash
-node scripts/update-weekly-data.mjs /path/to/weekly.json
+node scripts/triage-weekly-candidates.mjs /path/to/candidates.json /tmp/gihub-weekly-triaged.json /tmp/gihub-weekly-triage-audit.json
+```
+
+6. Convert included, verified candidates into repo-managed weekly data:
+
+```bash
+node scripts/update-weekly-data.mjs /tmp/gihub-weekly-triaged.json
 npm test
 npm run lint
 npm run build
 ```
 
-7. Open a GitHub PR with source links, changed items, and test results.
+7. Open a GitHub PR with source links, candidate/audit counts, changed items, and test results.
 8. The Vercel site updates after the PR is merged.
+
+Full triage rules are documented in `docs/source-triage-workflow.md`.
 
 ## Update cadence
 
