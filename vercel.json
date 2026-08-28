@@ -6,11 +6,10 @@
   "framework": "vite",
   "functions": {
     "api/debug.js":           { "maxDuration": 10  },
-    "api/cron-weekly.js":     { "maxDuration": 300 },
+    "api/cron-weekly.js":     { "maxDuration": 10  },
     "api/cron-schedule.js":   { "maxDuration": 300 }
   },
   "crons": [
-    { "path": "/api/cron-weekly",     "schedule": "0 8 * * 0" },
     { "path": "/api/cron-schedule",   "schedule": "0 7 * * *" }
   ],
   "rewrites": [

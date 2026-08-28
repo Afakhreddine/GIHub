@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import handler from "./claude.js";
+import handler from "../api/claude.js";
 import guidelines from "../src/data/guidelines.js";
 
 function mockResponse() {

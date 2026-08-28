@@ -5,7 +5,7 @@ import {
   isIndexUrl,
   identityTokens,
   dedupByIdentity,
-} from "./guidelines-identity.js";
+} from "../api/guidelines-identity.js";
 
 // ── normalizeUrl ──────────────────────────────────────────────────────────────
 test("normalizeUrl strips scheme, www, query, fragment, trailing slash", () => {

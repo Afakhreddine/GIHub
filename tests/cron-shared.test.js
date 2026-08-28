@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildPrompts, isCronAuthorized } from "./cron-shared.js";
+import { buildPrompts, isCronAuthorized } from "../api/cron-shared.js";
 
 test("weekly prompt describes the unified GI weekly update feed", () => {
   const { weekly } = buildPrompts();

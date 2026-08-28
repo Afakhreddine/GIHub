@@ -65,6 +65,6 @@ npm run build
 
 ## Weekly update
 
-The Weekly Update remains separate and should keep its existing fetch prompt in `api/cron-shared.js` / `api/cron-weekly.js`.
+The Weekly Update remains separate and should keep its existing fetch prompt in `api/cron-shared.js`.
 
 User-shared articles can be treated as additional curated inputs for the weekly update, but the weekly fetch prompt should not be replaced unless explicitly requested.
