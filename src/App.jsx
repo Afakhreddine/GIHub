@@ -297,8 +297,6 @@ function SocietyWidget({ org, guidelines, search }) {
   );
 }
 
-const ONE_MONTH_MS = 30 * 24 * 3600 * 1000;
-
 function GuidelinesSection() {
   const [grouped, setGrouped]     = useState(null);
   const [status, setStatus]       = useState("loading");
@@ -321,7 +319,11 @@ function GuidelinesSection() {
       try {
         const r = await apiCall({ type:"content", section:"guidelines-new" });
         if (Array.isArray(r.data)) {
-          setNewAlerts(r.data.filter(a => a.detectedAt && Date.now() - a.detectedAt < ONE_MONTH_MS));
+          const recent = r.data
+            .filter(a => a && a.title)
+            .sort((a, b) => (b.detectedAt || 0) - (a.detectedAt || 0))
+            .slice(0, 5);
+          setNewAlerts(recent);
         }
       } catch(_) {}
 

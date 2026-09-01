@@ -1,4 +1,5 @@
 // api/claude.js
+import guidelineSupplements from "../src/data/guidelineSupplements.js";
 import weekly from "../src/data/weekly.js";
 
 async function redisGet(key) {
@@ -15,6 +16,47 @@ async function redisGet(key) {
     try { val = JSON.parse(val); } catch { break; }
   }
   return typeof val === "object" ? val : null;
+}
+
+function normalizedGuidelineToken(item) {
+  const raw = `${item?.org || ""} ${item?.year || ""} ${item?.title || ""} ${item?.topic || ""}`.toLowerCase();
+  return raw
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\b(acg|american college of gastroenterology|clinical|practice|guidelines?|guideline|diagnosis|management|treatment|update|and|of|the|with|in|for|patients|adult|adults)\b/g, " ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function guidelineIdentity(item) {
+  const url = String(item?.url || "").toLowerCase();
+  const pmid = url.match(/pubmed\.ncbi\.nlm\.nih\.gov\/(\d+)/)?.[1];
+  if (pmid) return `pmid:${pmid}`;
+  const doi = url.match(/10\.\d{4,9}\/[^?#\s]+/i)?.[0];
+  if (doi) return `doi:${doi.toLowerCase()}`;
+  return `${item?.org || ""}:${item?.year || ""}:${normalizedGuidelineToken(item)}`;
+}
+
+function mergeGuidelineSupplements(repo) {
+  const existing = new Set(repo.map(guidelineIdentity));
+  const tokens = repo.map(normalizedGuidelineToken);
+  const merged = [...repo];
+  for (const supplement of guidelineSupplements) {
+    const identity = guidelineIdentity(supplement);
+    const token = normalizedGuidelineToken(supplement);
+    const duplicateByToken = tokens.some(existingToken => {
+      if (!existingToken || !token) return false;
+      return existingToken === token ||
+        (existingToken.includes(token) && token.length > 16) ||
+        (token.includes(existingToken) && existingToken.length > 16);
+    });
+    if (!existing.has(identity) && !duplicateByToken) {
+      merged.push(supplement);
+      existing.add(identity);
+      tokens.push(token);
+    }
+  }
+  return merged;
 }
 
 export default async function handler(req, res) {
@@ -46,16 +88,18 @@ export default async function handler(req, res) {
       if (section === "guidelines") {
         const repo = await redisGet("gihub:guidelines:repo");
         if (!Array.isArray(repo) || repo.length === 0) {
-          return res.status(200).json({ data: [], status: "empty" });
+          const fallback = mergeGuidelineSupplements([]);
+          return res.status(200).json({ data: fallback, total: fallback.length, status: "fallback" });
         }
+        const guidelines = mergeGuidelineSupplements(repo);
         if (page === "all") {
-          return res.status(200).json({ data: repo, total: repo.length });
+          return res.status(200).json({ data: guidelines, total: guidelines.length });
         }
         const PAGE_SIZE = 20;
-        const total = repo.length;
+        const total = guidelines.length;
         const pages = Math.ceil(total / PAGE_SIZE);
         const start = (page - 1) * PAGE_SIZE;
-        const data  = repo.slice(start, start + PAGE_SIZE);
+        const data  = guidelines.slice(start, start + PAGE_SIZE);
         return res.status(200).json({ data, page, pages, total, ageHours: null });
       }
 
