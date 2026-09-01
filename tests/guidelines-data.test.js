@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import guidelines from "../src/data/guidelines.js";
 
-test("repo-managed guidelines data is non-empty and schema-compatible", () => {
+test("guidelines fallback data is non-empty and schema-compatible", () => {
   assert.ok(Array.isArray(guidelines));
   assert.ok(guidelines.length >= 10);
   for (const item of guidelines) {
@@ -17,7 +17,7 @@ test("repo-managed guidelines data is non-empty and schema-compatible", () => {
   }
 });
 
-test("repo-managed guidelines cover the core GI societies", () => {
+test("guidelines fallback covers the core GI societies", () => {
   const orgs = new Set(guidelines.map(item => item.org));
   for (const org of ["ACG", "AGA", "ASGE", "AASLD"]) {
     assert.ok(orgs.has(org), `missing ${org}`);
