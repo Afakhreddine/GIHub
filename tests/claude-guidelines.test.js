@@ -1,6 +1,7 @@
 import { test, afterEach } from "node:test";
 import assert from "node:assert/strict";
 import handler from "../api/claude.js";
+import guidelineSupplements from "../src/data/guidelineSupplements.js";
 
 const ORIGINAL_FETCH = global.fetch;
 const ORIGINAL_REDIS_URL = process.env.UPSTASH_REDIS_REST_URL;
@@ -60,13 +61,14 @@ test("/api/claude serves the existing guideline repository cache", async () => {
   await handler(req, res);
 
   assert.equal(res.statusCode, 200);
-  assert.deepEqual(res.body.data, repo);
-  assert.equal(res.body.total, repo.length);
+  assert.deepEqual(res.body.data.slice(0, repo.length), repo);
+  assert.equal(res.body.total, repo.length + guidelineSupplements.length);
+  assert.ok(res.body.data.some(item => item.title === "ACG Clinical Guideline: Diagnosis and Management of Pancreatic Cysts"));
   assert.equal(res.body.source, undefined);
 });
 
-test("/api/claude paginates the existing guideline repository cache", async () => {
-  const repo = Array.from({ length: 25 }, (_, index) => ({ title: `Guideline ${index + 1}` }));
+test("/api/claude paginates the existing guideline repository cache before supplements", async () => {
+  const repo = Array.from({ length: 40 }, (_, index) => ({ title: `Guideline ${index + 1}` }));
   mockRedis({ "gihub:guidelines:repo": repo });
 
   const req = { method: "POST", body: { type: "content", section: "guidelines", page: 2 } };
@@ -76,9 +78,24 @@ test("/api/claude paginates the existing guideline repository cache", async () =
 
   assert.equal(res.statusCode, 200);
   assert.equal(res.body.page, 2);
-  assert.equal(res.body.pages, 2);
-  assert.equal(res.body.total, 25);
-  assert.deepEqual(res.body.data, repo.slice(20, 25));
+  assert.equal(res.body.pages, Math.ceil((40 + guidelineSupplements.length) / 20));
+  assert.equal(res.body.total, 40 + guidelineSupplements.length);
+  assert.deepEqual(res.body.data, repo.slice(20, 40));
+});
+
+
+test("/api/claude does not duplicate a supplement already present in the repository", async () => {
+  const pancreatic = guidelineSupplements.find(item => item.title === "ACG Clinical Guideline: Diagnosis and Management of Pancreatic Cysts");
+  const repo = [{ ...pancreatic }];
+  mockRedis({ "gihub:guidelines:repo": repo });
+
+  const req = { method: "POST", body: { type: "content", section: "guidelines", page: "all" } };
+  const res = mockResponse();
+
+  await handler(req, res);
+
+  const pancreaticItems = res.body.data.filter(item => item.title === pancreatic.title);
+  assert.equal(pancreaticItems.length, 1);
 });
 
 test("/api/claude serves incremental new-guideline alerts from cache", async () => {
