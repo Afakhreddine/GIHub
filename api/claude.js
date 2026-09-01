@@ -1,5 +1,4 @@
 // api/claude.js
-import guidelines from "../src/data/guidelines.js";
 import weekly from "../src/data/weekly.js";
 
 async function redisGet(key) {
@@ -39,18 +38,25 @@ export default async function handler(req, res) {
       if (!section) return res.status(400).json({ error: "Missing section" });
 
       if (section === "guidelines-new") {
-        return res.status(200).json({ data: [] });
+        const cached = await redisGet("gihub:guidelines:new");
+        const data = Array.isArray(cached) ? cached : [];
+        return res.status(200).json({ data });
       }
 
       if (section === "guidelines") {
-        if (page === "all")
-          return res.status(200).json({ data: guidelines, total: guidelines.length, source: "repo" });
+        const repo = await redisGet("gihub:guidelines:repo");
+        if (!Array.isArray(repo) || repo.length === 0) {
+          return res.status(200).json({ data: [], status: "empty" });
+        }
+        if (page === "all") {
+          return res.status(200).json({ data: repo, total: repo.length });
+        }
         const PAGE_SIZE = 20;
-        const total = guidelines.length;
+        const total = repo.length;
         const pages = Math.ceil(total / PAGE_SIZE);
         const start = (page - 1) * PAGE_SIZE;
-        const data  = guidelines.slice(start, start + PAGE_SIZE);
-        return res.status(200).json({ data, page, pages, total, source: "repo" });
+        const data  = repo.slice(start, start + PAGE_SIZE);
+        return res.status(200).json({ data, page, pages, total, ageHours: null });
       }
 
       if (section === "weekly") {
