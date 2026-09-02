@@ -13,6 +13,23 @@ export function parseWeeklyModuleSource(source) {
   return parsed;
 }
 
+export function isWeeklyReviewPull(pull) {
+  const title = String(pull?.title || "").toLowerCase();
+  const ref = String(pull?.head?.ref || "").toLowerCase();
+  return ref.startsWith("chore/weekly-update-") || title.includes("weekly gi news") || title.includes("weekly update");
+}
+
+export function chooseLatestWeeklyReviewPull(pulls) {
+  return [...(pulls || [])]
+    .filter(isWeeklyReviewPull)
+    .sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0))[0] || null;
+}
+
+export function weeklyReviewDataApiPath(source) {
+  if (source?.pr) return `/api/weekly-review-data?pr=${encodeURIComponent(source.pr)}`;
+  return "/api/weekly-review-data";
+}
+
 async function githubFetch(path, env = process.env) {
   const owner = env.GITHUB_OWNER || DEFAULT_OWNER;
   const repo = env.GITHUB_REPO || DEFAULT_REPO;
@@ -45,6 +62,13 @@ export async function loadWeeklyReviewDataForPr(pr, env = process.env) {
   };
 }
 
+export async function loadLatestWeeklyReviewData(env = process.env) {
+  const pulls = await githubFetch("/pulls?state=open&per_page=50&sort=updated&direction=desc", env);
+  const pull = chooseLatestWeeklyReviewPull(pulls);
+  if (!pull) throw new Error("No open weekly-update PR was found.");
+  return loadWeeklyReviewDataForPr(pull.number, env);
+}
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
@@ -54,7 +78,7 @@ export default async function handler(req, res) {
 
   try {
     const pr = req.query?.pr || new URL(req.url, "http://localhost").searchParams.get("pr");
-    const data = await loadWeeklyReviewDataForPr(pr);
+    const data = pr ? await loadWeeklyReviewDataForPr(pr) : await loadLatestWeeklyReviewData();
     return json(res, 200, data);
   } catch (error) {
     return json(res, 400, { error:error.message || "Could not load weekly review data" });

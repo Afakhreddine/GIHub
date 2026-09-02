@@ -4,8 +4,8 @@ import { parseWeeklyModuleSource } from "../api/weekly-review-data.js";
 import { weeklyReviewSourceFromLocation } from "../src/weeklyReviewModel.js";
 
 test("weekly review source detects PR number from review URL", () => {
-  assert.deepEqual(weeklyReviewSourceFromLocation("https://gi-hub.vercel.app/review/weekly?pr=10"), { pr:"10" });
-  assert.deepEqual(weeklyReviewSourceFromLocation("/review/weekly"), { pr:"" });
+  assert.deepEqual(weeklyReviewSourceFromLocation("https://gi-hub.vercel.app/review/weekly?pr=10"), { pr:"10", latest:false });
+  assert.deepEqual(weeklyReviewSourceFromLocation("/review/weekly"), { pr:"", latest:true });
 });
 
 test("weekly review data parser extracts cards from src/data/weekly.js module", () => {
