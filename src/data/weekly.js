@@ -82,7 +82,7 @@ const weekly = [
   },
   {
     "type": "Research",
-    "impactLevel": "High Impact",
+    "impactLevel": "Noteworthy",
     "multiSource": false,
     "date": "Aug 27, 2026",
     "topic": "Eosinophilic Esophagitis",
@@ -92,6 +92,45 @@ const weekly = [
     "summary": "Placebo-controlled treatment analysis reported by a subscription-gated news source; Adults with eosinophilic esophagitis; Not reported in accessible source summary. The accessible publisher summary reports significant improvement in distensibility versus placebo and improved endoscopic and histologic outcomes at 24 weeks. Potentially useful mechanistic and clinical efficacy update, pending direct source review. Limitation: Full article and direct study citation were not accessible; no studyUrl is supplied. Source verified; AI-assisted summary requires human review before merge.",
     "url": "https://www.gastroendonews.com/Esophageal-Disorders/Article/08-26/Dupilumab-Improves-Esophageal-Distensibility-in-EoE/81285",
     "studyUrl": ""
+  },
+  {
+    "type": "Research",
+    "impactLevel": "High Impact",
+    "multiSource": false,
+    "date": "Aug 28, 2026",
+    "topic": "Hepatitis B",
+    "title": "6-Month Rx Results in Functional Cure for Some With Hep B",
+    "authors": "",
+    "source": "gastroendonews.com",
+    "summary": "Two nearly identical multicountry double-blind placebo-controlled phase 3 trials (B-Well 1 and 2); Adults with virologically suppressed chronic hepatitis B receiving nucleos(t)ide analog therapy; cirrhosis, hepatitis C/D, and HIV were excluded; 1,838. Functional cure occurred in 20% vs 0% in B-Well 1 (risk difference 17.5 percentage points, 95% CI 14.6-20.3; P<0.001) and 19% vs 0% in B-Well 2 (risk difference 13.3, 95% CI 10.4-16.1; P<0.001). Among participants with baseline HBsAg at or below 1,000 IU/mL, cure rates were 25% and 28%; about 9 in 10 participants completed treatment. A finite regimen may achieve functional cure in a clinically meaningful minority, but bepirovirsen remains under regulatory review and should not yet change routine treatment. Limitation: Durability beyond follow-up, real-world eligibility, monitoring burden, and representation of Black and Hispanic patients remain uncertain; trials and investigators had GSK relationships. Source verified; AI-assisted summary requires human review before merge.",
+    "url": "https://www.gastroendonews.com/Hepatology-in-Focus/Article/08-26/Bepirovirsen-Induces-Functional-Cure-in-Hepatitis-B/81283",
+    "studyUrl": "https://pubmed.ncbi.nlm.nih.gov/42206582/"
+  },
+  {
+    "type": "Research",
+    "impactLevel": "Noteworthy",
+    "multiSource": false,
+    "date": "Aug 26, 2026",
+    "topic": "IBD",
+    "title": "Variation in antibody response evident ‘long before symptoms’ of IBD develop",
+    "authors": "",
+    "source": "healio.com",
+    "summary": "Nested longitudinal case-control serology study using PhIP-Seq; Active-duty US service members who later developed Crohn's disease or ulcerative colitis and healthy controls; 500 participants; 2,000 longitudinal serum samples (200 Crohn's disease, 200 ulcerative colitis, 100 controls). Disease-specific antibody differences were detectable as early as approximately 10 years before diagnosis, with repertoire variability increasing around four years before diagnosis. Crohn's disease signatures included higher anti-EBV and anti-flagellin reactivity; clinical prediction performance and intervention benefit were not established. Supports a prolonged biological prodrome and future risk-stratification research, but it is not ready for screening or preventive treatment decisions. Limitation: Predominantly male military cohort limits generalizability; PhIP-Seq detects only a subset of antigens; external validation is required before clinical use. Source verified; AI-assisted summary requires human review before merge.",
+    "url": "https://www.healio.com/news/gastroenterology/20260825/variation-in-antibody-response-evident-long-before-symptoms-of-ibd-develop",
+    "studyUrl": "https://gut.bmj.com/content/early/2026/07/23/gutjnl-2025-337762"
+  },
+  {
+    "type": "Research",
+    "impactLevel": "Noteworthy",
+    "multiSource": false,
+    "date": "Aug 23, 2026",
+    "topic": "Education",
+    "title": "Artificial Intelligence Tools for Gastrointestinal Research: A Practical Guide",
+    "authors": "",
+    "source": "Clinical Gastroenterology and Hepatology",
+    "summary": "Narrative practical guide; GI researchers and clinicians; Not applicable. The guide recommends structured AI use for literature discovery, citation verification, writing and editing, presentations, disclosure, and privacy safeguards. It emphasizes independent verification of AI-generated references, statistics, links, and clinical claims. Useful for fellows conducting GI research and for governance of AI-assisted scholarship; it does not change patient care. Limitation: Narrative review and workflow guide rather than original comparative clinical outcomes research. Source verified; AI-assisted summary requires human review before merge.",
+    "url": "https://www.cghjournal.org/article/S1542-3565(26)00243-0/fulltext",
+    "studyUrl": "https://doi.org/10.1016/j.cgh.2026.03.032"
   }
 ];
 
