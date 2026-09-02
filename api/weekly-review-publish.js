@@ -5,8 +5,9 @@ function json(res, status, body) {
   return res.status(status).json(body);
 }
 
-export function resolvePublishConfig(env = process.env) {
-  const pullNumber = Number.parseInt(env.VERCEL_GIT_PULL_REQUEST_ID || env.GITHUB_PULL_REQUEST_ID || "", 10);
+export function resolvePublishConfig(env = process.env, payload = {}) {
+  const rawPullNumber = payload.pullNumber || payload.pr || env.VERCEL_GIT_PULL_REQUEST_ID || env.GITHUB_PULL_REQUEST_ID || "";
+  const pullNumber = Number.parseInt(rawPullNumber, 10);
   return {
     owner: env.GITHUB_OWNER || DEFAULT_OWNER,
     repo: env.GITHUB_REPO || DEFAULT_REPO,
@@ -18,7 +19,7 @@ export function resolvePublishConfig(env = process.env) {
 }
 
 export function validatePublishRequest(req, env = process.env) {
-  const config = resolvePublishConfig(env);
+  const config = resolvePublishConfig(env, req?.body || {});
   const suppliedToken = String(req?.body?.token || req?.headers?.["x-weekly-review-token"] || "");
   if (!config.reviewToken) return { ok:false, status:503, error:"Weekly review publishing is not configured." };
   if (!config.token) return { ok:false, status:503, error:"GitHub publishing token is not configured." };

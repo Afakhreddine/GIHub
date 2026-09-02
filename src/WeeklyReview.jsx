@@ -58,10 +58,11 @@ export default function WeeklyReview({ items = weekly }) {
     setPublishBusy(true);
     setPublishStatus("Publishing…");
     try {
+      const { pr } = typeof window === "undefined" ? { pr:"" } : weeklyReviewSourceFromLocation(window.location.href);
       const response = await fetch("/api/weekly-review-publish", {
         method:"POST",
         headers:{ "Content-Type":"application/json" },
-        body:JSON.stringify({ ...buildPublishPayload(reviewItems, decisions), token }),
+        body:JSON.stringify({ ...buildPublishPayload(reviewItems, decisions), pullNumber:pr, token }),
       });
       const result = await response.json();
       if (!response.ok || !result.ok) throw new Error(result.error || result.reason || "Publish failed");
