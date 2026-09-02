@@ -63,7 +63,7 @@ Sundays 08:00 UTC
 
 ## Review sandbox publish button
 
-The `/review/weekly` sandbox supports a protected `Publish approved` flow for PR preview deployments. For the latest cron output, use a PR-specific review link such as `/review/weekly?pr=10`; otherwise the production sandbox may show the already-published weekly data rather than the unmerged cron PR cards.
+The `/review/weekly` sandbox supports a protected `Publish approved` flow for PR preview deployments. The short production URL `/review/weekly` automatically loads the latest open Weekly Update PR so it is easy to type on a computer; use `/review/weekly?pr=10` only as an explicit fallback/debug override.
 
 - Every weekly-update card must be reviewed as `Approve`, `Hold`, or `Reject`; unreviewed cards disable publishing.
 - At least one card must be approved.

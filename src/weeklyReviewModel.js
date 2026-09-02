@@ -7,10 +7,16 @@ export function isWeeklyReviewPath(pathname) {
 export function weeklyReviewSourceFromLocation(locationHref) {
   try {
     const url = new URL(locationHref, "https://gi-hub.local");
-    return { pr:url.searchParams.get("pr") || "" };
+    const pr = url.searchParams.get("pr") || "";
+    return { pr, latest:!pr };
   } catch {
-    return { pr:"" };
+    return { pr:"", latest:true };
   }
+}
+
+export function weeklyReviewDataApiPath(source) {
+  if (source?.pr) return `/api/weekly-review-data?pr=${encodeURIComponent(source.pr)}`;
+  return "/api/weekly-review-data";
 }
 
 export function weeklyItemId(item) {

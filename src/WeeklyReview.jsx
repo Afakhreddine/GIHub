@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import weekly from "./data/weekly.js";
-import { buildApprovalSummary, buildPublishPayload, canPublishWeeklyReview, filterWeeklyItems, loadDecisions, saveDecisions, weeklyItemId, weeklyReviewSourceFromLocation } from "./weeklyReviewModel.js";
+import { buildApprovalSummary, buildPublishPayload, canPublishWeeklyReview, filterWeeklyItems, loadDecisions, saveDecisions, weeklyItemId, weeklyReviewDataApiPath, weeklyReviewSourceFromLocation } from "./weeklyReviewModel.js";
 
 export default function WeeklyReview({ items = weekly }) {
   const [query, setQuery] = useState("");
@@ -8,6 +8,7 @@ export default function WeeklyReview({ items = weekly }) {
   const [decisionFilter, setDecisionFilter] = useState("All");
   const [decisions, setDecisions] = useState(() => loadDecisions(typeof window === "undefined" ? null : window.localStorage));
   const [reviewItems, setReviewItems] = useState(items);
+  const [reviewPullNumber, setReviewPullNumber] = useState("");
   const [sourceStatus, setSourceStatus] = useState("");
   const [copyStatus, setCopyStatus] = useState("");
   const [publishStatus, setPublishStatus] = useState("");
@@ -18,16 +19,16 @@ export default function WeeklyReview({ items = weekly }) {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const { pr } = weeklyReviewSourceFromLocation(window.location.href);
-    if (!pr) return;
+    const source = weeklyReviewSourceFromLocation(window.location.href);
     let cancelled = false;
-    setSourceStatus(`Loading PR #${pr} weekly cards…`);
-    fetch(`/api/weekly-review-data?pr=${encodeURIComponent(pr)}`)
+    setSourceStatus(source.pr ? `Loading PR #${source.pr} weekly cards…` : "Loading latest weekly PR cards…");
+    fetch(weeklyReviewDataApiPath(source))
       .then((response) => response.json().then((body) => ({ response, body })))
       .then(({ response, body }) => {
         if (cancelled) return;
         if (!response.ok || !Array.isArray(body.items)) throw new Error(body.error || "Could not load PR weekly cards");
         setReviewItems(body.items);
+        setReviewPullNumber(String(body.pr || source.pr || ""));
         setSourceStatus(`Reviewing PR #${body.pr} · ${body.items.length} cards`);
       })
       .catch((error) => {
@@ -59,10 +60,11 @@ export default function WeeklyReview({ items = weekly }) {
     setPublishStatus("Publishing…");
     try {
       const { pr } = typeof window === "undefined" ? { pr:"" } : weeklyReviewSourceFromLocation(window.location.href);
+      const pullNumber = reviewPullNumber || pr;
       const response = await fetch("/api/weekly-review-publish", {
         method:"POST",
         headers:{ "Content-Type":"application/json" },
-        body:JSON.stringify({ ...buildPublishPayload(reviewItems, decisions), pullNumber:pr, token }),
+        body:JSON.stringify({ ...buildPublishPayload(reviewItems, decisions), pullNumber, token }),
       });
       const result = await response.json();
       if (!response.ok || !result.ok) throw new Error(result.error || result.reason || "Publish failed");
