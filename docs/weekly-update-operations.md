@@ -61,6 +61,29 @@ Default cadence should match the old Vercel schedule:
 Sundays 08:00 UTC
 ```
 
+## Previously published weekly archive
+
+The active Weekly Update feed remains `src/data/weekly.js` and is replaced on each approved publication. Previously published cards are preserved in `src/data/weeklyArchive.js` as abbreviated records for future schedule-tab and longitudinal browsing work.
+
+Archive records intentionally stay compact:
+
+```json
+{
+  "title": "Card title",
+  "oneLineSummary": "One concise clinical/research takeaway.",
+  "doi": "10.xxxx/... or empty",
+  "pmid": "PubMed ID or empty",
+  "source": "news or journal domain",
+  "url": "preferred study/source URL",
+  "date": "Published card date",
+  "topic": "GI topic",
+  "type": "Research|FDA|News|Opinion|Guideline",
+  "archivedFrom": "YYYY-MM-DD"
+}
+```
+
+The protected `Publish approved` endpoint archives the outgoing active `src/data/weekly.js` cards onto the PR branch before replacing/merging the new active weekly set. If the archive commit changes the PR branch, wait for checks and click `Publish approved` again to merge.
+
 ## Review sandbox publish button
 
 The `/review/weekly` sandbox supports a protected `Publish approved` flow for PR preview deployments. The short production URL `/review/weekly` automatically loads the latest open Weekly Update PR so it is easy to type on a computer; use `/review/weekly?pr=10` only as an explicit fallback/debug override.
