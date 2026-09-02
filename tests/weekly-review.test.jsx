@@ -29,7 +29,6 @@ test("weekly review route renders repo-managed cards and review controls", () =>
   assert.match(html, /Open study/);
   assert.ok(html.includes(weekly[0].url));
   assert.ok(html.includes(weekly[0].studyUrl));
-  assert.match(html, /Copy approval summary/);
   assert.match(html, /Publish approved/);
 });
 

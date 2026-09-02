@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import weekly from "./data/weekly.js";
-import { buildApprovalSummary, buildPublishPayload, canPublishWeeklyReview, filterWeeklyItems, loadDecisions, saveDecisions, weeklyItemId, weeklyReviewDataApiPath, weeklyReviewSourceFromLocation } from "./weeklyReviewModel.js";
+import { buildPublishPayload, canPublishWeeklyReview, filterWeeklyItems, loadDecisions, saveDecisions, weeklyItemId, weeklyReviewDataApiPath, weeklyReviewSourceFromLocation } from "./weeklyReviewModel.js";
 
 export default function WeeklyReview({ items = weekly }) {
   const [query, setQuery] = useState("");
@@ -10,7 +10,6 @@ export default function WeeklyReview({ items = weekly }) {
   const [reviewItems, setReviewItems] = useState(items);
   const [reviewPullNumber, setReviewPullNumber] = useState("");
   const [sourceStatus, setSourceStatus] = useState("");
-  const [copyStatus, setCopyStatus] = useState("");
   const [publishStatus, setPublishStatus] = useState("");
   const [publishBusy, setPublishBusy] = useState(false);
   const visibleItems = filterWeeklyItems(reviewItems, { query, type, decision:decisionFilter, decisions });
@@ -41,15 +40,6 @@ export default function WeeklyReview({ items = weekly }) {
     const next = { ...decisions, [weeklyItemId(item)]:decision };
     setDecisions(next);
     saveDecisions(window.localStorage, next);
-  }
-
-  async function copySummary() {
-    try {
-      await navigator.clipboard.writeText(buildApprovalSummary(reviewItems, decisions));
-      setCopyStatus("Copied");
-    } catch {
-      setCopyStatus("Copy failed");
-    }
   }
 
   async function publishApprovedWeeklyUpdate() {
@@ -124,7 +114,6 @@ export default function WeeklyReview({ items = weekly }) {
           <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
             {publishStatus && <span style={{ fontSize:12, color:publishStatus.startsWith("Published") ? "#4caf7d" : "#e09a2a", fontFamily:"monospace" }}>{publishStatus}</span>}
             <button type="button" onClick={publishApprovedWeeklyUpdate} disabled={!publishReady || publishBusy} style={{ background:publishReady ? "rgba(76,175,125,0.16)" : "rgba(255,255,255,0.04)", border:`1px solid ${publishReady ? "rgba(76,175,125,0.55)" : "rgba(255,255,255,0.08)"}`, color:publishReady ? "#7ee0aa" : "#42546f", borderRadius:8, padding:"9px 14px", cursor:publishReady ? "pointer" : "not-allowed", fontWeight:700 }}>{publishBusy ? "Publishing…" : "Publish approved"}</button>
-            <button type="button" onClick={copySummary} style={{ background:"rgba(91,138,240,0.14)", border:"1px solid rgba(91,138,240,0.45)", color:"#90b8ff", borderRadius:8, padding:"9px 14px", cursor:"pointer", fontWeight:700 }}>{copyStatus || "Copy approval summary"}</button>
           </div>
         </div>
       </div>
