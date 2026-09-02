@@ -48,7 +48,8 @@ npm run build
 ```
 
 7. Open a GitHub PR with source links, candidate/audit counts, changed items, and test results.
-8. The Vercel site updates after the PR is merged.
+8. Review the PR preview at `/review/weekly`. Mark each card `Approve`, `Hold`, or `Reject`, then use `Publish approved` to publish only approved cards. Rejected/held cards are excluded from the published weekly data. If the publish endpoint has to rewrite `src/data/weekly.js` to remove rejected/held cards, wait for the updated PR preview checks to pass and click `Publish approved` again to merge.
+9. The Vercel site updates after the PR is merged.
 
 Full triage rules are documented in `docs/source-triage-workflow.md`.
 
@@ -59,6 +60,34 @@ Default cadence should match the old Vercel schedule:
 ```text
 Sundays 08:00 UTC
 ```
+
+## Review sandbox publish button
+
+The `/review/weekly` sandbox supports a protected `Publish approved` flow for PR preview deployments. For the latest cron output, use a PR-specific review link such as `/review/weekly?pr=10`; otherwise the production sandbox may show the already-published weekly data rather than the unmerged cron PR cards.
+
+- Every weekly-update card must be reviewed as `Approve`, `Hold`, or `Reject`; unreviewed cards disable publishing.
+- At least one card must be approved.
+- Only approved cards are published; held/rejected cards are removed from the repo-managed weekly data before merge.
+- The button prompts for a publish code instead of embedding secrets in the browser bundle.
+- The client posts to `/api/weekly-review-publish`.
+- The server endpoint is available only on Vercel preview deployments with a pull-request id.
+- The endpoint checks the review publish code, verifies GitHub publishing configuration, checks PR status, and squash-merges the PR if checks are successful.
+
+Required Vercel environment variables, stored server-side only:
+
+```text
+WEEKLY_REVIEW_PUBLISH_TOKEN
+GITHUB_TOKEN
+```
+
+Optional overrides:
+
+```text
+GITHUB_OWNER
+GITHUB_REPO
+```
+
+Never expose these values in client code, PR text, logs, or WhatsApp. If the variables are not configured, the UI remains safe and the endpoint returns a configuration error instead of publishing.
 
 ## Safety rules
 
