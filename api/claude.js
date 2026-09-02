@@ -1,6 +1,9 @@
 // api/claude.js
 import guidelineSupplements from "../src/data/guidelineSupplements.js";
 import weekly from "../src/data/weekly.js";
+import weeklyArchive from "../src/data/weeklyArchive.js";
+import scheduleResources from "../src/data/scheduleResources.js";
+import { buildLectureResource } from "../src/scheduleResourcesModel.js";
 
 async function redisGet(key) {
   const res = await fetch(
@@ -119,13 +122,52 @@ export default async function handler(req, res) {
     // ── LECTURE ───────────────────────────────────────────────────────────
     if (type === "lecture") {
       if (!topic) return res.status(400).json({ error: "Missing topic slug" });
+      const repoResource = scheduleResources?.[topic];
+      if (repoResource) {
+        return res.status(200).json({
+          guideline: repoResource.guidelines || [],
+          guidelines: repoResource.guidelines || [],
+          newsAndArticles: repoResource.newsAndArticles || [],
+          quiz: repoResource.quiz || [],
+          quizSourcePdfs: repoResource.quizSourcePdfs || [],
+          fetchedAt: repoResource.fetchedAt || null,
+          source: "repo"
+        });
+      }
+
       const cached = await redisGet(`gihub:lecture:${topic}`);
+      if (cached) {
+        return res.status(200).json({
+          guideline: cached.guideline || [],
+          guidelines: cached.guideline || [],
+          newsAndArticles: cached.newsAndArticles || [
+            ...(cached.articles || []).map(a => ({ ...a, title:a.title, source:a.journal || a.source, oneLineSummary:a.summary })),
+            ...(cached.news || []).map(n => ({ ...n, title:n.title || n.headline, oneLineSummary:n.summary })),
+          ],
+          quiz:      cached.quiz      || [],
+          articles:  cached.articles  || [],
+          news:      cached.news      || [],
+          fetchedAt: cached.fetchedAt || null,
+          source: "redis"
+        });
+      }
+
+      const label = String(body.label || topic).replace(/-/g, " ");
+      const generated = buildLectureResource({
+        slug: topic,
+        topic: label,
+        guidelines: mergeGuidelineSupplements([]),
+        currentWeekly: weekly,
+        weeklyArchive,
+      });
       return res.status(200).json({
-        guideline: cached?.guideline || [],
-        quiz:      cached?.quiz      || [],
-        articles:  cached?.articles  || [],
-        news:      cached?.news      || [],
-        fetchedAt: cached?.fetchedAt || null,
+        guideline: generated.guidelines || [],
+        guidelines: generated.guidelines || [],
+        newsAndArticles: generated.newsAndArticles || [],
+        quiz: generated.quiz || [],
+        quizSourcePdfs: generated.quizSourcePdfs || [],
+        fetchedAt: null,
+        source: "repo-derived"
       });
     }
 
