@@ -4,6 +4,15 @@ export function isWeeklyReviewPath(pathname) {
   return pathname === "/review/weekly" || pathname === "/review/weekly/";
 }
 
+export function weeklyReviewSourceFromLocation(locationHref) {
+  try {
+    const url = new URL(locationHref, "https://gi-hub.local");
+    return { pr:url.searchParams.get("pr") || "" };
+  } catch {
+    return { pr:"" };
+  }
+}
+
 export function weeklyItemId(item) {
   return `${item.date}|${item.title}`;
 }
@@ -34,9 +43,28 @@ export function saveDecisions(storage, decisions) {
   }
 }
 
+export function weeklyReviewDecisionCounts(items, decisions) {
+  const counts = { approved:0, held:0, rejected:0, reviewed:0, total:items.length, unreviewed:0 };
+  for (const item of items) {
+    const decision = decisions[weeklyItemId(item)];
+    if (decision === "Approve") counts.approved += 1;
+    if (decision === "Hold") counts.held += 1;
+    if (decision === "Reject") counts.rejected += 1;
+    if (decision) counts.reviewed += 1;
+  }
+  counts.unreviewed = counts.total - counts.reviewed;
+  return counts;
+}
+
+export function canPublishWeeklyReview(items, decisions) {
+  if (!items.length) return false;
+  const counts = weeklyReviewDecisionCounts(items, decisions);
+  return counts.approved > 0 && counts.reviewed === counts.total && counts.unreviewed === 0;
+}
+
 export function buildApprovalSummary(items, decisions) {
   const groups = [["Approve", "Approved"], ["Hold", "Hold"], ["Reject", "Rejected"]];
-  const reviewed = items.filter((item) => decisions[weeklyItemId(item)]);
+  const counts = weeklyReviewDecisionCounts(items, decisions);
   const sections = groups.map(([decision, label]) => {
     const matching = items.filter((item) => decisions[weeklyItemId(item)] === decision);
     const lines = matching.length
@@ -46,7 +74,18 @@ export function buildApprovalSummary(items, decisions) {
   });
   return [
     "Weekly Update approval summary",
-    `${reviewed.length}/${items.length} reviewed · ${items.length - reviewed.length} unreviewed`,
+    `${counts.reviewed}/${items.length} reviewed · ${counts.unreviewed} unreviewed`,
     ...sections,
   ].join("\n\n");
+}
+
+export function buildPublishPayload(items, decisions) {
+  const counts = weeklyReviewDecisionCounts(items, decisions);
+  return {
+    approved: canPublishWeeklyReview(items, decisions),
+    counts,
+    decisions,
+    approvedItems: items.filter((item) => decisions[weeklyItemId(item)] === "Approve"),
+    summary: buildApprovalSummary(items, decisions),
+  };
 }
