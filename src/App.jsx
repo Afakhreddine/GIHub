@@ -532,7 +532,11 @@ function LectureDetailPanel({ event, onClose }) {
     load();
   }, [event.slug]);
 
-  const noData = !loading && (!data || (!data.guideline?.length && !data.articles?.length && !data.news?.length));
+  const newsAndArticles = data?.newsAndArticles || [
+    ...(data?.articles || []).map(a => ({ ...a, title:a.title, source:a.journal || a.source, oneLineSummary:a.summary })),
+    ...(data?.news || []).map(n => ({ ...n, title:n.title || n.headline, oneLineSummary:n.summary })),
+  ];
+  const noData = !loading && (!data || (!data.guideline?.length && !newsAndArticles.length && !data.quiz?.length));
   const hasQuiz = data?.quiz?.length > 0;
 
   return (
@@ -595,41 +599,23 @@ function LectureDetailPanel({ event, onClose }) {
             );
           })()}
 
-            {/* Articles */}
-            {data.articles?.length>0&&(
+            {/* News and Articles */}
+            {newsAndArticles.length>0&&(
               <div>
-                <div style={{ fontSize:12, fontWeight:700, color:"#9c6af0", fontFamily:"monospace", letterSpacing:1, marginBottom:12 }}>📄 RECENT ARTICLES</div>
+                <div style={{ fontSize:12, fontWeight:700, color:"#00b8d4", fontFamily:"monospace", letterSpacing:1, marginBottom:12 }}>📡 NEWS AND ARTICLES</div>
                 <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-                  {data.articles.map((a,i)=>(
-                    <div key={i} onClick={()=>a.url&&window.open(a.url,"_blank")}
-                      style={{ background:"rgba(156,106,240,0.05)", border:"1px solid rgba(156,106,240,0.15)", borderLeft:"3px solid #9c6af0", borderRadius:10, padding:"12px 14px", cursor:a.url?"pointer":"default" }}>
+                  {newsAndArticles.map((item,i)=>(
+                    <div key={i} onClick={()=>item.url&&window.open(item.url,"_blank")}
+                      style={{ background:"rgba(0,184,212,0.05)", border:"1px solid rgba(0,184,212,0.15)", borderLeft:"3px solid #00b8d4", borderRadius:10, padding:"12px 14px", cursor:item.url?"pointer":"default" }}>
                       <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:6 }}>
-                        <span style={{ fontSize:11, fontWeight:700, color:"#fff", background:"#1a2535", padding:"2px 8px", borderRadius:12 }}>{a.journal}</span>
-                        <span style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace" }}>{a.date}</span>
+                        <span style={{ fontSize:11, fontWeight:700, color:"#fff", background:"#1a2535", padding:"2px 8px", borderRadius:12 }}>{item.source || item.journal || item.sourceRepository || "Source"}</span>
+                        {item.date&&<span style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace" }}>{item.date}</span>}
+                        {item.status==="candidate"&&<span style={{ fontSize:11, color:"#e09a2a", background:"#e09a2a22", padding:"2px 8px", borderRadius:12 }}>candidate</span>}
                       </div>
-                      <div style={{ fontSize:13, fontWeight:600, color:"#c8d8f0", lineHeight:1.5, marginBottom:4 }}>{a.title}</div>
-                      {a.authors&&<div style={{ fontSize:11, color:"#445570", fontStyle:"italic", marginBottom:4 }}>{a.authors}</div>}
-                      <div style={{ fontSize:12, color:"#6a7a90", lineHeight:1.7 }}>{a.summary}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* News */}
-            {data.news?.length>0&&(
-              <div>
-                <div style={{ fontSize:12, fontWeight:700, color:"#00b8d4", fontFamily:"monospace", letterSpacing:1, marginBottom:12 }}>📡 RELATED NEWS</div>
-                <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-                  {data.news.map((n,i)=>(
-                    <div key={i} onClick={()=>n.url&&window.open(n.url,"_blank")}
-                      style={{ background:"rgba(0,184,212,0.05)", border:"1px solid rgba(0,184,212,0.15)", borderLeft:"3px solid #00b8d4", borderRadius:10, padding:"12px 14px", cursor:n.url?"pointer":"default" }}>
-                      <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:6 }}>
-                        <span style={{ fontSize:11, fontWeight:700, color:"#fff", background:"#1a2535", padding:"2px 8px", borderRadius:12 }}>{n.source}</span>
-                        <span style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace" }}>{n.date}</span>
-                      </div>
-                      <div style={{ fontSize:13, fontWeight:600, color:"#c8d8f0", lineHeight:1.5, marginBottom:4 }}>{n.headline}</div>
-                      <div style={{ fontSize:12, color:"#6a7a90", lineHeight:1.7 }}>{n.summary}</div>
+                      <div style={{ fontSize:13, fontWeight:600, color:"#c8d8f0", lineHeight:1.5, marginBottom:4 }}>{item.title || item.headline}</div>
+                      {item.authors&&<div style={{ fontSize:11, color:"#445570", fontStyle:"italic", marginBottom:4 }}>{item.authors}</div>}
+                      <div style={{ fontSize:12, color:"#6a7a90", lineHeight:1.7 }}>{item.oneLineSummary || item.summary}</div>
+                      {(item.doi||item.pmid)&&<div style={{ marginTop:6, fontSize:10.5, color:"#3a5878", fontFamily:"monospace" }}>{item.doi?`DOI ${item.doi}`:`PMID ${item.pmid}`}</div>}
                     </div>
                   ))}
                 </div>

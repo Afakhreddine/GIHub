@@ -61,6 +61,16 @@ Default cadence should match the old Vercel schedule:
 Sundays 08:00 UTC
 ```
 
+## Schedule-topic screener
+
+Every Weekly Update cron run should screen newly included cards against upcoming Schedule tab topics. After weekly candidate triage/generation, run:
+
+```bash
+node scripts/screen-weekly-for-schedule.mjs /tmp/gihub-weekly-triaged.json --today YYYY-MM-DD
+```
+
+The screener searches upcoming clickable schedule topics, proposes matched weekly cards as `News and Articles` candidates in `src/data/scheduleResources.js`, and de-duplicates by DOI/PMID/URL/title. These candidate schedule links should go through the same PR review, not silent production mutation. See `docs/schedule-tab-operations.md`.
+
 ## Previously published weekly archive
 
 The active Weekly Update feed remains `src/data/weekly.js` and is replaced on each approved publication. Previously published cards are preserved in `src/data/weeklyArchive.js` as abbreviated records for future schedule-tab and longitudinal browsing work.
