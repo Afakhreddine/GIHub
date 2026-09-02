@@ -3,6 +3,16 @@
 
 const guidelines = [
   {
+    "org": "ASGE",
+    "year": "2026",
+    "month": "Aug",
+    "topic": "Lower GI Bleeding",
+    "urgency": "High",
+    "title": "American Society for Gastrointestinal Endoscopy guideline on the role of endoscopy in acute lower gastrointestinal bleeding",
+    "summary": "Provides GRADE-based recommendations on diagnostic and therapeutic endoscopy for acute lower GI bleeding, including colonoscopy versus CT angiography, timing and bowel preparation, and endoscopic treatment of diverticular bleeding.",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42667281/"
+  },
+  {
     "org": "AGA",
     "year": "2025",
     "month": "Nov",

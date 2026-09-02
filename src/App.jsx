@@ -113,8 +113,8 @@ function ContentCard({ item, type }) {
 function ContentSection({ type }) {
   const meta = SECTION_META[type];
   const [search, setSearch]     = useState("");
-  const isRepoManaged = type === "guidelines" || type === "weekly";
-  const [items, setItems]       = useState(()=>type === "guidelines" ? STATIC.guidelines : sortByDate(STATIC[type]));
+  const isRepoManaged = type === "weekly";
+  const [items, setItems]       = useState(()=>sortByDate(STATIC[type]));
   const [loading, setLoading]   = useState(!isRepoManaged);
   const [status, setStatus]     = useState(isRepoManaged ? "repo" : "loading");
   const [ageHours, setAgeHours] = useState(null);
@@ -127,7 +127,7 @@ function ContentSection({ type }) {
   useEffect(() => {
     async function load() {
       if (isRepoManaged) {
-        const data = type === "guidelines" ? STATIC.guidelines : sortByDate(STATIC.weekly);
+        const data = sortByDate(STATIC.weekly);
         setItems(data);
         setAgeHours(null);
         setStatus("repo");
@@ -298,11 +298,11 @@ function SocietyWidget({ org, guidelines, search }) {
 }
 
 function GuidelinesSection() {
-  const grouped = buildGrouped(STATIC.guidelines);
-  const status = "repo";
-  const total = STATIC.guidelines.length;
+  const [grouped, setGrouped]     = useState(null);
+  const [status, setStatus]       = useState("loading");
+  const [total, setTotal]         = useState(0);
   const [search, setSearch]       = useState("");
-  const newAlerts = [];
+  const [newAlerts, setNewAlerts] = useState([]);
 
   function buildGrouped(list) {
     const g = {};
@@ -313,8 +313,43 @@ function GuidelinesSection() {
     return g;
   }
 
+  useEffect(() => {
+    async function load() {
+      // Load new-guideline banner alerts (non-critical — ignore failures)
+      try {
+        const r = await apiCall({ type:"content", section:"guidelines-new" });
+        if (Array.isArray(r.data)) {
+          const recent = r.data
+            .filter(a => a && a.title)
+            .sort((a, b) => (b.detectedAt || 0) - (a.detectedAt || 0))
+            .slice(0, 5);
+          setNewAlerts(recent);
+        }
+      } catch(_) {}
+
+      try {
+        const result = await apiCall({ type:"content", section:"guidelines", page:"all" });
+        if (Array.isArray(result.data) && result.data.length > 0) {
+          setGrouped(buildGrouped(result.data));
+          setTotal(result.total || result.data.length);
+          setStatus("live");
+        } else {
+          setGrouped(buildGrouped(STATIC.guidelines));
+          setStatus("error");
+        }
+      } catch(e) {
+        console.error("guidelines fetch failed:", e.message);
+        setGrouped(buildGrouped(STATIC.guidelines));
+        setStatus("error");
+      }
+    }
+    load();
+  }, []);
+
   const statusEl = {
-    repo:    <><span style={{ color:"#4caf7d", fontWeight:700 }}>● Repo-managed</span> · {total} guidelines · Updated through GitHub</>,
+    loading: <><Spinner size={10} color="#5a6a88"/> Loading…</>,
+    live:    <><span style={{ color:"#4caf7d", fontWeight:700 }}>● Repository</span> · {total} guidelines</>,
+    error:   <><span style={{ color:"#5a6a88", fontWeight:700 }}>● Fallback</span> · Showing curated content · Live data updates weekly</>,
   }[status];
 
   return (
