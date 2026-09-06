@@ -49,9 +49,40 @@ npm run build
 
 7. Open a GitHub PR with source links, candidate/audit counts, changed items, and test results.
 8. Review the PR preview at `/review/weekly`. Mark each card `Approve`, `Hold`, or `Reject`, then use `Publish approved` to publish only approved cards. Rejected/held cards are excluded from the published weekly data. If the publish endpoint has to rewrite `src/data/weekly.js` to remove rejected/held cards, wait for the updated PR preview checks to pass and click `Publish approved` again to merge.
-9. The Vercel site updates after the PR is merged.
+9. After the weekly cards are finalized/published, generate the optional AutoContent podcast review from the approved article PDFs using the workflow below.
+10. The Vercel site updates after the PR is merged.
 
 Full triage rules are documented in `docs/source-triage-workflow.md`.
+
+## AutoContent weekly podcast review
+
+After Weekly Update cards are finalized/published, Hermes can generate a podcast-style review from the approved article PDFs and send the MP3 back to Ali on WhatsApp.
+
+This is a **post-finalization action**, not a replacement for card review:
+
+1. Build the podcast source brief from the finalized weekly data:
+
+```bash
+node scripts/build-weekly-podcast-brief.mjs > /tmp/gihub-weekly-podcast-brief.json
+```
+
+2. Retrieve the original PDFs for the approved/finalized articles listed in the brief. Use authorized article/PDF access when required. Do not substitute screenshots, summaries, or one combined surrogate PDF unless Ali explicitly approves that fallback.
+3. Call AutoContent with the PDFs as **separate files**. Recommended Hermes tool settings:
+
+```json
+{
+  "generate_audio": true,
+  "generate_quiz": false,
+  "duration": "default",
+  "style": "critique",
+  "audio_instructions": "Create a weekly GI journal-style podcast review from these separate article PDFs. Treat every uploaded PDF as a separate source/article; do not merge them into one document. Start with common themes, then discuss each article separately with clinical question, key results, relevance, and limitations. End with fellow-facing take-homes."
+}
+```
+
+4. Send the returned MP3 to Ali as a native WhatsApp attachment using the `MEDIA:/path/to/audio.mp3` delivery tag.
+5. If any approved card lacks an accessible PDF, still generate from the PDFs that were retrieved and explicitly list which finalized cards were omitted because PDF access was blocked.
+
+The generated brief includes the canonical AutoContent instructions from `src/weeklyReviewModel.js`, including common-theme synthesis, separate article treatment, limitations, and fellow-facing take-homes.
 
 ## Update cadence
 
