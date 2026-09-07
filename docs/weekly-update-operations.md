@@ -38,7 +38,7 @@ Hermes owns publication of weekly-update data:
 node scripts/triage-weekly-candidates.mjs /path/to/candidates.json /tmp/gihub-weekly-triaged.json /tmp/gihub-weekly-triage-audit.json
 ```
 
-6. Convert included, verified candidates into repo-managed weekly data:
+6. Convert included, verified candidates into repo-managed weekly data. The triage and final data-writing steps both remove duplicate weekly items before review/publication. Dedupe keys include DOI, PMID, cleaned `studyUrl`, cleaned source `url`, and normalized title, so duplicate source coverage of the same article does not create repeated review cards:
 
 ```bash
 node scripts/update-weekly-data.mjs /tmp/gihub-weekly-triaged.json
