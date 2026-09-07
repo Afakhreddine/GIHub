@@ -68,19 +68,6 @@ const weekly = [
     "studyUrl": "https://www.cghjournal.org/article/S1542-3565(26)00145-X/fulltext"
   },
   {
-    "type": "Opinion",
-    "impactLevel": "Noteworthy",
-    "multiSource": false,
-    "date": "Sep 1, 2026",
-    "topic": "Practice Management",
-    "title": "What it takes to build a gut-health service line",
-    "authors": "",
-    "source": "news.gastro.org",
-    "summary": "Interview-based practical guide with two gastroenterologists; GI practices considering nutrition, obesity, metabolic, lifestyle, and integrative services; Two practice models. The practices used dietitians, advanced practice clinicians, structured group visits, and explicit insurance-versus-direct-pay pathways to extend nutrition and metabolic care. The authors recommend starting with a narrow pilot, tracking outcomes and demand, clarifying supervision and referral criteria, and scaling only after the model proves workable. Useful operational perspective for fellows and practice leaders, while clinical services and testing should remain evidence-based and transparent about cost. Limitation: The article reports two clinicians' experiences without comparative outcomes, independent economic analysis, or evidence that branded integrative testing and programs improve care. Source verified; AI-assisted summary requires human review before merge.",
-    "url": "https://news.gastro.org/issues/2026/september-2026/what-it-takes-to-build-a-guthealth-service-line/",
-    "studyUrl": ""
-  },
-  {
     "type": "Research",
     "impactLevel": "High Impact",
     "multiSource": false,
@@ -105,6 +92,71 @@ const weekly = [
     "summary": "FDA regulatory safety action based on adverse-event reports, literature, and Sentinel monitoring data; Patients receiving ferric carboxymaltose, including those unable to tolerate or respond to oral iron; Not reported as a single study cohort. FDA added a boxed warning for symptomatic hypophosphatemia after reports following single and repeated infusions, including hospitalization, prolonged replacement therapy, osteomalacia, and fractures. Serum phosphate was checked in fewer than 20% of administration episodes; FDA recommends monitoring at-risk patients and anyone receiving another course within three months. Changes counseling and monitoring for ferric carboxymaltose commonly used in GI patients with iron deficiency, especially repeat-course and high-risk recipients. Limitation: The communication does not provide comparative incidence from a single controlled cohort, so absolute risk and patient-specific benefit-harm balance remain uncertain. Source verified; AI-assisted summary requires human review before merge.",
     "url": "https://www.healio.com/news/nephrology/20260903/fda-adds-boxed-warning-to-injectafer-for-hypophosphatemia-risk",
     "studyUrl": ""
+  },
+  {
+    "type": "Guideline",
+    "impactLevel": "High Impact",
+    "multiSource": false,
+    "date": "Sep 2026",
+    "topic": "Clostridioides difficile",
+    "title": "AGA Clinical Practice Update addresses adult C difficile infection management",
+    "authors": "Monika Fischer; Byron P. Vaughn; Anne F. Peery; Colleen R. Kelly",
+    "source": "Clinical Gastroenterology and Hepatology",
+    "summary": "AGA Clinical Practice Update expert review for adult C difficile infection management. Visible best-practice advice emphasizes prevention with barrier protection, hand hygiene, EPA-approved sporicidal disinfection, diagnosis based on compatible symptoms plus supportive testing, severity classification at diagnosis, and first-line fidaxomicin for nonfulminant infection with vancomycin as an acceptable practical alternative. Source verified by DOI and user-provided article image; AI-assisted summary requires human review before merge.",
+    "url": "https://doi.org/10.1016/j.cgh.2026.05.007",
+    "studyUrl": "https://doi.org/10.1016/j.cgh.2026.05.007"
+  },
+  {
+    "type": "Research",
+    "impactLevel": "Noteworthy",
+    "multiSource": false,
+    "date": "Sep 2026",
+    "topic": "IBS",
+    "title": "IBS review highlights peripheral visceral afferent modulation as future therapeutic target",
+    "authors": "Michael Camilleri",
+    "source": "Clinical Gastroenterology and Hepatology",
+    "summary": "Narrative review frames persistent IBS care gaps around inadequate relief of abdominal pain and limited peripherally directed safe therapies, especially for IBS-D and IBS-C. It summarizes dorsal root ganglion and peripheral afferent targets including adrenergic, serotonergic, cannabinoid, CGRP, histamine, somatostatin, calcium channel, kappa-opioid, and GLP-1 related mechanisms as potential neuromodulatory approaches. Limitation: Narrative and largely mechanistic review; clinical benefit remains dependent on future human trials. Source verified by DOI and user-provided article image; AI-assisted summary requires human review before merge.",
+    "url": "https://doi.org/10.1016/j.cgh.2026.03.038",
+    "studyUrl": "https://doi.org/10.1016/j.cgh.2026.03.038"
+  },
+  {
+    "type": "Guideline",
+    "impactLevel": "High Impact",
+    "multiSource": false,
+    "date": "Sep 2026",
+    "topic": "MASLD",
+    "title": "Global consensus updates MASLD risk stratification, treatment initiation, and response monitoring",
+    "authors": "Zobair M. Younossi et al.",
+    "source": "Clinical Gastroenterology and Hepatology",
+    "summary": "Special commentary from the Global NASH/MASH Council updates consensus recommendations for MASLD/MASH risk stratification, treatment initiation, and monitoring response. Visible abbreviations and title emphasize noninvasive tests, ELF, FIB-4, MRE/MRI-PDFF, VCTE, cardiometabolic risk factors, and treatment/monitoring strategy for patients with metabolic dysfunction-associated steatotic liver disease. Limitation: Consensus commentary rather than a prospective outcomes trial. Source verified by visible DOI and user-provided article image; AI-assisted summary requires human review before merge.",
+    "url": "https://doi.org/10.1016/j.cgh.2026.03.030",
+    "studyUrl": "https://doi.org/10.1016/j.cgh.2026.03.030"
+  },
+  {
+    "type": "News",
+    "impactLevel": "Noteworthy",
+    "multiSource": false,
+    "date": "Jun 26, 2026",
+    "topic": "Celiac Disease",
+    "title": "Celiac care nears a turning point in screening and treatment, expert says",
+    "authors": "Doug Brunk",
+    "source": "GI & Hepatology News",
+    "summary": "Expert news report from a Society for the Study of Celiac Disease/Celiac Disease Foundation policy symposium describes a transition toward broader screening and therapies beyond strict gluten avoidance. Dan Leffler noted population screening could substantially increase diagnosis, fewer than half of U.S. patients may be diagnosed, and a survey of 2,001 biopsy-confirmed patients found 85% had recent gluten-related symptoms despite a gluten-free diet, with about 75% reporting life impacts. Limitation: Expert commentary and survey-based burden data; no approved replacement for gluten-free diet is established. Source verified by GI & Hepatology News page and user-provided image; AI-assisted summary requires human review before merge.",
+    "url": "https://news.gastro.org/issues/2026/june-2026/celiac-care-nears-a-turning-point-in-screening-and-treatment-expert-says/",
+    "studyUrl": ""
+  },
+  {
+    "type": "Research",
+    "impactLevel": "High Impact",
+    "multiSource": false,
+    "date": "Jun 12, 2026",
+    "topic": "Colorectal Cancer Screening",
+    "title": "Positive interval FIT after colonoscopy supports offering repeat colonoscopy",
+    "authors": "Olivia Anderson; source quotes Jennifer J. Telford",
+    "source": "GI & Hepatology News",
+    "summary": "Population-based British Columbia Colon Screening Program cohort study; 169,117 patients undergoing colonoscopy between 2013 and 2021; 275 developed post-colonoscopy colorectal cancer during median follow-up of about 43 months. Cumulative PCCRC incidence was 3.02% after a positive interval FIT versus 0.47% with no interval FIT and 0.17% with a negative interval FIT, supporting repeat colonoscopy after a positive interval FIT despite a recent colonoscopy. Limitation: Retrospective design, unknown indication for interval FIT testing, and local screening-practice dependence. Source verified by GI & Hepatology News page and linked CGH study; AI-assisted summary requires human review before merge.",
+    "url": "https://news.gastro.org/issues/2026/june-2026/study-supports-repeat-colonoscopy-after-positive-interval-fit-following-colonoscopy/",
+    "studyUrl": "https://www.cghjournal.org/article/S1542-3565(26)00353-8/fulltext"
   }
 ];
 
