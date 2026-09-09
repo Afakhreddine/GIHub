@@ -1,6 +1,6 @@
 import { test, afterEach } from "node:test";
 import assert from "node:assert/strict";
-import handler from "../api/claude.js";
+import handler, { dedupeGuidelines } from "../api/claude.js";
 import guidelineSupplements from "../src/data/guidelineSupplements.js";
 
 const ORIGINAL_FETCH = global.fetch;
@@ -96,6 +96,72 @@ test("/api/claude does not duplicate a supplement already present in the reposit
 
   const pancreaticItems = res.body.data.filter(item => item.title === pancreatic.title);
   assert.equal(pancreaticItems.length, 1);
+});
+
+test("/api/claude deduplicates ASGE colonic stricture records from the live repo", async () => {
+  const duplicateRepo = [
+    {
+      org: "ASGE",
+      year: "2026",
+      month: "June",
+      topic: "Colonic Strictures",
+      urgency: "Moderate",
+      title: "ASGE Guideline on Endoscopic Management of Benign and Malignant Colonic Strictures",
+      summary: "Duplicate record with unrelated URL.",
+      url: "https://www.asge.org/home/resources/publications/guidelines/interventions-to-improve-adenoma-detection-rates-for-colonoscopy"
+    },
+    {
+      org: "ASGE",
+      year: "2026",
+      month: "June",
+      topic: "Colonic Strictures",
+      urgency: "Moderate",
+      title: "Endoscopic Management of Benign and Malignant Colonic Strictures",
+      summary: "Duplicate record with generic index URL.",
+      url: "https://www.asge.org/home/resources/publications/guidelines"
+    }
+  ];
+
+  mockRedis({ "gihub:guidelines:repo": duplicateRepo });
+
+  const req = { method: "POST", body: { type: "content", section: "guidelines", page: "all" } };
+  const res = mockResponse();
+
+  await handler(req, res);
+
+  const colonicStrictures = res.body.data.filter(item =>
+    item.org === "ASGE" && /benign and malignant colonic strictures/i.test(item.title)
+  );
+  assert.equal(colonicStrictures.length, 1);
+  assert.equal(
+    colonicStrictures[0].url,
+    "https://pubmed.ncbi.nlm.nih.gov/42240543/"
+  );
+});
+
+test("dedupeGuidelines collapses overlapping ASGE colonic stricture titles", () => {
+  const deduped = dedupeGuidelines([
+    {
+      org: "ASGE",
+      year: "2026",
+      month: "June",
+      topic: "Colonic Strictures",
+      title: "ASGE Guideline on Endoscopic Management of Benign and Malignant Colonic Strictures",
+      url: "https://www.asge.org/home/resources/publications/guidelines/interventions-to-improve-adenoma-detection-rates-for-colonoscopy"
+    },
+    {
+      org: "ASGE",
+      year: "2026",
+      month: "June",
+      topic: "Colonic Strictures",
+      title: "Endoscopic Management of Benign and Malignant Colonic Strictures",
+      url: "https://www.asge.org/home/resources/publications/guidelines"
+    }
+  ]);
+
+  assert.equal(deduped.length, 1);
+  assert.equal(deduped[0].title, "American Society for Gastrointestinal Endoscopy guideline on endoscopic management of benign and malignant colonic strictures");
+  assert.equal(deduped[0].url, "https://pubmed.ncbi.nlm.nih.gov/42240543/");
 });
 
 test("/api/claude serves incremental new-guideline alerts from cache", async () => {

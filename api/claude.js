@@ -37,29 +37,57 @@ function guidelineIdentity(item) {
   if (pmid) return `pmid:${pmid}`;
   const doi = url.match(/10\.\d{4,9}\/[^?#\s]+/i)?.[0];
   if (doi) return `doi:${doi.toLowerCase()}`;
+  const pii = url.match(/s\d{4}-\d{4}\(\d{2}\)\d+-[\dx]/i)?.[0];
+  if (pii) return `pii:${pii.toLowerCase()}`;
   return `${item?.org || ""}:${item?.year || ""}:${normalizedGuidelineToken(item)}`;
 }
 
-function mergeGuidelineSupplements(repo) {
-  const existing = new Set(repo.map(guidelineIdentity));
-  const tokens = repo.map(normalizedGuidelineToken);
-  const merged = [...repo];
-  for (const supplement of guidelineSupplements) {
-    const identity = guidelineIdentity(supplement);
-    const token = normalizedGuidelineToken(supplement);
-    const duplicateByToken = tokens.some(existingToken => {
-      if (!existingToken || !token) return false;
-      return existingToken === token ||
-        (existingToken.includes(token) && token.length > 16) ||
-        (token.includes(existingToken) && existingToken.length > 16);
-    });
-    if (!existing.has(identity) && !duplicateByToken) {
-      merged.push(supplement);
-      existing.add(identity);
-      tokens.push(token);
-    }
+function isDuplicateGuidelineToken(existingToken, token) {
+  if (!existingToken || !token) return false;
+  if (existingToken === token) return true;
+  const knownEquivalentScopes = [
+    "benign malignant colonic strictures",
+  ];
+  return knownEquivalentScopes.some(scope => existingToken.includes(scope) && token.includes(scope));
+}
+
+function canonicalizeGuideline(item) {
+  const token = normalizedGuidelineToken(item);
+  const org = String(item?.org || "").toUpperCase();
+  if (org === "ASGE" && item?.year === "2026" && token.includes("benign malignant colonic strictures")) {
+    return {
+      ...item,
+      month: "Aug",
+      topic: "Colonic Strictures",
+      title: "American Society for Gastrointestinal Endoscopy guideline on endoscopic management of benign and malignant colonic strictures",
+      summary: "ASGE guideline providing evidence-based recommendations for endoscopic management of benign and malignant colonic strictures, including dilation, stenting, and procedural selection.",
+      url: "https://pubmed.ncbi.nlm.nih.gov/42240543/"
+    };
   }
-  return merged;
+  return item;
+}
+
+export function dedupeGuidelines(items) {
+  const existing = new Set();
+  const tokens = [];
+  const deduped = [];
+
+  for (const raw of items || []) {
+    const item = canonicalizeGuideline(raw);
+    const identity = guidelineIdentity(item);
+    const token = normalizedGuidelineToken(item);
+    const duplicateByToken = tokens.some(existingToken => isDuplicateGuidelineToken(existingToken, token));
+    if (existing.has(identity) || duplicateByToken) continue;
+    deduped.push(item);
+    existing.add(identity);
+    tokens.push(token);
+  }
+
+  return deduped;
+}
+
+function mergeGuidelineSupplements(repo) {
+  return dedupeGuidelines([...(repo || []), ...guidelineSupplements]);
 }
 
 export default async function handler(req, res) {
