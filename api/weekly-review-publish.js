@@ -36,6 +36,23 @@ export function buildUpdatedWeeklyFile(items) {
   return `const weekly = ${JSON.stringify(items, null, 2)};\n\nexport default weekly;\n`;
 }
 
+function stableWeeklyItem(item) {
+  return {
+    title:String(item?.title || "").trim(),
+    date:String(item?.date || "").trim(),
+    topic:String(item?.topic || "").trim(),
+    type:String(item?.type || "").trim(),
+    url:String(item?.url || "").trim(),
+    studyUrl:String(item?.studyUrl || "").trim(),
+  };
+}
+
+export function weeklyItemsMatchApproved(branchItems = [], approvedItems = []) {
+  if (!Array.isArray(branchItems) || !Array.isArray(approvedItems)) return false;
+  if (branchItems.length !== approvedItems.length) return false;
+  return JSON.stringify(branchItems.map(stableWeeklyItem)) === JSON.stringify(approvedItems.map(stableWeeklyItem));
+}
+
 function firstUsefulSentence(summary) {
   const sentences = String(summary || "")
     .split(/(?<=[.!?])\s+/)
@@ -201,8 +218,10 @@ export async function publishWeeklyReview(config, payload) {
 
   const currentPublishedItems = await loadWeeklyItemsFromRef(config, pull.base.ref);
   const existingArchive = await loadArchiveFromBranch(config, pull.head.ref);
+  const currentBranchItems = await loadWeeklyItemsFromRef(config, pull.head.ref);
   const archived = weeklyArchiveContainsItems(existingArchive, currentPublishedItems);
-  if (!archived || (payload?.approvedItems?.length || 0) < (payload?.counts?.total || payload?.approvedItems?.length || 0)) {
+  const branchAlreadyPrepared = weeklyItemsMatchApproved(currentBranchItems, payload.approvedItems || []);
+  if (!archived || !branchAlreadyPrepared) {
     return updateWeeklyFileOnBranch(config, pull, payload.approvedItems, payload.summary);
   }
 

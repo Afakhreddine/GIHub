@@ -5,7 +5,7 @@ import {
   canPublishWeeklyReview,
   weeklyReviewDecisionCounts,
 } from "../src/weeklyReviewModel.js";
-import { buildUpdatedWeeklyFile, resolvePublishConfig, validatePublishRequest } from "../api/weekly-review-publish.js";
+import { buildUpdatedWeeklyFile, resolvePublishConfig, validatePublishRequest, weeklyItemsMatchApproved } from "../api/weekly-review-publish.js";
 
 const items = [
   { date:"Sep 1, 2026", title:"First update", source:"news.gastro.org" },
@@ -51,6 +51,14 @@ test("publish API writes weekly data containing only approved cards", () => {
   assert.match(weeklySource, /First update/);
   assert.doesNotMatch(weeklySource, /Second update/);
   assert.match(weeklySource, /export default weekly;/);
+});
+
+test("weekly review publish detects when PR branch already contains only approved cards", () => {
+  const approvedOnly = [items[0]];
+  assert.equal(weeklyItemsMatchApproved(approvedOnly, approvedOnly), true);
+  assert.equal(weeklyItemsMatchApproved(items, approvedOnly), false);
+  assert.equal(weeklyItemsMatchApproved(approvedOnly, items), false);
+  assert.equal(weeklyItemsMatchApproved([{ ...items[0], source:"changed-source-is-ignored-for-merge-readiness" }], approvedOnly), true);
 });
 
 test("publish API refuses missing token, wrong token, and non-preview deployments", () => {
