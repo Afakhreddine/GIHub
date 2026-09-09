@@ -164,9 +164,35 @@ test("dedupeGuidelines collapses overlapping ASGE colonic stricture titles", () 
   assert.equal(deduped[0].url, "https://pubmed.ncbi.nlm.nih.gov/42240543/");
 });
 
-test("/api/claude serves incremental new-guideline alerts from cache", async () => {
-  const alerts = [{ org: "ACG", title: "New incremental guideline" }];
-  mockRedis({ "gihub:guidelines:new": alerts });
+test("/api/claude deduplicates incremental ASGE new-guideline alerts from cache", async () => {
+  mockRedis({
+    "gihub:guidelines:new": [
+      {
+        org: "ASGE",
+        year: "2026",
+        month: "June",
+        topic: "Colonic Strictures",
+        title: "Endoscopic Management of Benign and Malignant Colonic Strictures",
+        url: "https://www.asge.org/home/resources/publications/guidelines"
+      },
+      {
+        org: "ACG",
+        year: "2026",
+        month: "July",
+        topic: "Colonic Diverticulitis",
+        title: "ACG Clinical Guideline: Colonic Diverticulitis",
+        url: "https://pubmed.ncbi.nlm.nih.gov/?term=ACG+Clinical+Guideline+Colonic+Diverticulitis"
+      },
+      {
+        org: "ASGE",
+        year: "2026",
+        month: "June",
+        topic: "Colonic Strictures",
+        title: "ASGE Guideline on Endoscopic Management of Benign and Malignant Colonic Strictures",
+        url: "https://www.asge.org/home/resources/publications/guidelines/interventions-to-improve-adenoma-detection-rates-for-colonoscopy"
+      }
+    ]
+  });
 
   const req = { method: "POST", body: { type: "content", section: "guidelines-new" } };
   const res = mockResponse();
@@ -174,5 +200,8 @@ test("/api/claude serves incremental new-guideline alerts from cache", async () 
   await handler(req, res);
 
   assert.equal(res.statusCode, 200);
-  assert.deepEqual(res.body.data, alerts);
+  assert.equal(res.body.data.length, 2);
+  assert.equal(res.body.data.filter(item => item.org === "ASGE").length, 1);
+  assert.equal(res.body.data.find(item => item.org === "ASGE").title, "American Society for Gastrointestinal Endoscopy guideline on endoscopic management of benign and malignant colonic strictures");
+  assert.equal(res.body.data.find(item => item.org === "ASGE").url, "https://pubmed.ncbi.nlm.nih.gov/42240543/");
 });

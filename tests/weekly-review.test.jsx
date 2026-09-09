@@ -36,7 +36,7 @@ test("weekly review search and filters match card content and decisions", () => 
   const approvedId = weeklyItemId(weekly[0]);
   const decisions = { [approvedId]: "Approve" };
 
-  assert.deepEqual(filterWeeklyItems(weekly, { query: weekly[0].topic.toLowerCase(), type: "All", decision: "All", decisions }), [weekly[0]]);
+  assert.deepEqual(filterWeeklyItems(weekly, { query: weekly[0].title.toLowerCase(), type: "All", decision: "All", decisions }), [weekly[0]]);
   assert.ok(filterWeeklyItems(weekly, { query: "", type: "Research", decision: "All", decisions }).every((item) => item.type === "Research"));
   assert.deepEqual(filterWeeklyItems(weekly, { query: "", type: "All", decision: "Approve", decisions }), [weekly[0]]);
   assert.equal(filterWeeklyItems(weekly, { query: "no matching update", type: "All", decision: "All", decisions }).length, 0);
