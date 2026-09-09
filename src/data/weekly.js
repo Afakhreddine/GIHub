@@ -1,33 +1,4 @@
-// Repo-managed GIHub weekly update data.
-// Update with: node scripts/update-weekly-data.mjs <weekly.json>
-
 const weekly = [
-  {
-    "type": "Research",
-    "impactLevel": "High Impact",
-    "multiSource": false,
-    "date": "Sep 3, 2026",
-    "topic": "Hepatocellular Carcinoma",
-    "title": "North American panel proposes new framework for allocating liver cancer treatment",
-    "authors": "",
-    "source": "news.gastro.org",
-    "summary": "Modified-Delphi North American expert consensus with a 29-case pilot validation; Patients with hepatocellular carcinoma considered across tumor burden, vascular invasion, liver function, and extrahepatic disease; 20 panelists; 18 independent specialists reviewed 29 de-identified cases. Independent specialists agreed with BEACON-HCC in 28 of 29 cases (96.6%) versus 21 of 29 (72.4%) for BCLC 2025. The framework gives radiation-based and selected multimodality approaches a larger role and allows reassessment for curative therapy after response. Offers a multidisciplinary treatment-allocation framework for tumor-board discussion, but should not displace validated staging systems or outcome-based guidance. Limitation: Expert consensus is not prospective outcomes evidence; the pilot used only 29 selected cases and is vulnerable to selection and confirmation bias. Source verified; AI-assisted summary requires human review before merge.",
-    "url": "https://news.gastro.org/issues/2026/september-2026/north-american-panel-proposes-new-framework-for-allocating-liver-cancer-treatment/",
-    "studyUrl": "https://doi.org/10.1097/HEP.0000000000001834"
-  },
-  {
-    "type": "News",
-    "impactLevel": "Noteworthy",
-    "multiSource": false,
-    "date": "Sep 1, 2026",
-    "topic": "Practice Management",
-    "title": "UnitedHealthcare to end GI endoscopy advance notification, site-of-service reviews",
-    "authors": "",
-    "source": "news.gastro.org",
-    "summary": "Policy news report based on UnitedHealthcare's September 1 provider notice and AGA review; UnitedHealthcare commercial-plan members and Oxford-plan members in New York and Connecticut; Not applicable. Beginning Oct 1, UHC will stop advance notification for EGD, capsule endoscopy, and diagnostic/surveillance colonoscopy and will end site-of-service review for affected procedures, including screening colonoscopy. ERCP and certain small-bowel endoscopy services are outside the named categories, and practices must still verify member-specific requirements. GI practices should update workflows for affected plans while continuing member-level benefit verification. Limitation: Operational handling of pending requests, portal prompts, plan exceptions, and payment predetermination remains unresolved. Source verified; AI-assisted summary requires human review before merge.",
-    "url": "https://news.gastro.org/issues/2026/september-2026/unitedhealthcare-to-end-gi-endoscopy-advance-notification-siteofservice-reviews/",
-    "studyUrl": ""
-  },
   {
     "type": "Research",
     "impactLevel": "High Impact",
@@ -42,19 +13,6 @@ const weekly = [
     "studyUrl": "https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(26)00508-8/abstract"
   },
   {
-    "type": "Opinion",
-    "impactLevel": "Noteworthy",
-    "multiSource": false,
-    "date": "Sep 1, 2026",
-    "topic": "Endoscopy Practice",
-    "title": "Sustainability in endoscopy",
-    "authors": "",
-    "source": "news.gastro.org",
-    "summary": "Expert perspectives and practical how-to article; Endoscopy units in high-resource settings and a Jamaican system with 12 gastroenterologists serving 2.8 million people; Not applicable. The authors recommend measuring waste, using tap water for irrigation and reusable equipment when evidence supports safety, improving waste segregation, and avoiding guideline-discordant procedures or routine biopsies. The Jamaican perspective emphasizes triage, multidisciplinary review, referral networks, and global partnerships where specialist and endoscopy capacity is scarce. Provides actionable prompts for endoscopy-unit quality improvement without presenting sustainability choices as universal mandates. Limitation: This is expert opinion rather than comparative clinical or environmental outcomes research, and local infection-control and regulatory requirements may differ. Source verified; AI-assisted summary requires human review before merge.",
-    "url": "https://news.gastro.org/issues/2026/september-2026/sustainability-in-endoscopy/",
-    "studyUrl": ""
-  },
-  {
     "type": "Research",
     "impactLevel": "High Impact",
     "multiSource": false,
@@ -66,19 +24,6 @@ const weekly = [
     "summary": "Integrated safety analysis of six phase 3 ulcerative colitis and Crohn's disease trials; Patients with moderate-to-severe ulcerative colitis or Crohn's disease; Induction: 725 placebo and 1,393 upadacitinib; maintenance/long-term: 468 placebo, 471 at 15 mg, and 480 at 30 mg; 5,149 patient-years of long-term exposure. Herpes zoster increased with dose during maintenance/long-term follow-up: 1.9 events per 100 patient-years with placebo, 3.9 with 15 mg, and 6.6 with 30 mg. Thromboembolism rates were 0.3 and 0.4 per 100 patient-years at 15 mg and 30 mg, with major cardiovascular events and cancers uncommon; no new unexpected safety signal emerged. Supports ongoing risk-based JAK-inhibitor counseling, zoster vaccination, dose selection, and laboratory monitoring rather than broad reassurance. Limitation: Placebo exposure was shorter, older and comorbid patients were underrepresented, rare or delayed harms remain difficult to assess, and AbbVie funded/designed the trials and analysis. Source verified; AI-assisted summary requires human review before merge.",
     "url": "https://news.gastro.org/issues/2026/september-2026/sixtrial-analysis-finds-no-new-upadacitinib-safety-signals-in-ibd/",
     "studyUrl": "https://www.cghjournal.org/article/S1542-3565(26)00145-X/fulltext"
-  },
-  {
-    "type": "Research",
-    "impactLevel": "High Impact",
-    "multiSource": false,
-    "date": "Sep 4, 2026",
-    "topic": "Portal Hypertension",
-    "title": "Machine learning model shrinks portal hypertension gray zone",
-    "authors": "",
-    "source": "news.gastro.org",
-    "summary": "Multicenter derivation, internal validation, and external validation of a diagnostic machine-learning score against HVPG; Patients with compensated advanced chronic liver disease across 24 international centers; 1,435 total; 1,093 in derivation/internal validation and 342 in external validation. External-validation AUROC was 0.91; thresholds of 0.45 or lower and 0.60 or higher produced 90% negative and 96% positive predictive values, respectively. The ELM score reduced indeterminate results to 12% versus 48% with standard Baveno VII criteria and correctly classified 88% versus 58% of patients with CSPH. Promising research tool for reducing the CSPH gray zone and targeting nonselective beta-blocker assessment, but not yet ready for routine standalone use. Limitation: Most cohorts were retrospective; device and population heterogeneity remain concerns, and prospective implementation/outcomes validation is required before treatment decisions rely on the model. Source verified; AI-assisted summary requires human review before merge.",
-    "url": "https://news.gastro.org/issues/2026/september-2026/machine-learning-model-shrinks-portal-hypertension-gray-zone/",
-    "studyUrl": "https://www.journal-of-hepatology.eu/article/S0168-8278(26)02681-4/fulltext"
   },
   {
     "type": "FDA",
