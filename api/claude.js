@@ -112,7 +112,7 @@ export default async function handler(req, res) {
 
       if (section === "guidelines-new") {
         const cached = await redisGet("gihub:guidelines:new");
-        const data = Array.isArray(cached) ? cached : [];
+        const data = dedupeGuidelines(Array.isArray(cached) ? cached : []);
         return res.status(200).json({ data });
       }
 
