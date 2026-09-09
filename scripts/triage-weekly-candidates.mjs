@@ -116,6 +116,63 @@ function buildSummary(candidate) {
   return bits.join(" ").replace(/\s+/g, " ").trim();
 }
 
+function normalizeDoi(value) {
+  const match = String(value || "").match(/10\.\d{4,9}\/[^\s?#)]+/i);
+  return match ? match[0].replace(/[.,;]+$/, "").toLowerCase() : "";
+}
+
+function normalizePmid(value) {
+  const match = String(value || "").match(/(?:pubmed\.ncbi\.nlm\.nih\.gov\/|pmid[:\s]*)(\d{6,9})/i);
+  return match ? match[1] : "";
+}
+
+function normalizeUrlKey(value) {
+  if (!value) return "";
+  try {
+    const url = new URL(value);
+    url.hash = "";
+    url.search = "";
+    return url.toString().replace(/^https?:\/\/(www\.)?/i, "").replace(/\/$/, "").toLowerCase();
+  } catch {
+    return String(value || "").trim().toLowerCase();
+  }
+}
+
+function normalizeTitleKey(value) {
+  return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+export function weeklyDuplicateKeys(item) {
+  const sourceText = [item?.doi, item?.pmid, item?.studyUrl, item?.url, item?.summary].filter(Boolean).join(" ");
+  return [
+    normalizeDoi(sourceText) && `doi:${normalizeDoi(sourceText)}`,
+    normalizePmid(sourceText) && `pmid:${normalizePmid(sourceText)}`,
+    normalizeUrlKey(item?.studyUrl) && `study:${normalizeUrlKey(item?.studyUrl)}`,
+    normalizeUrlKey(item?.url) && `url:${normalizeUrlKey(item?.url)}`,
+    normalizeTitleKey(item?.title) && `title:${normalizeTitleKey(item?.title)}`,
+  ].filter(Boolean);
+}
+
+export function weeklyDuplicateKey(item) {
+  return weeklyDuplicateKeys(item)[0] || "";
+}
+
+export function dedupeWeeklyItems(items) {
+  const seen = new Set();
+  const unique = [];
+  const duplicates = [];
+  for (const item of items || []) {
+    const keys = weeklyDuplicateKeys(item);
+    if (keys.some((key) => seen.has(key))) {
+      duplicates.push(item);
+      continue;
+    }
+    for (const key of keys) seen.add(key);
+    unique.push(item);
+  }
+  return { unique, duplicates };
+}
+
 export function triageCandidates(candidates) {
   if (!Array.isArray(candidates)) throw new Error("Candidate input must be a JSON array");
   const normalized = candidates.map(normalizeCandidate);
@@ -128,6 +185,8 @@ export function triageCandidates(candidates) {
     verifiedLinks: 0,
     unverified: 0,
     riskCounts: {},
+    duplicatesRemoved: 0,
+    duplicateTitles: [],
   };
   const weeklyItems = [];
 
@@ -167,8 +226,12 @@ export function triageCandidates(candidates) {
     audit.included += 1;
   }
 
-  if (weeklyItems.length > 12) throw new Error("Triage produced more than 12 weekly items");
-  return { weeklyItems, audit, candidates: normalized };
+  const { unique, duplicates } = dedupeWeeklyItems(weeklyItems);
+  audit.duplicatesRemoved = duplicates.length;
+  audit.duplicateTitles = duplicates.map((item) => item.title).filter(Boolean);
+
+  if (unique.length > 12) throw new Error("Triage produced more than 12 weekly items");
+  return { weeklyItems:unique, audit, candidates: normalized };
 }
 
 function usage() {

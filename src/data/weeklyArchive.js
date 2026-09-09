@@ -3,6 +3,42 @@
 
 const weeklyArchive = [
   {
+    "title": "6-Month Rx Results in Functional Cure for Some With Hep B",
+    "oneLineSummary": "Functional cure occurred in 20% vs 0% in B-Well 1 (risk difference 17.5 percentage points, 95% CI 14.6-20.3; P<0.001) and 19% vs 0% in B-Well 2 (risk difference 13.3, 95% CI 10.4-16.1; P<0.001).",
+    "doi": "",
+    "pmid": "42206582",
+    "source": "gastroendonews.com",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42206582/",
+    "date": "Aug 28, 2026",
+    "topic": "Hepatitis B",
+    "type": "Research",
+    "archivedFrom": "2026-09-09"
+  },
+  {
+    "title": "Variation in antibody response evident ‘long before symptoms’ of IBD develop",
+    "oneLineSummary": "Disease-specific antibody differences were detectable as early as approximately 10 years before diagnosis, with repertoire variability increasing around four years before diagnosis.",
+    "doi": "",
+    "pmid": "",
+    "source": "healio.com",
+    "url": "https://gut.bmj.com/content/early/2026/07/23/gutjnl-2025-337762",
+    "date": "Aug 26, 2026",
+    "topic": "IBD",
+    "type": "Research",
+    "archivedFrom": "2026-09-09"
+  },
+  {
+    "title": "Artificial Intelligence Tools for Gastrointestinal Research: A Practical Guide",
+    "oneLineSummary": "The guide recommends structured AI use for literature discovery, citation verification, writing and editing, presentations, disclosure, and privacy safeguards.",
+    "doi": "10.1016/j.cgh.2026.03.032",
+    "pmid": "",
+    "source": "Clinical Gastroenterology and Hepatology",
+    "url": "https://doi.org/10.1016/j.cgh.2026.03.032",
+    "date": "Aug 23, 2026",
+    "topic": "Education",
+    "type": "Research",
+    "archivedFrom": "2026-09-09"
+  },
+  {
     "title": "FDA approves first RAS-targeted therapy for metastatic pancreatic cancer",
     "oneLineSummary": "Median overall survival was 13.2 vs 6.7 months (HR 0.40, 95% CI 0.30-0.53).",
     "doi": "10.1056/NEJMoa2605555",

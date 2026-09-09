@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { triageCandidates, scoreCandidate } from "../scripts/triage-weekly-candidates.mjs";
+import { triageCandidates, scoreCandidate, dedupeWeeklyItems } from "../scripts/triage-weekly-candidates.mjs";
 
 const baseCandidate = {
   title: "AI tool improves GI literature review workflow",
@@ -76,4 +76,29 @@ test("triageCandidates refuses fabricated or unverified studyUrl values", () => 
     () => triageCandidates([unverified]),
     /unverified studyUrl/i,
   );
+});
+
+test("weekly triage deduplicates repeated articles before review", () => {
+  const duplicate = {
+    ...baseCandidate,
+    title: "AI tool improves GI literature review workflow",
+    url: `${baseCandidate.url}?utm_source=newsletter`,
+    studyUrl: `${baseCandidate.studyUrl}?utm_campaign=weekly`,
+  };
+  const { weeklyItems, audit } = triageCandidates([baseCandidate, duplicate]);
+
+  assert.equal(weeklyItems.length, 1);
+  assert.equal(audit.included, 2);
+  assert.equal(audit.duplicatesRemoved, 1);
+  assert.deepEqual(audit.duplicateTitles, [duplicate.title]);
+});
+
+test("weekly item dedupe catches duplicate title-only source-only stories", () => {
+  const { unique, duplicates } = dedupeWeeklyItems([
+    { title:"FDA approves pancreatic cancer therapy", url:"https://news.example/story-a" },
+    { title:"FDA approves pancreatic cancer therapy", url:"https://news.example/story-b" },
+  ]);
+
+  assert.equal(unique.length, 1);
+  assert.equal(duplicates.length, 1);
 });
