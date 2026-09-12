@@ -9,7 +9,7 @@ GIHub Schedule is moving to the same repo-managed model as Weekly Update: Hermes
 - Topic enrichment should search the entire Weekly Update repository first:
   - `src/data/weekly.js` for the current active weekly cards.
   - `src/data/weeklyArchive.js` for previously published abbreviated cards.
-- If the weekly repository does not provide enough strong hits, do a targeted topic pull using the current Weekly Update source model/prompt rather than fabricating content.
+- Schedule population must use a two-phase enrichment workflow: first search `weekly.js` + `weeklyArchive.js`, then run a targeted online topic pull for any clickable topic with sparse `News and Articles` candidates. Do not stop after guidelines plus archive matches when article/news sections are sparse; add targeted results as reviewable `status: "candidate"` items rather than fabricating filler content.
 - Guidelines should include the most recent relevant guideline per society when available, so a topic may show ACG + AGA + ASGE + AASLD.
 - Each clickable schedule topic should always have an interactive quiz.
 - Preferred quiz generation is AutoContent from PDFs pulled for the relevant guidelines/articles; store the resulting quiz JSON and render with the existing interactive quiz component.
@@ -36,7 +36,7 @@ When Ali provides a lecture schedule image:
 3. For each clickable topic:
    - Select the most recent relevant guideline for each society.
    - Search `weekly.js` + `weeklyArchive.js` for matching News and Articles.
-   - If too few strong hits exist, run a targeted topic pull using the current weekly prompt/source model.
+   - If too few strong hits exist, run `node scripts/populate-schedule-targeted-candidates.mjs` or the current targeted topic pull workflow to add online PubMed/news candidates for review.
    - Pull relevant PDFs for guidelines/articles when authorized.
    - Send PDFs to AutoContent quiz generation.
    - Store quiz JSON in `src/data/scheduleResources.js`.

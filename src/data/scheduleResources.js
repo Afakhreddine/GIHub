@@ -63,6 +63,44 @@ const scheduleResources = {
         "addedBy": "schedule-resource-population",
         "addedAt": "2026-09-11",
         "eventDate": "2026-09-04"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Screening for Helicobacter pylori to Prevent Gastric Cancer: A Pragmatic Randomized Clinical Trial.",
+        "oneLineSummary": "Effects of screening for Helicobacter pylori on gastric cancer incidence and mortality are unknown. To evaluate the effects of an invitation to screen for H pylori on gastric cancer incidence and mortality. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1016/j.bpg.2015.09.009",
+        "pmid": "39348147",
+        "source": "JAMA",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/39348147/",
+        "date": "Nov 2024",
+        "topic": "Stomach Pathology",
+        "type": "Research",
+        "relevanceScore": 10,
+        "relevanceReason": "Targeted online PubMed pull for Stomach Pathology.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-09-11",
+        "eventDate": "2026-09-04"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Global Prevalence of Helicobacter pylori Infection and Incidence of Gastric Cancer Between 1980 and 2022.",
+        "oneLineSummary": "We aimed to assess the secular trend of the global prevalence of Helicobacter pylori (H pylori) infection in adults and children/adolescents and to show its relation to that of gastric cancer incidence. We performed a systematic review and meta-analysis to calculate overall prevalence, adjusted by multivariate meta-regression analysis. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1053/j.gastro.2023.12.022",
+        "pmid": "38176660",
+        "source": "Gastroenterology",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/38176660/",
+        "date": "Apr 2024",
+        "topic": "Stomach Pathology",
+        "type": "Review",
+        "relevanceScore": 10,
+        "relevanceReason": "Targeted online PubMed pull for Stomach Pathology.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-09-11",
+        "eventDate": "2026-09-04"
       }
     ],
     "quiz": [],
@@ -70,7 +108,7 @@ const scheduleResources = {
     "quizSourcePdfs": [],
     "fetchedAt": "2026-09-11T00:00:00.000Z",
     "resourceStatus": "candidate-review",
-    "resourceNotes": "Initial repo-managed population from live guideline repository plus current/archived Weekly Update cards. Quiz generation remains pending source-PDF retrieval and AutoContent."
+    "resourceNotes": "Initial repo-managed population from live guideline repository plus current/archived Weekly Update cards. Quiz generation remains pending source-PDF retrieval and AutoContent. Targeted online pull added 2 PubMed candidate(s) for sparse News and Articles review. Targeted online pull added curated PubMed candidate(s) for sparse News and Articles review."
   },
   "gi-bleeding": {
     "guidelines": [
@@ -114,13 +152,71 @@ const scheduleResources = {
         "status": "candidate"
       }
     ],
-    "newsAndArticles": [],
+    "newsAndArticles": [
+      {
+        "section": "News and Articles",
+        "title": "Standard of Care Versus Octreotide in Angiodysplasia-Related Bleeding (the OCEAN Study): A Multicenter Randomized Controlled Trial.",
+        "oneLineSummary": "Gastrointestinal angiodysplasias are vascular anomalies that may result in transfusion-dependent anemia despite endoscopic therapy. An individual patient data meta-analysis of cohort studies suggests that octreotide decreases rebleeding rates, but component studies possessed a high risk of bias. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1053/j.gastro.2023.12.020",
+        "pmid": "38158089",
+        "source": "Gastroenterology",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/38158089/",
+        "date": "Apr 2024",
+        "topic": "GI Bleeding",
+        "type": "Research",
+        "relevanceScore": 10,
+        "relevanceReason": "Targeted online PubMed pull for GI Bleeding.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-09-11",
+        "eventDate": "2026-09-08"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Tranexamic acid in upper gastrointestinal bleed in patients with cirrhosis: A randomized controlled trial.",
+        "oneLineSummary": "Patients with Child-Turcotte-Pugh class B and C cirrhosis with upper gastrointestinal bleeding (UGIB) have systemic as well as localized (in the mucosa of the esophagus and stomach) fibrinolysis. The aim of this study was to evaluate the efficacy and safety of tranexamic acid in the treatment of acute UGIB in patients with cirrhosis. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1097/HEP.0000000000000817",
+        "pmid": "38441903",
+        "source": "Hepatology (Baltimore, Md.)",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/38441903/",
+        "date": "Aug 2024",
+        "topic": "GI Bleeding",
+        "type": "Research",
+        "relevanceScore": 10,
+        "relevanceReason": "Targeted online PubMed pull for GI Bleeding.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-09-11",
+        "eventDate": "2026-09-08"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Review article: Upper gastrointestinal bleeding - review of current evidence and implications for management.",
+        "oneLineSummary": "Acute upper gastrointestinal bleeding (UGIB) is a common emergency requiring hospital-based care. Advances in care across pre-endoscopic, endoscopic and post-endoscopic phases have led to improvements in clinical outcomes. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1111/apt.17949",
+        "pmid": "38517201",
+        "source": "Alimentary pharmacology & therapeutics",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/38517201/",
+        "date": "May 2024",
+        "topic": "GI Bleeding",
+        "type": "Review",
+        "relevanceScore": 10,
+        "relevanceReason": "Targeted online PubMed pull for GI Bleeding.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-09-11",
+        "eventDate": "2026-09-08"
+      }
+    ],
     "quiz": [],
     "quizStatus": "pending-autocontent-pdf-pull",
     "quizSourcePdfs": [],
     "fetchedAt": "2026-09-11T00:00:00.000Z",
     "resourceStatus": "candidate-review",
-    "resourceNotes": "Initial repo-managed population from live guideline repository plus current/archived Weekly Update cards. Quiz generation remains pending source-PDF retrieval and AutoContent."
+    "resourceNotes": "Initial repo-managed population from live guideline repository plus current/archived Weekly Update cards. Quiz generation remains pending source-PDF retrieval and AutoContent. Targeted online pull added 3 PubMed candidate(s) for sparse News and Articles review. Targeted online pull added curated PubMed candidate(s) for sparse News and Articles review."
   },
   "hypertriglyceridemia-acute-pancreatitis": {
     "guidelines": [
@@ -151,13 +247,71 @@ const scheduleResources = {
         "status": "candidate"
       }
     ],
-    "newsAndArticles": [],
+    "newsAndArticles": [
+      {
+        "section": "News and Articles",
+        "title": "No Effect of Methylnaltrexone on Acute Pancreatitis Severity: A Multicenter Randomized Controlled Trial.",
+        "oneLineSummary": "Opioids used to manage severe pain in acute pancreatitis (AP) might exacerbate the disease through effects on gastrointestinal and immune functions. Methylnaltrexone, a peripherally acting µ-opioid receptor antagonist, may counteract these effects without changing analgesia. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.14309/ajg.0000000000002904",
+        "pmid": "38916223",
+        "source": "The American journal of gastroenterology",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/38916223/",
+        "date": "Nov 2024",
+        "topic": "Hypertriglyceridemia / Acute Pancreatitis",
+        "type": "Research",
+        "relevanceScore": 10,
+        "relevanceReason": "Targeted online PubMed pull for Hypertriglyceridemia / Acute Pancreatitis.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-09-11",
+        "eventDate": "2026-09-15"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Prediction of survival in patients with infected pancreatic necrosis: a prospective cohort study.",
+        "oneLineSummary": "Infected pancreatic necrosis (IPN) is a severe complication of acute pancreatitis, with mortality rates ranging from 15 to 35%. However, limited studies exist to predict the survival of IPN patients and nomogram has never been built. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1097/JS9.0000000000000844",
+        "pmid": "37851523",
+        "source": "International journal of surgery (London, England)",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/37851523/",
+        "date": "Feb 2024",
+        "topic": "Hypertriglyceridemia / Acute Pancreatitis",
+        "type": "Research",
+        "relevanceScore": 10,
+        "relevanceReason": "Targeted online PubMed pull for Hypertriglyceridemia / Acute Pancreatitis.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-09-11",
+        "eventDate": "2026-09-15"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Predictors of Post-endoscopic Retrograde Cholangiopancreatography Pancreatitis: A Comprehensive Systematic Review and Meta-analysis.",
+        "oneLineSummary": "Pancreatitis is the most common serious adverse event associated with endoscopic retrograde cholangiopancreatography (ERCP). This meta-analysis aimed to precisely assess the risk factors for post-ERCP pancreatitis (PEP). Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1016/j.cgh.2024.11.014",
+        "pmid": "39694210",
+        "source": "Clinical gastroenterology and hepatology : the official clinical practice journal of the American Gastroenterological Association",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/39694210/",
+        "date": "Oct 2025",
+        "topic": "Hypertriglyceridemia / Acute Pancreatitis",
+        "type": "Review",
+        "relevanceScore": 10,
+        "relevanceReason": "Targeted online PubMed pull for Hypertriglyceridemia / Acute Pancreatitis.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-09-11",
+        "eventDate": "2026-09-15"
+      }
+    ],
     "quiz": [],
     "quizStatus": "pending-autocontent-pdf-pull",
     "quizSourcePdfs": [],
     "fetchedAt": "2026-09-11T00:00:00.000Z",
     "resourceStatus": "candidate-review",
-    "resourceNotes": "Initial repo-managed population from live guideline repository plus current/archived Weekly Update cards. Quiz generation remains pending source-PDF retrieval and AutoContent."
+    "resourceNotes": "Initial repo-managed population from live guideline repository plus current/archived Weekly Update cards. Quiz generation remains pending source-PDF retrieval and AutoContent. Targeted online pull added 3 PubMed candidate(s) for sparse News and Articles review. Targeted online pull added curated PubMed candidate(s) for sparse News and Articles review."
   },
   "liver-pathology": {
     "guidelines": [
@@ -252,6 +406,25 @@ const scheduleResources = {
         "addedBy": "schedule-resource-population",
         "addedAt": "2026-09-11",
         "eventDate": "2026-09-18"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Comparison of pharmacological therapies in metabolic dysfunction-associated steatohepatitis for fibrosis regression and MASH resolution: Systematic review and network meta-analysis.",
+        "oneLineSummary": "Metabolic dysfunction-associated steatohepatitis (MASH) is a leading cause of liver disease. With the advent of multiple therapeutic targets in late-phase clinical drug development for MASH, there is a knowledge gap to better understand the comparative efficacy of various pharmacological agents. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1097/HEP.0000000000001254",
+        "pmid": "39903735",
+        "source": "Hepatology (Baltimore, Md.)",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/39903735/",
+        "date": "Dec 2025",
+        "topic": "Liver Pathology",
+        "type": "Review",
+        "relevanceScore": 10,
+        "relevanceReason": "Targeted online PubMed pull for Liver Pathology.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-09-11",
+        "eventDate": "2026-09-18"
       }
     ],
     "quiz": [],
@@ -259,7 +432,7 @@ const scheduleResources = {
     "quizSourcePdfs": [],
     "fetchedAt": "2026-09-11T00:00:00.000Z",
     "resourceStatus": "candidate-review",
-    "resourceNotes": "Initial repo-managed population from live guideline repository plus current/archived Weekly Update cards. Quiz generation remains pending source-PDF retrieval and AutoContent."
+    "resourceNotes": "Initial repo-managed population from live guideline repository plus current/archived Weekly Update cards. Quiz generation remains pending source-PDF retrieval and AutoContent. Targeted online pull added 1 PubMed candidate(s) for sparse News and Articles review. Targeted online pull added curated PubMed candidate(s) for sparse News and Articles review."
   },
   "ibd": {
     "guidelines": [
@@ -360,6 +533,25 @@ const scheduleResources = {
         "addedBy": "schedule-resource-population",
         "addedAt": "2026-09-11",
         "eventDate": "2026-09-22"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Pharmacokinetic Predictor of Infection in Patients With Inflammatory Bowel Disease Treated With Intravenous and Subcutaneous Infliximab.",
+        "oneLineSummary": "Infliximab (IFX) has significantly improved outcomes for patients with inflammatory bowel disease (IBD) but also predisposes them to infection. Preinfusion trough concentration (Ctrough) is commonly used in therapeutic drug monitoring (TDM) to optimize IFX efficacy. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1097/MCG.0000000000002431",
+        "pmid": "42726906",
+        "source": "Journal of clinical gastroenterology",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/42726906/",
+        "date": "Sep 2026",
+        "topic": "IBD",
+        "type": "Research",
+        "relevanceScore": 10,
+        "relevanceReason": "Targeted online PubMed pull for IBD.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-09-11",
+        "eventDate": "2026-09-22"
       }
     ],
     "quiz": [],
@@ -367,7 +559,7 @@ const scheduleResources = {
     "quizSourcePdfs": [],
     "fetchedAt": "2026-09-11T00:00:00.000Z",
     "resourceStatus": "candidate-review",
-    "resourceNotes": "Initial repo-managed population from live guideline repository plus current/archived Weekly Update cards. Quiz generation remains pending source-PDF retrieval and AutoContent."
+    "resourceNotes": "Initial repo-managed population from live guideline repository plus current/archived Weekly Update cards. Quiz generation remains pending source-PDF retrieval and AutoContent. Targeted online pull added 1 PubMed candidate(s) for sparse News and Articles review. Targeted online pull added curated PubMed candidate(s) for sparse News and Articles review."
   },
   "ibd-gi-tumors-pathology": {
     "guidelines": [
