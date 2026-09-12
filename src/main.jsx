@@ -4,10 +4,13 @@ import './index.css'
 import App from './App.jsx'
 import WeeklyReview from './WeeklyReview.jsx'
 import ScheduleReview from './ScheduleReview.jsx'
+import ReviewHub from './ReviewHub.jsx'
 import { isWeeklyReviewPath } from './weeklyReviewModel.js'
-import { isScheduleReviewPath } from './scheduleReviewModel.js'
+import { isReviewHomePath, isScheduleReviewPath } from './scheduleReviewModel.js'
 
-const route = isWeeklyReviewPath(window.location.pathname)
+const route = isReviewHomePath(window.location.pathname)
+  ? <ReviewHub />
+  : isWeeklyReviewPath(window.location.pathname)
   ? <WeeklyReview />
   : isScheduleReviewPath(window.location.pathname)
     ? <ScheduleReview />
