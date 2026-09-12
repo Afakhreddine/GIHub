@@ -12,20 +12,12 @@ import {
   scheduleReviewSourceFromLocation,
 } from "./scheduleReviewModel.js";
 
-async function loadServerDecisions(workflow, pullNumber) {
+async function saveServerDecisions(pullNumber, decisions) {
   if (!pullNumber) return null;
-  const response = await fetch(`/api/review-decisions?workflow=${encodeURIComponent(workflow)}&pr=${encodeURIComponent(pullNumber)}`);
-  const body = await response.json();
-  if (!response.ok || !body.ok) throw new Error(body.error || "Could not load saved review decisions");
-  return body.decisions || {};
-}
-
-async function saveServerDecisions(workflow, pullNumber, decisions) {
-  if (!pullNumber) return null;
-  const response = await fetch("/api/review-decisions", {
+  const response = await fetch("/api/schedule-review-data", {
     method:"POST",
     headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ workflow, pullNumber, decisions }),
+    body:JSON.stringify({ pullNumber, decisions }),
   });
   const body = await response.json();
   if (!response.ok || !body.ok) throw new Error(body.error || "Could not save review decisions");
@@ -65,8 +57,8 @@ export default function ScheduleReview({ resources = scheduleResources }) {
         const itemCount = flattenScheduleReviewItems(body.resources);
         setSourceStatus(`Reviewing PR #${body.pr} · ${itemCount.length} new Schedule search-result cards · loading saved decisions…`);
         try {
-          const saved = await loadServerDecisions("schedule", pullNumber);
-          if (!cancelled && saved && Object.keys(saved).length) {
+          const saved = body.savedDecisions || {};
+          if (saved && Object.keys(saved).length) {
             setDecisions(saved);
             saveScheduleDecisions(window.localStorage, saved);
             setSourceStatus(`Reviewing PR #${body.pr} · ${itemCount.length} new Schedule search-result cards · saved decisions restored`);
@@ -89,7 +81,7 @@ export default function ScheduleReview({ resources = scheduleResources }) {
     saveScheduleDecisions(window.localStorage, next);
     if (reviewPullNumber) {
       setSourceStatus(`Reviewing PR #${reviewPullNumber} · ${reviewItems.length} new Schedule search-result cards · saving decisions…`);
-      saveServerDecisions("schedule", reviewPullNumber, next)
+      saveServerDecisions(reviewPullNumber, next)
         .then(() => setSourceStatus(`Reviewing PR #${reviewPullNumber} · ${reviewItems.length} new Schedule search-result cards · decisions saved`))
         .catch(() => setSourceStatus(`Reviewing PR #${reviewPullNumber} · ${reviewItems.length} new Schedule search-result cards · local decision saved; server save failed`));
     }

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { loadReviewDecisions, normalizeDecisions, reviewDecisionKey, saveReviewDecisions } from "../api/review-decisions.js";
+import { loadReviewDecisions, normalizeDecisions, reviewDecisionKey, saveReviewDecisions } from "../src/reviewDecisionStore.js";
 
 test("review decision keys are scoped by workflow and PR", () => {
   assert.equal(reviewDecisionKey("weekly", "31"), "gihub:review-decisions:weekly:pr:31");

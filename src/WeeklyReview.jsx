@@ -2,20 +2,12 @@ import React, { useEffect, useState } from "react";
 import weekly from "./data/weekly.js";
 import { buildPublishPayload, canPublishWeeklyReview, filterWeeklyItems, loadDecisions, saveDecisions, weeklyItemId, weeklyReviewDataApiPath, weeklyReviewSourceFromLocation } from "./weeklyReviewModel.js";
 
-async function loadServerDecisions(workflow, pullNumber) {
+async function saveServerDecisions(pullNumber, decisions) {
   if (!pullNumber) return null;
-  const response = await fetch(`/api/review-decisions?workflow=${encodeURIComponent(workflow)}&pr=${encodeURIComponent(pullNumber)}`);
-  const body = await response.json();
-  if (!response.ok || !body.ok) throw new Error(body.error || "Could not load saved review decisions");
-  return body.decisions || {};
-}
-
-async function saveServerDecisions(workflow, pullNumber, decisions) {
-  if (!pullNumber) return null;
-  const response = await fetch("/api/review-decisions", {
+  const response = await fetch("/api/weekly-review-data", {
     method:"POST",
     headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({ workflow, pullNumber, decisions }),
+    body:JSON.stringify({ pullNumber, decisions }),
   });
   const body = await response.json();
   if (!response.ok || !body.ok) throw new Error(body.error || "Could not save review decisions");
@@ -51,8 +43,8 @@ export default function WeeklyReview({ items = weekly }) {
         setReviewPullNumber(pullNumber);
         setSourceStatus(`Reviewing PR #${body.pr} · ${body.items.length} cards · loading saved decisions…`);
         try {
-          const saved = await loadServerDecisions("weekly", pullNumber);
-          if (!cancelled && saved && Object.keys(saved).length) {
+          const saved = body.savedDecisions || {};
+          if (saved && Object.keys(saved).length) {
             setDecisions(saved);
             saveDecisions(window.localStorage, saved);
             setSourceStatus(`Reviewing PR #${body.pr} · ${body.items.length} cards · saved decisions restored`);
@@ -75,7 +67,7 @@ export default function WeeklyReview({ items = weekly }) {
     saveDecisions(window.localStorage, next);
     if (reviewPullNumber) {
       setSourceStatus(`Reviewing PR #${reviewPullNumber} · ${reviewItems.length} cards · saving decisions…`);
-      saveServerDecisions("weekly", reviewPullNumber, next)
+      saveServerDecisions(reviewPullNumber, next)
         .then(() => setSourceStatus(`Reviewing PR #${reviewPullNumber} · ${reviewItems.length} cards · decisions saved`))
         .catch(() => setSourceStatus(`Reviewing PR #${reviewPullNumber} · ${reviewItems.length} cards · local decision saved; server save failed`));
     }
