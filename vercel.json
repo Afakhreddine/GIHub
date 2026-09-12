@@ -5,18 +5,70 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "functions": {
-    "api/debug.js":           { "maxDuration": 10  },
-    "api/cron-weekly.js":     { "maxDuration": 10  },
-    "api/cron-schedule.js":   { "maxDuration": 300 }
+    "api/debug.js": {
+      "maxDuration": 10
+    },
+    "api/cron-weekly.js": {
+      "maxDuration": 10
+    },
+    "api/cron-schedule.js": {
+      "maxDuration": 300
+    },
+    "api/weekly-review-data.js": {
+      "maxDuration": 10
+    },
+    "api/weekly-review-publish.js": {
+      "maxDuration": 60
+    },
+    "api/schedule-review-data.js": {
+      "maxDuration": 10
+    },
+    "api/schedule-review-publish.js": {
+      "maxDuration": 60
+    }
   },
   "crons": [
-    { "path": "/api/cron-schedule",   "schedule": "0 7 * * *" }
+    {
+      "path": "/api/cron-schedule",
+      "schedule": "0 7 * * *"
+    }
   ],
   "rewrites": [
-    { "source": "/api/debug",          "destination": "/api/debug" },
-    { "source": "/api/claude",          "destination": "/api/claude" },
-    { "source": "/api/cron-weekly",     "destination": "/api/cron-weekly" },
-    { "source": "/api/cron-schedule",   "destination": "/api/cron-schedule" },
-    { "source": "/(.*)",                "destination": "/index.html" }
+    {
+      "source": "/api/debug",
+      "destination": "/api/debug"
+    },
+    {
+      "source": "/api/claude",
+      "destination": "/api/claude"
+    },
+    {
+      "source": "/api/cron-weekly",
+      "destination": "/api/cron-weekly"
+    },
+    {
+      "source": "/api/cron-schedule",
+      "destination": "/api/cron-schedule"
+    },
+    {
+      "source": "/api/weekly-review-data",
+      "destination": "/api/weekly-review-data"
+    },
+    {
+      "source": "/api/weekly-review-publish",
+      "destination": "/api/weekly-review-publish"
+    },
+    {
+      "source": "/api/schedule-review-data",
+      "destination": "/api/schedule-review-data"
+    },
+    {
+      "source": "/api/schedule-review-publish",
+      "destination": "/api/schedule-review-publish"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
