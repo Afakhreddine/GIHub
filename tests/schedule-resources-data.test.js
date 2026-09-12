@@ -32,3 +32,22 @@ test("IBD and tumor-pathology lectures include current/archived Weekly Update ma
     "IBD/GI tumors pathology should include hereditary CRC archive material",
   );
 });
+
+test("sparse schedule topics include targeted online News and Articles candidates", () => {
+  for (const event of clickableSeptemberEvents) {
+    const resource = scheduleResources[event.slug];
+    assert.ok(
+      resource.newsAndArticles.length >= 3,
+      `${event.slug} should have at least 3 News and Articles candidates after targeted enrichment`,
+    );
+  }
+
+  assert.ok(
+    scheduleResources["gi-bleeding"].newsAndArticles.some(item => item.sourceRepository === "targeted-online-pull"),
+    "GI bleeding should include targeted online candidates, not only guideline resources",
+  );
+  assert.ok(
+    scheduleResources["hypertriglyceridemia-acute-pancreatitis"].newsAndArticles.some(item => item.sourceRepository === "targeted-online-pull"),
+    "Acute pancreatitis should include targeted online candidates, not only guideline resources",
+  );
+});
