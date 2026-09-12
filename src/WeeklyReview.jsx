@@ -2,6 +2,18 @@ import React, { useEffect, useState } from "react";
 import weekly from "./data/weekly.js";
 import { buildPublishPayload, canPublishWeeklyReview, filterWeeklyItems, loadDecisions, saveDecisions, weeklyItemId, weeklyReviewDataApiPath, weeklyReviewSourceFromLocation } from "./weeklyReviewModel.js";
 
+async function saveServerDecisions(pullNumber, decisions) {
+  if (!pullNumber) return null;
+  const response = await fetch("/api/weekly-review-data", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ pullNumber, decisions }),
+  });
+  const body = await response.json();
+  if (!response.ok || !body.ok) throw new Error(body.error || "Could not save review decisions");
+  return body;
+}
+
 export default function WeeklyReview({ items = weekly }) {
   const [query, setQuery] = useState("");
   const [type, setType] = useState("All");
@@ -23,12 +35,25 @@ export default function WeeklyReview({ items = weekly }) {
     setSourceStatus(source.pr ? `Loading PR #${source.pr} weekly cards…` : "Loading latest weekly PR cards…");
     fetch(weeklyReviewDataApiPath(source))
       .then((response) => response.json().then((body) => ({ response, body })))
-      .then(({ response, body }) => {
+      .then(async ({ response, body }) => {
         if (cancelled) return;
         if (!response.ok || !Array.isArray(body.items)) throw new Error(body.error || "Could not load PR weekly cards");
+        const pullNumber = String(body.pr || source.pr || "");
         setReviewItems(body.items);
-        setReviewPullNumber(String(body.pr || source.pr || ""));
-        setSourceStatus(`Reviewing PR #${body.pr} · ${body.items.length} cards`);
+        setReviewPullNumber(pullNumber);
+        setSourceStatus(`Reviewing PR #${body.pr} · ${body.items.length} cards · loading saved decisions…`);
+        try {
+          const saved = body.savedDecisions || {};
+          if (saved && Object.keys(saved).length) {
+            setDecisions(saved);
+            saveDecisions(window.localStorage, saved);
+            setSourceStatus(`Reviewing PR #${body.pr} · ${body.items.length} cards · saved decisions restored`);
+          } else if (!cancelled) {
+            setSourceStatus(`Reviewing PR #${body.pr} · ${body.items.length} cards`);
+          }
+        } catch {
+          if (!cancelled) setSourceStatus(`Reviewing PR #${body.pr} · ${body.items.length} cards · using local decisions`);
+        }
       })
       .catch((error) => {
         if (!cancelled) setSourceStatus(error.message || "Could not load PR weekly cards");
@@ -40,6 +65,12 @@ export default function WeeklyReview({ items = weekly }) {
     const next = { ...decisions, [weeklyItemId(item)]:decision };
     setDecisions(next);
     saveDecisions(window.localStorage, next);
+    if (reviewPullNumber) {
+      setSourceStatus(`Reviewing PR #${reviewPullNumber} · ${reviewItems.length} cards · saving decisions…`);
+      saveServerDecisions(reviewPullNumber, next)
+        .then(() => setSourceStatus(`Reviewing PR #${reviewPullNumber} · ${reviewItems.length} cards · decisions saved`))
+        .catch(() => setSourceStatus(`Reviewing PR #${reviewPullNumber} · ${reviewItems.length} cards · local decision saved; server save failed`));
+    }
   }
 
   async function publishApprovedWeeklyUpdate() {
