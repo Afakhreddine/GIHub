@@ -4,13 +4,25 @@ import {
   buildSchedulePublishPayload,
   canPublishScheduleReview,
   filterScheduleReviewItems,
-  flattenScheduleResources,
+  flattenScheduleReviewItems,
   loadScheduleDecisions,
   saveScheduleDecisions,
   scheduleReviewDataApiPath,
   scheduleReviewItemId,
   scheduleReviewSourceFromLocation,
 } from "./scheduleReviewModel.js";
+
+async function saveServerDecisions(pullNumber, decisions) {
+  if (!pullNumber) return null;
+  const response = await fetch("/api/schedule-review-data", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ pullNumber, decisions }),
+  });
+  const body = await response.json();
+  if (!response.ok || !body.ok) throw new Error(body.error || "Could not save review decisions");
+  return body;
+}
 
 export default function ScheduleReview({ resources = scheduleResources }) {
   const [query, setQuery] = useState("");
@@ -23,7 +35,7 @@ export default function ScheduleReview({ resources = scheduleResources }) {
   const [sourceStatus, setSourceStatus] = useState("");
   const [publishStatus, setPublishStatus] = useState("");
   const [publishBusy, setPublishBusy] = useState(false);
-  const reviewItems = flattenScheduleResources(reviewResources);
+  const reviewItems = flattenScheduleReviewItems(reviewResources);
   const visibleItems = filterScheduleReviewItems(reviewItems, { query, slug, kind, decision:decisionFilter, decisions });
   const publishReady = canPublishScheduleReview(reviewItems, decisions);
   const slugs = ["All", ...new Set(reviewItems.map((item) => item.slug))];
@@ -36,13 +48,26 @@ export default function ScheduleReview({ resources = scheduleResources }) {
     setSourceStatus(source.pr ? `Loading PR #${source.pr} Schedule cards…` : "Loading latest Schedule PR cards…");
     fetch(scheduleReviewDataApiPath(source))
       .then((response) => response.json().then((body) => ({ response, body })))
-      .then(({ response, body }) => {
+      .then(async ({ response, body }) => {
         if (cancelled) return;
         if (!response.ok || !body.resources) throw new Error(body.error || "Could not load PR Schedule cards");
+        const pullNumber = String(body.pr || source.pr || "");
         setReviewResources(body.resources);
-        setReviewPullNumber(String(body.pr || source.pr || ""));
-        const itemCount = flattenScheduleResources(body.resources).length;
-        setSourceStatus(`Reviewing PR #${body.pr} · ${itemCount} Schedule resource cards`);
+        setReviewPullNumber(pullNumber);
+        const itemCount = flattenScheduleReviewItems(body.resources);
+        setSourceStatus(`Reviewing PR #${body.pr} · ${itemCount.length} new Schedule search-result cards · loading saved decisions…`);
+        try {
+          const saved = body.savedDecisions || {};
+          if (saved && Object.keys(saved).length) {
+            setDecisions(saved);
+            saveScheduleDecisions(window.localStorage, saved);
+            setSourceStatus(`Reviewing PR #${body.pr} · ${itemCount.length} new Schedule search-result cards · saved decisions restored`);
+          } else if (!cancelled) {
+            setSourceStatus(`Reviewing PR #${body.pr} · ${itemCount.length} new Schedule search-result cards`);
+          }
+        } catch {
+          if (!cancelled) setSourceStatus(`Reviewing PR #${body.pr} · ${itemCount.length} new Schedule search-result cards · using local decisions`);
+        }
       })
       .catch((error) => {
         if (!cancelled) setSourceStatus(error.message || "Could not load PR Schedule cards");
@@ -54,6 +79,12 @@ export default function ScheduleReview({ resources = scheduleResources }) {
     const next = { ...decisions, [scheduleReviewItemId(item)]:decision };
     setDecisions(next);
     saveScheduleDecisions(window.localStorage, next);
+    if (reviewPullNumber) {
+      setSourceStatus(`Reviewing PR #${reviewPullNumber} · ${reviewItems.length} new Schedule search-result cards · saving decisions…`);
+      saveServerDecisions(reviewPullNumber, next)
+        .then(() => setSourceStatus(`Reviewing PR #${reviewPullNumber} · ${reviewItems.length} new Schedule search-result cards · decisions saved`))
+        .catch(() => setSourceStatus(`Reviewing PR #${reviewPullNumber} · ${reviewItems.length} new Schedule search-result cards · local decision saved; server save failed`));
+    }
   }
 
   async function publishApprovedScheduleResources() {
@@ -84,8 +115,8 @@ export default function ScheduleReview({ resources = scheduleResources }) {
     <main style={{ minHeight:"100vh", background:"#080f1e", color:"#d0e0ff", fontFamily:"Georgia,'Times New Roman',serif", padding:"32px" }}>
       <div style={{ maxWidth:1180, margin:"0 auto" }}>
         <p style={{ fontSize:11, color:"#5b8af0", fontFamily:"monospace", letterSpacing:1.2 }}>GIHUB · SCHEDULE REVIEW SANDBOX</p>
-        <h1 style={{ fontSize:28, fontWeight:700, color:"#e0eeff", margin:"8px 0" }}>📅 Schedule Resource Review</h1>
-        <p style={{ fontSize:13, color:"#5a6a88", marginBottom:8 }}>Approve, hold, or reject candidate guidelines and News/Articles before they are published to the Schedule tab.</p>
+        <h1 style={{ fontSize:28, fontWeight:700, color:"#e0eeff", margin:"8px 0" }}>📅 Schedule Search-Result Review</h1>
+        <p style={{ fontSize:13, color:"#5a6a88", marginBottom:8 }}>Approve, hold, or reject only the new online-search article candidates. Existing guidelines and already-approved Weekly/Archive cards are preserved automatically.</p>
         {sourceStatus && <p style={{ fontSize:12, color:"#5b8af0", margin:"0 0 24px", fontFamily:"monospace" }}>{sourceStatus}</p>}
         {!sourceStatus && <div style={{ marginBottom:24 }} />}
         <label style={{ display:"block", color:"#6a8aaa", fontSize:12, marginBottom:22 }}>

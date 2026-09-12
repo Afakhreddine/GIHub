@@ -4,6 +4,10 @@ export function isScheduleReviewPath(pathname) {
   return pathname === "/review/schedule" || pathname === "/review/schedule/";
 }
 
+export function isReviewHomePath(pathname) {
+  return pathname === "/review" || pathname === "/review/";
+}
+
 export function scheduleReviewSourceFromLocation(locationHref) {
   try {
     const url = new URL(locationHref, "https://gi-hub.local");
@@ -50,6 +54,14 @@ export function flattenScheduleResources(resources = {}) {
     }));
     return [...guidelineItems, ...newsItems];
   });
+}
+
+export function isNewScheduleSearchCard(item) {
+  return item?.kind === "News and Articles" && item?.sourceRepository === "targeted-online-pull";
+}
+
+export function flattenScheduleReviewItems(resources = {}) {
+  return flattenScheduleResources(resources).filter(isNewScheduleSearchCard);
 }
 
 export function filterScheduleReviewItems(items, { query, slug, kind, decision, decisions }) {

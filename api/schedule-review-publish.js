@@ -33,6 +33,10 @@ function identity(item) {
   return `${item?.slug || ""}|${item?.kind || ""}|${item?.title || ""}|${item?.url || item?.pmid || item?.doi || ""}`;
 }
 
+function isReviewableNewSearchItem(item) {
+  return item?.sourceRepository === "targeted-online-pull";
+}
+
 export function parseScheduleResourcesSource(source) {
   const match = String(source || "").match(/const\s+scheduleResources\s*=\s*([\s\S]*?);\s*export\s+default\s+scheduleResources\s*;/);
   if (!match) throw new Error("Could not find scheduleResources object export.");
@@ -49,14 +53,15 @@ export function filterScheduleResourcesToApproved(resources = {}, approvedItems 
   const approved = new Set((approvedItems || []).map(identity));
   const next = structuredClone(resources || {});
   for (const [slug, resource] of Object.entries(next)) {
-    resource.guidelines = (resource.guidelines || [])
-      .filter((item) => approved.has(identity({ ...item, slug, kind:"Guideline", title:item.title || "", url:item.url || "" })))
-      .map((item) => ({ ...item, status:"approved" }));
+    resource.guidelines = (resource.guidelines || []).map((item) => ({ ...item, status:item.status || "approved" }));
     resource.newsAndArticles = (resource.newsAndArticles || [])
-      .filter((item) => approved.has(identity({ ...item, slug, kind:"News and Articles", title:item.title || item.headline || "", url:item.url || "", pmid:item.pmid || "", doi:item.doi || "" })))
-      .map((item) => ({ ...item, status:"approved" }));
+      .filter((item) => {
+        if (!isReviewableNewSearchItem(item)) return true;
+        return approved.has(identity({ ...item, slug, kind:"News and Articles", title:item.title || item.headline || "", url:item.url || "", pmid:item.pmid || "", doi:item.doi || "" }));
+      })
+      .map((item) => isReviewableNewSearchItem(item) ? ({ ...item, status:"approved" }) : item);
     resource.resourceStatus = "approved";
-    resource.resourceNotes = "Approved in Schedule Review sandbox; quizzes remain pending source-PDF retrieval/AutoContent unless present.";
+    resource.resourceNotes = "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.";
   }
   return next;
 }

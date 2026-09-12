@@ -1,5 +1,6 @@
 const DEFAULT_OWNER = "Afakhreddine";
 const DEFAULT_REPO = "GIHub";
+import { loadReviewDecisions, saveReviewDecisions } from "../src/reviewDecisionStore.js";
 
 function json(res, status, body) {
   return res.status(status).json(body);
@@ -71,15 +72,22 @@ export async function loadLatestWeeklyReviewData(env = process.env) {
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   if (req.method === "OPTIONS") return res.status(200).end();
-  if (req.method !== "GET") return json(res, 405, { error:"Method not allowed" });
 
   try {
     const pr = req.query?.pr || new URL(req.url, "http://localhost").searchParams.get("pr");
+    if (req.method === "POST") {
+      const body = req.body || {};
+      const pullNumber = body.pullNumber || body.pr || pr;
+      const saved = await saveReviewDecisions({ workflow:"weekly", pullNumber, decisions:body.decisions || {} });
+      return json(res, 200, { ok:true, pr:Number.parseInt(pullNumber, 10), ...saved });
+    }
+    if (req.method !== "GET") return json(res, 405, { error:"Method not allowed" });
     const data = pr ? await loadWeeklyReviewDataForPr(pr) : await loadLatestWeeklyReviewData();
-    return json(res, 200, data);
+    const saved = await loadReviewDecisions({ workflow:"weekly", pullNumber:data.pr });
+    return json(res, 200, { ...data, savedDecisions:saved.decisions, decisionsConfigured:saved.configured });
   } catch (error) {
     return json(res, 400, { error:error.message || "Could not load weekly review data" });
   }

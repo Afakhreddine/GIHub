@@ -6,16 +6,20 @@ import {
   canPublishScheduleReview,
   filterScheduleReviewItems,
   flattenScheduleResources,
+  flattenScheduleReviewItems,
+  isReviewHomePath,
   isScheduleReviewPath,
   scheduleReviewItemId,
   scheduleReviewSourceFromLocation,
 } from "../src/scheduleReviewModel.js";
 
 test("schedule review route and source parsing work", () => {
+  assert.equal(isReviewHomePath("/review"), true);
+  assert.equal(isReviewHomePath("/review/"), true);
   assert.equal(isScheduleReviewPath("/review/schedule"), true);
   assert.equal(isScheduleReviewPath("/review/schedule/"), true);
   assert.equal(isScheduleReviewPath("/review/weekly"), false);
-  assert.deepEqual(scheduleReviewSourceFromLocation("https://gi-hub.vercel.app/review/schedule?pr=28"), { pr:"28", latest:false });
+  assert.deepEqual(scheduleReviewSourceFromLocation("https://gi-hub.vercel.app/review?tab=schedule&pr=28"), { pr:"28", latest:false });
   assert.deepEqual(scheduleReviewSourceFromLocation("/review/schedule"), { pr:"", latest:true });
 });
 
@@ -27,8 +31,33 @@ test("schedule resources flatten into reviewable guideline and article cards", (
   assert.ok(items.every(item => item.slug && item.title));
 });
 
+test("schedule review only queues new targeted online search-result cards", () => {
+  const resources = {
+    "topic-a": {
+      guidelines:[{ org:"ACG", title:"Already trusted guideline", url:"https://example.com/g" }],
+      newsAndArticles:[
+        { title:"Already approved archive card", url:"https://example.com/archive", sourceRepository:"weekly-archive" },
+        { title:"New online candidate", url:"https://example.com/new", sourceRepository:"targeted-online-pull" },
+      ],
+    },
+  };
+  const allItems = flattenScheduleResources(resources);
+  const reviewItems = flattenScheduleReviewItems(resources);
+  assert.equal(allItems.length, 3);
+  assert.deepEqual(reviewItems.map(item => item.title), ["New online candidate"]);
+});
+
 test("schedule review filters and publication readiness mirror weekly review", () => {
-  const items = flattenScheduleResources(scheduleResources).slice(0, 3);
+  const resources = {
+    "topic-a": {
+      newsAndArticles:[
+        { title:"New stomach candidate", url:"https://example.com/a", source:"Journal", sourceRepository:"targeted-online-pull" },
+        { title:"New bleeding candidate", url:"https://example.com/b", source:"Journal", sourceRepository:"targeted-online-pull" },
+        { title:"New liver candidate", url:"https://example.com/c", source:"Journal", sourceRepository:"targeted-online-pull" },
+      ],
+    },
+  };
+  const items = flattenScheduleReviewItems(resources);
   const first = items[0];
   const decisions = Object.fromEntries(items.map(item => [scheduleReviewItemId(item), "Approve"]));
   assert.equal(canPublishScheduleReview(items, decisions), true);
