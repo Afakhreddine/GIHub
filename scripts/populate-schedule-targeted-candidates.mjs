@@ -65,6 +65,7 @@ const PREFERRED_JOURNALS = [
 
 const EXCLUDED_PUBLICATION_TYPES = /guideline|practice guideline|editorial|letter|comment|case reports/i;
 const GOOD_PUBLICATION_TYPES = /clinical trial|randomized|meta-analysis|systematic review|observational study|multicenter study|cohort|comparative study|journal article/i;
+const TARGET_PUBLICATION_YEARS = new Set(["2025", "2026"]);
 
 function normalize(value) {
   return String(value || "")
@@ -166,6 +167,14 @@ function articleScore(article, topicText) {
   return score;
 }
 
+function isTargetYearArticle(article) {
+  return TARGET_PUBLICATION_YEARS.has(String(article.year || ""));
+}
+
+function isTargetedOnlineCandidate(item) {
+  return item?.sourceRepository === "targeted-online-pull" || item?.addedBy === "schedule-targeted-online-pull";
+}
+
 function toCandidate(article, slug, config) {
   return {
     section: "News and Articles",
@@ -193,9 +202,10 @@ const audit = {};
 
 for (const [slug, config] of Object.entries(TOPIC_CONFIG)) {
   const resource = resources[slug] || { guidelines: [], newsAndArticles: [], quiz: [] };
-  const existing = resource.newsAndArticles || [];
+  const existing = (resource.newsAndArticles || []).filter(item => !isTargetedOnlineCandidate(item));
   const needed = Math.max(0, config.minNewsAndArticles - existing.length);
-  audit[slug] = { existing: existing.length, needed, added: [] };
+  audit[slug] = { existing: existing.length, needed, policy:"2025-2026 targeted PubMed candidates only by default", added: [] };
+  resource.newsAndArticles = existing;
   if (!needed) continue;
 
   const seen = new Set(existing.map(identity));
@@ -205,7 +215,7 @@ for (const [slug, config] of Object.entries(TOPIC_CONFIG)) {
   await sleep(500);
   const candidates = articles
     .map(article => ({ article, score: articleScore(article, config.topic) }))
-    .filter(({ article, score }) => score >= 3 && article.abstract && !EXCLUDED_PUBLICATION_TYPES.test(article.pubTypes.join("; ")) && (PREFERRED_JOURNALS.some(j => normalize(article.journal).includes(normalize(j)) || normalize(j).includes(normalize(article.journal))) || GOOD_PUBLICATION_TYPES.test(article.pubTypes.join("; "))))
+    .filter(({ article, score }) => isTargetYearArticle(article) && score >= 3 && article.abstract && !EXCLUDED_PUBLICATION_TYPES.test(article.pubTypes.join("; ")) && (PREFERRED_JOURNALS.some(j => normalize(article.journal).includes(normalize(j)) || normalize(j).includes(normalize(article.journal))) || GOOD_PUBLICATION_TYPES.test(article.pubTypes.join("; "))))
     .sort((a, b) => b.score - a.score)
     .map(({ article }) => toCandidate(article, slug, config));
 
