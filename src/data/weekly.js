@@ -1,6 +1,3 @@
-// Repo-managed GIHub weekly update data.
-// Update with: node scripts/update-weekly-data.mjs <weekly.json>
-
 const weekly = [
   {
     "type": "FDA",
@@ -14,32 +11,6 @@ const weekly = [
     "summary": "FDA approval based on the randomized global HERIZON-GEA-01 trial; HER2-positive unresectable locally advanced or metastatic gastric, GEJ, or esophageal adenocarcinoma; FDA-verified efficacy population; news page did not expose enrollment. Triplet median OS 26.4 vs 19.2 months (HR 0.72, 95% CI 0.57-0.90; P=.0043); Median PFS 12.4 vs 8.1 months (HR 0.63, 95% CI 0.51-0.78; P<.0001). Creates new first-line HER2-directed options and makes IHC/ISH testing immediately actionable; limitation: Gated news page; FDA action was Aug 25 although source story published in-window; AI-assisted summary requires human review before merge.",
     "url": "https://www.gastroendonews.com/FDA-Update-and-Product-News/Article/09-26/Zanidatamab-Combos-Approved-for-HER2-Positive-GI-Cancer/81572",
     "studyUrl": ""
-  },
-  {
-    "type": "Research",
-    "impactLevel": "High Impact",
-    "multiSource": false,
-    "date": "Sep 10, 2026",
-    "topic": "Hepatocellular Carcinoma",
-    "title": "Surgery after systemic therapy delays treatment failure in selected advanced liver cancer",
-    "authors": "",
-    "source": "news.gastro.org",
-    "summary": "Multicenter open-label randomized phase 3 TALENTOP trial; Locally advanced HCC with macrovascular invasion, no extrahepatic spread, and nonprogression after induction; 489 induced; 201 resectable responders randomized. Median TTF 20.4 vs 11.8 months (HR 0.60, 95% CI 0.39-0.91; P=.015); Grade 3-4 treatment-related events 39% vs 21%, with two treatment-related deaths after surgery. Supports multidisciplinary surgical reassessment in carefully selected responders; limitation: Only 41% randomized; China/HBV-heavy cohort; OS and quality-of-life immature; AI-assisted summary requires human review before merge.",
-    "url": "https://news.gastro.org/issues/2026/september-2026/surgery-after-systemic-therapy-delays-treatment-failure-in-advanced-liver-cancer-phase-3-trial-finds/",
-    "studyUrl": "https://pubmed.ncbi.nlm.nih.gov/42624156/"
-  },
-  {
-    "type": "Research",
-    "impactLevel": "Noteworthy",
-    "multiSource": true,
-    "date": "Sep 9, 2026",
-    "topic": "Colorectal Cancer Screening",
-    "title": "Blood test detected 81% of advanced adenomas in DENEB study",
-    "authors": "",
-    "source": "news.gastro.org + healio.com",
-    "summary": "Outcome-enriched retrospective multicenter diagnostic study; Average-risk colonoscopy participants and untreated CRC patients; 1,613 total; independent test cohort n=230. Sensitivity 81% for advanced adenoma, 91% for any-stage CRC, and 92% for stage I-III CRC; specificity 85%; The point estimate met the threshold but its confidence-interval lower bound did not. Promising blood-based prevention concept, not a replacement for established screening yet; limitation: Outcome enrichment may inflate performance; prospective screening-population effectiveness is unknown; AI-assisted summary requires human review before merge.",
-    "url": "https://news.gastro.org/issues/2026/september-2026/blood-test-detected-81-of-advanced-adenomas-in-deneb-study/",
-    "studyUrl": "https://www.thelancet.com/journals/langas/article/PIIS2468-1253(26)00180-9/abstract"
   },
   {
     "type": "Research",
@@ -105,19 +76,6 @@ const weekly = [
     "summary": "NHANES 2017-2023 cross-sectional analysis with dietary recall and elastography; US adults; 10,944. Plant-forward foods correlated with lower odds; red/processed meat, sodium, total protein, saturated fat, and added sugars correlated with greater prevalence; Prior-guideline alcohol-adherence scores were inversely associated with outcomes but do not establish protection. Counsel on protein source and dietary pattern, not total protein alone; limitation: Dietary recall and cross-sectional elastography cannot establish causality; residual confounding likely; AI-assisted summary requires human review before merge.",
     "url": "https://www.healio.com/news/gastroenterology/20260909/overly-simplistic-hhs-dietary-guidelines-on-protein-alcohol-may-overlook-liver-risks",
     "studyUrl": "https://pubmed.ncbi.nlm.nih.gov/42424626/"
-  },
-  {
-    "type": "Research",
-    "impactLevel": "Noteworthy",
-    "multiSource": false,
-    "date": "Sep 12, 2026",
-    "topic": "Alcohol and Cancer",
-    "title": "Alcohol-attributable cancer deaths in the US doubled since 1990",
-    "authors": "",
-    "source": "gastroendonews.com",
-    "summary": "GBD-based US observational trend analysis, 1990-2023; US adults by age, sex, state, and cancer; Modeled national mortality estimates. Estimated deaths rose from 11,361 in 1990 to 23,126 in 2023; Burden was higher in adults 55+ and men; liver cancer had the largest proportional increase (113.9%). Provides concrete counseling context for alcohol's cancer burden; limitation: Model-based attribution depends on exposure and risk assumptions and cannot identify individual causation; AI-assisted summary requires human review before merge.",
-    "url": "https://www.gastroendonews.com/Hepatology-in-Focus/Article/09-26/Alcohol-Attributable-Cancer-Deaths-Double-Since-1990/81586",
-    "studyUrl": "https://doi.org/10.1016/j.lana.2026.101599"
   },
   {
     "type": "Research",
