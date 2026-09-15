@@ -204,4 +204,5 @@ test("/api/claude deduplicates incremental ASGE new-guideline alerts from cache"
   assert.equal(res.body.data.filter(item => item.org === "ASGE").length, 1);
   assert.equal(res.body.data.find(item => item.org === "ASGE").title, "American Society for Gastrointestinal Endoscopy guideline on endoscopic management of benign and malignant colonic strictures");
   assert.equal(res.body.data.find(item => item.org === "ASGE").url, "https://pubmed.ncbi.nlm.nih.gov/42240543/");
+  assert.equal(res.body.data.find(item => item.org === "ACG").url, "https://pubmed.ncbi.nlm.nih.gov/42390126/");
 });
