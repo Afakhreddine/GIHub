@@ -356,17 +356,23 @@ function GuidelinesSection() {
     <div>
       {newAlerts.length > 0 && (
         <div style={{ marginBottom:28, display:"flex", flexDirection:"column", gap:14 }}>
-          {newAlerts.map((alert, i) => (
-            <div key={i} style={{ background:"linear-gradient(135deg,rgba(91,138,240,0.18),rgba(156,106,240,0.12))", border:"2px solid rgba(91,138,240,0.5)", borderLeft:"5px solid #5b8af0", borderRadius:14, padding:"20px 26px", boxShadow:"0 4px 24px rgba(91,138,240,0.15)" }}>
+          {newAlerts.map((alert, i) => {
+            const alertUrl = resolveUrl(alert);
+            const Wrapper = alertUrl ? "a" : "div";
+            const wrapperProps = alertUrl
+              ? { href:alertUrl, target:"_blank", rel:"noopener noreferrer", title:`Open ${alert.title}` }
+              : {};
+            return (
+            <Wrapper key={i} {...wrapperProps} style={{ display:"block", textDecoration:"none", background:"linear-gradient(135deg,rgba(91,138,240,0.18),rgba(156,106,240,0.12))", border:"2px solid rgba(91,138,240,0.5)", borderLeft:"5px solid #5b8af0", borderRadius:14, padding:"20px 26px", boxShadow:"0 4px 24px rgba(91,138,240,0.15)", cursor:alertUrl?"pointer":"default" }}>
               <div style={{ fontSize:22, fontWeight:900, color:"#a8d0ff", letterSpacing:0.8, textTransform:"uppercase", lineHeight:1.25 }}>
                 NEW {alert.org} GUIDELINE PUBLISHED
               </div>
               <div style={{ fontSize:15, fontWeight:600, color:"#d0e8ff", marginTop:10, lineHeight:1.55 }}>{alert.title}</div>
               {(alert.month || alert.year) && (
-                <div style={{ fontSize:11, color:"#4a7aaa", marginTop:8, fontFamily:"monospace" }}>{[alert.month, alert.year].filter(Boolean).join(" ")} · Added to repository</div>
+                <div style={{ fontSize:11, color:"#4a7aaa", marginTop:8, fontFamily:"monospace" }}>{[alert.month, alert.year].filter(Boolean).join(" ")} · Added to repository{alertUrl ? " · Open guideline ↗" : ""}</div>
               )}
-            </div>
-          ))}
+            </Wrapper>
+          );})}
         </div>
       )}
       <div style={{ marginBottom:20 }}>
