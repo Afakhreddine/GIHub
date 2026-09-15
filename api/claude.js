@@ -64,6 +64,16 @@ function canonicalizeGuideline(item) {
       url: "https://pubmed.ncbi.nlm.nih.gov/42240543/"
     };
   }
+  if (org === "ACG" && item?.year === "2026" && token.includes("colonic diverticulitis")) {
+    return {
+      ...item,
+      month: "July",
+      topic: "Colonic Diverticulitis",
+      title: "ACG Clinical Guideline: Colonic Diverticulitis",
+      summary: item?.summary || "ACG practice guideline on diagnosis and management of colonic diverticulitis.",
+      url: "https://pubmed.ncbi.nlm.nih.gov/42390126/"
+    };
+  }
   return item;
 }
 
