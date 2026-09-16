@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { CALENDAR_MONTH, CALENDAR_EVENTS } from "./scheduleConfig.js";
 import GUIDELINES from "./data/guidelines.js";
 import WEEKLY from "./data/weekly.js";
+import scheduleResources from "./data/scheduleResources.js";
 
 // ── SESSION CACHE ─────────────────────────────────────────────────────────────
 const sessionCache = {};
@@ -468,7 +469,7 @@ function QuizDisplay({ quiz }) {
   return (
     <div style={{ marginTop:16 }}>
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
-        <div style={{ fontSize:12, fontWeight:700, color:"#5b8af0", fontFamily:"monospace", letterSpacing:1 }}>🧠 GUIDELINE QUIZ</div>
+        <div style={{ fontSize:12, fontWeight:700, color:"#5b8af0", fontFamily:"monospace", letterSpacing:1, marginBottom:14 }}>🧠 TOPIC QUIZ</div>
         <div style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace" }}>Question {quizIndex+1} of {quiz.length}</div>
       </div>
       <div style={{ background:"rgba(255,255,255,0.025)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:12, padding:"16px" }}>
@@ -529,6 +530,17 @@ function LectureDetailPanel({ event, onClose }) {
     setShowAllGuidelines(false);
     async function load() {
       setLoading(true);
+      const localResource = scheduleResources[event.slug];
+      if (localResource) {
+        setData({
+          ...localResource,
+          guideline: localResource.guidelines || localResource.guideline || [],
+          newsAndArticles: localResource.newsAndArticles || [],
+          quiz: localResource.quiz || [],
+        });
+        setLoading(false);
+        return;
+      }
       try {
         const result = await apiCall({ type:"lecture", topic:event.slug });
         setData(result);
