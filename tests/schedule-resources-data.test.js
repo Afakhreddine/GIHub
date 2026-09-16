@@ -16,9 +16,16 @@ test("September schedule topics have repo-managed candidate resources", () => {
       `${event.slug} should include at least one guideline or news/article resource`,
     );
     assert.equal(resource.resourceStatus, "candidate-review");
-    assert.equal(resource.quizStatus, "pending-autocontent-pdf-pull");
-    assert.ok(Array.isArray(resource.quiz));
+    assert.equal(resource.quizStatus, "autocontent-complete");
+    assert.equal(resource.quiz.length, 10, `${event.slug} should include a 10-item AutoContent quiz`);
     assert.ok(Array.isArray(resource.quizSourcePdfs));
+    assert.ok(resource.quizSourcePdfs.length >= 1);
+    for (const quizItem of resource.quiz) {
+      assert.ok(quizItem.question);
+      assert.equal(quizItem.options.length, 4);
+      assert.match(quizItem.correct, /^[A-D]$/);
+      assert.ok(quizItem.explanation);
+    }
   }
 });
 
