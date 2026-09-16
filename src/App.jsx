@@ -595,7 +595,7 @@ function LectureDetailPanel({ event, onClose }) {
                 {hasQuiz&&!showQuiz&&(
                   <button onClick={()=>setShowQuiz(true)}
                     style={{ marginTop:14, background:"linear-gradient(135deg,#1a3a6a,#2a5a9a)", border:"1px solid #2a5a9a55", color:"#90c0ff", padding:"8px 16px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:6 }}>
-                    🧠 Show Guideline Quiz
+                    🧠 Show Topic Quiz
                   </button>
                 )}
                 {hasQuiz&&showQuiz&&(
