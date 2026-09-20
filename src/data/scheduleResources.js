@@ -1048,6 +1048,25 @@ const scheduleResources = {
         "addedBy": "schedule-targeted-online-pull",
         "addedAt": "2026-09-11",
         "eventDate": "2026-09-22"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Half of patients flared within two years of stopping anti-TNF for UC, trial finds",
+        "oneLineSummary": "In an open-label noninferiority RCT at 19 Norwegian hospitals, 172 patients with deeply remitted ulcerative colitis were randomized to stop or continue anti-TNF; two-year endoscopic remission was 80.5% versus 96.3%, and flares occurred in 52% versus 12%.",
+        "doi": "",
+        "pmid": "42557857",
+        "source": "news.gastro.org",
+        "sourceRepository": "weekly",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/42557857/",
+        "date": "Sep 15, 2026",
+        "topic": "Ulcerative Colitis",
+        "type": "Research",
+        "relevanceScore": 6,
+        "relevanceReason": "New Weekly Update card matches IBD (ulcerative colitis, uc).",
+        "status": "candidate",
+        "addedBy": "weekly-cron-screener",
+        "addedAt": "2026-09-20",
+        "eventDate": "2026-09-22"
       }
     ],
     "quiz": [
