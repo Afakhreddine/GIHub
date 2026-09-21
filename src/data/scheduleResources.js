@@ -1067,6 +1067,25 @@ const scheduleResources = {
         "addedBy": "weekly-cron-screener",
         "addedAt": "2026-09-20",
         "eventDate": "2026-09-22"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Home calprotectin monitoring fails to reduce ulcerative colitis flares",
+        "oneLineSummary": "The PROMOTE UC randomized trial included 611 adults with ulcerative colitis in clinical remission, randomizing 308 to standard care and 303 to proactive fecal calprotectin home monitoring every two months for 18 months.",
+        "doi": "",
+        "pmid": "42336164",
+        "source": "Gastroenterology",
+        "sourceRepository": "weekly",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/42336164/",
+        "date": "Jun 23, 2026",
+        "topic": "Ulcerative Colitis",
+        "type": "Research",
+        "relevanceScore": 6,
+        "relevanceReason": "New Weekly Update card matches IBD (ulcerative colitis, uc).",
+        "status": "candidate",
+        "addedBy": "weekly-cron-screener",
+        "addedAt": "2026-09-21",
+        "eventDate": "2026-09-22"
       }
     ],
     "quiz": [
