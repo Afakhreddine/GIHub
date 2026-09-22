@@ -3,6 +3,90 @@
 
 const weeklyArchive = [
   {
+    "title": "Zanidatamab combination regimens approved for first-line HER2-positive gastroesophageal adenocarcinoma",
+    "oneLineSummary": "FDA approval based on the randomized global HERIZON-GEA-01 trial; HER2-positive unresectable locally advanced or metastatic gastric, GEJ, or esophageal adenocarcinoma; FDA-verified efficacy population; news page did not expose enrollment.",
+    "doi": "",
+    "pmid": "",
+    "source": "gastroendonews.com",
+    "url": "https://www.gastroendonews.com/FDA-Update-and-Product-News/Article/09-26/Zanidatamab-Combos-Approved-for-HER2-Positive-GI-Cancer/81572",
+    "date": "Sep 10, 2026",
+    "topic": "Upper GI Oncology",
+    "type": "FDA",
+    "archivedFrom": "2026-09-22"
+  },
+  {
+    "title": "Most US adults lack serologic immunity to hepatitis A and B",
+    "oneLineSummary": "HAV immunity 39.5% (95% CI 37.7%-41.3%); HBV immunity 27.1% (25.8%-28.4%); vaccine-derived HBV immunity 25.2%; High-risk subgroup immunity remained low.",
+    "doi": "",
+    "pmid": "42606884",
+    "source": "news.gastro.org",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42606884/",
+    "date": "Sep 8, 2026",
+    "topic": "Viral Hepatitis",
+    "type": "Research",
+    "archivedFrom": "2026-09-22"
+  },
+  {
+    "title": "DGBI burden holds steady under Rome V, but IBS prevalence doubles",
+    "oneLineSummary": "At least one DGBI: 40.9% under Rome V vs 40.5% under Rome IV; IBS 8.5% vs 3.9%; Functional dyspepsia 8.1%; abdominal migraine 5.1%; inability to belch 1.4%.",
+    "doi": "",
+    "pmid": "42613194",
+    "source": "news.gastro.org",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42613194/",
+    "date": "Sep 8, 2026",
+    "topic": "Disorders of Gut-Brain Interaction",
+    "type": "Research",
+    "archivedFrom": "2026-09-22"
+  },
+  {
+    "title": "AI's deskilling question has a GI metric: ADR",
+    "oneLineSummary": "Opinion anchored by a 2025 multicenter observational before-and-after study; Unassisted diagnostic colonoscopies at four Polish centers; 1,443 (795 before, 648 after CADe exposure).",
+    "doi": "",
+    "pmid": "",
+    "source": "news.gastro.org",
+    "url": "https://www.thelancet.com/journals/langas/article/PIIS2468-1253(25)00133-5/abstract",
+    "date": "Sep 11, 2026",
+    "topic": "Endoscopy and AI",
+    "type": "Opinion",
+    "archivedFrom": "2026-09-22"
+  },
+  {
+    "title": "GI faces another round of Medicare cuts under proposed 2027 rules",
+    "oneLineSummary": "Supports operational planning and informed advocacy; limitation: Proposed, not final; impact varies by practice and code mix; AI-assisted summary requires human review before merge.",
+    "doi": "",
+    "pmid": "",
+    "source": "news.gastro.org",
+    "url": "https://news.gastro.org/issues/2026/september-2026/gi-faces-another-round-of-medicare-cuts-under-proposed-2027-rules/",
+    "date": "Sep 8, 2026",
+    "topic": "Practice Management",
+    "type": "News",
+    "archivedFrom": "2026-09-22"
+  },
+  {
+    "title": "Dietary guidelines on protein and alcohol may overlook liver risks",
+    "oneLineSummary": "Plant-forward foods correlated with lower odds; red/processed meat, sodium, total protein, saturated fat, and added sugars correlated with greater prevalence; Prior-guideline alcohol-adherence scores were inversely associated with outcomes but do not establish protection.",
+    "doi": "",
+    "pmid": "42424626",
+    "source": "healio.com",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42424626/",
+    "date": "Sep 9, 2026",
+    "topic": "MASLD and Nutrition",
+    "type": "Research",
+    "archivedFrom": "2026-09-22"
+  },
+  {
+    "title": "Celiac disease linked to higher liver-transplant risk in Swedish cohort",
+    "oneLineSummary": "Swedish nationwide matched cohort, 2000-2023; Biopsy-proven celiac disease and matched comparators; 41,277 and 196,863; mean follow-up 12.1 years.",
+    "doi": "",
+    "pmid": "42214801",
+    "source": "gastroendonews.com",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42214801/",
+    "date": "Sep 10, 2026",
+    "topic": "Celiac Disease",
+    "type": "Research",
+    "archivedFrom": "2026-09-22"
+  },
+  {
     "title": "Colonoscopy screening lowered colorectal cancer incidence 19% over 13 years",
     "oneLineSummary": "CRC risk was 1.46% with invitation versus 1.80% without invitation (19% relative reduction; 0.34-percentage-point absolute reduction; number needed to invite 294); only 42% of invitees underwent colonoscopy.",
     "doi": "",
