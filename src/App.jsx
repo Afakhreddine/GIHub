@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { CALENDAR_MONTH, CALENDAR_EVENTS } from "./scheduleConfig.js";
 import GUIDELINES from "./data/guidelines.js";
 import WEEKLY from "./data/weekly.js";
+import weeklyPodcasts from "./data/weeklyPodcasts.js";
 import scheduleResources from "./data/scheduleResources.js";
 
 // ── SESSION CACHE ─────────────────────────────────────────────────────────────
@@ -111,6 +112,47 @@ function ContentCard({ item, type }) {
   );
 }
 
+function WeeklyPodcastPanel({ podcasts = weeklyPodcasts }) {
+  const [selectedId, setSelectedId] = useState(podcasts[0]?.id || "");
+  if (!podcasts.length) return null;
+
+  const selected = podcasts.find(p => p.id === selectedId) || podcasts[0];
+  const previous = podcasts.slice(1);
+
+  return (
+    <section aria-label="Weekly Update podcasts" style={{ background:"linear-gradient(135deg,rgba(224,154,42,0.12),rgba(91,138,240,0.08))", border:"1px solid rgba(224,154,42,0.24)", borderRadius:14, padding:"18px 20px", marginBottom:22, boxShadow:"0 16px 40px rgba(0,0,0,0.14)" }}>
+      <div style={{ display:"flex", justifyContent:"space-between", gap:14, flexWrap:"wrap", alignItems:"flex-start" }}>
+        <div style={{ flex:"1 1 320px" }}>
+          <div style={{ fontSize:11, fontWeight:800, color:"#e09a2a", fontFamily:"monospace", letterSpacing:0.8, textTransform:"uppercase", marginBottom:6 }}>🎧 Weekly Podcast</div>
+          <h2 style={{ fontSize:18, color:"#e8f0ff", lineHeight:1.35, marginBottom:6 }}>{selected.title}</h2>
+          <p style={{ fontSize:12.5, color:"#7f92ad", lineHeight:1.65, maxWidth:760 }}>{selected.description}</p>
+          <div style={{ display:"flex", flexWrap:"wrap", gap:7, marginTop:10 }}>
+            <Badge label={selected.displayDate} color="#1a2535" />
+            <Badge label={`${selected.duration} audio`} color="#e09a2a" />
+            <Badge label={`${selected.sourceCount} sources`} color="#5b8af0" />
+            {selected.relatedPr&&<Badge label={`PR #${selected.relatedPr}`} color="#4caf7d" />}
+          </div>
+        </div>
+        {previous.length > 0 && (
+          <label style={{ display:"flex", flexDirection:"column", gap:6, minWidth:230, color:"#4a6080", fontSize:11, fontWeight:700, fontFamily:"monospace" }}>
+            Current and prior episodes
+            <select value={selected.id} onChange={e=>setSelectedId(e.target.value)} style={{ background:"rgba(8,15,30,0.75)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:9, color:"#c8d8f0", padding:"9px 10px", fontSize:12, outline:"none" }}>
+              {podcasts.map(p => <option key={p.id} value={p.id}>{p.displayDate} · {p.duration}</option>)}
+            </select>
+          </label>
+        )}
+      </div>
+      <audio key={selected.audioUrl} controls preload="none" src={selected.audioUrl} style={{ width:"100%", marginTop:16 }}>
+        <a href={selected.audioUrl}>Download {selected.title}</a>
+      </audio>
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", gap:10, flexWrap:"wrap", marginTop:10 }}>
+        <a href={selected.audioUrl} download style={{ color:"#8aafff", fontSize:12, fontWeight:700, textDecoration:"none" }}>Download MP3 ↧</a>
+        <span style={{ color:"#354a68", fontSize:11, fontFamily:"monospace" }}>Rolling archive: latest {podcasts.length} Weekly Update podcasts stored in-repo</span>
+      </div>
+    </section>
+  );
+}
+
 function ContentSection({ type }) {
   const meta = SECTION_META[type];
   const [search, setSearch]     = useState("");
@@ -190,6 +232,7 @@ function ContentSection({ type }) {
             style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:8, color:"#90b0d0", fontSize:12, padding:"8px 12px 8px 28px", outline:"none", width:150 }}/>
         </div>
       </div>
+      {type === "weekly" && <WeeklyPodcastPanel />}
       {search&&<div style={{ marginBottom:14, fontSize:12, color:"#3a5878", fontFamily:"monospace" }}>{filtered.length} result{filtered.length!==1?"s":""} for "{search}" <button onClick={()=>setSearch("")} style={{ background:"none", border:"none", color:"#5b8af0", fontSize:12, cursor:"pointer" }}>✕</button></div>}
       {filtered.length===0
         ?<div style={{ textAlign:"center", padding:"40px 0", color:"#1e2e40" }}>No results for "{search}"</div>
@@ -832,8 +875,8 @@ const TABS = [
   { id:"quiz",       label:"Quiz",                icon:"🧠" },
 ];
 
-export default function GIHub() {
-  const [active, setActive] = useState("guidelines");
+export default function GIHub({ initialActive = "guidelines" }) {
+  const [active, setActive] = useState(initialActive);
   return (
     <div style={{ minHeight:"100vh", background:"#080f1e", color:"#d0e0ff", fontFamily:"Georgia,'Times New Roman',serif", paddingBottom:80 }}>
       <style>{`
