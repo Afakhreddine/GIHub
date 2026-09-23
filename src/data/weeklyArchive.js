@@ -52,7 +52,7 @@ const weeklyArchive = [
   },
   {
     "title": "GI faces another round of Medicare cuts under proposed 2027 rules",
-    "oneLineSummary": "Supports operational planning and informed advocacy; limitation: Proposed, not final; impact varies by practice and code mix; AI-assisted summary requires human review before merge.",
+    "oneLineSummary": "Proposed 2027 CMS rules would cut GI payment rates and alter remote-monitoring and colonoscopy quality-measure policy, so practices should plan and advocate while awaiting final rules.",
     "doi": "",
     "pmid": "",
     "source": "news.gastro.org",
