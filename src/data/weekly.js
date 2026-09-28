@@ -1,6 +1,3 @@
-// Repo-managed GIHub weekly update data.
-// Update with: node scripts/update-weekly-data.mjs <weekly.json>
-
 const weekly = [
   {
     "type": "FDA",
@@ -79,19 +76,6 @@ const weekly = [
     "summary": "Among 18,246 direct-acting antiviral initiators, 73.2% had a negative follow-up RNA result, 3.7% remained positive, and 23.2% had no recorded follow-up test, although 90.8% of the untested group had at least 56 days of dispensed therapy. Care systems should close the RNA-testing gap and link pharmacy with laboratory data, recognizing possible claims misclassification, missed care, and exclusion of unstable insurance coverage. AI-assisted summary requires human review before merge.",
     "url": "https://www.healio.com/news/gastroenterology/20260924/nearly-a-quarter-of-adults-treated-for-hcv-lack-followup-rna-testing",
     "studyUrl": "https://pubmed.ncbi.nlm.nih.gov/42406405/"
-  },
-  {
-    "type": "Research",
-    "impactLevel": "Noteworthy",
-    "multiSource": false,
-    "date": "Sep 23, 2026",
-    "topic": "Microbiome and C. difficile",
-    "title": "C. difficile may have long-term impact on infants, despite lack of symptoms",
-    "authors": "Semon A, Manzer HS, Keenan O, et al.",
-    "source": "healio.com",
-    "summary": "Neonatal mouse, organoid, and limited infant-biopsy models found epithelial injury and altered intestinal stem-cell behavior after asymptomatic toxigenic Clostridioides difficile colonization, while maternal mRNA vaccination mitigated measured effects in mouse offspring. The biology challenges assumptions that colonization is inert but should not change infant testing or treatment because evidence is predominantly preclinical, human samples were rare, and clinical outcomes remain unknown. AI-assisted summary requires human review before merge.",
-    "url": "https://www.healio.com/news/pediatrics/20260923/c-difficile-may-have-longterm-impact-on-infants-despite-lack-of-symptoms",
-    "studyUrl": "https://pubmed.ncbi.nlm.nih.gov/42691172/"
   },
   {
     "type": "Research",
