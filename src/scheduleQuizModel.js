@@ -1,7 +1,17 @@
 const LETTERS = ["A", "B", "C", "D"];
 
+export function cleanQuizText(text) {
+  return String(text || "")
+    // AutoContent sometimes emits plain numeric values as inline math, e.g. $40$ mg, $< 7$ g/dL.
+    // GIHub renders quiz copy as plain text, so strip only the math delimiters while preserving content.
+    .replace(/\$\s*([^$\n]+?)\s*\$/g, "$1")
+    .replace(/\\%/g, "%")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function stripOptionPrefix(text) {
-  return String(text || "").replace(/^\s*[A-D][).:-]\s*/i, "").trim();
+  return cleanQuizText(text).replace(/^\s*[A-D][).:-]\s*/i, "").trim();
 }
 
 function optionLetter(index) {
@@ -37,11 +47,11 @@ export function normalizeAutoContentQuiz(payload, options = {}) {
     .map(item => {
       const normalized = normalizeOptions(item);
       return {
-        question: String(item?.question || "").trim(),
+        question: cleanQuizText(item?.question),
         options: normalized.options,
         correct: normalized.correct,
-        explanation: normalized.explanation,
-        ...(item?.hint ? { hint: String(item.hint).trim() } : {}),
+        explanation: cleanQuizText(normalized.explanation),
+        ...(item?.hint ? { hint: cleanQuizText(item.hint) } : {}),
       };
     })
     .filter(item => item.question && item.options.length === 4 && LETTERS.includes(item.correct) && item.explanation)

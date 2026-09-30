@@ -105,7 +105,7 @@ const scheduleResources = {
     ],
     "quiz": [
       {
-        "question": "According to the 2024 ACG guidelines, which of the following is the preferred empiric first-line treatment regimen for a patient with $H. pylori$ infection in North America when antibiotic susceptibility is unknown?",
+        "question": "According to the 2024 ACG guidelines, which of the following is the preferred empiric first-line treatment regimen for a patient with H. pylori infection in North America when antibiotic susceptibility is unknown?",
         "options": [
           "A. Bismuth quadruple therapy (BQT) for 14 days",
           "B. Clarithromycin triple therapy for 10 days",
@@ -119,17 +119,17 @@ const scheduleResources = {
       {
         "question": "A patient is found to have incidental Gastric Intestinal Metaplasia (GIM) during an upper endoscopy for reflux. According to the AGA clinical practice guidelines, what is the next most appropriate management step?",
         "options": [
-          "A. Testing for and eradication of $H. pylori$",
+          "A. Testing for and eradication of H. pylori",
           "B. Scheduling a surveillance endoscopy in 1 year",
           "C. Immediate referral for endoscopic submucosal dissection",
           "D. Initiating high-dose PPI therapy and repeat biopsy in 6 months"
         ],
         "correct": "A",
-        "explanation": "The AGA guideline strongly recommends $H. pylori$ testing and treatment in patients with GIM to reduce the risk of progression.",
+        "explanation": "The AGA guideline strongly recommends H. pylori testing and treatment in patients with GIM to reduce the risk of progression.",
         "hint": "The guideline focuses on addressing the primary treatable risk factor associated with the development of metaplasia."
       },
       {
-        "question": "In a patient who has already failed an 'optimized' 14-day bismuth quadruple therapy (BQT) for $H. pylori$, what is the preferred empiric alternative salvage regimen according to the 2024 ACG guidelines?",
+        "question": "In a patient who has already failed an 'optimized' 14-day bismuth quadruple therapy (BQT) for H. pylori, what is the preferred empiric alternative salvage regimen according to the 2024 ACG guidelines?",
         "options": [
           "A. Rifabutin triple therapy for 14 days",
           "B. Standard clarithromycin triple therapy for 14 days",
@@ -141,7 +141,7 @@ const scheduleResources = {
         "hint": "Identify the antibiotic that is frequently used in multi-drug resistant cases and does not share resistance pathways with clarithromycin."
       },
       {
-        "question": "A recent meta-analysis of global $H. pylori$ prevalence between 1980 and 2022 found that while adult prevalence has significantly declined, which demographic has not seen a significant reduction in infection rates?",
+        "question": "A recent meta-analysis of global H. pylori prevalence between 1980 and 2022 found that while adult prevalence has significantly declined, which demographic has not seen a significant reduction in infection rates?",
         "options": [
           "A. Children and adolescents",
           "B. Adults in the Western Pacific region",
@@ -149,11 +149,11 @@ const scheduleResources = {
           "D. Females in the African region"
         ],
         "correct": "A",
-        "explanation": "The study highlights that while adult prevalence dropped from $52.6\\%$ to $43.9\\%$, prevalence in children remained high at $35.1\\%$ without significant decline.",
+        "explanation": "The study highlights that while adult prevalence dropped from 52.6% to 43.9%, prevalence in children remained high at 35.1% without significant decline.",
         "hint": "Look for the younger age group where public health measures have yet to show a statistical impact on infection trends."
       },
       {
-        "question": "In the pragmatic randomized clinical trial conducted in Taiwan, how did the invitation for $H. pylori$ stool antigen (HPSA) + FIT assessment affect gastric cancer incidence compared to FIT alone in the primary analysis?",
+        "question": "In the pragmatic randomized clinical trial conducted in Taiwan, how did the invitation for H. pylori stool antigen (HPSA) + FIT assessment affect gastric cancer incidence compared to FIT alone in the primary analysis?",
         "options": [
           "A. There was no significant difference in gastric cancer incidence rates.",
           "B. It significantly reduced gastric cancer mortality but not incidence.",
@@ -161,7 +161,7 @@ const scheduleResources = {
           "D. It increased gastric cancer incidence due to over-diagnosis."
         ],
         "correct": "A",
-        "explanation": "In the initial analysis of the invited individuals, incidence rates were $0.032\\%$ vs $0.037\\%$, which was not statistically significant ($P = .23$).",
+        "explanation": "In the initial analysis of the invited individuals, incidence rates were 0.032% vs 0.037%, which was not statistically significant (P = .23).",
         "hint": "Distinguish between the raw primary outcomes and the 'post hoc' analyses that adjusted for participation rates."
       },
       {
@@ -177,7 +177,7 @@ const scheduleResources = {
         "hint": "The reported Hazard Ratio falls between 2 and 3."
       },
       {
-        "question": "For a treatment-naive patient with $H. pylori$ infection who does NOT have a penicillin allergy, which of the following is considered a suitable empiric alternative to bismuth quadruple therapy?",
+        "question": "For a treatment-naive patient with H. pylori infection who does NOT have a penicillin allergy, which of the following is considered a suitable empiric alternative to bismuth quadruple therapy?",
         "options": [
           "A. Potassium-competitive acid blocker (P-CAB) dual therapy for 14 days",
           "B. Metronidazole-based triple therapy for 7 days",
@@ -189,19 +189,19 @@ const scheduleResources = {
         "hint": "This alternative uses a newer class of acid suppressants combined with only one antibiotic."
       },
       {
-        "question": "In the Taiwan $H. pylori$ screening trial, what was the eradication rate among those participants who tested positive for the stool antigen and received antibiotic treatment?",
+        "question": "In the Taiwan H. pylori screening trial, what was the eradication rate among those participants who tested positive for the stool antigen and received antibiotic treatment?",
         "options": [
-          "A. $91.9\\%$",
-          "B. $71.4\\%$",
-          "C. $49.6\\%$",
-          "D. $38.5\\%$"
+          "A. 91.9%",
+          "B. 71.4%",
+          "C. 49.6%",
+          "D. 38.5%"
         ],
         "correct": "A",
-        "explanation": "Of the participants who received antibiotics in the HPSA + FIT group, $91.9\\%$ successfully achieved eradication.",
+        "explanation": "Of the participants who received antibiotics in the HPSA + FIT group, 91.9% successfully achieved eradication.",
         "hint": "The correct figure represents a high level of success for the therapeutic intervention phase of the trial."
       },
       {
-        "question": "According to the ACG clinical guideline, when is it appropriate to use salvage regimens containing clarithromycin or levofloxacin for persistent $H. pylori$ infection?",
+        "question": "According to the ACG clinical guideline, when is it appropriate to use salvage regimens containing clarithromycin or levofloxacin for persistent H. pylori infection?",
         "options": [
           "A. Only if antibiotic susceptibility is confirmed",
           "B. Whenever bismuth quadruple therapy has failed twice",
@@ -337,27 +337,27 @@ const scheduleResources = {
     ],
     "quiz": [
       {
-        "question": "In the OCEAN study investigating angiodysplasia-related bleeding, what was the primary effect of octreotide long-acting release ($40$ mg every $28$ days) on patient outcomes?",
+        "question": "In the OCEAN study investigating angiodysplasia-related bleeding, what was the primary effect of octreotide long-acting release (40 mg every 28 days) on patient outcomes?",
         "options": [
           "A. It significantly reduced the mean number of transfusion units compared to standard care.",
           "B. It eliminated the need for any subsequent endoscopic procedures for one year.",
-          "C. It was only effective in patients with a baseline requirement of more than $20$ RBC units.",
-          "D. It significantly improved $1$-year survival rates compared to endoscopic therapy alone."
+          "C. It was only effective in patients with a baseline requirement of more than 20 RBC units.",
+          "D. It significantly improved 1-year survival rates compared to endoscopic therapy alone."
         ],
         "correct": "A",
-        "explanation": "The study demonstrated a mean reduction of $10.2$ transfusion units in the octreotide group compared to the standard of care group.",
+        "explanation": "The study demonstrated a mean reduction of 10.2 transfusion units in the octreotide group compared to the standard of care group.",
         "hint": "Focus on the primary outcome measure related to the total number of red blood cell and iron supplements needed."
       },
       {
-        "question": "According to the $2024$ randomized controlled trial published in Hepatology, how did tranexamic acid (TXA) affect patients with advanced cirrhosis (Child-Turcotte-Pugh B or C) presenting with UGIB?",
+        "question": "According to the 2024 randomized controlled trial published in Hepatology, how did tranexamic acid (TXA) affect patients with advanced cirrhosis (Child-Turcotte-Pugh B or C) presenting with UGIB?",
         "options": [
-          "A. It significantly reduced the $5$-day and $6$-week mortality rates.",
-          "B. It reduced failure to control bleeding by day $5$, specifically by preventing bleeding from EVL sites.",
+          "A. It significantly reduced the 5-day and 6-week mortality rates.",
+          "B. It reduced failure to control bleeding by day 5, specifically by preventing bleeding from EVL sites.",
           "C. It increased the risk of systemic fibrinolysis and subsequent thromboembolic events.",
           "D. It was only effective in patients with Child-Turcotte-Pugh class A cirrhosis."
         ],
         "correct": "B",
-        "explanation": "TXA was found to significantly lower $5$-day treatment failure, largely attributed to its effect on esophageal endoscopic variceal ligation sites.",
+        "explanation": "TXA was found to significantly lower 5-day treatment failure, largely attributed to its effect on esophageal endoscopic variceal ligation sites.",
         "hint": "Consider the impact on short-term bleeding control versus long-term survival."
       },
       {
@@ -399,13 +399,13 @@ const scheduleResources = {
       {
         "question": "What is the recommended restrictive red blood cell (RBC) transfusion threshold for most patients with UGIB, provided they do not have significant cardiovascular disease?",
         "options": [
-          "A. Hemoglobin $< 7$ g/dL",
-          "B. Hemoglobin $< 10$ g/dL",
-          "C. Hematocrit $< 35\\%$",
-          "D. Hemoglobin $< 12$ g/dL"
+          "A. Hemoglobin < 7 g/dL",
+          "B. Hemoglobin < 10 g/dL",
+          "C. Hematocrit < 35%",
+          "D. Hemoglobin < 12 g/dL"
         ],
         "correct": "A",
-        "explanation": "A restrictive transfusion policy, typically using a threshold of $7$ g/dL, is recommended to improve outcomes in UGIB.",
+        "explanation": "A restrictive transfusion policy, typically using a threshold of 7 g/dL, is recommended to improve outcomes in UGIB.",
         "hint": "The strategy involves waiting until the oxygen-carrying capacity is significantly low to avoid volume overload and portal pressure spikes."
       },
       {
@@ -426,7 +426,7 @@ const scheduleResources = {
           "A. Recommendations are based strictly on expert opinion without literature review.",
           "B. They use the GRADE methodology to assess the quality of evidence and strength of recommendations.",
           "C. Guidelines serve as a legally binding substitute for a physician's individual opinion.",
-          "D. Guidelines are updated every $10$ years regardless of new evidence."
+          "D. Guidelines are updated every 10 years regardless of new evidence."
         ],
         "correct": "B",
         "explanation": "The ASGE utilizes the Grading of Recommendation Assessment, Development and Evaluation (GRADE) framework for its evidence-based guidelines.",
@@ -437,7 +437,7 @@ const scheduleResources = {
         "options": [
           "A. Prophylactic antibiotics and vasoactive medications",
           "B. Oral anticoagulation to prevent portal vein thrombosis",
-          "C. High-volume saline resuscitation to reach a Hemoglobin of $12$ g/dL",
+          "C. High-volume saline resuscitation to reach a Hemoglobin of 12 g/dL",
           "D. Routine placement of a Nasogastric (NG) tube for gastric lavage"
         ],
         "correct": "A",
@@ -445,7 +445,7 @@ const scheduleResources = {
         "hint": "Think about the specific complications of liver disease, such as spontaneous bacterial peritonitis and elevated portal pressures."
       },
       {
-        "question": "What did the $1995$ NIH conference conclude regarding the use of TIPS compared to medical or surgical therapy?",
+        "question": "What did the 1995 NIH conference conclude regarding the use of TIPS compared to medical or surgical therapy?",
         "options": [
           "A. TIPS was ineffective for acute control of variceal bleeding.",
           "B. It was unclear exactly when TIPS should be used relative to other therapies.",
@@ -577,7 +577,7 @@ const scheduleResources = {
         ],
         "correct": "C",
         "explanation": "The trial concluded that methylnaltrexone treatment did not achieve superiority over placebo for reducing disease severity.",
-        "hint": "Think about whether the peripherally acting $\\mu$-opioid receptor antagonist successfully altered the trajectory of the disease."
+        "hint": "Think about whether the peripherally acting \\mu-opioid receptor antagonist successfully altered the trajectory of the disease."
       },
       {
         "question": "A prospective cohort study on infected pancreatic necrosis (IPN) identified several predictors of mortality. Which of the following factors was included in the five-predictor logistic regression nomogram?",
@@ -1093,7 +1093,7 @@ const scheduleResources = {
         "question": "According to the 2025 ACG guidelines, which of the following defines 'deep remission' in patients with ulcerative colitis (UC)?",
         "options": [
           "A. The combination of symptomatic remission and endoscopic healing.",
-          "B. Normalization of fecal calprotectin ($FC$) and C-reactive protein ($CRP$) levels.",
+          "B. Normalization of fecal calprotectin (FC) and C-reactive protein (CRP) levels.",
           "C. Sustained clinical remission without the use of corticosteroids for at least 6 months.",
           "D. Histologic remission confirmed by a gastrointestinal pathologist."
         ],
@@ -1104,8 +1104,8 @@ const scheduleResources = {
       {
         "question": "In a prospective study of IBD patients treated with Infliximab (IFX), which pharmacokinetic parameter was identified as the primary predictor of infection risk?",
         "options": [
-          "A. Preinfusion trough concentration ($C_{trough}$).",
-          "B. Cumulative exposure represented by $AUC_{0-8wk}$.",
+          "A. Preinfusion trough concentration (C_{trough}).",
+          "B. Cumulative exposure represented by AUC_{0-8wk}.",
           "C. The presence of high-titer anti-Infliximab antibodies.",
           "D. Peak serum concentration measured 2 hours post-infusion."
         ],
@@ -1432,15 +1432,15 @@ const scheduleResources = {
         "hint": "Think about how an interval 'red flag' test should influence the clinical workflow regardless of prior screening."
       },
       {
-        "question": "In the context of gastric cancer risk, what $HR$ (hazard ratio) is associated with the daily consumption of sugary drinks?",
+        "question": "In the context of gastric cancer risk, what HR (hazard ratio) is associated with the daily consumption of sugary drinks?",
         "options": [
-          "A. $2.45$",
-          "B. $1.19$",
-          "C. $1.00$",
-          "D. $4.04$"
+          "A. 2.45",
+          "B. 1.19",
+          "C. 1.00",
+          "D. 4.04"
         ],
         "correct": "A",
-        "explanation": "The source explicitly states that daily consumption of sugary drinks is linked to a more than double risk, specifically $HR$ $2.45$ ($95\\% CI$, $1.49-4.04$).",
+        "explanation": "The source explicitly states that daily consumption of sugary drinks is linked to a more than double risk, specifically HR 2.45 (95% CI, 1.49-4.04).",
         "hint": "The risk is described as 'more than double' the baseline."
       },
       {
