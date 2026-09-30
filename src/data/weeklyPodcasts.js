@@ -1,5 +1,16 @@
 const weeklyPodcasts = [
   {
+    id: "weekly-2026-09-29",
+    title: "GIHub Weekly Update Podcast — Sep 29, 2026",
+    date: "2026-09-29",
+    displayDate: "Sep 29, 2026",
+    duration: "18:22",
+    sourceCount: 7,
+    relatedPr: 39,
+    audioUrl: "/audio/weekly/weekly-2026-09-29.mp3",
+    description: "Audio review of the published GIHub Weekly Update cards, including lirafugratinib for FGFR2-altered cholangiocarcinoma, gastric intestinal metaplasia risk, PSC screening in new IBD, advanced IBD therapy safety, Crohn's surgery trends, HCV follow-up RNA testing, and microscopic colitis risk signals."
+  },
+  {
     id: "weekly-2026-09-22",
     title: "GIHub Weekly Update Podcast — Sep 22, 2026",
     date: "2026-09-22",
@@ -20,17 +31,6 @@ const weeklyPodcasts = [
     relatedPr: 34,
     audioUrl: "/audio/weekly/weekly-2026-09-15.mp3",
     description: "Prior GIHub Weekly Update podcast generated after the published weekly PR."
-  },
-  {
-    id: "weekly-2026-09-10",
-    title: "GIHub Weekly Update Podcast — Sep 10, 2026",
-    date: "2026-09-10",
-    displayDate: "Sep 10, 2026",
-    duration: "22:19",
-    sourceCount: 3,
-    relatedPr: null,
-    audioUrl: "/audio/weekly/weekly-2026-09-10.mp3",
-    description: "Article-focused GIHub Weekly Update podcast from the prior published source packet."
   }
 ];
 
