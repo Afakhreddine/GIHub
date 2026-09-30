@@ -95,3 +95,51 @@ export function buildPublishPayload(items, decisions) {
     summary: buildApprovalSummary(items, decisions),
   };
 }
+
+export const WEEKLY_AUTOCONTENT_PODCAST_INSTRUCTIONS = [
+  "Create a weekly GI journal-style podcast review from these separate article PDFs.",
+  "Treat every uploaded PDF as a separate source/article; do not merge them into one document.",
+  "Start with a concise theme synthesis: identify common themes across the articles and where they disagree or cover distinct clinical areas.",
+  "Then discuss each article separately with title/topic, clinical question, population or evidence type when available, key results, practical GI/hepatology relevance, and limitations.",
+  "End with a fellow-facing take-home section: what might change practice now, what is hypothesis-generating, and what needs primary-source/human review.",
+  "Tone should be technical but listenable for GI fellows/attendings. Avoid overstating causality or guideline-level implications unless the source supports it.",
+].join(" ");
+
+export function weeklyPodcastSourceUrl(item) {
+  return String(item?.studyUrl || item?.url || "").trim();
+}
+
+export function buildWeeklyPodcastBrief(items, options = {}) {
+  const approvedOnly = options.approvedOnly !== false;
+  const decisions = options.decisions || {};
+  const sourceItems = approvedOnly
+    ? items.filter((item) => decisions[weeklyItemId(item)] === "Approve")
+    : items;
+  const articles = sourceItems
+    .map((item) => ({
+      title:String(item?.title || "").trim(),
+      topic:String(item?.topic || "").trim(),
+      type:String(item?.type || "").trim(),
+      source:String(item?.source || "").trim(),
+      url:weeklyPodcastSourceUrl(item),
+      summary:String(item?.summary || "").trim(),
+    }))
+    .filter((item) => item.title && item.url);
+  return {
+    ready:articles.length > 0,
+    articleCount:articles.length,
+    articles,
+    autocontent:{
+      generate_audio:true,
+      generate_quiz:false,
+      duration:"default",
+      style:"critique",
+      audio_instructions:WEEKLY_AUTOCONTENT_PODCAST_INSTRUCTIONS,
+    },
+    notes:[
+      "Hermes must retrieve the original article PDFs for these URLs before calling AutoContent.",
+      "Send the original PDF files to AutoContent as separate files; do not send screenshots, summaries, or a combined surrogate PDF unless explicitly approved.",
+      "After AutoContent returns the MP3, Hermes sends the podcast back to Ali as a native WhatsApp audio/file attachment.",
+    ],
+  };
+}
