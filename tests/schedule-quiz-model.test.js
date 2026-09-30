@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   applyScheduleQuizArtifacts,
+  cleanQuizText,
   normalizeAutoContentQuiz,
 } from "../src/scheduleQuizModel.js";
 
@@ -25,6 +26,14 @@ const autocontentQuiz = {
     },
   ],
 };
+
+test("cleans AutoContent inline math artifacts from quiz text", () => {
+  assert.equal(
+    cleanQuizText("octreotide long-acting release ($40$ mg every $28$ days)"),
+    "octreotide long-acting release (40 mg every 28 days)",
+  );
+  assert.equal(cleanQuizText("Hemoglobin $< 7$ g/dL and hematocrit $< 35\\%$"), "Hemoglobin < 7 g/dL and hematocrit < 35%");
+});
 
 test("normalizes AutoContent quiz output into GIHub's UI-friendly quiz shape", () => {
   const normalized = normalizeAutoContentQuiz(autocontentQuiz, { limit: 10 });

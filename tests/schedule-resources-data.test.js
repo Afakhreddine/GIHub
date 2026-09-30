@@ -29,6 +29,19 @@ test("September schedule topics have repo-managed candidate resources", () => {
   }
 });
 
+test("schedule topic quiz text is cleaned for plain-text rendering", () => {
+  for (const event of clickableSeptemberEvents) {
+    const resource = scheduleResources[event.slug];
+    for (const quizItem of resource.quiz) {
+      const fields = [quizItem.question, quizItem.explanation, quizItem.hint || "", ...quizItem.options];
+      for (const field of fields) {
+        assert.doesNotMatch(field, /\$[^$\n]+\$/, `${event.slug} quiz text should not contain raw inline math delimiters: ${field}`);
+        assert.doesNotMatch(field, /\\%/, `${event.slug} quiz text should render literal percent signs: ${field}`);
+      }
+    }
+  }
+});
+
 test("IBD and tumor-pathology lectures include current/archived Weekly Update matches", () => {
   assert.ok(
     scheduleResources.ibd.newsAndArticles.some(item => /upadacitinib/i.test(item.title)),
