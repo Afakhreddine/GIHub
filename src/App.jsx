@@ -867,16 +867,20 @@ function QuizSection() {
   );
 }
 
+const STANDALONE_QUIZ_ENABLED = false;
+
 const TABS = [
   { id:"guidelines", label:"Clinical Guidelines", icon:"⚕️" },
   { id:"weekly",     label:"Weekly Update",       icon:"📰" },
   { id:"education",  label:"Education",           icon:"🎓" },
   { id:"schedule",   label:"Schedule",            icon:"📅" },
-  { id:"quiz",       label:"Quiz",                icon:"🧠" },
+  ...(STANDALONE_QUIZ_ENABLED ? [{ id:"quiz", label:"Quiz", icon:"🧠" }] : []),
 ];
 
 export default function GIHub({ initialActive = "guidelines" }) {
-  const [active, setActive] = useState(initialActive);
+  const [active, setActive] = useState(
+    initialActive === "quiz" && !STANDALONE_QUIZ_ENABLED ? "guidelines" : initialActive
+  );
   return (
     <div style={{ minHeight:"100vh", background:"#080f1e", color:"#d0e0ff", fontFamily:"Georgia,'Times New Roman',serif", paddingBottom:80 }}>
       <style>{`
@@ -914,7 +918,7 @@ export default function GIHub({ initialActive = "guidelines" }) {
         {active==="weekly"    &&<ContentSection key="weekly"     type="weekly"/>}
         {active==="education" &&<EducationSection/>}
         {active==="schedule"  &&<ScheduleSection/>}
-        {active==="quiz"      &&<QuizSection/>}
+        {STANDALONE_QUIZ_ENABLED&&active==="quiz"&&<QuizSection/>}
       </div>
       <div style={{ maxWidth:1100, margin:"52px auto 0", padding:"16px 32px 0", borderTop:"1px solid rgba(255,255,255,0.04)" }}>
         <p style={{ fontSize:10.5, color:"#141e2c", textAlign:"center", lineHeight:2, fontFamily:"monospace" }}>
