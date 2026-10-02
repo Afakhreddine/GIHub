@@ -6,6 +6,7 @@ import {
   mergeScheduleResourceCandidates,
   scheduleTopicScreener,
   selectMostRecentGuidelinePerSociety,
+  sanitizeScheduleResourceForPublic,
   validateScheduleResource,
 } from "../src/scheduleResourcesModel.js";
 
@@ -89,4 +90,25 @@ test("schedule screener merge de-duplicates DOI, PMID, URL, or title", () => {
     { slug: "irritable-bowel-syndrome", card: currentWeekly[0], status: "candidate", relevanceReason: "Direct IBS match" },
   ]);
   assert.equal(merged["irritable-bowel-syndrome"].newsAndArticles.length, 1);
+});
+
+test("public schedule resource sanitizer hides unapproved review candidates", () => {
+  const resource = {
+    guidelines: [
+      { title: "Approved guideline", status: "approved" },
+      { title: "Candidate guideline", status: "candidate" },
+    ],
+    newsAndArticles: [
+      { title: "Approved archive card", status: "approved", sourceRepository: "weeklyArchive" },
+      { title: "Unreviewed search card", status: "candidate", sourceRepository: "targeted-online-pull" },
+      { title: "Implicit targeted card needs review", sourceRepository: "targeted-pubmed-pull" },
+      { title: "Legacy trusted archive card", sourceRepository: "weeklyArchive" },
+    ],
+    quiz: [{ question: "Q?", options: ["A", "B", "C", "D"], correct: "A", explanation: "Because." }],
+  };
+
+  const publicResource = sanitizeScheduleResourceForPublic(resource);
+  assert.deepEqual(publicResource.guidelines.map(item => item.title), ["Approved guideline"]);
+  assert.deepEqual(publicResource.newsAndArticles.map(item => item.title), ["Approved archive card", "Legacy trusted archive card"]);
+  assert.equal(publicResource.quiz.length, 1);
 });

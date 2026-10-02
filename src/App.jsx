@@ -4,6 +4,7 @@ import GUIDELINES from "./data/guidelines.js";
 import WEEKLY from "./data/weekly.js";
 import weeklyPodcasts from "./data/weeklyPodcasts.js";
 import scheduleResources from "./data/scheduleResources.js";
+import { isPublicApprovedResource, sanitizeScheduleResourceForPublic } from "./scheduleResourcesModel.js";
 
 // ── SESSION CACHE ─────────────────────────────────────────────────────────────
 const sessionCache = {};
@@ -11,7 +12,7 @@ const sessionCache = {};
 // ── STATIC FALLBACK DATA ──────────────────────────────────────────────────────
 const STATIC = {
   guidelines: GUIDELINES,
-  weekly: WEEKLY,
+  weekly: WEEKLY.filter(isPublicApprovedResource),
 };
 
 const EDU_LINKS = [
@@ -575,11 +576,12 @@ function LectureDetailPanel({ event, onClose }) {
       setLoading(true);
       const localResource = scheduleResources[event.slug];
       if (localResource) {
+        const publicResource = sanitizeScheduleResourceForPublic(localResource);
         setData({
-          ...localResource,
-          guideline: localResource.guidelines || localResource.guideline || [],
-          newsAndArticles: localResource.newsAndArticles || [],
-          quiz: localResource.quiz || [],
+          ...publicResource,
+          guideline: publicResource.guidelines || publicResource.guideline || [],
+          newsAndArticles: publicResource.newsAndArticles || [],
+          quiz: publicResource.quiz || [],
         });
         setLoading(false);
         return;
@@ -671,7 +673,6 @@ function LectureDetailPanel({ event, onClose }) {
                       <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:6 }}>
                         <span style={{ fontSize:11, fontWeight:700, color:"#fff", background:"#1a2535", padding:"2px 8px", borderRadius:12 }}>{item.source || item.journal || item.sourceRepository || "Source"}</span>
                         {item.date&&<span style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace" }}>{item.date}</span>}
-                        {item.status==="candidate"&&<span style={{ fontSize:11, color:"#e09a2a", background:"#e09a2a22", padding:"2px 8px", borderRadius:12 }}>candidate</span>}
                       </div>
                       <div style={{ fontSize:13, fontWeight:600, color:"#c8d8f0", lineHeight:1.5, marginBottom:4 }}>{item.title || item.headline}</div>
                       {item.authors&&<div style={{ fontSize:11, color:"#445570", fontStyle:"italic", marginBottom:4 }}>{item.authors}</div>}

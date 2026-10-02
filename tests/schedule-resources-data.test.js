@@ -2,10 +2,11 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import scheduleResources from "../src/data/scheduleResources.js";
 import { CALENDAR_EVENTS } from "../src/scheduleConfig.js";
+import { sanitizeScheduleResourceForPublic } from "../src/scheduleResourcesModel.js";
 
 const clickableOctoberEvents = CALENDAR_EVENTS.filter(event => event.slug);
 
-test("October schedule topics have repo-managed candidate resource shells", () => {
+test("October schedule topics have public guidelines and quizzes", () => {
   assert.equal(clickableOctoberEvents.length, 6);
 
   for (const event of clickableOctoberEvents) {
@@ -13,13 +14,13 @@ test("October schedule topics have repo-managed candidate resource shells", () =
     assert.ok(resource, `${event.slug} should have a schedule resource bundle`);
     assert.ok(Array.isArray(resource.guidelines), `${event.slug} guidelines should be an array`);
     assert.ok(Array.isArray(resource.newsAndArticles), `${event.slug} newsAndArticles should be an array`);
-    assert.ok(
-      resource.guidelines.length + resource.newsAndArticles.length > 0,
-      `${event.slug} should include at least one guideline or news/article resource`,
-    );
-    assert.equal(resource.quizStatus, "pending-autocontent-pdf-pull");
-    assert.deepEqual(resource.quiz, []);
-    assert.ok(/pending source-PDF retrieval and AutoContent/i.test(resource.resourceNotes || ""));
+    assert.ok(resource.guidelines.length > 0, `${event.slug} should include at least one guideline`);
+    assert.ok(Array.isArray(resource.quiz) && resource.quiz.length > 0, `${event.slug} should include an interactive quiz`);
+    assert.equal(resource.quizStatus, "repo-managed-complete");
+    const publicResource = sanitizeScheduleResourceForPublic(resource);
+    assert.ok(publicResource.guidelines.length > 0, `${event.slug} should expose approved guidelines publicly`);
+    assert.ok(publicResource.quiz.length > 0, `${event.slug} should expose a public quiz`);
+    assert.ok(publicResource.newsAndArticles.every(item => item.status !== "candidate"), `${event.slug} public articles must not include candidate cards`);
   }
 });
 

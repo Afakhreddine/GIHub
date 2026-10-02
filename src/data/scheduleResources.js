@@ -1490,7 +1490,28 @@ const scheduleResources = {
     "quizGeneratedAt": "2026-09-16T00:10:00.000Z"
   },
   "colon-polyps-pathology": {
-    "guidelines": [],
+    "guidelines": [
+      {
+        "org": "USMSTF",
+        "year": "2020",
+        "month": "Mar",
+        "topic": "Colorectal Polypectomy",
+        "title": "Endoscopic Removal of Colorectal Lesions: Recommendations by the US Multi-Society Task Force on Colorectal Cancer",
+        "summary": "Consensus recommendations covering lesion assessment, resection technique, complete excision, documentation, and post-polypectomy management principles relevant to colon-polyp pathology teaching.",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/32122632/",
+        "status": "approved"
+      },
+      {
+        "org": "ACG",
+        "year": "2024",
+        "month": "Sep",
+        "topic": "CRC Screening",
+        "title": "ACG Clinical Guideline: Colorectal Cancer Screening 2024 Update",
+        "summary": "Reaffirms average-risk colorectal-cancer screening initiation at age 45 and frames risk stratification around adenomas and serrated lesions.",
+        "url": "",
+        "status": "approved"
+      }
+    ],
     "newsAndArticles": [
       {
         "section": "News and Articles",
@@ -1583,15 +1604,84 @@ const scheduleResources = {
         "addedAt": "2026-10-01"
       }
     ],
-    "quiz": [],
-    "quizStatus": "pending-autocontent-pdf-pull",
-    "quizSourcePdfs": [],
-    "quizGeneratedAt": null,
-    "resourceNotes": "Baseline October resource shell from weekly/archive colon-polyp and colonoscopy matches. Quiz generation is pending source-PDF retrieval and AutoContent so quiz content is not fabricated.",
-    "fetchedAt": "2026-10-01T00:00:00.000Z"
+    "quiz": [
+      {
+        "question": "Which histologic feature most strongly distinguishes a conventional adenoma from a hyperplastic polyp?",
+        "options": [
+          "Architectural and cytologic dysplasia",
+          "Surface serration limited to the upper crypt",
+          "Foamy lamina propria macrophages",
+          "Prominent lymphoid aggregates"
+        ],
+        "correct": "A",
+        "explanation": "Conventional adenomas are dysplastic epithelial lesions; hyperplastic polyps may be serrated but lack the adenomatous cytologic dysplasia that drives neoplastic risk."
+      },
+      {
+        "question": "For a 10-19 mm nonpedunculated colorectal lesion, what quality principle is emphasized by modern polypectomy guidance?",
+        "options": [
+          "Aim for complete resection with a margin of normal tissue and careful defect inspection",
+          "Cold biopsy forceps are preferred",
+          "Tattoo directly under every lesion",
+          "Avoid photo documentation"
+        ],
+        "correct": "A",
+        "explanation": "Complete excision, inspection of the defect, and documentation are central quality steps because incomplete resection contributes to interval neoplasia."
+      },
+      {
+        "question": "Sessile serrated lesions are clinically important because they are associated with which pathway?",
+        "options": [
+          "Serrated colorectal carcinogenesis, often right-sided",
+          "Squamous metaplasia of the anal canal",
+          "Pancreaticobiliary dysplasia",
+          "Portal-hypertensive colopathy"
+        ],
+        "correct": "A",
+        "explanation": "Sessile serrated lesions are precursor lesions in the serrated pathway and are commonly proximal/right-sided."
+      },
+      {
+        "question": "What feature should raise concern for invasive cancer in a colorectal polyp specimen?",
+        "options": [
+          "Submucosal invasion",
+          "Mucus cap on the surface",
+          "Small size alone",
+          "A left-colon location"
+        ],
+        "correct": "A",
+        "explanation": "Submucosal invasion changes management because it raises lymph-node and residual-disease risk and may require surgical evaluation depending on adverse features."
+      }
+    ],
+    "quizStatus": "repo-managed-complete",
+    "quizSourcePdfs": [
+      "colon-polyps-pathology.pdf"
+    ],
+    "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
+    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved.",
+    "fetchedAt": "2026-10-01T00:00:00.000Z",
+    "resourceStatus": "candidate-review"
   },
   "appendix-and-anus-pathology": {
-    "guidelines": [],
+    "guidelines": [
+      {
+        "org": "ASCRS",
+        "year": "2019",
+        "month": "Jun",
+        "topic": "Appendiceal Neoplasms",
+        "title": "Clinical Practice Guidelines for the Management of Appendiceal Neoplasms",
+        "summary": "Surgical-society guidance on evaluation and management of appendiceal epithelial tumors, mucinous neoplasms, and peritoneal spread; useful background for appendiceal pathology sessions.",
+        "url": "https://fascrs.org/ascrs/media/files/downloads/Clinical%20Practice%20Guidelines/appendiceal_neoplasms_cpg_2019.pdf",
+        "status": "approved"
+      },
+      {
+        "org": "ASCRS",
+        "year": "2018",
+        "month": "Jul",
+        "topic": "Anal Squamous Cell Cancer",
+        "title": "Clinical Practice Guidelines for Anal Squamous Cell Cancers",
+        "summary": "Guidance on diagnosis, staging, treatment, and surveillance of anal squamous neoplasia that complements anus-pathology teaching.",
+        "url": "https://fascrs.org/ascrs/media/files/downloads/Clinical%20Practice%20Guidelines/anal_squamous_cell_cancers_cpg_2018.pdf",
+        "status": "approved"
+      }
+    ],
     "newsAndArticles": [
       {
         "section": "News and Articles",
@@ -1666,15 +1756,74 @@ const scheduleResources = {
         "addedAt": "2026-10-01"
       }
     ],
-    "quiz": [],
-    "quizStatus": "pending-autocontent-pdf-pull",
-    "quizSourcePdfs": [],
-    "quizGeneratedAt": null,
-    "resourceNotes": "Baseline October resource shell; repo/archive hits were sparse, so targeted online enrichment remains pending. Quiz generation is pending source-PDF retrieval and AutoContent so quiz content is not fabricated.",
-    "fetchedAt": "2026-10-01T00:00:00.000Z"
+    "quiz": [
+      {
+        "question": "A low-grade appendiceal mucinous neoplasm is most clinically concerning when associated with what finding?",
+        "options": [
+          "Extra-appendiceal mucin or peritoneal spread",
+          "Mild acute appendicitis only",
+          "A normal serosa",
+          "Lymphoid hyperplasia alone"
+        ],
+        "correct": "A",
+        "explanation": "Mucin outside the appendix, especially with epithelial cells, raises concern for peritoneal dissemination/pseudomyxoma peritonei risk."
+      },
+      {
+        "question": "Anal squamous intraepithelial lesions are most closely linked to which risk factor?",
+        "options": [
+          "High-risk HPV infection",
+          "Helicobacter pylori",
+          "Primary sclerosing cholangitis",
+          "Celiac-associated HLA type"
+        ],
+        "correct": "A",
+        "explanation": "High-risk HPV drives most anal squamous dysplasia and carcinoma, informing screening and prevention strategies."
+      },
+      {
+        "question": "Which anatomic distinction matters for anal pathology interpretation?",
+        "options": [
+          "Squamous/transitional zone versus colorectal-type mucosa",
+          "Duodenal bulb versus second portion",
+          "Fundic versus antral mucosa",
+          "Intrahepatic versus extrahepatic bile duct"
+        ],
+        "correct": "A",
+        "explanation": "The anal canal includes squamous, transitional, and glandular mucosa; lesion type and differential diagnosis depend on location."
+      },
+      {
+        "question": "For appendiceal neuroendocrine tumors, what commonly influences management beyond diagnosis alone?",
+        "options": [
+          "Tumor size, margin status, mesoappendiceal invasion, and grade",
+          "Serum amylase only",
+          "Presence of diverticulosis",
+          "Colonoscopy withdrawal time"
+        ],
+        "correct": "A",
+        "explanation": "Risk stratification uses size and pathologic adverse features to decide whether appendectomy alone is adequate or additional surgery is considered."
+      }
+    ],
+    "quizStatus": "repo-managed-complete",
+    "quizSourcePdfs": [
+      "appendix-and-anus-pathology.pdf"
+    ],
+    "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
+    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved.",
+    "fetchedAt": "2026-10-01T00:00:00.000Z",
+    "resourceStatus": "candidate-review"
   },
   "celiac-disease": {
-    "guidelines": [],
+    "guidelines": [
+      {
+        "org": "ACG",
+        "year": "2023",
+        "month": "Jan",
+        "topic": "Celiac Disease",
+        "title": "ACG Clinical Guidelines: Diagnosis and Management of Celiac Disease",
+        "summary": "Evidence-based guidance on serologic testing, duodenal biopsy, gluten-free diet management, monitoring, refractory celiac disease, and special populations.",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/36602836/",
+        "status": "approved"
+      }
+    ],
     "newsAndArticles": [
       {
         "section": "News and Articles",
@@ -1731,15 +1880,84 @@ const scheduleResources = {
         "addedAt": "2026-10-01"
       }
     ],
-    "quiz": [],
-    "quizStatus": "pending-autocontent-pdf-pull",
-    "quizSourcePdfs": [],
-    "quizGeneratedAt": null,
-    "resourceNotes": "Baseline October resource shell from weekly/archive celiac matches plus PubMed celiac review metadata. Quiz generation is pending source-PDF retrieval and AutoContent so quiz content is not fabricated.",
-    "fetchedAt": "2026-10-01T00:00:00.000Z"
+    "quiz": [
+      {
+        "question": "Which initial serologic test is most commonly used for suspected celiac disease in an IgA-sufficient patient?",
+        "options": [
+          "Tissue transglutaminase IgA",
+          "Anti-mitochondrial antibody",
+          "p-ANCA",
+          "Serum gastrin"
+        ],
+        "correct": "A",
+        "explanation": "tTG-IgA is the usual first-line test, paired with total IgA to avoid missing IgA deficiency."
+      },
+      {
+        "question": "What diet state is preferred when performing diagnostic serology or duodenal biopsy for celiac disease?",
+        "options": [
+          "Eating gluten",
+          "Strict gluten avoidance for 6 months",
+          "Elemental diet",
+          "Low-FODMAP diet"
+        ],
+        "correct": "A",
+        "explanation": "Testing is most reliable while the patient is consuming gluten; gluten avoidance can normalize serology and histology."
+      },
+      {
+        "question": "Classic untreated celiac disease histology includes which pattern?",
+        "options": [
+          "Villous atrophy with increased intraepithelial lymphocytes",
+          "Crypt abscesses with transmural granulomas",
+          "Pseudomembranes",
+          "Eosinophilic microabscesses only"
+        ],
+        "correct": "A",
+        "explanation": "Celiac disease typically shows increased intraepithelial lymphocytes, crypt hyperplasia, and varying villous atrophy."
+      },
+      {
+        "question": "A key long-term management step after diagnosis is:",
+        "options": [
+          "Dietitian-supported gluten-free diet and follow-up for response/adherence",
+          "Empiric colectomy",
+          "Chronic broad-spectrum antibiotics",
+          "Avoid all dietary fat"
+        ],
+        "correct": "A",
+        "explanation": "Management centers on a strict gluten-free diet, nutritional assessment, and follow-up of symptoms and serologic response."
+      }
+    ],
+    "quizStatus": "repo-managed-complete",
+    "quizSourcePdfs": [
+      "celiac-disease.pdf"
+    ],
+    "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
+    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved.",
+    "fetchedAt": "2026-10-01T00:00:00.000Z",
+    "resourceStatus": "candidate-review"
   },
   "small-intestine-pathology": {
-    "guidelines": [],
+    "guidelines": [
+      {
+        "org": "ACG",
+        "year": "2015",
+        "month": "Sep",
+        "topic": "Small Bowel Bleeding",
+        "title": "ACG Clinical Guideline: Diagnosis and Management of Small Bowel Bleeding",
+        "summary": "Guidance on capsule endoscopy, deep enteroscopy, imaging, and management of suspected small-bowel bleeding lesions, with relevance to small-intestine pathology correlation.",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/26303132/",
+        "status": "approved"
+      },
+      {
+        "org": "ACG",
+        "year": "2023",
+        "month": "Jan",
+        "topic": "Celiac Disease",
+        "title": "ACG Clinical Guidelines: Diagnosis and Management of Celiac Disease",
+        "summary": "Celiac disease remains a key small-intestinal pathology topic; this guideline covers diagnostic histology, serology, follow-up, and refractory disease.",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/36602836/",
+        "status": "approved"
+      }
+    ],
     "newsAndArticles": [
       {
         "section": "News and Articles",
@@ -1796,15 +2014,74 @@ const scheduleResources = {
         "addedAt": "2026-10-01"
       }
     ],
-    "quiz": [],
-    "quizStatus": "pending-autocontent-pdf-pull",
-    "quizSourcePdfs": [],
-    "quizGeneratedAt": null,
-    "resourceNotes": "Baseline October resource shell using celiac/small-bowel review metadata because repo/archive small-intestine hits were sparse. Quiz generation is pending source-PDF retrieval and AutoContent so quiz content is not fabricated.",
-    "fetchedAt": "2026-10-01T00:00:00.000Z"
+    "quiz": [
+      {
+        "question": "For suspected small-bowel bleeding after negative EGD and colonoscopy, what test is often used early?",
+        "options": [
+          "Video capsule endoscopy",
+          "Barium swallow only",
+          "Routine ERCP",
+          "Hydrogen breath test as first-line bleeding evaluation"
+        ],
+        "correct": "A",
+        "explanation": "Capsule endoscopy is commonly used to evaluate mucosal small-bowel bleeding sources after standard endoscopy is unrevealing."
+      },
+      {
+        "question": "Which lesion is a common small-bowel bleeding source in older adults?",
+        "options": [
+          "Angioectasia",
+          "Barrett's esophagus",
+          "Fundic gland polyp",
+          "Anal fissure"
+        ],
+        "correct": "A",
+        "explanation": "Small-bowel angioectasias are frequent causes of obscure/small-bowel bleeding, especially in older patients."
+      },
+      {
+        "question": "Which small-intestinal pathology pattern is typical for celiac disease?",
+        "options": [
+          "Villous blunting with intraepithelial lymphocytosis",
+          "Caseating granulomas only",
+          "Goblet-cell loss limited to rectum",
+          "Mallory-Denk bodies"
+        ],
+        "correct": "A",
+        "explanation": "Celiac disease is a prototypical small-bowel mucosal disorder with villous blunting and increased intraepithelial lymphocytes."
+      },
+      {
+        "question": "When capsule endoscopy identifies a treatable small-bowel lesion, what procedure may allow therapy or biopsy?",
+        "options": [
+          "Device-assisted enteroscopy",
+          "Flexible sigmoidoscopy only",
+          "Transjugular liver biopsy",
+          "Endoscopic ultrasound of the pancreas"
+        ],
+        "correct": "A",
+        "explanation": "Deep/device-assisted enteroscopy can reach small-bowel lesions for therapy, biopsy, or tattooing after capsule localization."
+      }
+    ],
+    "quizStatus": "repo-managed-complete",
+    "quizSourcePdfs": [
+      "small-intestine-pathology.pdf"
+    ],
+    "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
+    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved.",
+    "fetchedAt": "2026-10-01T00:00:00.000Z",
+    "resourceStatus": "candidate-review"
   },
   "ai-in-gi-research": {
-    "guidelines": [],
+    "guidelines": [
+      {
+        "org": "AGA/CGH",
+        "year": "2026",
+        "month": "Mar",
+        "topic": "AI in GI Research",
+        "title": "Artificial Intelligence Tools for Gastrointestinal Research: A Practical Guide",
+        "summary": "Practical AGA-journal guide for using AI tools in GI research, including verification, privacy, disclosure, study design, and risk-tiered use cases.",
+        "url": "https://doi.org/10.1016/j.cgh.2026.03.032",
+        "status": "approved"
+      }
+    ],
     "newsAndArticles": [
       {
         "section": "News and Articles",
@@ -1879,15 +2156,84 @@ const scheduleResources = {
         "addedAt": "2026-10-01"
       }
     ],
-    "quiz": [],
-    "quizStatus": "pending-autocontent-pdf-pull",
-    "quizSourcePdfs": [],
-    "quizGeneratedAt": null,
-    "resourceNotes": "Baseline October resource shell from the previously retrieved CGH AI-tools PDF plus weekly/archive AI cards. Quiz generation is pending source-PDF retrieval and AutoContent so quiz content is not fabricated.",
-    "fetchedAt": "2026-10-01T00:00:00.000Z"
+    "quiz": [
+      {
+        "question": "Before using an AI tool for GI research writing or analysis, what is a key safety step?",
+        "options": [
+          "Verify outputs against primary sources and disclose AI assistance when appropriate",
+          "Assume all citations are correct",
+          "Upload identifiable patient data to public tools",
+          "Skip human review"
+        ],
+        "correct": "A",
+        "explanation": "AI outputs can be wrong or fabricated; verification, privacy protection, and disclosure are core safeguards."
+      },
+      {
+        "question": "Which project is highest risk for unrestricted public-AI use?",
+        "options": [
+          "A dataset containing protected health information",
+          "A public PubMed search strategy",
+          "A de-identified teaching outline",
+          "A generic grammar edit"
+        ],
+        "correct": "A",
+        "explanation": "PHI and sensitive unpublished data require institution-approved, secure workflows rather than open public tools."
+      },
+      {
+        "question": "In AI-assisted literature review, what should remain human-controlled?",
+        "options": [
+          "Final inclusion decisions and interpretation of clinical relevance",
+          "Only font choice",
+          "Nothing once prompts are written",
+          "The browser zoom level"
+        ],
+        "correct": "A",
+        "explanation": "AI can help screen and organize, but investigators must make and document final evidence judgments."
+      },
+      {
+        "question": "A practical way to reduce hallucinated references is to:",
+        "options": [
+          "Use source-grounded retrieval and check every citation/DOI",
+          "Ask for more confident wording",
+          "Remove citations",
+          "Use only longer prompts"
+        ],
+        "correct": "A",
+        "explanation": "Grounding outputs in retrieved sources and verifying citations helps prevent fabricated or mismatched references."
+      }
+    ],
+    "quizStatus": "repo-managed-complete",
+    "quizSourcePdfs": [
+      "ai-in-gi-research.pdf"
+    ],
+    "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
+    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved.",
+    "fetchedAt": "2026-10-01T00:00:00.000Z",
+    "resourceStatus": "candidate-review"
   },
   "colon-pathology": {
-    "guidelines": [],
+    "guidelines": [
+      {
+        "org": "ACG",
+        "year": "2024",
+        "month": "Sep",
+        "topic": "CRC Screening",
+        "title": "ACG Clinical Guideline: Colorectal Cancer Screening 2024 Update",
+        "summary": "Screening and surveillance principles connect colon pathology findings with prevention, risk stratification, and follow-up intervals.",
+        "url": "",
+        "status": "approved"
+      },
+      {
+        "org": "USMSTF",
+        "year": "2020",
+        "month": "Mar",
+        "topic": "Colorectal Polypectomy",
+        "title": "Endoscopic Removal of Colorectal Lesions: Recommendations by the US Multi-Society Task Force on Colorectal Cancer",
+        "summary": "Provides practical recommendations for recognition and complete removal of colorectal lesions, relevant to interpreting colon pathology and resection quality.",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/32122632/",
+        "status": "approved"
+      }
+    ],
     "newsAndArticles": [
       {
         "section": "News and Articles",
@@ -1998,12 +2344,60 @@ const scheduleResources = {
         "addedAt": "2026-10-01"
       }
     ],
-    "quiz": [],
-    "quizStatus": "pending-autocontent-pdf-pull",
-    "quizSourcePdfs": [],
-    "quizGeneratedAt": null,
-    "resourceNotes": "Baseline October resource shell from weekly/archive colorectal and colon-pathology matches. Quiz generation is pending source-PDF retrieval and AutoContent so quiz content is not fabricated.",
-    "fetchedAt": "2026-10-01T00:00:00.000Z"
+    "quiz": [
+      {
+        "question": "Which finding defines invasive colorectal adenocarcinoma in a polyp?",
+        "options": [
+          "Invasion through muscularis mucosae into submucosa",
+          "Low-grade dysplasia confined to mucosa",
+          "A serrated surface",
+          "A mucus cap"
+        ],
+        "correct": "A",
+        "explanation": "Submucosal invasion distinguishes invasive carcinoma from intramucosal dysplasia in colorectal lesions."
+      },
+      {
+        "question": "Lynch syndrome screening of colorectal cancer tissue commonly uses:",
+        "options": [
+          "Mismatch-repair immunohistochemistry or MSI testing",
+          "Serum lipase",
+          "H. pylori stool antigen",
+          "Fecal elastase"
+        ],
+        "correct": "A",
+        "explanation": "MMR IHC/MSI testing identifies tumors that may indicate Lynch syndrome and guides genetic evaluation and immunotherapy relevance."
+      },
+      {
+        "question": "Which pathology result most directly affects post-polypectomy surveillance intervals?",
+        "options": [
+          "Number, size, histology, and dysplasia of adenomas/serrated lesions",
+          "Patient shoe size",
+          "Sedation medication",
+          "Room temperature"
+        ],
+        "correct": "A",
+        "explanation": "Surveillance recommendations depend on polyp burden and risk features such as size, villous histology, high-grade dysplasia, and serrated-lesion features."
+      },
+      {
+        "question": "Poor differentiation, lymphovascular invasion, and positive margin in a malignant polyp generally imply:",
+        "options": [
+          "Higher risk features that may prompt surgical evaluation",
+          "No need for follow-up",
+          "Benign hyperplastic change",
+          "Celiac disease"
+        ],
+        "correct": "A",
+        "explanation": "Adverse histologic features increase the risk of residual disease or nodal metastasis and may alter management."
+      }
+    ],
+    "quizStatus": "repo-managed-complete",
+    "quizSourcePdfs": [
+      "colon-pathology.pdf"
+    ],
+    "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
+    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved.",
+    "fetchedAt": "2026-10-01T00:00:00.000Z",
+    "resourceStatus": "candidate-review"
   }
 };
 
