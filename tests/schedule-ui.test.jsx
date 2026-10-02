@@ -16,5 +16,16 @@ test("schedule lecture panel reads repo-managed resources instead of requiring l
   const source = fs.readFileSync("src/App.jsx", "utf8");
   assert.match(source, /import scheduleResources from "\.\/data\/scheduleResources\.js"/);
   assert.match(source, /const localResource = scheduleResources\[event\.slug\]/);
-  assert.match(source, /guideline: localResource\.guidelines/);
+  assert.match(source, /guideline: publicResource\.guidelines/);
+});
+
+test("public schedule lecture panel sanitizes unapproved candidate resources", () => {
+  const source = fs.readFileSync("src/App.jsx", "utf8");
+  assert.match(source, /sanitizeScheduleResourceForPublic\(localResource\)/);
+  assert.doesNotMatch(source, /item\.status==="candidate"&&<span/);
+});
+
+test("public weekly update filters non-approved candidate cards", () => {
+  const source = fs.readFileSync("src/App.jsx", "utf8");
+  assert.match(source, /WEEKLY\.filter\(isPublicApprovedResource\)/);
 });

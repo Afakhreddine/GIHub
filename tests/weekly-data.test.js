@@ -7,6 +7,8 @@ test("repo-managed weekly update data is non-empty and schema-compatible", () =>
   assert.ok(weekly.length > 0);
   assert.ok(weekly.length <= 12);
   for (const item of weekly) {
+    assert.notEqual(item.status, "candidate", `${item.title} must not be an unapproved candidate on the public Weekly Update`);
+    assert.notEqual(item.resourceStatus, "candidate-review", `${item.title} must not require review on the public Weekly Update`);
     assert.match(item.type, /^(Research|FDA|Guideline|News|Opinion)$/);
     assert.ok("multiSource" in item);
     assert.ok(item.date, "date is required");

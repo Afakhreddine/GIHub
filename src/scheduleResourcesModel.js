@@ -191,6 +191,28 @@ export function mergeScheduleResourceCandidates(resources = {}, matches = []) {
   return next;
 }
 
+const PUBLIC_APPROVED_STATUSES = new Set(["approved", "published", "trusted"]);
+const PUBLIC_REVIEW_REPOSITORIES = new Set(["targeted-online-pull", "targeted-pubmed-pull"]);
+
+export function isPublicApprovedResource(item = {}) {
+  if (!item || typeof item !== "object") return false;
+  if (item.status && !PUBLIC_APPROVED_STATUSES.has(item.status)) return false;
+  if (!item.status && PUBLIC_REVIEW_REPOSITORIES.has(item.sourceRepository)) return false;
+  return true;
+}
+
+export function sanitizeScheduleResourceForPublic(resource = {}) {
+  return {
+    ...resource,
+    guidelines: (resource.guidelines || []).filter(isPublicApprovedResource),
+    guideline: (resource.guideline || resource.guidelines || []).filter(isPublicApprovedResource),
+    newsAndArticles: (resource.newsAndArticles || []).filter(isPublicApprovedResource),
+    articles: (resource.articles || []).filter(isPublicApprovedResource),
+    news: (resource.news || []).filter(isPublicApprovedResource),
+    quiz: Array.isArray(resource.quiz) ? resource.quiz : [],
+  };
+}
+
 export function validateQuizItem(item) {
   return !!item?.question && Array.isArray(item.options) && item.options.length >= 4 && /^[A-D]$/.test(item.correct || "") && !!item.explanation;
 }
