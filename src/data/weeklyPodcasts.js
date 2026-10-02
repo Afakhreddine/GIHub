@@ -4,11 +4,10 @@ const weeklyPodcasts = [
     title: "GIHub Weekly Update Podcast — Sep 29, 2026",
     date: "2026-09-29",
     displayDate: "Sep 29, 2026",
-    duration: "18:22",
-    sourceCount: 7,
-    relatedPr: 39,
+    duration: "15:49",
+    sourceCount: 8,
     audioUrl: "/audio/weekly/weekly-2026-09-29.mp3",
-    description: "Audio review of the published GIHub Weekly Update cards, including lirafugratinib for FGFR2-altered cholangiocarcinoma, gastric intestinal metaplasia risk, PSC screening in new IBD, advanced IBD therapy safety, Crohn's surgery trends, HCV follow-up RNA testing, and microscopic colitis risk signals."
+    description: "Audio review of the published GIHub Weekly Update cards, including lirafugratinib for FGFR2-altered cholangiocarcinoma, gastric intestinal metaplasia risk, PSC screening in new IBD, advanced IBD therapy safety, Crohn's surgery trends, HCV follow-up RNA testing, microscopic colitis risk signals, and GLP-1 receptor agonist gastrointestinal/hepatobiliary adverse-event data."
   },
   {
     id: "weekly-2026-09-22",
