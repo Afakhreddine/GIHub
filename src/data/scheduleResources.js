@@ -1877,24 +1877,6 @@ const scheduleResources = {
         "status": "candidate",
         "addedBy": "october-schedule-image-import",
         "addedAt": "2026-10-01"
-      },
-      {
-        "section": "News and Articles",
-        "title": "Artificial Intelligence Tools for Gastrointestinal Research: A Practical Guide",
-        "oneLineSummary": "The guide recommends structured AI use for literature discovery, citation verification, writing and editing, presentations, disclosure, and privacy safeguards.",
-        "doi": "10.1016/j.cgh.2026.03.032",
-        "pmid": "",
-        "source": "Clinical Gastroenterology and Hepatology",
-        "sourceRepository": "weeklyArchive",
-        "url": "https://doi.org/10.1016/j.cgh.2026.03.032",
-        "date": "Aug 23, 2026",
-        "topic": "Education",
-        "type": "Research",
-        "relevanceScore": 8,
-        "relevanceReason": "Matched October schedule topic: AI in GI Research.",
-        "status": "candidate",
-        "addedBy": "october-schedule-image-import",
-        "addedAt": "2026-10-01"
       }
     ],
     "quiz": [],
