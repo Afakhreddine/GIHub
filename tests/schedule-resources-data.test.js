@@ -3,71 +3,63 @@ import assert from "node:assert/strict";
 import scheduleResources from "../src/data/scheduleResources.js";
 import { CALENDAR_EVENTS } from "../src/scheduleConfig.js";
 
-const clickableSeptemberEvents = CALENDAR_EVENTS.filter(event => event.slug);
+const clickableOctoberEvents = CALENDAR_EVENTS.filter(event => event.slug);
 
-test("September schedule topics have repo-managed candidate resources", () => {
-  assert.equal(clickableSeptemberEvents.length, 6);
+test("October schedule topics have repo-managed candidate resource shells", () => {
+  assert.equal(clickableOctoberEvents.length, 6);
 
-  for (const event of clickableSeptemberEvents) {
+  for (const event of clickableOctoberEvents) {
     const resource = scheduleResources[event.slug];
     assert.ok(resource, `${event.slug} should have a schedule resource bundle`);
+    assert.ok(Array.isArray(resource.guidelines), `${event.slug} guidelines should be an array`);
+    assert.ok(Array.isArray(resource.newsAndArticles), `${event.slug} newsAndArticles should be an array`);
     assert.ok(
       resource.guidelines.length + resource.newsAndArticles.length > 0,
       `${event.slug} should include at least one guideline or news/article resource`,
     );
-    assert.equal(resource.resourceStatus, "candidate-review");
-    assert.equal(resource.quizStatus, "autocontent-complete");
-    assert.equal(resource.quiz.length, 10, `${event.slug} should include a 10-item AutoContent quiz`);
-    assert.ok(Array.isArray(resource.quizSourcePdfs));
-    assert.ok(resource.quizSourcePdfs.length >= 1);
-    for (const quizItem of resource.quiz) {
-      assert.ok(quizItem.question);
-      assert.equal(quizItem.options.length, 4);
-      assert.match(quizItem.correct, /^[A-D]$/);
-      assert.ok(quizItem.explanation);
-    }
+    assert.equal(resource.quizStatus, "pending-autocontent-pdf-pull");
+    assert.deepEqual(resource.quiz, []);
+    assert.ok(/pending source-PDF retrieval and AutoContent/i.test(resource.resourceNotes || ""));
   }
 });
 
-test("schedule topic quiz text is cleaned for plain-text rendering", () => {
-  for (const event of clickableSeptemberEvents) {
-    const resource = scheduleResources[event.slug];
-    for (const quizItem of resource.quiz) {
+test("October AI lecture includes the prior CGH AI tools practical guide", () => {
+  assert.ok(
+    scheduleResources["ai-in-gi-research"].newsAndArticles.some(item => /Artificial Intelligence Tools for Gastrointestinal Research/i.test(item.title) && item.doi === "10.1016/j.cgh.2026.03.032"),
+    "AI in GI Research should include the CGH practical-guide article previously pulled as a PDF",
+  );
+});
+
+test("October celiac/small-intestine topics include PubMed-backed review metadata", () => {
+  assert.ok(
+    scheduleResources["celiac-disease"].newsAndArticles.some(item => item.pmid === "41950475"),
+    "Celiac Disease should include the 2026 NEJM celiac review PubMed record",
+  );
+  assert.ok(
+    scheduleResources["small-intestine-pathology"].newsAndArticles.some(item => item.pmid === "35691302"),
+    "Small Intestine Pathology should include the Lancet coeliac disease PubMed record",
+  );
+});
+
+test("October colon pathology topics include colorectal/polyp archive material", () => {
+  assert.ok(
+    scheduleResources["colon-polyps-pathology"].newsAndArticles.some(item => /polyp|polypectomy/i.test(item.title)),
+    "Colon Polyps Pathology should include polyp/polypectomy material",
+  );
+  assert.ok(
+    scheduleResources["colon-pathology"].newsAndArticles.some(item => /colorectal|colon|Lynch/i.test(`${item.title} ${item.topic}`)),
+    "Colon Pathology should include colorectal/colon archive material",
+  );
+});
+
+test("schedule topic quiz text is cleaned for plain-text rendering when quizzes are present", () => {
+  for (const resource of Object.values(scheduleResources)) {
+    for (const quizItem of resource.quiz || []) {
       const fields = [quizItem.question, quizItem.explanation, quizItem.hint || "", ...quizItem.options];
       for (const field of fields) {
-        assert.doesNotMatch(field, /\$[^$\n]+\$/, `${event.slug} quiz text should not contain raw inline math delimiters: ${field}`);
-        assert.doesNotMatch(field, /\\%/, `${event.slug} quiz text should render literal percent signs: ${field}`);
+        assert.doesNotMatch(field, /\$[^$\n]+\$/, `quiz text should not contain raw inline math delimiters: ${field}`);
+        assert.doesNotMatch(field, /\\%/, `quiz text should render literal percent signs: ${field}`);
       }
     }
   }
-});
-
-test("IBD and tumor-pathology lectures include current/archived Weekly Update matches", () => {
-  assert.ok(
-    scheduleResources.ibd.newsAndArticles.some(item => /upadacitinib/i.test(item.title)),
-    "IBD should include the upadacitinib Weekly Update card",
-  );
-  assert.ok(
-    scheduleResources["ibd-gi-tumors-pathology"].newsAndArticles.some(item => /Lynch syndrome/i.test(item.title)),
-    "IBD/GI tumors pathology should include hereditary CRC archive material",
-  );
-});
-
-test("sparse schedule topics include targeted online News and Articles candidates", () => {
-  for (const event of clickableSeptemberEvents) {
-    const resource = scheduleResources[event.slug];
-    assert.ok(
-      resource.newsAndArticles.length >= 3,
-      `${event.slug} should have at least 3 News and Articles candidates after targeted enrichment`,
-    );
-  }
-
-  assert.ok(
-    scheduleResources["gi-bleeding"].newsAndArticles.some(item => item.sourceRepository === "targeted-online-pull"),
-    "GI bleeding should include targeted online candidates, not only guideline resources",
-  );
-  assert.ok(
-    scheduleResources["hypertriglyceridemia-acute-pancreatitis"].newsAndArticles.some(item => item.sourceRepository === "targeted-online-pull"),
-    "Acute pancreatitis should include targeted online candidates, not only guideline resources",
-  );
 });
