@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import WeeklyReview from "./WeeklyReview.jsx";
 import ScheduleReview from "./ScheduleReview.jsx";
+import GuidelineReview from "./GuidelineReview.jsx";
 
 function initialTab() {
   if (typeof window === "undefined") return "weekly";
   const url = new URL(window.location.href);
-  return url.searchParams.get("tab") === "schedule" ? "schedule" : "weekly";
+  if (url.pathname === "/review/guidelines" || url.pathname === "/review/guidelines/") return "guidelines";
+  if (url.pathname === "/review/schedule" || url.pathname === "/review/schedule/") return "schedule";
+  const tab = url.searchParams.get("tab");
+  if (tab === "schedule" || tab === "guidelines") return tab;
+  return "weekly";
 }
 
 export default function ReviewHub() {
@@ -13,6 +18,7 @@ export default function ReviewHub() {
   const tabs = [
     { id:"weekly", label:"Weekly Update" },
     { id:"schedule", label:"Schedule Cards" },
+    { id:"guidelines", label:"Guidelines" },
   ];
   return (
     <>
@@ -23,7 +29,7 @@ export default function ReviewHub() {
         })}
         <span style={{ alignSelf:"center", color:"#3a5878", fontSize:12, fontFamily:"monospace" }}>gi-hub.vercel.app/review</span>
       </nav>
-      {tab === "schedule" ? <ScheduleReview /> : <WeeklyReview />}
+      {tab === "guidelines" ? <GuidelineReview /> : tab === "schedule" ? <ScheduleReview /> : <WeeklyReview />}
     </>
   );
 }

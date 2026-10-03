@@ -5,8 +5,10 @@ import App from './App.jsx'
 import WeeklyReview from './WeeklyReview.jsx'
 import ScheduleReview from './ScheduleReview.jsx'
 import ReviewHub from './ReviewHub.jsx'
+import GuidelineReview from './GuidelineReview.jsx'
 import { isWeeklyReviewPath } from './weeklyReviewModel.js'
 import { isReviewHomePath, isScheduleReviewPath } from './scheduleReviewModel.js'
+import { isGuidelineReviewPath } from './guidelineReviewModel.js'
 
 const route = isReviewHomePath(window.location.pathname)
   ? <ReviewHub />
@@ -14,7 +16,9 @@ const route = isReviewHomePath(window.location.pathname)
   ? <WeeklyReview />
   : isScheduleReviewPath(window.location.pathname)
     ? <ScheduleReview />
-    : <App />
+    : isGuidelineReviewPath(window.location.pathname)
+      ? <GuidelineReview />
+      : <App />
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
