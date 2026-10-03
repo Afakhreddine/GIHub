@@ -16,6 +16,7 @@ const guidelineReviewCandidates = [
     doi: "10.14309/ajg.0000000000004105",
     source: "PubMed / ACG guideline library",
     detectedAt: "2026-09-06",
+    queuedAt: "2026-10-03",
     status: "candidate-review",
     reviewReason: "Verified ACG Practice Guideline; not a duplicate of the 2014 hereditary GI cancer guideline or ASGE FAP guidance. Needs explicit approval before publication."
   }
