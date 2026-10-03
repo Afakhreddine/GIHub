@@ -13,20 +13,25 @@ export function resolveSchedulePublishConfig(env = process.env, payload = {}) {
     repo: env.GITHUB_REPO || DEFAULT_REPO,
     pullNumber: Number.isFinite(pullNumber) ? pullNumber : null,
     token: env.GITHUB_TOKEN || env.GH_TOKEN || "",
-    reviewToken: env.WEEKLY_REVIEW_PUBLISH_TOKEN || env.SCHEDULE_REVIEW_PUBLISH_TOKEN || "",
+    reviewToken: env.WEEKLY_REVIEW_PUBLISH_TOKEN || env.SCHEDULE_REVIEW_PUBLISH_TOKEN || env.GUIDELINE_REVIEW_PUBLISH_TOKEN || "",
   };
 }
 
 export function validateSchedulePublishRequest(req, env = process.env) {
   const config = resolveSchedulePublishConfig(env, req?.body || {});
-  const suppliedToken = String(req?.body?.token || req?.headers?.["x-schedule-review-token"] || "");
-  if (!config.reviewToken) return { ok:false, status:503, error:"Schedule review publishing is not configured." };
+  const suppliedToken = String(req?.body?.token || req?.headers?.["x-schedule-review-token"] || req?.headers?.["x-guideline-review-token"] || "");
+  const isGuidelines = String(req?.body?.workflow || "").toLowerCase() === "guidelines";
+  if (!config.reviewToken) return { ok:false, status:503, error:`${isGuidelines ? "Guideline" : "Schedule"} review publishing is not configured.` };
   if (!config.token) return { ok:false, status:503, error:"GitHub publishing token is not configured." };
   if (suppliedToken !== config.reviewToken) return { ok:false, status:401, error:"Invalid review publish token." };
-  if (!config.pullNumber) return { ok:false, status:400, error:"Publishing is only available from a schedule PR preview deployment." };
-  if (!req?.body?.approved) return { ok:false, status:400, error:"At least one card must be approved, and every card must be reviewed before publishing." };
-  if (!Array.isArray(req?.body?.approvedItems) || req.body.approvedItems.length === 0) return { ok:false, status:400, error:"No approved schedule cards were provided for publication." };
-  return { ok:true, config };
+  if (!config.pullNumber) return { ok:false, status:400, error:`Publishing is only available from a ${isGuidelines ? "guideline-review" : "schedule"} PR preview deployment.` };
+  if (!req?.body?.approved) return { ok:false, status:400, error:`At least one ${isGuidelines ? "guideline" : "card"} must be approved, and every ${isGuidelines ? "candidate" : "card"} must be reviewed before publishing.` };
+  if (isGuidelines) {
+    if (!Array.isArray(req?.body?.supplements) || req.body.supplements.length === 0) return { ok:false, status:400, error:"No approved guideline supplements were provided for publication." };
+  } else if (!Array.isArray(req?.body?.approvedItems) || req.body.approvedItems.length === 0) {
+    return { ok:false, status:400, error:"No approved schedule cards were provided for publication." };
+  }
+  return { ok:true, config, workflow:isGuidelines ? "guidelines" : "schedule" };
 }
 
 function identity(item) {
@@ -76,6 +81,49 @@ function stableScheduleResources(resources = {}) {
 export function scheduleResourcesMatchApproved(resources = {}, approvedItems = []) {
   const approved = filterScheduleResourcesToApproved(resources, approvedItems);
   return JSON.stringify(stableScheduleResources(resources)) === JSON.stringify(stableScheduleResources(approved));
+}
+
+export function parseGuidelineSupplementsSource(source) {
+  const match = String(source || "").match(/const\s+GUIDELINE_SUPPLEMENTS\s*=\s*([\s\S]*?);\s*export\s+default\s+GUIDELINE_SUPPLEMENTS\s*;/);
+  if (!match) return [];
+  const parsed = Function(`"use strict"; return (${match[1]});`)();
+  return Array.isArray(parsed) ? parsed : [];
+}
+
+export function buildGuidelineSupplementsFile(items) {
+  return `// Append-only historical repair supplement for guideline repository/cache gaps.\n// The live \`gihub:guidelines:repo\` cache remains authoritative; these records\n// are merged into API responses only when not already present.\n\nconst GUIDELINE_SUPPLEMENTS = ${JSON.stringify(items, null, 2)};\n\nexport default GUIDELINE_SUPPLEMENTS;\n`;
+}
+
+function guidelineKey(item) {
+  const url = String(item?.url || "").toLowerCase();
+  const pmid = url.match(/pubmed\.ncbi\.nlm\.nih\.gov\/(\d+)/)?.[1];
+  if (pmid) return `pmid:${pmid}`;
+  const doi = url.match(/10\.\d{4,9}\/[^?#\s]+/i)?.[0];
+  if (doi) return `doi:${doi.toLowerCase()}`;
+  return `title:${String(item?.org || "").toUpperCase()}|${String(item?.title || "").toLowerCase().replace(/\s+/g, " ").trim()}`;
+}
+
+export function mergeGuidelineSupplements(existing = [], additions = []) {
+  const merged = [...(existing || [])];
+  const seen = new Set(merged.map(guidelineKey));
+  for (const item of additions || []) {
+    const normalized = {
+      org:String(item?.org || "").trim(),
+      year:String(item?.year || "").trim(),
+      month:String(item?.month || "").trim(),
+      topic:String(item?.topic || "").trim(),
+      urgency:String(item?.urgency || "Routine").trim(),
+      title:String(item?.title || "").trim(),
+      summary:String(item?.summary || "").trim(),
+      url:String(item?.url || "").trim(),
+    };
+    if (!normalized.org || !normalized.year || !normalized.title || !normalized.url) continue;
+    const key = guidelineKey(normalized);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    merged.push(normalized);
+  }
+  return merged;
 }
 
 async function githubFetch(config, path, options = {}) {
@@ -141,6 +189,54 @@ export async function publishScheduleReview(config, payload) {
   return { ok:true, published:true, pullNumber:config.pullNumber, merged:result.merged, sha:result.sha, message:result.message };
 }
 
+async function loadGuidelineSupplementsFromRef(config, ref) {
+  const file = await githubFetch(config, "/contents/src/data/guidelineSupplements.js?ref=" + encodeURIComponent(ref));
+  const source = Buffer.from(file.content || "", file.encoding || "base64").toString("utf8");
+  return { supplements:parseGuidelineSupplementsSource(source), sha:file.sha };
+}
+
+async function updateGuidelineSupplementsOnBranch(config, pull, supplements, summary) {
+  const { supplements:existing, sha } = await loadGuidelineSupplementsFromRef(config, pull.head.ref);
+  const merged = mergeGuidelineSupplements(existing, supplements);
+  const result = await githubFetch(config, "/contents/src/data/guidelineSupplements.js", {
+    method:"PUT",
+    body:JSON.stringify({
+      message:"chore: publish approved guideline candidates",
+      content:Buffer.from(buildGuidelineSupplementsFile(merged), "utf8").toString("base64"),
+      sha,
+      branch:pull.head.ref,
+      committer:{ name:"GIHub Review Bot", email:"review@gihub.local" },
+      author:{ name:"GIHub Review Bot", email:"review@gihub.local" },
+    }),
+  });
+  return {
+    ok:true,
+    published:false,
+    updated:true,
+    commitSha:result?.commit?.sha,
+    message:"Updated the PR branch by appending approved guideline candidates. Wait for preview checks to pass, then click Publish approved again to merge.",
+    summary,
+  };
+}
+
+export async function publishGuidelineReview(config, payload) {
+  const pull = await githubFetch(config, `/pulls/${config.pullNumber}`);
+  if (pull.state !== "open") return { ok:false, published:false, reason:`PR #${config.pullNumber} is ${pull.state}.` };
+
+  const { supplements:existing } = await loadGuidelineSupplementsFromRef(config, pull.head.ref);
+  const merged = mergeGuidelineSupplements(existing, payload.supplements || []);
+  const branchAlreadyPrepared = merged.length === existing.length;
+  if (!branchAlreadyPrepared) return updateGuidelineSupplementsOnBranch(config, pull, payload.supplements || [], payload.summary);
+
+  const statuses = await githubFetch(config, `/commits/${pull.head.sha}/status`);
+  if (statuses.state && statuses.state !== "success") return { ok:false, published:false, reason:`PR checks are ${statuses.state}; not publishing.` };
+  const result = await githubFetch(config, `/pulls/${config.pullNumber}/merge`, {
+    method:"PUT",
+    body:JSON.stringify({ merge_method:"squash", commit_title:`chore: publish approved guideline candidates (#${config.pullNumber})`, commit_message:payload?.summary || "Approved in Guidelines Review sandbox." }),
+  });
+  return { ok:true, published:true, pullNumber:config.pullNumber, merged:result.merged, sha:result.sha, message:result.message };
+}
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -151,7 +247,9 @@ export default async function handler(req, res) {
   const validation = validateSchedulePublishRequest(req);
   if (!validation.ok) return json(res, validation.status, { error:validation.error });
   try {
-    const result = await publishScheduleReview(validation.config, req.body);
+    const result = validation.workflow === "guidelines"
+      ? await publishGuidelineReview(validation.config, req.body)
+      : await publishScheduleReview(validation.config, req.body);
     return json(res, result.ok ? 200 : 409, result);
   } catch (error) {
     return json(res, error.status || 500, { error:error.message || "Publish failed" });

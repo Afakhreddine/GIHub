@@ -14,15 +14,35 @@ export function parseScheduleResourcesModuleSource(source) {
   return parsed;
 }
 
+export function parseGuidelineCandidatesModuleSource(source) {
+  const match = String(source || "").match(/const\s+guidelineReviewCandidates\s*=\s*([\s\S]*?);\s*export\s+default\s+guidelineReviewCandidates\s*;/);
+  if (!match) throw new Error("Could not find guidelineReviewCandidates array export.");
+  const parsed = Function(`"use strict"; return (${match[1]});`)();
+  if (!Array.isArray(parsed)) throw new Error("Guideline candidate module did not contain an array.");
+  return parsed;
+}
+
 export function isScheduleReviewPull(pull) {
   const title = String(pull?.title || "").toLowerCase();
   const ref = String(pull?.head?.ref || "").toLowerCase();
   return ref.includes("schedule") || title.includes("schedule");
 }
 
+export function isGuidelineReviewPull(pull) {
+  const title = String(pull?.title || "").toLowerCase();
+  const ref = String(pull?.head?.ref || "").toLowerCase();
+  return ref.startsWith("chore/guideline-review-") || title.includes("guideline candidate") || title.includes("guideline review");
+}
+
 export function chooseLatestScheduleReviewPull(pulls) {
   return [...(pulls || [])]
     .filter(isScheduleReviewPull)
+    .sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0))[0] || null;
+}
+
+export function chooseLatestGuidelineReviewPull(pulls) {
+  return [...(pulls || [])]
+    .filter(isGuidelineReviewPull)
     .sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0))[0] || null;
 }
 
@@ -58,11 +78,32 @@ export async function loadScheduleReviewDataForPr(pr, env = process.env) {
   };
 }
 
+export async function loadGuidelineReviewDataForPr(pr, env = process.env) {
+  const pullNumber = Number.parseInt(pr, 10);
+  if (!Number.isFinite(pullNumber) || pullNumber <= 0) throw new Error("A valid pull-request number is required.");
+  const pull = await githubFetch(`/pulls/${pullNumber}`, env);
+  const file = await githubFetch(`/contents/src/data/guidelineReviewCandidates.js?ref=${encodeURIComponent(pull.head.ref)}`, env);
+  const source = Buffer.from(file.content || "", file.encoding || "base64").toString("utf8");
+  return {
+    pr:pullNumber,
+    branch:pull.head.ref,
+    url:pull.html_url,
+    items:parseGuidelineCandidatesModuleSource(source),
+  };
+}
+
 export async function loadLatestScheduleReviewData(env = process.env) {
   const pulls = await githubFetch("/pulls?state=open&per_page=50&sort=updated&direction=desc", env);
   const pull = chooseLatestScheduleReviewPull(pulls);
   if (!pull) throw new Error("No open schedule PR was found.");
   return loadScheduleReviewDataForPr(pull.number, env);
+}
+
+export async function loadLatestGuidelineReviewData(env = process.env) {
+  const pulls = await githubFetch("/pulls?state=open&per_page=50&sort=updated&direction=desc", env);
+  const pull = chooseLatestGuidelineReviewPull(pulls);
+  if (!pull) throw new Error("No open guideline-candidate PR was found.");
+  return loadGuidelineReviewDataForPr(pull.number, env);
 }
 
 export default async function handler(req, res) {
@@ -72,18 +113,23 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
 
   try {
-    const pr = req.query?.pr || new URL(req.url, "http://localhost").searchParams.get("pr");
+    const url = new URL(req.url, "http://localhost");
+    const pr = req.query?.pr || url.searchParams.get("pr");
+    const workflow = String(req.query?.workflow || url.searchParams.get("workflow") || req.body?.workflow || "schedule").toLowerCase();
+    const isGuidelines = workflow === "guidelines";
     if (req.method === "POST") {
       const body = req.body || {};
       const pullNumber = body.pullNumber || body.pr || pr;
-      const saved = await saveReviewDecisions({ workflow:"schedule", pullNumber, decisions:body.decisions || {} });
+      const saved = await saveReviewDecisions({ workflow:isGuidelines ? "guidelines" : "schedule", pullNumber, decisions:body.decisions || {} });
       return json(res, 200, { ok:true, pr:Number.parseInt(pullNumber, 10), ...saved });
     }
     if (req.method !== "GET") return json(res, 405, { error:"Method not allowed" });
-    const data = pr ? await loadScheduleReviewDataForPr(pr) : await loadLatestScheduleReviewData();
-    const saved = await loadReviewDecisions({ workflow:"schedule", pullNumber:data.pr });
+    const data = isGuidelines
+      ? (pr ? await loadGuidelineReviewDataForPr(pr) : await loadLatestGuidelineReviewData())
+      : (pr ? await loadScheduleReviewDataForPr(pr) : await loadLatestScheduleReviewData());
+    const saved = await loadReviewDecisions({ workflow:isGuidelines ? "guidelines" : "schedule", pullNumber:data.pr });
     return json(res, 200, { ...data, savedDecisions:saved.decisions, decisionsConfigured:saved.configured });
   } catch (error) {
-    return json(res, 400, { error:error.message || "Could not load schedule review data" });
+    return json(res, 400, { error:error.message || "Could not load review data" });
   }
 }

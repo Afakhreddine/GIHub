@@ -12,18 +12,18 @@ The previous Vercel `/api/cron-guidelines` updater has been removed from the rep
 
 1. Hermes checks ACG / AGA / ASGE / AASLD sources on a schedule.
 2. Hermes uses authorized Browserbase sessions where needed to validate links and retrieve accessible source pages.
-3. Hermes prepares a reviewed JSON array of guideline objects.
-4. Hermes runs:
+3. Verified, non-duplicate guideline candidates are written to `src/data/guidelineReviewCandidates.js` on a `chore/guideline-review-*` PR and surfaced at `/review/guidelines` for Approve / Hold / Reject.
+4. The protected Guidelines Review `Publish approved` flow appends approved candidates to `src/data/guidelineSupplements.js` and then merges the PR after checks pass.
+5. The API merges `guidelineSupplements.js` into the live repository/cache response only when absent, preserving the authoritative `gihub:guidelines:repo` cache and avoiding full-library rewrites.
+6. Merging the PR updates the site through Vercel's normal GitHub deployment.
+
+For a deliberate full fallback-data replacement, Hermes can still run:
 
 ```bash
 node scripts/update-guidelines-data.mjs /path/to/guidelines.json
 ```
 
-5. Hermes runs tests/build.
-6. Hermes commits the updated `src/data/guidelines.js` file on a branch and opens a GitHub PR.
-7. Merging the PR updates the site through Vercel's normal GitHub deployment.
-
-This avoids relying on a Vercel API cron or Anthropic credits inside the Vercel runtime for guideline updates.
+This avoids relying on a Vercel API cron or Anthropic credits inside the Vercel runtime for guideline updates, and prevents verified candidates from being buried in cron output.
 
 ## Data schema
 

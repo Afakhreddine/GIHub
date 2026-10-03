@@ -5,6 +5,7 @@ import { loadReviewDecisions, normalizeDecisions, reviewDecisionKey, saveReviewD
 test("review decision keys are scoped by workflow and PR", () => {
   assert.equal(reviewDecisionKey("weekly", "31"), "gihub:review-decisions:weekly:pr:31");
   assert.equal(reviewDecisionKey("schedule", "28"), "gihub:review-decisions:schedule:pr:28");
+  assert.equal(reviewDecisionKey("guidelines", "47"), "gihub:review-decisions:guidelines:pr:47");
   assert.equal(reviewDecisionKey("bad", "28"), "");
   assert.equal(reviewDecisionKey("schedule", "not-a-pr"), "");
 });

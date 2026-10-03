@@ -1,4 +1,4 @@
-const VALID_WORKFLOWS = new Set(["weekly", "schedule"]);
+const VALID_WORKFLOWS = new Set(["weekly", "schedule", "guidelines"]);
 const VALID_DECISIONS = new Set(["Approve", "Hold", "Reject"]);
 
 function defaultEnv() {
