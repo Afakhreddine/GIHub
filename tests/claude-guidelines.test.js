@@ -164,7 +164,9 @@ test("dedupeGuidelines collapses overlapping ASGE colonic stricture titles", () 
   assert.equal(deduped[0].url, "https://pubmed.ncbi.nlm.nih.gov/42240543/");
 });
 
-test("/api/claude deduplicates incremental ASGE new-guideline alerts from cache", async () => {
+test("/api/claude returns only fresh new-guideline alerts and includes repo-managed supplements", async () => {
+  const originalNow = Date.now;
+  Date.now = () => Date.parse("2026-10-03T12:00:00Z");
   mockRedis({
     "gihub:guidelines:new": [
       {
@@ -173,7 +175,8 @@ test("/api/claude deduplicates incremental ASGE new-guideline alerts from cache"
         month: "June",
         topic: "Colonic Strictures",
         title: "Endoscopic Management of Benign and Malignant Colonic Strictures",
-        url: "https://www.asge.org/home/resources/publications/guidelines"
+        url: "https://www.asge.org/home/resources/publications/guidelines",
+        detectedAt: "2026-08-01"
       },
       {
         org: "ACG",
@@ -181,7 +184,8 @@ test("/api/claude deduplicates incremental ASGE new-guideline alerts from cache"
         month: "July",
         topic: "Colonic Diverticulitis",
         title: "ACG Clinical Guideline: Colonic Diverticulitis",
-        url: "https://pubmed.ncbi.nlm.nih.gov/?term=ACG+Clinical+Guideline+Colonic+Diverticulitis"
+        url: "https://pubmed.ncbi.nlm.nih.gov/?term=ACG+Clinical+Guideline+Colonic+Diverticulitis",
+        detectedAt: "2026-09-20"
       },
       {
         org: "ASGE",
@@ -189,7 +193,8 @@ test("/api/claude deduplicates incremental ASGE new-guideline alerts from cache"
         month: "June",
         topic: "Colonic Strictures",
         title: "ASGE Guideline on Endoscopic Management of Benign and Malignant Colonic Strictures",
-        url: "https://www.asge.org/home/resources/publications/guidelines/interventions-to-improve-adenoma-detection-rates-for-colonoscopy"
+        url: "https://www.asge.org/home/resources/publications/guidelines/interventions-to-improve-adenoma-detection-rates-for-colonoscopy",
+        detectedAt: "2026-08-01"
       }
     ]
   });
@@ -197,12 +202,19 @@ test("/api/claude deduplicates incremental ASGE new-guideline alerts from cache"
   const req = { method: "POST", body: { type: "content", section: "guidelines-new" } };
   const res = mockResponse();
 
-  await handler(req, res);
+  try {
+    await handler(req, res);
+  } finally {
+    Date.now = originalNow;
+  }
 
   assert.equal(res.statusCode, 200);
-  assert.equal(res.body.data.length, 2);
-  assert.equal(res.body.data.filter(item => item.org === "ASGE").length, 1);
-  assert.equal(res.body.data.find(item => item.org === "ASGE").title, "American Society for Gastrointestinal Endoscopy guideline on endoscopic management of benign and malignant colonic strictures");
-  assert.equal(res.body.data.find(item => item.org === "ASGE").url, "https://pubmed.ncbi.nlm.nih.gov/42240543/");
-  assert.equal(res.body.data.find(item => item.org === "ACG").url, "https://pubmed.ncbi.nlm.nih.gov/42390126/");
+  assert.equal(res.body.maxAgeDays, 31);
+  assert.ok(res.body.data.every(item => item.title !== "American Society for Gastrointestinal Endoscopy guideline on endoscopic management of benign and malignant colonic strictures"));
+  assert.ok(res.body.data.every(item => item.title !== "Endoscopic Management of Benign and Malignant Colonic Strictures"));
+  assert.equal(res.body.data.find(item => item.org === "ACG" && item.topic === "Colonic Diverticulitis").url, "https://pubmed.ncbi.nlm.nih.gov/42390126/");
+  const polyposis = res.body.data.find(item => item.title === "ACG Clinical Guideline: Diagnosis and Management of Adenomatous Colorectal Polyposis Syndromes");
+  assert.ok(polyposis, "newly approved ACG polyposis supplement should appear in new-guideline banner");
+  assert.equal(polyposis.url, "https://pubmed.ncbi.nlm.nih.gov/42683623/");
+  assert.equal(res.body.data[0].title, polyposis.title, "newest repo-managed addition should sort first by addedAt");
 });
