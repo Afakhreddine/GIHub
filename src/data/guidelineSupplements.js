@@ -491,7 +491,9 @@ const GUIDELINE_SUPPLEMENTS = [
     "urgency": "High",
     "title": "ACG Clinical Guideline: Diagnosis and Management of Adenomatous Colorectal Polyposis Syndromes",
     "summary": "Provides updated recommendations for identifying hereditary adenomatous colorectal polyposis syndromes, selecting and timing germline genetic testing, and reducing colorectal and extracolonic cancer risk through endoscopic, surgical, and chemopreventive strategies.",
-    "url": "https://pubmed.ncbi.nlm.nih.gov/42683623/"
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42683623/",
+    "addedAt": "2026-10-03",
+    "detectedAt": "2026-09-06"
   }
 ];
 

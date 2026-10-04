@@ -100,6 +100,40 @@ function mergeGuidelineSupplements(repo) {
   return dedupeGuidelines([...(repo || []), ...guidelineSupplements]);
 }
 
+const NEW_GUIDELINE_ALERT_MAX_AGE_DAYS = 31;
+
+function parseDateValue(value) {
+  if (!value) return null;
+  const parsed = Date.parse(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+export function guidelineAlertTimestamp(item) {
+  return parseDateValue(item?.addedAt)
+    ?? parseDateValue(item?.approvedAt)
+    ?? parseDateValue(item?.queuedAt)
+    ?? parseDateValue(item?.detectedAt)
+    ?? parseDateValue(item?.publishedAt)
+    ?? parseDateValue(item?.date)
+    ?? null;
+}
+
+function isRecentGuidelineAlert(item, now = Date.now()) {
+  const timestamp = guidelineAlertTimestamp(item);
+  if (timestamp == null) return false;
+  const ageMs = now - timestamp;
+  return ageMs >= 0 && ageMs <= NEW_GUIDELINE_ALERT_MAX_AGE_DAYS * 24 * 60 * 60 * 1000;
+}
+
+export function buildNewGuidelineAlerts(cached = [], now = Date.now()) {
+  const repoManagedAlerts = guidelineSupplements.filter(item => guidelineAlertTimestamp(item) != null);
+  return dedupeGuidelines([...(Array.isArray(cached) ? cached : []), ...repoManagedAlerts])
+    .filter(item => isRecentGuidelineAlert(item, now))
+    .sort((a, b) => (guidelineAlertTimestamp(b) || 0) - (guidelineAlertTimestamp(a) || 0));
+}
+
+export { isRecentGuidelineAlert };
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -122,8 +156,8 @@ export default async function handler(req, res) {
 
       if (section === "guidelines-new") {
         const cached = await redisGet("gihub:guidelines:new");
-        const data = dedupeGuidelines(Array.isArray(cached) ? cached : []);
-        return res.status(200).json({ data });
+        const data = buildNewGuidelineAlerts(Array.isArray(cached) ? cached : []);
+        return res.status(200).json({ data, maxAgeDays: NEW_GUIDELINE_ALERT_MAX_AGE_DAYS });
       }
 
       if (section === "guidelines") {

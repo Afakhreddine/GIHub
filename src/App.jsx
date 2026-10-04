@@ -364,9 +364,10 @@ function GuidelinesSection() {
       try {
         const r = await apiCall({ type:"content", section:"guidelines-new" });
         if (Array.isArray(r.data)) {
+          const alertTime = (alert) => Date.parse(alert.addedAt || alert.approvedAt || alert.queuedAt || alert.detectedAt || alert.publishedAt || alert.date || "") || 0;
           const recent = r.data
             .filter(a => a && a.title)
-            .sort((a, b) => (b.detectedAt || 0) - (a.detectedAt || 0))
+            .sort((a, b) => alertTime(b) - alertTime(a))
             .slice(0, 5);
           setNewAlerts(recent);
         }
