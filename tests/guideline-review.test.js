@@ -12,33 +12,37 @@ import {
 import { parseGuidelineCandidatesModuleSource, chooseLatestGuidelineReviewPull } from "../api/schedule-review-data.js";
 import { buildGuidelineSupplementsFile, mergeGuidelineSupplements, parseGuidelineSupplementsSource } from "../api/schedule-review-publish.js";
 
-test("guideline review queue contains the ACG polyposis candidate", () => {
+test("guideline review queue contains only verified unpublished candidates", () => {
   assert.ok(Array.isArray(candidates));
-  const polyposis = candidates.find(item => item.pmid === "42683623");
-  assert.ok(polyposis);
-  assert.equal(polyposis.org, "ACG");
-  assert.match(polyposis.title, /Adenomatous Colorectal Polyposis Syndromes/);
-  assert.equal(polyposis.status, "candidate-review");
+  assert.equal(candidates.length, 4);
+  assert.deepEqual(candidates.map(item => item.pmid), ["42720640", "42776095", "42820904", "42814045"]);
+  assert.equal(candidates.some(item => item.pmid === "42683623"), false);
+  for (const item of candidates) {
+    assert.equal(item.status, "candidate-review");
+    assert.match(item.url, /^https:\/\/pubmed\.ncbi\.nlm\.nih\.gov\/\d+\/$/);
+    assert.ok(item.doi);
+    assert.ok(item.detectedAt);
+    assert.ok(item.reviewReason);
+  }
 });
 
 test("guideline review model requires every candidate reviewed before publishing", () => {
-  const item = candidates[0];
-  const id = guidelineItemId(item);
-  assert.equal(id, "pmid:42683623");
+  const decisions = Object.fromEntries(candidates.map(item => [guidelineItemId(item), "Approve"]));
+  assert.equal(guidelineItemId(candidates[0]), "pmid:42720640");
   assert.equal(canPublishGuidelineReview(candidates, {}), false);
-  assert.equal(canPublishGuidelineReview(candidates, { [id]:"Approve" }), true);
-  const payload = buildGuidelinePublishPayload(candidates, { [id]:"Approve" });
+  assert.equal(canPublishGuidelineReview(candidates, decisions), true);
+  const payload = buildGuidelinePublishPayload(candidates, decisions);
   assert.equal(payload.approved, true);
-  assert.equal(payload.supplements.length, 1);
-  assert.deepEqual(payload.supplements[0], guidelineToSupplement(item));
+  assert.equal(payload.supplements.length, candidates.length);
+  assert.deepEqual(payload.supplements[0], guidelineToSupplement(candidates[0]));
 });
 
 test("guideline review filtering and routes work", () => {
   assert.equal(isGuidelineReviewPath("/review/guidelines"), true);
   assert.equal(isGuidelineReviewPath("/review/guidelines/"), true);
   assert.equal(isGuidelineReviewPath("/review/weekly"), false);
-  assert.equal(filterGuidelineItems(candidates, { query:"polyposis", org:"All", decision:"All", decisions:{} }).length, 1);
-  assert.equal(filterGuidelineItems(candidates, { query:"", org:"AGA", decision:"All", decisions:{} }).length, 0);
+  assert.equal(filterGuidelineItems(candidates, { query:"serrated polyposis", org:"All", decision:"All", decisions:{} }).length, 1);
+  assert.equal(filterGuidelineItems(candidates, { query:"", org:"AGA", decision:"All", decisions:{} }).length, 3);
 });
 
 test("guideline review API parses candidate modules and selects latest guideline PR", () => {
@@ -59,5 +63,5 @@ test("guideline publish API appends approved supplements without duplicates", ()
   const source = buildGuidelineSupplementsFile(merged);
   const reparsed = parseGuidelineSupplementsSource(source);
   assert.equal(reparsed.length, 2);
-  assert.ok(reparsed.some(item => item.url === "https://pubmed.ncbi.nlm.nih.gov/42683623/"));
+  assert.ok(reparsed.some(item => item.url === candidates[0].url));
 });
