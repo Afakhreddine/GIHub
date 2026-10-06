@@ -1,6 +1,3 @@
-// Repo-managed GIHub weekly update data.
-// Update with: node scripts/update-weekly-data.mjs <weekly.json>
-
 const weekly = [
   {
     "type": "Research",
