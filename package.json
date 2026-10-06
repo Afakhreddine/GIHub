@@ -8,7 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "node --import ./tests/register-jsx.mjs --test tests/*.test.js tests/*.test.jsx"
+    "test": "node --import ./tests/register-jsx.mjs --test tests/*.test.js tests/*.test.jsx",
+    "schedule:targeted-pull": "node scripts/populate-schedule-targeted-candidates.mjs"
   },
   "dependencies": {
     "react": "^19.2.4",
