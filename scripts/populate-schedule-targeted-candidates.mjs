@@ -4,47 +4,47 @@ import { buildScheduleResourcesFile } from "../src/scheduleResourcesModel.js";
 import scheduleResources from "../src/data/scheduleResources.js";
 
 const TOPIC_CONFIG = {
-  "stomach-pathology": {
-    label: "Stomach Pathology",
-    topic: "Stomach Pathology",
-    eventDate: "2026-09-04",
-    minNewsAndArticles: 3,
-    search: "(gastric cancer[Title/Abstract] OR gastric intestinal metaplasia[Title/Abstract] OR Helicobacter pylori[Title/Abstract] OR gastric dysplasia[Title/Abstract]) AND (2025:2026[pdat])",
+  "colon-polyps-pathology": {
+    label: "Colon Polyps Pathology",
+    topic: "Colon Polyps Pathology",
+    eventDate: "2026-10-02",
+    minTargetedCandidates: 2,
+    search: "(colon polyp[Title/Abstract] OR colorectal polyp[Title/Abstract] OR colorectal adenoma[Title/Abstract] OR serrated lesion[Title/Abstract] OR sessile serrated[Title/Abstract] OR adenomatous polyposis[Title/Abstract]) AND (2025:2026[pdat])",
   },
-  "gi-bleeding": {
-    label: "GI Bleeding 101",
-    topic: "GI Bleeding",
-    eventDate: "2026-09-08",
-    minNewsAndArticles: 3,
-    search: "(gastrointestinal bleeding[Title/Abstract] OR upper gastrointestinal bleeding[Title/Abstract] OR lower gastrointestinal bleeding[Title/Abstract] OR nonvariceal bleeding[Title/Abstract] OR variceal bleeding[Title/Abstract]) AND (2025:2026[pdat])",
+  "appendix-and-anus-pathology": {
+    label: "Appendix and Anus Pathology",
+    topic: "Appendix and Anus Pathology",
+    eventDate: "2026-10-16",
+    minTargetedCandidates: 2,
+    search: "(appendiceal neoplasm[Title/Abstract] OR appendiceal tumor[Title/Abstract] OR appendiceal mucinous[Title/Abstract] OR anal dysplasia[Title/Abstract] OR anal cancer[Title/Abstract] OR anorectal pathology[Title/Abstract]) AND (2025:2026[pdat])",
   },
-  "hypertriglyceridemia-acute-pancreatitis": {
-    label: "Hypertriglyceridemia / Acute Pancreatitis",
-    topic: "Hypertriglyceridemia / Acute Pancreatitis",
-    eventDate: "2026-09-15",
-    minNewsAndArticles: 3,
-    search: "(acute pancreatitis[Title/Abstract] OR hypertriglyceridemia pancreatitis[Title/Abstract] OR triglyceride pancreatitis[Title/Abstract] OR pancreatic necrosis[Title/Abstract]) AND (2025:2026[pdat])",
+  "celiac-disease": {
+    label: "Celiac Disease",
+    topic: "Celiac Disease",
+    eventDate: "2026-10-20",
+    minTargetedCandidates: 2,
+    search: "(celiac disease[Title/Abstract] OR coeliac disease[Title/Abstract] OR gluten enteropathy[Title/Abstract] OR villous atrophy[Title/Abstract] OR gluten-free diet[Title/Abstract]) AND (2025:2026[pdat])",
   },
-  "liver-pathology": {
-    label: "Liver Pathology",
-    topic: "Liver Pathology",
-    eventDate: "2026-09-18",
-    minNewsAndArticles: 3,
-    search: "(MASLD[Title/Abstract] OR MASH[Title/Abstract] OR steatotic liver disease[Title/Abstract] OR hepatitis B[Title/Abstract] OR liver fibrosis[Title/Abstract]) AND (2025:2026[pdat])",
+  "small-intestine-pathology": {
+    label: "Small Intestine Pathology",
+    topic: "Small Intestine Pathology",
+    eventDate: "2026-10-23",
+    minTargetedCandidates: 2,
+    search: "(small intestine pathology[Title/Abstract] OR small bowel tumor[Title/Abstract] OR small bowel disease[Title/Abstract] OR duodenal pathology[Title/Abstract] OR enteropathy[Title/Abstract] OR jejunal[Title/Abstract] OR ileal[Title/Abstract]) AND (2025:2026[pdat])",
   },
-  "ibd": {
-    label: "IBD",
-    topic: "IBD",
-    eventDate: "2026-09-22",
-    minNewsAndArticles: 4,
-    search: "(Crohn[Title/Abstract] OR ulcerative colitis[Title/Abstract] OR inflammatory bowel disease[Title/Abstract] OR upadacitinib[Title/Abstract] OR vedolizumab[Title/Abstract]) AND (2025:2026[pdat])",
+  "ai-in-gi-research": {
+    label: "AI in GI Research",
+    topic: "AI in GI Research",
+    eventDate: "2026-10-27",
+    minTargetedCandidates: 2,
+    search: "(artificial intelligence[Title/Abstract] OR machine learning[Title/Abstract] OR deep learning[Title/Abstract] OR large language model[Title/Abstract] OR generative AI[Title/Abstract]) AND (gastroenterology[Title] OR endoscopy[Title] OR gastrointestinal[Title] OR colonoscopy[Title] OR digestive[Title]) AND (2025:2026[pdat])",
   },
-  "ibd-gi-tumors-pathology": {
-    label: "IBD and GI Tumors Pathology",
-    topic: "IBD and GI Tumors Pathology",
-    eventDate: "2026-09-25",
-    minNewsAndArticles: 5,
-    search: "(colorectal cancer[Title/Abstract] OR Lynch syndrome[Title/Abstract] OR gastric cancer[Title/Abstract] OR pancreatic cancer[Title/Abstract] OR colitis dysplasia[Title/Abstract]) AND (2025:2026[pdat])",
+  "colon-pathology": {
+    label: "Colon Pathology",
+    topic: "Colon Pathology",
+    eventDate: "2026-10-30",
+    minTargetedCandidates: 2,
+    search: "(colon pathology[Title/Abstract] OR colitis pathology[Title/Abstract] OR colorectal cancer pathology[Title/Abstract] OR colorectal neoplasia[Title/Abstract] OR inflammatory bowel disease dysplasia[Title/Abstract] OR microscopic colitis[Title/Abstract]) AND (2025:2026[pdat])",
   },
 };
 
@@ -63,7 +63,8 @@ const PREFERRED_JOURNALS = [
   "JAMA",
 ];
 
-const EXCLUDED_PUBLICATION_TYPES = /guideline|practice guideline|editorial|letter|comment|case reports/i;
+const EXCLUDED_PUBLICATION_TYPES = /guideline|practice guideline|editorial|letter|comment|case reports|retraction|published erratum/i;
+const EXCLUDED_TITLE_TERMS = /\bretraction\b|\berratum\b|\bcorrection\b|\bcommentary\b|\bletter to the editor\b/i;
 const GOOD_PUBLICATION_TYPES = /clinical trial|randomized|meta-analysis|systematic review|observational study|multicenter study|cohort|comparative study|journal article/i;
 
 function normalize(value) {
@@ -194,18 +195,19 @@ const audit = {};
 for (const [slug, config] of Object.entries(TOPIC_CONFIG)) {
   const resource = resources[slug] || { guidelines: [], newsAndArticles: [], quiz: [] };
   const existing = resource.newsAndArticles || [];
-  const needed = Math.max(0, config.minNewsAndArticles - existing.length);
-  audit[slug] = { existing: existing.length, needed, added: [] };
-  if (!needed) continue;
+  const existingNonTargeted = existing.filter(item => item?.sourceRepository !== "targeted-online-pull");
+  const existingTargeted = existing.filter(item => item?.sourceRepository === "targeted-online-pull");
+  const needed = config.minTargetedCandidates;
+  audit[slug] = { existing: existing.length, prunedTargeted: existingTargeted.length, needed, added: [] };
 
-  const seen = new Set(existing.map(identity));
+  const seen = new Set(existingNonTargeted.map(identity));
   const pmids = await searchPmids(config.search, 30);
   await sleep(500);
   const articles = await fetchArticles(pmids);
   await sleep(500);
   const candidates = articles
     .map(article => ({ article, score: articleScore(article, config.topic) }))
-    .filter(({ article, score }) => score >= 3 && article.abstract && !EXCLUDED_PUBLICATION_TYPES.test(article.pubTypes.join("; ")) && (PREFERRED_JOURNALS.some(j => normalize(article.journal).includes(normalize(j)) || normalize(j).includes(normalize(article.journal))) || GOOD_PUBLICATION_TYPES.test(article.pubTypes.join("; "))))
+    .filter(({ article, score }) => score >= 3 && article.abstract && !EXCLUDED_TITLE_TERMS.test(article.title) && !EXCLUDED_PUBLICATION_TYPES.test(article.pubTypes.join("; ")) && (PREFERRED_JOURNALS.some(j => normalize(article.journal).includes(normalize(j)) || normalize(j).includes(normalize(article.journal))) || GOOD_PUBLICATION_TYPES.test(article.pubTypes.join("; "))))
     .sort((a, b) => b.score - a.score)
     .map(({ article }) => toCandidate(article, slug, config));
 
@@ -217,7 +219,7 @@ for (const [slug, config] of Object.entries(TOPIC_CONFIG)) {
     additions.push(candidate);
     if (additions.length >= needed) break;
   }
-  resource.newsAndArticles = [...existing, ...additions];
+  resource.newsAndArticles = [...existingNonTargeted, ...additions];
   resource.resourceNotes = `${resource.resourceNotes || ""} Targeted online pull added ${additions.length} PubMed candidate(s) for sparse News and Articles review.`.trim();
   resources[slug] = resource;
   audit[slug].added = additions.map(item => ({ title: item.title, pmid: item.pmid, source: item.source }));
