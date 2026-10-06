@@ -1602,6 +1602,44 @@ const scheduleResources = {
         "status": "candidate",
         "addedBy": "october-schedule-image-import",
         "addedAt": "2026-10-01"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Prevalence of intestinal spirochaetosis in serrated polyposis syndrome compared with other colorectal polyp conditions: a case-control study in Japan.",
+        "oneLineSummary": "Serrated polyposis syndrome (SPS) is the most common form of colorectal polyposis syndrome. Most SPS cases are sporadic, and the environmental factors underlying its pathogenesis remain poorly defined. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1136/bmjgast-2026-002414",
+        "pmid": "42800717",
+        "source": "BMJ open gastroenterology",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/42800717/",
+        "date": "09 2026",
+        "topic": "Colon Polyps Pathology",
+        "type": "Research",
+        "relevanceScore": 9,
+        "relevanceReason": "Targeted online PubMed pull for Colon Polyps Pathology.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-10-06",
+        "eventDate": "2026-10-02"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Tumor-Promoting Inflammation in Serrated Colorectal Neoplasia: Immune Ecosystems and Clinical Implications.",
+        "oneLineSummary": "Serrated colorectal neoplasia represents a biologically distinct route to colorectal cancer that differs from the conventional adenoma-carcinoma sequence in its molecular alterations, epithelial programs, and microenvironmental evolution. Recent studies indicate that tumor-promoting inflammation and dynamic tumor-microenvironment interactions are integral to the evolution of serrated tumors. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.5009/gnl260271",
+        "pmid": "42806646",
+        "source": "Gut and liver",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/42806646/",
+        "date": "09 2026",
+        "topic": "Colon Polyps Pathology",
+        "type": "Research",
+        "relevanceScore": 7,
+        "relevanceReason": "Targeted online PubMed pull for Colon Polyps Pathology.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-10-06",
+        "eventDate": "2026-10-02"
       }
     ],
     "quiz": [
@@ -1655,7 +1693,7 @@ const scheduleResources = {
       "colon-polyps-pathology.pdf"
     ],
     "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
-    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved.",
+    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved. Targeted online pull added 2 PubMed candidate(s) for sparse News and Articles review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "candidate-review"
   },
@@ -1754,6 +1792,44 @@ const scheduleResources = {
         "status": "candidate",
         "addedBy": "october-schedule-image-import",
         "addedAt": "2026-10-01"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Global burden of cancer attributable to infections in 2024: a worldwide incidence analysis.",
+        "oneLineSummary": "Infectious agents are an important preventable cause of cancer globally. To inform prevention efforts, we provide a comprehensive picture of cancer burden attributable to infections, including newly established, carcinogenic infectious agents and latest global cancer incidence estimates. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1016/S1470-2045(26)00307-4",
+        "pmid": "42805198",
+        "source": "The Lancet. Oncology",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/42805198/",
+        "date": "09 2026",
+        "topic": "Appendix and Anus Pathology",
+        "type": "Research",
+        "relevanceScore": 7,
+        "relevanceReason": "Targeted online PubMed pull for Appendix and Anus Pathology.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-10-06",
+        "eventDate": "2026-10-16"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Testing Cytological Adequacy and Insertion Depth for Anal Self-Sampling: A Pilot Intervention Study.",
+        "oneLineSummary": "Anal cancer screening consensus guidelines were released in 2024. Although anal cytology and high-risk human papillomavirus (HPV) tests are currently performed in a clinic by a healthcare provider, there is increasing interest in providing individuals with the option to collect a sample themselves. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1111/cyt.70129",
+        "pmid": "42834435",
+        "source": "Cytopathology : official journal of the British Society for Clinical Cytology",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/42834435/",
+        "date": "10 2026",
+        "topic": "Appendix and Anus Pathology",
+        "type": "Research",
+        "relevanceScore": 4,
+        "relevanceReason": "Targeted online PubMed pull for Appendix and Anus Pathology.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-10-06",
+        "eventDate": "2026-10-16"
       }
     ],
     "quiz": [
@@ -1807,7 +1883,7 @@ const scheduleResources = {
       "appendix-and-anus-pathology.pdf"
     ],
     "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
-    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved.",
+    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved. Targeted online pull added 2 PubMed candidate(s) for sparse News and Articles review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "candidate-review"
   },
@@ -1878,6 +1954,44 @@ const scheduleResources = {
         "status": "candidate",
         "addedBy": "october-schedule-image-import",
         "addedAt": "2026-10-01"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Changing clinical presentation of pediatric celiac disease over time.",
+        "oneLineSummary": "Celiac disease (CD), often associated with malabsorption, presents with a wide spectrum of gastrointestinal and extra-intestinal manifestations. It was aimed to investigate changes in the clinical presentation of CD in children over a 16-year period and to assess whether clinical forms (classical, non-classical and asymptomatic) vary according to age, sex, and histopathological severity. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1186/s12876-026-05313-3",
+        "pmid": "42827237",
+        "source": "BMC gastroenterology",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/42827237/",
+        "date": "10 2026",
+        "topic": "Celiac Disease",
+        "type": "Research",
+        "relevanceScore": 9,
+        "relevanceReason": "Targeted online PubMed pull for Celiac Disease.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-10-06",
+        "eventDate": "2026-10-20"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Demographic Profile and Clinical Presentation of Celiac Disease in the Pakistani Population: A Systematic Review and Meta-analysis.",
+        "oneLineSummary": "Celiac disease (CD) is an increasingly recognized autoimmune enteropathy triggered by gluten ingestion. While its global prevalence is well-documented, data from South Asia, particularly Pakistan, remain fragmented. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.5005/jp-journals-10018-1505",
+        "pmid": "42798675",
+        "source": "Euroasian journal of hepato-gastroenterology",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/42798675/",
+        "date": "09 2026",
+        "topic": "Celiac Disease",
+        "type": "Research",
+        "relevanceScore": 9,
+        "relevanceReason": "Targeted online PubMed pull for Celiac Disease.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-10-06",
+        "eventDate": "2026-10-20"
       }
     ],
     "quiz": [
@@ -1931,7 +2045,7 @@ const scheduleResources = {
       "celiac-disease.pdf"
     ],
     "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
-    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved.",
+    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved. Targeted online pull added 2 PubMed candidate(s) for sparse News and Articles review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "candidate-review"
   },
@@ -2012,6 +2126,44 @@ const scheduleResources = {
         "status": "candidate",
         "addedBy": "october-schedule-image-import",
         "addedAt": "2026-10-01"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Endoscopic Evaluation and Management of Diversion Pouchitis and Strictures: In Comparison With Strictures in Nondiverted Pouches.",
+        "oneLineSummary": "Postoperative complications after ileal pouch-anal anastomosis are common and may lead to pouch failure requiring long-standing fecal diversion. Patients with diverted pouches can develop diversion pouchitis and strictures; however, the endoscopic features and management of these conditions remain poorly characterized. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1016/j.gastha.2026.101103",
+        "pmid": "42824473",
+        "source": "Gastro hep advances",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/42824473/",
+        "date": "10 2026",
+        "topic": "Small Intestine Pathology",
+        "type": "Research",
+        "relevanceScore": 7,
+        "relevanceReason": "Targeted online PubMed pull for Small Intestine Pathology.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-10-06",
+        "eventDate": "2026-10-23"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Clinical Spectrum, Genetic Profile, and Genotype-Phenotype Correlations in Microvillus Inclusion Disease: A Systematic Review.",
+        "oneLineSummary": "Microvillus inclusion disease (MVID) is a rare congenital enteropathy caused by defects in intestinal epithelial apical trafficking and polarity. Although its genetic basis is well established, the clinical spectrum and genotype-phenotype correlations remain incompletely defined. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1002/ajmg.a.70314",
+        "pmid": "42834355",
+        "source": "American journal of medical genetics. Part A",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/42834355/",
+        "date": "10 2026",
+        "topic": "Small Intestine Pathology",
+        "type": "Research",
+        "relevanceScore": 4,
+        "relevanceReason": "Targeted online PubMed pull for Small Intestine Pathology.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-10-06",
+        "eventDate": "2026-10-23"
       }
     ],
     "quiz": [
@@ -2065,7 +2217,7 @@ const scheduleResources = {
       "small-intestine-pathology.pdf"
     ],
     "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
-    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved.",
+    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved. Targeted online pull added 2 PubMed candidate(s) for sparse News and Articles review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "candidate-review"
   },
@@ -2154,6 +2306,44 @@ const scheduleResources = {
         "status": "candidate",
         "addedBy": "october-schedule-image-import",
         "addedAt": "2026-10-01"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Artificial Intelligence in Endohepatology: Toward an Intelligent One-Stop Shop for Liver-Directed Endoscopy.",
+        "oneLineSummary": "Endohepatology (the implementation of contemporary advanced endoscopy in hepatology) has reached a point where endoscopic ultrasound (EUS)-guided liver biopsy, portal pressure gradient measurement, parenchymal elastography, and variceal screening and therapy can be integrated into a single procedural session of liver-directed endoscopy. Concurrently, artificial intelligence (AI) has revolutionized luminal endoscopy and is advancing rapidly across hepatology imaging, digital pathology, and outcome prediction, yet its translation into the liver-targeted endoscopic workflow has never been synthesized into a coherent domain. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1111/jgh.70757",
+        "pmid": "42758018",
+        "source": "Journal of gastroenterology and hepatology",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/42758018/",
+        "date": "09 2026",
+        "topic": "AI in GI Research",
+        "type": "Research",
+        "relevanceScore": 7,
+        "relevanceReason": "Targeted online PubMed pull for AI in GI Research.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-10-06",
+        "eventDate": "2026-10-27"
+      },
+      {
+        "section": "News and Articles",
+        "title": "The yield of artificial intelligence (GI genius) in Lynch syndrome -A randomized tandem-colonoscopy trial.",
+        "oneLineSummary": "Artificial intelligence (AI)- assisted colonoscopy has been shown to increase the adenoma-detection rate in the general population but there is a paucity of data on its benefit in Lynch syndrome. We aimed to investigate the incremental detection rate of polyps using AI- assisted colonoscopy compared with high-definition white-light endoscopy (HD-WLE). Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1016/j.dld.2026.08.020",
+        "pmid": "42744673",
+        "source": "Digestive and liver disease : official journal of the Italian Society of Gastroenterology and the Italian Association for the Study of the Liver",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/42744673/",
+        "date": "09 2026",
+        "topic": "AI in GI Research",
+        "type": "Research",
+        "relevanceScore": 7,
+        "relevanceReason": "Targeted online PubMed pull for AI in GI Research.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-10-06",
+        "eventDate": "2026-10-27"
       }
     ],
     "quiz": [
@@ -2207,7 +2397,7 @@ const scheduleResources = {
       "ai-in-gi-research.pdf"
     ],
     "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
-    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved.",
+    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved. Targeted online pull added 2 PubMed candidate(s) for sparse News and Articles review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "candidate-review"
   },
@@ -2342,6 +2532,44 @@ const scheduleResources = {
         "status": "candidate",
         "addedBy": "october-schedule-image-import",
         "addedAt": "2026-10-01"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Anatomical Distribution and Prevalence of Dysplasia in Sessile Serrated Lesions: A Cohort Study Over Seven Years.",
+        "oneLineSummary": "Sessile serrated lesions (SSLs) progress to colorectal cancer via a critical intermediary stage, SSL with dysplasia (SSLd). Data on the anatomical distribution of SSLd are limited, particularly in high-detection-rate settings. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1016/j.gastha.2026.101079",
+        "pmid": "42733487",
+        "source": "Gastro hep advances",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/42733487/",
+        "date": "09 2026",
+        "topic": "Colon Pathology",
+        "type": "Research",
+        "relevanceScore": 9,
+        "relevanceReason": "Targeted online PubMed pull for Colon Pathology.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-10-06",
+        "eventDate": "2026-10-30"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Baseline characteristics of participants recruited into the COLO-COHORT study: a UK-wide resource for colorectal cancer prevention.",
+        "oneLineSummary": "To describe the design, recruitment, and baseline characteristics of the first phase of COLO-COHORT and to establish this population as a resource for colorectal cancer (CRC) prevention research. COLO-COHORT is a prospective, multicentre observational study recruiting adults undergoing colonoscopy through screening and routine National Health Service referral pathways within a 32-site UK network. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
+        "doi": "10.1136/bmjgast-2026-002421",
+        "pmid": "42823104",
+        "source": "BMJ open gastroenterology",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/42823104/",
+        "date": "10 2026",
+        "topic": "Colon Pathology",
+        "type": "Research",
+        "relevanceScore": 8,
+        "relevanceReason": "Targeted online PubMed pull for Colon Pathology.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull",
+        "addedAt": "2026-10-06",
+        "eventDate": "2026-10-30"
       }
     ],
     "quiz": [
@@ -2395,7 +2623,7 @@ const scheduleResources = {
       "colon-pathology.pdf"
     ],
     "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
-    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved.",
+    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved. Targeted online pull added 2 PubMed candidate(s) for sparse News and Articles review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "candidate-review"
   }
