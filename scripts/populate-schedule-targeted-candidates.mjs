@@ -1,52 +1,25 @@
 #!/usr/bin/env node
 import fs from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 import { buildScheduleResourcesFile } from "../src/scheduleResourcesModel.js";
 import scheduleResources from "../src/data/scheduleResources.js";
+import { CALENDAR_EVENTS, LECTURE_TOPICS } from "../src/scheduleConfig.js";
 
-const TOPIC_CONFIG = {
-  "colon-polyps-pathology": {
-    label: "Colon Polyps Pathology",
-    topic: "Colon Polyps Pathology",
-    eventDate: "2026-10-02",
-    minTargetedCandidates: 2,
-    search: "(colon polyp[Title/Abstract] OR colorectal polyp[Title/Abstract] OR colorectal adenoma[Title/Abstract] OR serrated lesion[Title/Abstract] OR sessile serrated[Title/Abstract] OR adenomatous polyposis[Title/Abstract]) AND (2025:2026[pdat])",
-  },
-  "appendix-and-anus-pathology": {
-    label: "Appendix and Anus Pathology",
-    topic: "Appendix and Anus Pathology",
-    eventDate: "2026-10-16",
-    minTargetedCandidates: 2,
-    search: "(appendiceal neoplasm[Title/Abstract] OR appendiceal tumor[Title/Abstract] OR appendiceal mucinous[Title/Abstract] OR anal dysplasia[Title/Abstract] OR anal cancer[Title/Abstract] OR anorectal pathology[Title/Abstract]) AND (2025:2026[pdat])",
-  },
-  "celiac-disease": {
-    label: "Celiac Disease",
-    topic: "Celiac Disease",
-    eventDate: "2026-10-20",
-    minTargetedCandidates: 2,
-    search: "(celiac disease[Title/Abstract] OR coeliac disease[Title/Abstract] OR gluten enteropathy[Title/Abstract] OR villous atrophy[Title/Abstract] OR gluten-free diet[Title/Abstract]) AND (2025:2026[pdat])",
-  },
-  "small-intestine-pathology": {
-    label: "Small Intestine Pathology",
-    topic: "Small Intestine Pathology",
-    eventDate: "2026-10-23",
-    minTargetedCandidates: 2,
-    search: "(small intestine pathology[Title/Abstract] OR small bowel tumor[Title/Abstract] OR small bowel disease[Title/Abstract] OR duodenal pathology[Title/Abstract] OR enteropathy[Title/Abstract] OR jejunal[Title/Abstract] OR ileal[Title/Abstract]) AND (2025:2026[pdat])",
-  },
-  "ai-in-gi-research": {
-    label: "AI in GI Research",
-    topic: "AI in GI Research",
-    eventDate: "2026-10-27",
-    minTargetedCandidates: 2,
-    search: "(artificial intelligence[Title/Abstract] OR machine learning[Title/Abstract] OR deep learning[Title/Abstract] OR large language model[Title/Abstract] OR generative AI[Title/Abstract]) AND (gastroenterology[Title] OR endoscopy[Title] OR gastrointestinal[Title] OR colonoscopy[Title] OR digestive[Title]) AND (2025:2026[pdat])",
-  },
-  "colon-pathology": {
-    label: "Colon Pathology",
-    topic: "Colon Pathology",
-    eventDate: "2026-10-30",
-    minTargetedCandidates: 2,
-    search: "(colon pathology[Title/Abstract] OR colitis pathology[Title/Abstract] OR colorectal cancer pathology[Title/Abstract] OR colorectal neoplasia[Title/Abstract] OR inflammatory bowel disease dysplasia[Title/Abstract] OR microscopic colitis[Title/Abstract]) AND (2025:2026[pdat])",
-  },
-};
+export const DEFAULT_TARGETED_CANDIDATES_PER_TOPIC = 2;
+
+const TOPIC_TERM_RULES = [
+  { test:/colon.*polyp|polyp.*colon|adenoma|serrated/i, terms:["colon polyp", "colorectal polyp", "colorectal adenoma", "serrated lesion", "sessile serrated", "adenomatous polyposis"] },
+  { test:/appendix|appendiceal|anus|anal|anorectal/i, terms:["appendiceal neoplasm", "appendiceal tumor", "appendiceal mucinous", "anal dysplasia", "anal cancer", "anorectal pathology"] },
+  { test:/celiac|coeliac|gluten/i, terms:["celiac disease", "coeliac disease", "gluten enteropathy", "villous atrophy", "gluten-free diet"] },
+  { test:/small intestine|small bowel|duoden|jejunal|ileal|enteropathy/i, terms:["small intestine pathology", "small bowel tumor", "small bowel disease", "duodenal pathology", "enteropathy", "jejunal", "ileal"] },
+  { test:/artificial intelligence|\bAI\b|machine learning|deep learning|large language model|generative/i, terms:["artificial intelligence", "machine learning", "deep learning", "large language model", "generative AI", "AI-assisted colonoscopy", "computer-aided detection", "computer-aided diagnosis"] },
+  { test:/colon pathology|colorectal|colitis|microscopic colitis|colon/i, terms:["colon pathology", "colitis pathology", "colorectal cancer pathology", "colorectal neoplasia", "inflammatory bowel disease dysplasia", "microscopic colitis"] },
+  { test:/stomach|gastric|helicobacter|h pylori/i, terms:["gastric cancer", "gastric intestinal metaplasia", "Helicobacter pylori", "gastric dysplasia"] },
+  { test:/bleeding|hemorrhage|angiodysplasia|variceal/i, terms:["gastrointestinal bleeding", "upper gastrointestinal bleeding", "lower gastrointestinal bleeding", "nonvariceal bleeding", "variceal bleeding", "angiodysplasia"] },
+  { test:/pancreatitis|pancreas|triglyceride|hypertriglyceridemia/i, terms:["acute pancreatitis", "hypertriglyceridemia pancreatitis", "triglyceride pancreatitis", "pancreatic necrosis", "post-ERCP pancreatitis"] },
+  { test:/liver|hepat|MASH|MASLD|fibrosis/i, terms:["MASLD", "MASH", "steatotic liver disease", "hepatitis B", "liver fibrosis"] },
+  { test:/ibd|crohn|ulcerative colitis|inflammatory bowel/i, terms:["Crohn", "ulcerative colitis", "inflammatory bowel disease", "vedolizumab", "upadacitinib", "colitis dysplasia"] },
+];
 
 const PREFERRED_JOURNALS = [
   "Gastroenterology",
@@ -75,6 +48,60 @@ function normalize(value) {
     .replace(/&[a-z]+;/g, " ")
     .replace(/[^a-z0-9]+/g, " ")
     .trim();
+}
+
+function unique(values) {
+  const seen = new Set();
+  return values.filter(value => {
+    const key = normalize(value);
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function quotePubMedTerm(term, field = "Title/Abstract") {
+  return `${term.replace(/"/g, "").trim()}[${field}]`;
+}
+
+export function searchTermsForTopic(topic, label = topic, slug = "") {
+  const haystack = `${topic || ""} ${label || ""} ${slug.replace(/-/g, " ")}`;
+  const terms = [];
+  for (const rule of TOPIC_TERM_RULES) {
+    if (rule.test.test(haystack)) terms.push(...rule.terms);
+  }
+  terms.push(topic, label, slug.replace(/-/g, " "));
+  return unique(terms).slice(0, 10);
+}
+
+export function buildPubMedSearch({ topic, label, slug, eventDate }, { lookbackYears = 1 } = {}) {
+  const year = Number(String(eventDate || "").slice(0, 4)) || new Date().getUTCFullYear();
+  const startYear = Math.max(2000, year - lookbackYears);
+  const terms = searchTermsForTopic(topic, label, slug);
+  const termQuery = terms.map(term => quotePubMedTerm(term)).join(" OR ");
+  const titleBoost = /artificial intelligence|\bAI\b|machine learning|deep learning|large language model/i.test(topic)
+    ? " AND (gastroenterology[Title] OR endoscopy[Title] OR gastrointestinal[Title] OR colonoscopy[Title] OR digestive[Title])"
+    : "";
+  return `(${termQuery})${titleBoost} AND (${startYear}:${year}[pdat])`;
+}
+
+export function buildTopicConfigsFromCalendar(events = CALENDAR_EVENTS, options = {}) {
+  const bySlug = new Map((LECTURE_TOPICS || []).map(topic => [topic.slug, topic]));
+  return Object.fromEntries(
+    events
+      .filter(event => event?.slug && event?.topic)
+      .map(event => {
+        const lecture = bySlug.get(event.slug);
+        const label = lecture?.label || event.topic;
+        const config = {
+          label,
+          topic: event.topic,
+          eventDate: event.date,
+          minTargetedCandidates: options.minTargetedCandidates || DEFAULT_TARGETED_CANDIDATES_PER_TOPIC,
+        };
+        return [event.slug, { ...config, search: buildPubMedSearch({ ...config, slug:event.slug }, options) }];
+      })
+  );
 }
 
 function xmlText(block, tag) {
@@ -114,7 +141,7 @@ async function ncbi(path, params) {
   const url = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/${path}?${new URLSearchParams(params)}`;
   for (let attempt = 1; attempt <= 5; attempt += 1) {
     const res = await fetch(url, { headers: { "user-agent": "GIHub schedule enrichment (Hermes)" } });
-    if (res.ok) return path.endsWith(".fcgi") ? res.text() : res.text();
+    if (res.ok) return res.text();
     if (![429, 500, 502, 503, 504].includes(res.status) || attempt === 5) {
       throw new Error(`${path} failed ${res.status}: ${await res.text()}`);
     }
@@ -189,42 +216,55 @@ function toCandidate(article, slug, config) {
   };
 }
 
-const resources = structuredClone(scheduleResources);
-const audit = {};
+export async function populateScheduleTargetedCandidates({ resources = scheduleResources, topicConfigs = buildTopicConfigsFromCalendar(), write = true } = {}) {
+  const nextResources = structuredClone(resources);
+  const audit = {};
 
-for (const [slug, config] of Object.entries(TOPIC_CONFIG)) {
-  const resource = resources[slug] || { guidelines: [], newsAndArticles: [], quiz: [] };
-  const existing = resource.newsAndArticles || [];
-  const existingNonTargeted = existing.filter(item => item?.sourceRepository !== "targeted-online-pull");
-  const existingTargeted = existing.filter(item => item?.sourceRepository === "targeted-online-pull");
-  const needed = config.minTargetedCandidates;
-  audit[slug] = { existing: existing.length, prunedTargeted: existingTargeted.length, needed, added: [] };
+  for (const [slug, config] of Object.entries(topicConfigs)) {
+    const resource = nextResources[slug] || { guidelines: [], newsAndArticles: [], quiz: [] };
+    const existing = resource.newsAndArticles || [];
+    const existingNonTargeted = existing.filter(item => item?.sourceRepository !== "targeted-online-pull");
+    const existingTargeted = existing.filter(item => item?.sourceRepository === "targeted-online-pull");
+    const needed = config.minTargetedCandidates;
+    audit[slug] = { existing: existing.length, prunedTargeted: existingTargeted.length, needed, added: [], search: config.search };
 
-  const seen = new Set(existingNonTargeted.map(identity));
-  const pmids = await searchPmids(config.search, 30);
-  await sleep(500);
-  const articles = await fetchArticles(pmids);
-  await sleep(500);
-  const candidates = articles
-    .map(article => ({ article, score: articleScore(article, config.topic) }))
-    .filter(({ article, score }) => score >= 3 && article.abstract && !EXCLUDED_TITLE_TERMS.test(article.title) && !EXCLUDED_PUBLICATION_TYPES.test(article.pubTypes.join("; ")) && (PREFERRED_JOURNALS.some(j => normalize(article.journal).includes(normalize(j)) || normalize(j).includes(normalize(article.journal))) || GOOD_PUBLICATION_TYPES.test(article.pubTypes.join("; "))))
-    .sort((a, b) => b.score - a.score)
-    .map(({ article }) => toCandidate(article, slug, config));
+    const seen = new Set(existingNonTargeted.map(identity));
+    const pmids = await searchPmids(config.search, 30);
+    await sleep(500);
+    const articles = await fetchArticles(pmids);
+    await sleep(500);
+    const candidates = articles
+      .map(article => ({ article, score: articleScore(article, config.topic) }))
+      .filter(({ article, score }) => score >= 3 && article.abstract && !EXCLUDED_TITLE_TERMS.test(article.title) && !EXCLUDED_PUBLICATION_TYPES.test(article.pubTypes.join("; ")) && (PREFERRED_JOURNALS.some(j => normalize(article.journal).includes(normalize(j)) || normalize(j).includes(normalize(article.journal))) || GOOD_PUBLICATION_TYPES.test(article.pubTypes.join("; "))))
+      .sort((a, b) => b.score - a.score)
+      .map(({ article }) => toCandidate(article, slug, config));
 
-  const additions = [];
-  for (const candidate of candidates) {
-    const key = identity(candidate);
-    if (seen.has(key)) continue;
-    seen.add(key);
-    additions.push(candidate);
-    if (additions.length >= needed) break;
+    const additions = [];
+    for (const candidate of candidates) {
+      const key = identity(candidate);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      additions.push(candidate);
+      if (additions.length >= needed) break;
+    }
+    resource.newsAndArticles = [...existingNonTargeted, ...additions];
+    resource.resourceNotes = `${resource.resourceNotes || ""} Targeted online pull added ${additions.length} PubMed candidate(s) for current schedule review.`.trim();
+    nextResources[slug] = resource;
+    audit[slug].added = additions.map(item => ({ title: item.title, pmid: item.pmid, source: item.source }));
   }
-  resource.newsAndArticles = [...existingNonTargeted, ...additions];
-  resource.resourceNotes = `${resource.resourceNotes || ""} Targeted online pull added ${additions.length} PubMed candidate(s) for sparse News and Articles review.`.trim();
-  resources[slug] = resource;
-  audit[slug].added = additions.map(item => ({ title: item.title, pmid: item.pmid, source: item.source }));
+
+  if (write) {
+    await fs.writeFile("src/data/scheduleResources.js", buildScheduleResourcesFile(nextResources));
+    await fs.writeFile("/tmp/gihub-schedule-targeted-pull-audit.json", JSON.stringify(audit, null, 2));
+  }
+  return { resources:nextResources, audit };
 }
 
-await fs.writeFile("src/data/scheduleResources.js", buildScheduleResourcesFile(resources));
-await fs.writeFile("/tmp/gihub-schedule-targeted-pull-audit.json", JSON.stringify(audit, null, 2));
-console.log(JSON.stringify(audit, null, 2));
+async function main() {
+  const result = await populateScheduleTargetedCandidates();
+  console.log(JSON.stringify(result.audit, null, 2));
+}
+
+if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
+  await main();
+}

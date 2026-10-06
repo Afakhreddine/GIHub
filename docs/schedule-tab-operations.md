@@ -36,12 +36,13 @@ When Ali provides a lecture schedule image:
 3. For each clickable topic:
    - Select the most recent relevant guideline for each society.
    - Search `weekly.js` + `weeklyArchive.js` for matching News and Articles.
-   - If too few strong hits exist, run `node scripts/populate-schedule-targeted-candidates.mjs` or the current targeted topic pull workflow to add online PubMed/news candidates for review.
+   - Always run `npm run schedule:targeted-pull` after `src/scheduleConfig.js` is updated. The script derives its topic list from the current calendar automatically, replaces prior `targeted-online-pull` candidates for those current slugs, and writes review-only PubMed candidates to `src/data/scheduleResources.js`.
    - Pull relevant PDFs for guidelines/articles when authorized.
    - Send PDFs to AutoContent quiz generation.
    - Store quiz JSON in `src/data/scheduleResources.js`.
-4. Run `npm test`, `npm run lint`, `npm run build`, `git diff --check`.
-5. Open a GitHub PR.
+4. Close or supersede any stale open Schedule review PRs from prior calendars before sharing `/review/schedule`; otherwise the latest-PR selector can show old cards.
+5. Run `npm test`, `npm run lint`, `npm run build`, `git diff --check`.
+6. Open a GitHub PR.
 
 ## Weekly screener workflow
 
