@@ -148,7 +148,7 @@ function WeeklyPodcastPanel({ podcasts = weeklyPodcasts }) {
       </audio>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", gap:10, flexWrap:"wrap", marginTop:10 }}>
         <a href={selected.audioUrl} download style={{ color:"#8aafff", fontSize:12, fontWeight:700, textDecoration:"none" }}>Download MP3 ↧</a>
-        <span style={{ color:"#354a68", fontSize:11, fontFamily:"monospace" }}>Rolling archive: latest {podcasts.length} Weekly Update podcasts stored in-repo</span>
+        <span style={{ color:"#354a68", fontSize:11, fontFamily:"monospace" }}>Rolling archive: latest {podcasts.length} Weekly Update podcasts</span>
       </div>
     </section>
   );
