@@ -53,10 +53,34 @@ test("normalizes AutoContent quiz output into GIHub's UI-friendly quiz shape", (
   });
   assert.deepEqual(normalized[1], {
     question: "Which study result is most important?",
-    options: ["A. Lower rebleeding", "B. Higher mortality", "C. No follow-up", "D. No intervention"],
-    correct: "A",
+    options: ["A. No intervention", "B. Lower rebleeding", "C. Higher mortality", "D. No follow-up"],
+    correct: "B",
     explanation: "The trial outcome focused on reduced recurrent bleeding.",
   });
+});
+
+test("normalizes AutoContent quizzes without leaving every correct answer in option A", () => {
+  const allFirstAnswerPayload = {
+    quiz: Array.from({ length: 8 }, (_, index) => ({
+      question: `Question ${index + 1}?`,
+      answerOptions: [
+        { text: `Correct answer ${index + 1}`, isCorrect: true, rationale: `Rationale ${index + 1}.` },
+        { text: `Distractor B ${index + 1}`, isCorrect: false },
+        { text: `Distractor C ${index + 1}`, isCorrect: false },
+        { text: `Distractor D ${index + 1}`, isCorrect: false },
+      ],
+    })),
+  };
+
+  const normalized = normalizeAutoContentQuiz(allFirstAnswerPayload, { limit: 8 });
+  const correctLetters = new Set(normalized.map(item => item.correct));
+
+  assert.equal(normalized.length, 8);
+  assert.ok(correctLetters.size > 1, "correct answers should be distributed across positions");
+  for (const item of normalized) {
+    const correctOption = item.options.find(option => option.startsWith(`${item.correct}. `));
+    assert.match(correctOption, /Correct answer/, "the marked correct letter should still point to the correct option text");
+  }
 });
 
 test("applies 10-question AutoContent quizzes to schedule resources with completed status and source PDFs", () => {

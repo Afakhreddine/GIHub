@@ -18,22 +18,40 @@ function optionLetter(index) {
   return LETTERS[index] || "";
 }
 
-function normalizeOptions(item) {
+function rotateOptions(options, correctIndex, offset) {
+  if (!options.length || correctIndex < 0) {
+    return { options, correct: optionLetter(correctIndex) };
+  }
+
+  const shift = ((offset % options.length) + options.length) % options.length;
+  const rotated = options.map((_, index) => options[(index - shift + options.length) % options.length]);
+  const newCorrectIndex = (correctIndex + shift) % options.length;
+  return {
+    options: rotated.map((option, index) => `${optionLetter(index)}. ${stripOptionPrefix(option)}`),
+    correct: optionLetter(newCorrectIndex),
+  };
+}
+
+function normalizeOptions(item, itemIndex = 0) {
   if (Array.isArray(item?.answerOptions)) {
-    const options = item.answerOptions.slice(0, 4).map((option, index) => `${optionLetter(index)}. ${stripOptionPrefix(option?.text)}`);
+    const rawOptions = item.answerOptions.slice(0, 4).map(option => stripOptionPrefix(option?.text));
     const correctIndex = item.answerOptions.findIndex(option => option?.isCorrect === true);
     const correctOption = correctIndex >= 0 ? item.answerOptions[correctIndex] : null;
+    const rotated = rotateOptions(rawOptions, correctIndex, itemIndex);
     return {
-      options,
-      correct: optionLetter(correctIndex),
+      options: rotated.options,
+      correct: rotated.correct,
       explanation: String(correctOption?.rationale || item?.explanation || item?.rationale || "").trim(),
     };
   }
 
-  const rawOptions = Array.isArray(item?.options) ? item.options.slice(0, 4) : [];
+  const rawOptions = Array.isArray(item?.options) ? item.options.slice(0, 4).map(stripOptionPrefix) : [];
+  const correctLetter = String(item?.correct || item?.answer || "").trim().slice(0, 1).toUpperCase();
+  const correctIndex = LETTERS.indexOf(correctLetter);
+  const rotated = rotateOptions(rawOptions, correctIndex, itemIndex);
   return {
-    options: rawOptions.map((option, index) => `${optionLetter(index)}. ${stripOptionPrefix(option)}`),
-    correct: String(item?.correct || item?.answer || "").trim().slice(0, 1).toUpperCase(),
+    options: rotated.options,
+    correct: rotated.correct,
     explanation: String(item?.explanation || item?.rationale || "").trim(),
   };
 }
@@ -44,8 +62,8 @@ export function normalizeAutoContentQuiz(payload, options = {}) {
   if (!Array.isArray(quiz)) return [];
 
   return quiz
-    .map(item => {
-      const normalized = normalizeOptions(item);
+    .map((item, index) => {
+      const normalized = normalizeOptions(item, index);
       return {
         question: cleanQuizText(item?.question),
         options: normalized.options,

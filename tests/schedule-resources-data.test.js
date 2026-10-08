@@ -64,3 +64,12 @@ test("schedule topic quiz text is cleaned for plain-text rendering when quizzes 
     }
   }
 });
+
+test("schedule topic quizzes do not put every correct answer in the same position", () => {
+  for (const [slug, resource] of Object.entries(scheduleResources)) {
+    const quiz = resource.quiz || [];
+    if (quiz.length < 4) continue;
+    const correctLetters = new Set(quiz.map(item => item.correct));
+    assert.ok(correctLetters.size > 1, `${slug} should distribute correct answers across positions`);
+  }
+});
