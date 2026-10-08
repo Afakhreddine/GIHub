@@ -63,44 +63,6 @@ const scheduleResources = {
         "addedBy": "schedule-resource-population",
         "addedAt": "2026-09-11",
         "eventDate": "2026-09-04"
-      },
-      {
-        "section": "News and Articles",
-        "title": "Screening for Helicobacter pylori to Prevent Gastric Cancer: A Pragmatic Randomized Clinical Trial.",
-        "oneLineSummary": "Effects of screening for Helicobacter pylori on gastric cancer incidence and mortality are unknown. To evaluate the effects of an invitation to screen for H pylori on gastric cancer incidence and mortality. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
-        "doi": "10.1016/j.bpg.2015.09.009",
-        "pmid": "39348147",
-        "source": "JAMA",
-        "sourceRepository": "targeted-online-pull",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/39348147/",
-        "date": "Nov 2024",
-        "topic": "Stomach Pathology",
-        "type": "Research",
-        "relevanceScore": 10,
-        "relevanceReason": "Targeted online PubMed pull for Stomach Pathology.",
-        "status": "candidate",
-        "addedBy": "schedule-targeted-online-pull",
-        "addedAt": "2026-09-11",
-        "eventDate": "2026-09-04"
-      },
-      {
-        "section": "News and Articles",
-        "title": "Global Prevalence of Helicobacter pylori Infection and Incidence of Gastric Cancer Between 1980 and 2022.",
-        "oneLineSummary": "We aimed to assess the secular trend of the global prevalence of Helicobacter pylori (H pylori) infection in adults and children/adolescents and to show its relation to that of gastric cancer incidence. We performed a systematic review and meta-analysis to calculate overall prevalence, adjusted by multivariate meta-regression analysis. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
-        "doi": "10.1053/j.gastro.2023.12.022",
-        "pmid": "38176660",
-        "source": "Gastroenterology",
-        "sourceRepository": "targeted-online-pull",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/38176660/",
-        "date": "Apr 2024",
-        "topic": "Stomach Pathology",
-        "type": "Review",
-        "relevanceScore": 10,
-        "relevanceReason": "Targeted online PubMed pull for Stomach Pathology.",
-        "status": "candidate",
-        "addedBy": "schedule-targeted-online-pull",
-        "addedAt": "2026-09-11",
-        "eventDate": "2026-09-04"
       }
     ],
     "quiz": [
@@ -230,8 +192,8 @@ const scheduleResources = {
       "stomach-pathology.pdf"
     ],
     "fetchedAt": "2026-09-11T00:00:00.000Z",
-    "resourceStatus": "candidate-review",
-    "resourceNotes": "Initial repo-managed population from live guideline repository plus current/archived Weekly Update cards. Quiz generation remains pending source-PDF retrieval and AutoContent. Targeted online pull added 2 PubMed candidate(s) for sparse News and Articles review. Targeted online pull added curated PubMed candidate(s) for sparse News and Articles review.",
+    "resourceStatus": "approved",
+    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "quizGeneratedAt": "2026-09-16T00:10:00.000Z"
   },
   "gi-bleeding": {
@@ -276,65 +238,7 @@ const scheduleResources = {
         "status": "candidate"
       }
     ],
-    "newsAndArticles": [
-      {
-        "section": "News and Articles",
-        "title": "Standard of Care Versus Octreotide in Angiodysplasia-Related Bleeding (the OCEAN Study): A Multicenter Randomized Controlled Trial.",
-        "oneLineSummary": "Gastrointestinal angiodysplasias are vascular anomalies that may result in transfusion-dependent anemia despite endoscopic therapy. An individual patient data meta-analysis of cohort studies suggests that octreotide decreases rebleeding rates, but component studies possessed a high risk of bias. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
-        "doi": "10.1053/j.gastro.2023.12.020",
-        "pmid": "38158089",
-        "source": "Gastroenterology",
-        "sourceRepository": "targeted-online-pull",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/38158089/",
-        "date": "Apr 2024",
-        "topic": "GI Bleeding",
-        "type": "Research",
-        "relevanceScore": 10,
-        "relevanceReason": "Targeted online PubMed pull for GI Bleeding.",
-        "status": "candidate",
-        "addedBy": "schedule-targeted-online-pull",
-        "addedAt": "2026-09-11",
-        "eventDate": "2026-09-08"
-      },
-      {
-        "section": "News and Articles",
-        "title": "Tranexamic acid in upper gastrointestinal bleed in patients with cirrhosis: A randomized controlled trial.",
-        "oneLineSummary": "Patients with Child-Turcotte-Pugh class B and C cirrhosis with upper gastrointestinal bleeding (UGIB) have systemic as well as localized (in the mucosa of the esophagus and stomach) fibrinolysis. The aim of this study was to evaluate the efficacy and safety of tranexamic acid in the treatment of acute UGIB in patients with cirrhosis. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
-        "doi": "10.1097/HEP.0000000000000817",
-        "pmid": "38441903",
-        "source": "Hepatology (Baltimore, Md.)",
-        "sourceRepository": "targeted-online-pull",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/38441903/",
-        "date": "Aug 2024",
-        "topic": "GI Bleeding",
-        "type": "Research",
-        "relevanceScore": 10,
-        "relevanceReason": "Targeted online PubMed pull for GI Bleeding.",
-        "status": "candidate",
-        "addedBy": "schedule-targeted-online-pull",
-        "addedAt": "2026-09-11",
-        "eventDate": "2026-09-08"
-      },
-      {
-        "section": "News and Articles",
-        "title": "Review article: Upper gastrointestinal bleeding - review of current evidence and implications for management.",
-        "oneLineSummary": "Acute upper gastrointestinal bleeding (UGIB) is a common emergency requiring hospital-based care. Advances in care across pre-endoscopic, endoscopic and post-endoscopic phases have led to improvements in clinical outcomes. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
-        "doi": "10.1111/apt.17949",
-        "pmid": "38517201",
-        "source": "Alimentary pharmacology & therapeutics",
-        "sourceRepository": "targeted-online-pull",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/38517201/",
-        "date": "May 2024",
-        "topic": "GI Bleeding",
-        "type": "Review",
-        "relevanceScore": 10,
-        "relevanceReason": "Targeted online PubMed pull for GI Bleeding.",
-        "status": "candidate",
-        "addedBy": "schedule-targeted-online-pull",
-        "addedAt": "2026-09-11",
-        "eventDate": "2026-09-08"
-      }
-    ],
+    "newsAndArticles": [],
     "quiz": [
       {
         "question": "In the OCEAN study investigating angiodysplasia-related bleeding, what was the primary effect of octreotide long-acting release (40 mg every 28 days) on patient outcomes?",
@@ -462,8 +366,8 @@ const scheduleResources = {
       "gi-bleeding.pdf"
     ],
     "fetchedAt": "2026-09-11T00:00:00.000Z",
-    "resourceStatus": "candidate-review",
-    "resourceNotes": "Initial repo-managed population from live guideline repository plus current/archived Weekly Update cards. Quiz generation remains pending source-PDF retrieval and AutoContent. Targeted online pull added 3 PubMed candidate(s) for sparse News and Articles review. Targeted online pull added curated PubMed candidate(s) for sparse News and Articles review.",
+    "resourceStatus": "approved",
+    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "quizGeneratedAt": "2026-09-16T00:10:00.000Z"
   },
   "hypertriglyceridemia-acute-pancreatitis": {
@@ -495,65 +399,7 @@ const scheduleResources = {
         "status": "candidate"
       }
     ],
-    "newsAndArticles": [
-      {
-        "section": "News and Articles",
-        "title": "No Effect of Methylnaltrexone on Acute Pancreatitis Severity: A Multicenter Randomized Controlled Trial.",
-        "oneLineSummary": "Opioids used to manage severe pain in acute pancreatitis (AP) might exacerbate the disease through effects on gastrointestinal and immune functions. Methylnaltrexone, a peripherally acting µ-opioid receptor antagonist, may counteract these effects without changing analgesia. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
-        "doi": "10.14309/ajg.0000000000002904",
-        "pmid": "38916223",
-        "source": "The American journal of gastroenterology",
-        "sourceRepository": "targeted-online-pull",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/38916223/",
-        "date": "Nov 2024",
-        "topic": "Hypertriglyceridemia / Acute Pancreatitis",
-        "type": "Research",
-        "relevanceScore": 10,
-        "relevanceReason": "Targeted online PubMed pull for Hypertriglyceridemia / Acute Pancreatitis.",
-        "status": "candidate",
-        "addedBy": "schedule-targeted-online-pull",
-        "addedAt": "2026-09-11",
-        "eventDate": "2026-09-15"
-      },
-      {
-        "section": "News and Articles",
-        "title": "Prediction of survival in patients with infected pancreatic necrosis: a prospective cohort study.",
-        "oneLineSummary": "Infected pancreatic necrosis (IPN) is a severe complication of acute pancreatitis, with mortality rates ranging from 15 to 35%. However, limited studies exist to predict the survival of IPN patients and nomogram has never been built. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
-        "doi": "10.1097/JS9.0000000000000844",
-        "pmid": "37851523",
-        "source": "International journal of surgery (London, England)",
-        "sourceRepository": "targeted-online-pull",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/37851523/",
-        "date": "Feb 2024",
-        "topic": "Hypertriglyceridemia / Acute Pancreatitis",
-        "type": "Research",
-        "relevanceScore": 10,
-        "relevanceReason": "Targeted online PubMed pull for Hypertriglyceridemia / Acute Pancreatitis.",
-        "status": "candidate",
-        "addedBy": "schedule-targeted-online-pull",
-        "addedAt": "2026-09-11",
-        "eventDate": "2026-09-15"
-      },
-      {
-        "section": "News and Articles",
-        "title": "Predictors of Post-endoscopic Retrograde Cholangiopancreatography Pancreatitis: A Comprehensive Systematic Review and Meta-analysis.",
-        "oneLineSummary": "Pancreatitis is the most common serious adverse event associated with endoscopic retrograde cholangiopancreatography (ERCP). This meta-analysis aimed to precisely assess the risk factors for post-ERCP pancreatitis (PEP). Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
-        "doi": "10.1016/j.cgh.2024.11.014",
-        "pmid": "39694210",
-        "source": "Clinical gastroenterology and hepatology : the official clinical practice journal of the American Gastroenterological Association",
-        "sourceRepository": "targeted-online-pull",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/39694210/",
-        "date": "Oct 2025",
-        "topic": "Hypertriglyceridemia / Acute Pancreatitis",
-        "type": "Review",
-        "relevanceScore": 10,
-        "relevanceReason": "Targeted online PubMed pull for Hypertriglyceridemia / Acute Pancreatitis.",
-        "status": "candidate",
-        "addedBy": "schedule-targeted-online-pull",
-        "addedAt": "2026-09-11",
-        "eventDate": "2026-09-15"
-      }
-    ],
+    "newsAndArticles": [],
     "quiz": [
       {
         "question": "According to the 2024 ACG guidelines, which of the following is a primary indication for early endoscopic retrograde cholangiopancreatography (ERCP) in patients with biliary pancreatitis?",
@@ -681,8 +527,8 @@ const scheduleResources = {
       "hypertriglyceridemia-acute-pancreatitis.pdf"
     ],
     "fetchedAt": "2026-09-11T00:00:00.000Z",
-    "resourceStatus": "candidate-review",
-    "resourceNotes": "Initial repo-managed population from live guideline repository plus current/archived Weekly Update cards. Quiz generation remains pending source-PDF retrieval and AutoContent. Targeted online pull added 3 PubMed candidate(s) for sparse News and Articles review. Targeted online pull added curated PubMed candidate(s) for sparse News and Articles review.",
+    "resourceStatus": "approved",
+    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "quizGeneratedAt": "2026-09-16T00:10:00.000Z"
   },
   "liver-pathology": {
@@ -776,25 +622,6 @@ const scheduleResources = {
         "relevanceReason": "Matched schedule topic terms: hepatitis",
         "status": "candidate",
         "addedBy": "schedule-resource-population",
-        "addedAt": "2026-09-11",
-        "eventDate": "2026-09-18"
-      },
-      {
-        "section": "News and Articles",
-        "title": "Comparison of pharmacological therapies in metabolic dysfunction-associated steatohepatitis for fibrosis regression and MASH resolution: Systematic review and network meta-analysis.",
-        "oneLineSummary": "Metabolic dysfunction-associated steatohepatitis (MASH) is a leading cause of liver disease. With the advent of multiple therapeutic targets in late-phase clinical drug development for MASH, there is a knowledge gap to better understand the comparative efficacy of various pharmacological agents. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
-        "doi": "10.1097/HEP.0000000000001254",
-        "pmid": "39903735",
-        "source": "Hepatology (Baltimore, Md.)",
-        "sourceRepository": "targeted-online-pull",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/39903735/",
-        "date": "Dec 2025",
-        "topic": "Liver Pathology",
-        "type": "Review",
-        "relevanceScore": 10,
-        "relevanceReason": "Targeted online PubMed pull for Liver Pathology.",
-        "status": "candidate",
-        "addedBy": "schedule-targeted-online-pull",
         "addedAt": "2026-09-11",
         "eventDate": "2026-09-18"
       }
@@ -926,8 +753,8 @@ const scheduleResources = {
       "liver-pathology.pdf"
     ],
     "fetchedAt": "2026-09-11T00:00:00.000Z",
-    "resourceStatus": "candidate-review",
-    "resourceNotes": "Initial repo-managed population from live guideline repository plus current/archived Weekly Update cards. Quiz generation remains pending source-PDF retrieval and AutoContent. Targeted online pull added 1 PubMed candidate(s) for sparse News and Articles review. Targeted online pull added curated PubMed candidate(s) for sparse News and Articles review.",
+    "resourceStatus": "approved",
+    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "quizGeneratedAt": "2026-09-16T00:10:00.000Z"
   },
   "ibd": {
@@ -1027,25 +854,6 @@ const scheduleResources = {
         "relevanceReason": "Matched schedule topic terms: ibd",
         "status": "candidate",
         "addedBy": "schedule-resource-population",
-        "addedAt": "2026-09-11",
-        "eventDate": "2026-09-22"
-      },
-      {
-        "section": "News and Articles",
-        "title": "Pharmacokinetic Predictor of Infection in Patients With Inflammatory Bowel Disease Treated With Intravenous and Subcutaneous Infliximab.",
-        "oneLineSummary": "Infliximab (IFX) has significantly improved outcomes for patients with inflammatory bowel disease (IBD) but also predisposes them to infection. Preinfusion trough concentration (Ctrough) is commonly used in therapeutic drug monitoring (TDM) to optimize IFX efficacy. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
-        "doi": "10.1097/MCG.0000000000002431",
-        "pmid": "42726906",
-        "source": "Journal of clinical gastroenterology",
-        "sourceRepository": "targeted-online-pull",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/42726906/",
-        "date": "Sep 2026",
-        "topic": "IBD",
-        "type": "Research",
-        "relevanceScore": 10,
-        "relevanceReason": "Targeted online PubMed pull for IBD.",
-        "status": "candidate",
-        "addedBy": "schedule-targeted-online-pull",
         "addedAt": "2026-09-11",
         "eventDate": "2026-09-22"
       },
@@ -1215,8 +1023,8 @@ const scheduleResources = {
       "ibd.pdf"
     ],
     "fetchedAt": "2026-09-11T00:00:00.000Z",
-    "resourceStatus": "candidate-review",
-    "resourceNotes": "Initial repo-managed population from live guideline repository plus current/archived Weekly Update cards. Quiz generation remains pending source-PDF retrieval and AutoContent. Targeted online pull added 1 PubMed candidate(s) for sparse News and Articles review. Targeted online pull added curated PubMed candidate(s) for sparse News and Articles review.",
+    "resourceStatus": "approved",
+    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "quizGeneratedAt": "2026-09-16T00:10:00.000Z"
   },
   "ibd-gi-tumors-pathology": {
@@ -1485,8 +1293,8 @@ const scheduleResources = {
       "ibd-gi-tumors-pathology.pdf"
     ],
     "fetchedAt": "2026-09-11T00:00:00.000Z",
-    "resourceStatus": "candidate-review",
-    "resourceNotes": "Initial repo-managed population from live guideline repository plus current/archived Weekly Update cards. Quiz generation remains pending source-PDF retrieval and AutoContent.",
+    "resourceStatus": "approved",
+    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "quizGeneratedAt": "2026-09-16T00:10:00.000Z"
   },
   "colon-polyps-pathology": {
@@ -1617,7 +1425,7 @@ const scheduleResources = {
         "type": "Research",
         "relevanceScore": 9,
         "relevanceReason": "Targeted online PubMed pull for Colon Polyps Pathology.",
-        "status": "candidate",
+        "status": "approved",
         "addedBy": "schedule-targeted-online-pull",
         "addedAt": "2026-10-06",
         "eventDate": "2026-10-02"
@@ -1636,7 +1444,7 @@ const scheduleResources = {
         "type": "Research",
         "relevanceScore": 7,
         "relevanceReason": "Targeted online PubMed pull for Colon Polyps Pathology.",
-        "status": "candidate",
+        "status": "approved",
         "addedBy": "schedule-targeted-online-pull",
         "addedAt": "2026-10-06",
         "eventDate": "2026-10-02"
@@ -1693,9 +1501,9 @@ const scheduleResources = {
       "colon-polyps-pathology.pdf"
     ],
     "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
-    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved. Targeted online pull added 2 PubMed candidate(s) for sparse News and Articles review.",
+    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
-    "resourceStatus": "candidate-review"
+    "resourceStatus": "approved"
   },
   "appendix-and-anus-pathology": {
     "guidelines": [
@@ -1807,26 +1615,7 @@ const scheduleResources = {
         "type": "Research",
         "relevanceScore": 7,
         "relevanceReason": "Targeted online PubMed pull for Appendix and Anus Pathology.",
-        "status": "candidate",
-        "addedBy": "schedule-targeted-online-pull",
-        "addedAt": "2026-10-06",
-        "eventDate": "2026-10-16"
-      },
-      {
-        "section": "News and Articles",
-        "title": "Testing Cytological Adequacy and Insertion Depth for Anal Self-Sampling: A Pilot Intervention Study.",
-        "oneLineSummary": "Anal cancer screening consensus guidelines were released in 2024. Although anal cytology and high-risk human papillomavirus (HPV) tests are currently performed in a clinic by a healthcare provider, there is increasing interest in providing individuals with the option to collect a sample themselves. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
-        "doi": "10.1111/cyt.70129",
-        "pmid": "42834435",
-        "source": "Cytopathology : official journal of the British Society for Clinical Cytology",
-        "sourceRepository": "targeted-online-pull",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/42834435/",
-        "date": "10 2026",
-        "topic": "Appendix and Anus Pathology",
-        "type": "Research",
-        "relevanceScore": 4,
-        "relevanceReason": "Targeted online PubMed pull for Appendix and Anus Pathology.",
-        "status": "candidate",
+        "status": "approved",
         "addedBy": "schedule-targeted-online-pull",
         "addedAt": "2026-10-06",
         "eventDate": "2026-10-16"
@@ -1883,9 +1672,9 @@ const scheduleResources = {
       "appendix-and-anus-pathology.pdf"
     ],
     "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
-    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved. Targeted online pull added 2 PubMed candidate(s) for sparse News and Articles review.",
+    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
-    "resourceStatus": "candidate-review"
+    "resourceStatus": "approved"
   },
   "celiac-disease": {
     "guidelines": [
@@ -1954,44 +1743,6 @@ const scheduleResources = {
         "status": "candidate",
         "addedBy": "october-schedule-image-import",
         "addedAt": "2026-10-01"
-      },
-      {
-        "section": "News and Articles",
-        "title": "Changing clinical presentation of pediatric celiac disease over time.",
-        "oneLineSummary": "Celiac disease (CD), often associated with malabsorption, presents with a wide spectrum of gastrointestinal and extra-intestinal manifestations. It was aimed to investigate changes in the clinical presentation of CD in children over a 16-year period and to assess whether clinical forms (classical, non-classical and asymptomatic) vary according to age, sex, and histopathological severity. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
-        "doi": "10.1186/s12876-026-05313-3",
-        "pmid": "42827237",
-        "source": "BMC gastroenterology",
-        "sourceRepository": "targeted-online-pull",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/42827237/",
-        "date": "10 2026",
-        "topic": "Celiac Disease",
-        "type": "Research",
-        "relevanceScore": 9,
-        "relevanceReason": "Targeted online PubMed pull for Celiac Disease.",
-        "status": "candidate",
-        "addedBy": "schedule-targeted-online-pull",
-        "addedAt": "2026-10-06",
-        "eventDate": "2026-10-20"
-      },
-      {
-        "section": "News and Articles",
-        "title": "Demographic Profile and Clinical Presentation of Celiac Disease in the Pakistani Population: A Systematic Review and Meta-analysis.",
-        "oneLineSummary": "Celiac disease (CD) is an increasingly recognized autoimmune enteropathy triggered by gluten ingestion. While its global prevalence is well-documented, data from South Asia, particularly Pakistan, remain fragmented. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
-        "doi": "10.5005/jp-journals-10018-1505",
-        "pmid": "42798675",
-        "source": "Euroasian journal of hepato-gastroenterology",
-        "sourceRepository": "targeted-online-pull",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/42798675/",
-        "date": "09 2026",
-        "topic": "Celiac Disease",
-        "type": "Research",
-        "relevanceScore": 9,
-        "relevanceReason": "Targeted online PubMed pull for Celiac Disease.",
-        "status": "candidate",
-        "addedBy": "schedule-targeted-online-pull",
-        "addedAt": "2026-10-06",
-        "eventDate": "2026-10-20"
       }
     ],
     "quiz": [
@@ -2045,9 +1796,9 @@ const scheduleResources = {
       "celiac-disease.pdf"
     ],
     "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
-    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved. Targeted online pull added 2 PubMed candidate(s) for sparse News and Articles review.",
+    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
-    "resourceStatus": "candidate-review"
+    "resourceStatus": "approved"
   },
   "small-intestine-pathology": {
     "guidelines": [
@@ -2126,44 +1877,6 @@ const scheduleResources = {
         "status": "candidate",
         "addedBy": "october-schedule-image-import",
         "addedAt": "2026-10-01"
-      },
-      {
-        "section": "News and Articles",
-        "title": "Endoscopic Evaluation and Management of Diversion Pouchitis and Strictures: In Comparison With Strictures in Nondiverted Pouches.",
-        "oneLineSummary": "Postoperative complications after ileal pouch-anal anastomosis are common and may lead to pouch failure requiring long-standing fecal diversion. Patients with diverted pouches can develop diversion pouchitis and strictures; however, the endoscopic features and management of these conditions remain poorly characterized. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
-        "doi": "10.1016/j.gastha.2026.101103",
-        "pmid": "42824473",
-        "source": "Gastro hep advances",
-        "sourceRepository": "targeted-online-pull",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/42824473/",
-        "date": "10 2026",
-        "topic": "Small Intestine Pathology",
-        "type": "Research",
-        "relevanceScore": 7,
-        "relevanceReason": "Targeted online PubMed pull for Small Intestine Pathology.",
-        "status": "candidate",
-        "addedBy": "schedule-targeted-online-pull",
-        "addedAt": "2026-10-06",
-        "eventDate": "2026-10-23"
-      },
-      {
-        "section": "News and Articles",
-        "title": "Clinical Spectrum, Genetic Profile, and Genotype-Phenotype Correlations in Microvillus Inclusion Disease: A Systematic Review.",
-        "oneLineSummary": "Microvillus inclusion disease (MVID) is a rare congenital enteropathy caused by defects in intestinal epithelial apical trafficking and polarity. Although its genetic basis is well established, the clinical spectrum and genotype-phenotype correlations remain incompletely defined. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
-        "doi": "10.1002/ajmg.a.70314",
-        "pmid": "42834355",
-        "source": "American journal of medical genetics. Part A",
-        "sourceRepository": "targeted-online-pull",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/42834355/",
-        "date": "10 2026",
-        "topic": "Small Intestine Pathology",
-        "type": "Research",
-        "relevanceScore": 4,
-        "relevanceReason": "Targeted online PubMed pull for Small Intestine Pathology.",
-        "status": "candidate",
-        "addedBy": "schedule-targeted-online-pull",
-        "addedAt": "2026-10-06",
-        "eventDate": "2026-10-23"
       }
     ],
     "quiz": [
@@ -2217,9 +1930,9 @@ const scheduleResources = {
       "small-intestine-pathology.pdf"
     ],
     "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
-    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved. Targeted online pull added 2 PubMed candidate(s) for sparse News and Articles review.",
+    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
-    "resourceStatus": "candidate-review"
+    "resourceStatus": "approved"
   },
   "ai-in-gi-research": {
     "guidelines": [
@@ -2309,25 +2022,6 @@ const scheduleResources = {
       },
       {
         "section": "News and Articles",
-        "title": "Artificial Intelligence in Endohepatology: Toward an Intelligent One-Stop Shop for Liver-Directed Endoscopy.",
-        "oneLineSummary": "Endohepatology (the implementation of contemporary advanced endoscopy in hepatology) has reached a point where endoscopic ultrasound (EUS)-guided liver biopsy, portal pressure gradient measurement, parenchymal elastography, and variceal screening and therapy can be integrated into a single procedural session of liver-directed endoscopy. Concurrently, artificial intelligence (AI) has revolutionized luminal endoscopy and is advancing rapidly across hepatology imaging, digital pathology, and outcome prediction, yet its translation into the liver-targeted endoscopic workflow has never been synthesized into a coherent domain. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
-        "doi": "10.1111/jgh.70757",
-        "pmid": "42758018",
-        "source": "Journal of gastroenterology and hepatology",
-        "sourceRepository": "targeted-online-pull",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/42758018/",
-        "date": "09 2026",
-        "topic": "AI in GI Research",
-        "type": "Research",
-        "relevanceScore": 7,
-        "relevanceReason": "Targeted online PubMed pull for AI in GI Research.",
-        "status": "candidate",
-        "addedBy": "schedule-targeted-online-pull",
-        "addedAt": "2026-10-06",
-        "eventDate": "2026-10-27"
-      },
-      {
-        "section": "News and Articles",
         "title": "The yield of artificial intelligence (GI genius) in Lynch syndrome -A randomized tandem-colonoscopy trial.",
         "oneLineSummary": "Artificial intelligence (AI)- assisted colonoscopy has been shown to increase the adenoma-detection rate in the general population but there is a paucity of data on its benefit in Lynch syndrome. We aimed to investigate the incremental detection rate of polyps using AI- assisted colonoscopy compared with high-definition white-light endoscopy (HD-WLE). Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
         "doi": "10.1016/j.dld.2026.08.020",
@@ -2340,7 +2034,7 @@ const scheduleResources = {
         "type": "Research",
         "relevanceScore": 7,
         "relevanceReason": "Targeted online PubMed pull for AI in GI Research.",
-        "status": "candidate",
+        "status": "approved",
         "addedBy": "schedule-targeted-online-pull",
         "addedAt": "2026-10-06",
         "eventDate": "2026-10-27"
@@ -2397,9 +2091,9 @@ const scheduleResources = {
       "ai-in-gi-research.pdf"
     ],
     "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
-    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved. Targeted online pull added 2 PubMed candidate(s) for sparse News and Articles review.",
+    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
-    "resourceStatus": "candidate-review"
+    "resourceStatus": "approved"
   },
   "colon-pathology": {
     "guidelines": [
@@ -2547,26 +2241,7 @@ const scheduleResources = {
         "type": "Research",
         "relevanceScore": 9,
         "relevanceReason": "Targeted online PubMed pull for Colon Pathology.",
-        "status": "candidate",
-        "addedBy": "schedule-targeted-online-pull",
-        "addedAt": "2026-10-06",
-        "eventDate": "2026-10-30"
-      },
-      {
-        "section": "News and Articles",
-        "title": "Baseline characteristics of participants recruited into the COLO-COHORT study: a UK-wide resource for colorectal cancer prevention.",
-        "oneLineSummary": "To describe the design, recruitment, and baseline characteristics of the first phase of COLO-COHORT and to establish this population as a resource for colorectal cancer (CRC) prevention research. COLO-COHORT is a prospective, multicentre observational study recruiting adults undergoing colonoscopy through screening and routine National Health Service referral pathways within a 32-site UK network. Source pulled from PubMed for Schedule review; human review recommended before final teaching use.",
-        "doi": "10.1136/bmjgast-2026-002421",
-        "pmid": "42823104",
-        "source": "BMJ open gastroenterology",
-        "sourceRepository": "targeted-online-pull",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/42823104/",
-        "date": "10 2026",
-        "topic": "Colon Pathology",
-        "type": "Research",
-        "relevanceScore": 8,
-        "relevanceReason": "Targeted online PubMed pull for Colon Pathology.",
-        "status": "candidate",
+        "status": "approved",
         "addedBy": "schedule-targeted-online-pull",
         "addedAt": "2026-10-06",
         "eventDate": "2026-10-30"
@@ -2623,9 +2298,9 @@ const scheduleResources = {
       "colon-pathology.pdf"
     ],
     "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
-    "resourceNotes": "October schedule resource bundle includes approved guideline/reference material and a repo-managed interactive topic quiz. Candidate News and Articles remain in the review workflow and are filtered from the public Schedule page until approved. Targeted online pull added 2 PubMed candidate(s) for sparse News and Articles review.",
+    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
-    "resourceStatus": "candidate-review"
+    "resourceStatus": "approved"
   }
 };
 
