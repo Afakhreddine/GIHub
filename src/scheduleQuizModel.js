@@ -18,29 +18,29 @@ function optionLetter(index) {
   return LETTERS[index] || "";
 }
 
-function rotateOptions(options, correctIndex, offset) {
-  if (!options.length || correctIndex < 0) {
-    return { options, correct: optionLetter(correctIndex) };
+function shuffleOptions(options, correctIndex, rng = Math.random) {
+  const entries = options.map((text, index) => ({ text, wasCorrect: index === correctIndex }));
+  for (let index = entries.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(rng() * (index + 1));
+    [entries[index], entries[swapIndex]] = [entries[swapIndex], entries[index]];
   }
 
-  const shift = ((offset % options.length) + options.length) % options.length;
-  const rotated = options.map((_, index) => options[(index - shift + options.length) % options.length]);
-  const newCorrectIndex = (correctIndex + shift) % options.length;
+  const newCorrectIndex = entries.findIndex(entry => entry.wasCorrect);
   return {
-    options: rotated.map((option, index) => `${optionLetter(index)}. ${stripOptionPrefix(option)}`),
+    options: entries.map((entry, index) => `${optionLetter(index)}. ${stripOptionPrefix(entry.text)}`),
     correct: optionLetter(newCorrectIndex),
   };
 }
 
-function normalizeOptions(item, itemIndex = 0) {
+function normalizeOptions(item, rng = Math.random) {
   if (Array.isArray(item?.answerOptions)) {
     const rawOptions = item.answerOptions.slice(0, 4).map(option => stripOptionPrefix(option?.text));
     const correctIndex = item.answerOptions.findIndex(option => option?.isCorrect === true);
     const correctOption = correctIndex >= 0 ? item.answerOptions[correctIndex] : null;
-    const rotated = rotateOptions(rawOptions, correctIndex, itemIndex);
+    const shuffled = shuffleOptions(rawOptions, correctIndex, rng);
     return {
-      options: rotated.options,
-      correct: rotated.correct,
+      options: shuffled.options,
+      correct: shuffled.correct,
       explanation: String(correctOption?.rationale || item?.explanation || item?.rationale || "").trim(),
     };
   }
@@ -48,22 +48,23 @@ function normalizeOptions(item, itemIndex = 0) {
   const rawOptions = Array.isArray(item?.options) ? item.options.slice(0, 4).map(stripOptionPrefix) : [];
   const correctLetter = String(item?.correct || item?.answer || "").trim().slice(0, 1).toUpperCase();
   const correctIndex = LETTERS.indexOf(correctLetter);
-  const rotated = rotateOptions(rawOptions, correctIndex, itemIndex);
+  const shuffled = shuffleOptions(rawOptions, correctIndex, rng);
   return {
-    options: rotated.options,
-    correct: rotated.correct,
+    options: shuffled.options,
+    correct: shuffled.correct,
     explanation: String(item?.explanation || item?.rationale || "").trim(),
   };
 }
 
 export function normalizeAutoContentQuiz(payload, options = {}) {
   const limit = options.limit ?? 10;
+  const rng = options.rng || Math.random;
   const quiz = Array.isArray(payload) ? payload : payload?.quiz;
   if (!Array.isArray(quiz)) return [];
 
   return quiz
-    .map((item, index) => {
-      const normalized = normalizeOptions(item, index);
+    .map(item => {
+      const normalized = normalizeOptions(item, rng);
       return {
         question: cleanQuizText(item?.question),
         options: normalized.options,

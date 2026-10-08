@@ -70,9 +70,9 @@ const scheduleResources = {
         "question": "According to the 2024 ACG guidelines, which of the following is the preferred empiric first-line treatment regimen for a patient with H. pylori infection in North America when antibiotic susceptibility is unknown?",
         "options": [
           "A. Bismuth quadruple therapy (BQT) for 14 days",
-          "B. Clarithromycin triple therapy for 10 days",
-          "C. Levofloxacin triple therapy for 14 days",
-          "D. Bismuth quadruple therapy (BQT) for 7 days"
+          "B. Bismuth quadruple therapy (BQT) for 7 days",
+          "C. Clarithromycin triple therapy for 10 days",
+          "D. Levofloxacin triple therapy for 14 days"
         ],
         "correct": "A",
         "explanation": "Current guidelines prioritize 14-day bismuth quadruple therapy as the preferred empiric choice when susceptibility data are unavailable.",
@@ -81,24 +81,24 @@ const scheduleResources = {
       {
         "question": "A patient is found to have incidental Gastric Intestinal Metaplasia (GIM) during an upper endoscopy for reflux. According to the AGA clinical practice guidelines, what is the next most appropriate management step?",
         "options": [
-          "A. Initiating high-dose PPI therapy and repeat biopsy in 6 months",
-          "B. Testing for and eradication of H. pylori",
-          "C. Scheduling a surveillance endoscopy in 1 year",
-          "D. Immediate referral for endoscopic submucosal dissection"
+          "A. Scheduling a surveillance endoscopy in 1 year",
+          "B. Initiating high-dose PPI therapy and repeat biopsy in 6 months",
+          "C. Immediate referral for endoscopic submucosal dissection",
+          "D. Testing for and eradication of H. pylori"
         ],
-        "correct": "B",
+        "correct": "D",
         "explanation": "The AGA guideline strongly recommends H. pylori testing and treatment in patients with GIM to reduce the risk of progression.",
         "hint": "The guideline focuses on addressing the primary treatable risk factor associated with the development of metaplasia."
       },
       {
         "question": "In a patient who has already failed an 'optimized' 14-day bismuth quadruple therapy (BQT) for H. pylori, what is the preferred empiric alternative salvage regimen according to the 2024 ACG guidelines?",
         "options": [
-          "A. Sequential therapy for 10 days",
-          "B. Levofloxacin quadruple therapy for 14 days",
-          "C. Rifabutin triple therapy for 14 days",
-          "D. Standard clarithromycin triple therapy for 14 days"
+          "A. Levofloxacin quadruple therapy for 14 days",
+          "B. Standard clarithromycin triple therapy for 14 days",
+          "C. Sequential therapy for 10 days",
+          "D. Rifabutin triple therapy for 14 days"
         ],
-        "correct": "C",
+        "correct": "D",
         "explanation": "Rifabutin triple therapy is recommended as a suitable empiric salvage option for patients who have already failed an optimized BQT.",
         "hint": "Identify the antibiotic that is frequently used in multi-drug resistant cases and does not share resistance pathways with clarithromycin."
       },
@@ -106,11 +106,11 @@ const scheduleResources = {
         "question": "A recent meta-analysis of global H. pylori prevalence between 1980 and 2022 found that while adult prevalence has significantly declined, which demographic has not seen a significant reduction in infection rates?",
         "options": [
           "A. Adults in the Western Pacific region",
-          "B. Adults in the Southeast Asian region",
-          "C. Females in the African region",
-          "D. Children and adolescents"
+          "B. Females in the African region",
+          "C. Children and adolescents",
+          "D. Adults in the Southeast Asian region"
         ],
-        "correct": "D",
+        "correct": "C",
         "explanation": "The study highlights that while adult prevalence dropped from 52.6% to 43.9%, prevalence in children remained high at 35.1% without significant decline.",
         "hint": "Look for the younger age group where public health measures have yet to show a statistical impact on infection trends."
       },
@@ -119,8 +119,8 @@ const scheduleResources = {
         "options": [
           "A. There was no significant difference in gastric cancer incidence rates.",
           "B. It significantly reduced gastric cancer mortality but not incidence.",
-          "C. It significantly reduced both incidence and mortality.",
-          "D. It increased gastric cancer incidence due to over-diagnosis."
+          "C. It increased gastric cancer incidence due to over-diagnosis.",
+          "D. It significantly reduced both incidence and mortality."
         ],
         "correct": "A",
         "explanation": "In the initial analysis of the invited individuals, incidence rates were 0.032% vs 0.037%, which was not statistically significant (P = .23).",
@@ -131,8 +131,8 @@ const scheduleResources = {
         "options": [
           "A. No significant association with gastric cancer",
           "B. More than double the risk (HR 2.45)",
-          "C. A slight increase in risk (HR 1.25)",
-          "D. A fourfold increase in risk (HR 4.04)"
+          "C. A fourfold increase in risk (HR 4.04)",
+          "D. A slight increase in risk (HR 1.25)"
         ],
         "correct": "B",
         "explanation": "Daily consumption of sugary drinks was linked to a Hazard Ratio of 2.45, indicating a more than twofold increase in risk.",
@@ -141,12 +141,12 @@ const scheduleResources = {
       {
         "question": "For a treatment-naive patient with H. pylori infection who does NOT have a penicillin allergy, which of the following is considered a suitable empiric alternative to bismuth quadruple therapy?",
         "options": [
-          "A. Doxycycline-based quadruple therapy for 10 days",
-          "B. High-dose PPI monotherapy for 28 days",
-          "C. Potassium-competitive acid blocker (P-CAB) dual therapy for 14 days",
-          "D. Metronidazole-based triple therapy for 7 days"
+          "A. Metronidazole-based triple therapy for 7 days",
+          "B. Potassium-competitive acid blocker (P-CAB) dual therapy for 14 days",
+          "C. High-dose PPI monotherapy for 28 days",
+          "D. Doxycycline-based quadruple therapy for 10 days"
         ],
-        "correct": "C",
+        "correct": "B",
         "explanation": "P-CAB dual therapy for 14 days is recognized as a suitable empiric alternative in patients without a penicillin allergy.",
         "hint": "This alternative uses a newer class of acid suppressants combined with only one antibiotic."
       },
@@ -165,24 +165,24 @@ const scheduleResources = {
       {
         "question": "According to the ACG clinical guideline, when is it appropriate to use salvage regimens containing clarithromycin or levofloxacin for persistent H. pylori infection?",
         "options": [
-          "A. Only if antibiotic susceptibility is confirmed",
-          "B. Whenever bismuth quadruple therapy has failed twice",
-          "C. As the standard empiric second-line choice in North America",
-          "D. Only in patients with a documented penicillin allergy"
+          "A. Whenever bismuth quadruple therapy has failed twice",
+          "B. As the standard empiric second-line choice in North America",
+          "C. Only in patients with a documented penicillin allergy",
+          "D. Only if antibiotic susceptibility is confirmed"
         ],
-        "correct": "A",
+        "correct": "D",
         "explanation": "Due to high resistance rates, these specific antibiotics should not be used empiricially in salvage therapy without sensitivity testing.",
         "hint": "Think about the role of antimicrobial stewardship and the impact of pre-existing resistance on treatment failure."
       },
       {
         "question": "The AGA guidelines on Gastric Intestinal Metaplasia (GIM) apply specifically to which of the following clinical scenarios?",
         "options": [
-          "A. Patients presenting with hematemesis and visible gastric ulcers",
-          "B. Adults with GIM identified incidentally on upper endoscopy",
-          "C. Pediatric patients with a family history of gastric cancer",
-          "D. Patients with known hereditary diffuse gastric cancer syndromes"
+          "A. Pediatric patients with a family history of gastric cancer",
+          "B. Patients with known hereditary diffuse gastric cancer syndromes",
+          "C. Adults with GIM identified incidentally on upper endoscopy",
+          "D. Patients presenting with hematemesis and visible gastric ulcers"
         ],
-        "correct": "B",
+        "correct": "C",
         "explanation": "The AGA guideline is specifically framed for the management of GIM that is detected during endoscopies performed for other reasons.",
         "hint": "The scope of the guideline is defined by how the pathology is typically discovered in routine clinical practice."
       }
@@ -243,22 +243,22 @@ const scheduleResources = {
       {
         "question": "In the OCEAN study investigating angiodysplasia-related bleeding, what was the primary effect of octreotide long-acting release (40 mg every 28 days) on patient outcomes?",
         "options": [
-          "A. It significantly reduced the mean number of transfusion units compared to standard care.",
-          "B. It eliminated the need for any subsequent endoscopic procedures for one year.",
-          "C. It was only effective in patients with a baseline requirement of more than 20 RBC units.",
+          "A. It eliminated the need for any subsequent endoscopic procedures for one year.",
+          "B. It was only effective in patients with a baseline requirement of more than 20 RBC units.",
+          "C. It significantly reduced the mean number of transfusion units compared to standard care.",
           "D. It significantly improved 1-year survival rates compared to endoscopic therapy alone."
         ],
-        "correct": "A",
+        "correct": "C",
         "explanation": "The study demonstrated a mean reduction of 10.2 transfusion units in the octreotide group compared to the standard of care group.",
         "hint": "Focus on the primary outcome measure related to the total number of red blood cell and iron supplements needed."
       },
       {
         "question": "According to the 2024 randomized controlled trial published in Hepatology, how did tranexamic acid (TXA) affect patients with advanced cirrhosis (Child-Turcotte-Pugh B or C) presenting with UGIB?",
         "options": [
-          "A. It was only effective in patients with Child-Turcotte-Pugh class A cirrhosis.",
-          "B. It significantly reduced the 5-day and 6-week mortality rates.",
+          "A. It significantly reduced the 5-day and 6-week mortality rates.",
+          "B. It increased the risk of systemic fibrinolysis and subsequent thromboembolic events.",
           "C. It reduced failure to control bleeding by day 5, specifically by preventing bleeding from EVL sites.",
-          "D. It increased the risk of systemic fibrinolysis and subsequent thromboembolic events."
+          "D. It was only effective in patients with Child-Turcotte-Pugh class A cirrhosis."
         ],
         "correct": "C",
         "explanation": "TXA was found to significantly lower 5-day treatment failure, largely attributed to its effect on esophageal endoscopic variceal ligation sites.",
@@ -267,24 +267,24 @@ const scheduleResources = {
       {
         "question": "Which pre-endoscopic pharmacologic intervention is recommended in recent reviews to improve visibility during an endoscopy for acute upper gastrointestinal bleeding (UGIB)?",
         "options": [
-          "A. High-dose Vitamin K",
+          "A. Erythromycin",
           "B. Activated charcoal",
-          "C. Erythromycin",
-          "D. Tranexamic acid"
+          "C. Tranexamic acid",
+          "D. High-dose Vitamin K"
         ],
-        "correct": "C",
+        "correct": "A",
         "explanation": "Erythromycin is a prokinetic agent used pre-endoscopically to clear the stomach of blood and clots, thereby improving the diagnostic yield.",
         "hint": "This medication is used for its prokinetic properties rather than its effect on coagulation."
       },
       {
         "question": "Based on AASLD practice guidance, which procedure is emphasized for the management of esophageal, gastric, and ectopic variceal hemorrhage when medical/endoscopic therapy is insufficient?",
         "options": [
-          "A. Transjugular intrahepatic portosystemic shunt (TIPS)",
-          "B. Splenectomy",
-          "C. Routine balloon tamponade for all patients",
-          "D. Surgical portacaval shunt"
+          "A. Routine balloon tamponade for all patients",
+          "B. Surgical portacaval shunt",
+          "C. Splenectomy",
+          "D. Transjugular intrahepatic portosystemic shunt (TIPS)"
         ],
-        "correct": "A",
+        "correct": "D",
         "explanation": "TIPS is a well-established intervention for treating the complications of portal hypertension, including refractory variceal bleeding.",
         "hint": "Think of a percutaneous vascular procedure that creates a low-resistance channel between the portal and systemic circulation."
       },
@@ -292,8 +292,8 @@ const scheduleResources = {
         "question": "For a patient with peptic ulcer disease (PUD) exhibiting high-risk stigmata, which endoscopic therapy is recommended by current evidence-based management reviews?",
         "options": [
           "A. Over-the-scope clips (OTSCs) and TC-325 powder spray",
-          "B. Epinephrine injection alone",
-          "C. Argon Plasma Coagulation (APC) as the sole therapy",
+          "B. Argon Plasma Coagulation (APC) as the sole therapy",
+          "C. Epinephrine injection alone",
           "D. Barium coating of the ulcer bed"
         ],
         "correct": "A",
@@ -303,10 +303,10 @@ const scheduleResources = {
       {
         "question": "What is the recommended restrictive red blood cell (RBC) transfusion threshold for most patients with UGIB, provided they do not have significant cardiovascular disease?",
         "options": [
-          "A. Hemoglobin < 12 g/dL",
+          "A. Hematocrit < 35%",
           "B. Hemoglobin < 7 g/dL",
-          "C. Hemoglobin < 10 g/dL",
-          "D. Hematocrit < 35%"
+          "C. Hemoglobin < 12 g/dL",
+          "D. Hemoglobin < 10 g/dL"
         ],
         "correct": "B",
         "explanation": "A restrictive transfusion policy, typically using a threshold of 7 g/dL, is recommended to improve outcomes in UGIB.",
@@ -315,48 +315,48 @@ const scheduleResources = {
       {
         "question": "In the context of post-endoscopic management, how should suspected rebleeding in a high-risk PUD patient initially be managed?",
         "options": [
-          "A. Emergency surgical gastrectomy",
-          "B. Increasing the IV PPI dose without further visualization",
-          "C. Immediate referral for arterial embolization",
-          "D. Repeat endoscopy"
+          "A. Repeat endoscopy",
+          "B. Emergency surgical gastrectomy",
+          "C. Increasing the IV PPI dose without further visualization",
+          "D. Immediate referral for arterial embolization"
         ],
-        "correct": "D",
+        "correct": "A",
         "explanation": "Current management reviews suggest that rebleeding in high-risk PUD should initially be evaluated with a repeat endoscopic look.",
         "hint": "The first step for recurrent bleeding is usually the same modality used for the initial diagnosis."
       },
       {
         "question": "Which of the following describes the ASGE's approach to creating guidelines like the one for non-variceal upper GI bleeding?",
         "options": [
-          "A. They use the GRADE methodology to assess the quality of evidence and strength of recommendations.",
+          "A. Recommendations are based strictly on expert opinion without literature review.",
           "B. Guidelines serve as a legally binding substitute for a physician's individual opinion.",
           "C. Guidelines are updated every 10 years regardless of new evidence.",
-          "D. Recommendations are based strictly on expert opinion without literature review."
+          "D. They use the GRADE methodology to assess the quality of evidence and strength of recommendations."
         ],
-        "correct": "A",
+        "correct": "D",
         "explanation": "The ASGE utilizes the Grading of Recommendation Assessment, Development and Evaluation (GRADE) framework for its evidence-based guidelines.",
         "hint": "Recall the acronym for the standard system used to rate the certainty of evidence in clinical practice guidelines."
       },
       {
         "question": "Regarding patients with cirrhosis and UGIB, what additional pre-endoscopic therapies are recommended beyond standard PPI and prokinetics?",
         "options": [
-          "A. Prophylactic antibiotics and vasoactive medications",
-          "B. Oral anticoagulation to prevent portal vein thrombosis",
-          "C. High-volume saline resuscitation to reach a Hemoglobin of 12 g/dL",
+          "A. Oral anticoagulation to prevent portal vein thrombosis",
+          "B. High-volume saline resuscitation to reach a Hemoglobin of 12 g/dL",
+          "C. Prophylactic antibiotics and vasoactive medications",
           "D. Routine placement of a Nasogastric (NG) tube for gastric lavage"
         ],
-        "correct": "A",
+        "correct": "C",
         "explanation": "These interventions are critical in cirrhotics to reduce the risk of infection and lower portal pressure during an acute bleed.",
         "hint": "Think about the specific complications of liver disease, such as spontaneous bacterial peritonitis and elevated portal pressures."
       },
       {
         "question": "What did the 1995 NIH conference conclude regarding the use of TIPS compared to medical or surgical therapy?",
         "options": [
-          "A. Surgical shunts were recommended over TIPS for all portal hypertension complications.",
-          "B. TIPS was ineffective for acute control of variceal bleeding.",
-          "C. It was unclear exactly when TIPS should be used relative to other therapies.",
-          "D. TIPS was definitively superior to large volume paracentesis for all forms of ascites."
+          "A. TIPS was ineffective for acute control of variceal bleeding.",
+          "B. TIPS was definitively superior to large volume paracentesis for all forms of ascites.",
+          "C. Surgical shunts were recommended over TIPS for all portal hypertension complications.",
+          "D. It was unclear exactly when TIPS should be used relative to other therapies."
         ],
-        "correct": "C",
+        "correct": "D",
         "explanation": "While effective, the optimal timing and selection of patients compared to medical or surgical options remained uncertain at that time.",
         "hint": "The conference acknowledged the efficacy of the procedure but noted a lack of clear comparative guidelines for patient selection."
       }
@@ -404,48 +404,48 @@ const scheduleResources = {
       {
         "question": "According to the 2024 ACG guidelines, which of the following is a primary indication for early endoscopic retrograde cholangiopancreatography (ERCP) in patients with biliary pancreatitis?",
         "options": [
-          "A. All patients with suspected gallstone-induced pancreatitis to prevent recurrence",
-          "B. Cases of biliary pancreatitis complicated by cholangitis",
-          "C. Any patient with a serum lipase level greater than three times the normal limit",
-          "D. Only patients who have already undergone a cholecystectomy"
+          "A. Any patient with a serum lipase level greater than three times the normal limit",
+          "B. Only patients who have already undergone a cholecystectomy",
+          "C. Cases of biliary pancreatitis complicated by cholangitis",
+          "D. All patients with suspected gallstone-induced pancreatitis to prevent recurrence"
         ],
-        "correct": "B",
+        "correct": "C",
         "explanation": "Clinical guidelines specify that early ERCP is necessary when biliary pancreatitis is complicated by an infection of the bile duct.",
         "hint": "Consider the specific clinical complication that often requires urgent biliary decompression."
       },
       {
         "question": "In the Danish multicenter randomized controlled trial regarding methylnaltrexone in acute pancreatitis, what was the primary finding concerning the Pancreatitis Activity Scoring System (PASS) score at 48 hours?",
         "options": [
-          "A. The PASS score was only reduced in patients with existing opioid-induced constipation",
+          "A. There was no significant difference in the PASS score between the groups",
           "B. Methylnaltrexone significantly reduced the PASS score compared to placebo",
-          "C. The PASS score was significantly higher in the methylnaltrexone group, suggesting harm",
-          "D. There was no significant difference in the PASS score between the groups"
+          "C. The PASS score was only reduced in patients with existing opioid-induced constipation",
+          "D. The PASS score was significantly higher in the methylnaltrexone group, suggesting harm"
         ],
-        "correct": "D",
+        "correct": "A",
         "explanation": "The trial concluded that methylnaltrexone treatment did not achieve superiority over placebo for reducing disease severity.",
         "hint": "Think about whether the peripherally acting \\mu-opioid receptor antagonist successfully altered the trajectory of the disease."
       },
       {
         "question": "A prospective cohort study on infected pancreatic necrosis (IPN) identified several predictors of mortality. Which of the following factors was included in the five-predictor logistic regression nomogram?",
         "options": [
-          "A. Time from onset to first intervention",
-          "B. Gender of the patient",
-          "C. Serum amylase level at the time of diagnosis",
-          "D. Body Mass Index (BMI)"
+          "A. Gender of the patient",
+          "B. Body Mass Index (BMI)",
+          "C. Time from onset to first intervention",
+          "D. Serum amylase level at the time of diagnosis"
         ],
-        "correct": "A",
+        "correct": "C",
         "explanation": "This factor, along with age and organ failure metrics, was found to have a significant non-linear relationship with mortality.",
         "hint": "Focus on factors related to the clinical timeline and the severity of the inflammatory complications."
       },
       {
         "question": "The ACG 2024 guidelines address the role of nutrition in acute pancreatitis. What is the current recommendation regarding refeeding in these patients?",
         "options": [
-          "A. Parenteral nutrition is preferred over oral or enteral routes in the first 48 hours",
-          "B. Early refeeding is safe and important in preventing complications",
-          "C. Refeeding should only begin once the patient is entirely pain-free without analgesics",
-          "D. Patients should remain NPO for at least 72 hours to allow the pancreas to 'rest'"
+          "A. Early refeeding is safe and important in preventing complications",
+          "B. Patients should remain NPO for at least 72 hours to allow the pancreas to 'rest'",
+          "C. Parenteral nutrition is preferred over oral or enteral routes in the first 48 hours",
+          "D. Refeeding should only begin once the patient is entirely pain-free without analgesics"
         ],
-        "correct": "B",
+        "correct": "A",
         "explanation": "The guidelines emphasize the safety and importance of early refeeding as a strategy to improve patient outcomes.",
         "hint": "Reflect on how early intervention might benefit the integrity of the gastrointestinal system."
       },
@@ -453,20 +453,20 @@ const scheduleResources = {
         "question": "Regarding the survival of patients with infected pancreatic necrosis (IPN), the 'conditional survival' (CS) analysis indicated that:",
         "options": [
           "A. The risk of death increases the longer a patient survives past 30 days",
-          "B. Survival rates remain stagnant regardless of the duration of stay",
-          "C. Real-time survival improves gradually since diagnosis",
-          "D. Most deaths occur after 60 days of hospitalization"
+          "B. Most deaths occur after 60 days of hospitalization",
+          "C. Survival rates remain stagnant regardless of the duration of stay",
+          "D. Real-time survival improves gradually since diagnosis"
         ],
-        "correct": "C",
+        "correct": "D",
         "explanation": "The study demonstrated that 90-day survival rates increased from 0.778 at baseline to over 0.99 for those surviving 75 days.",
         "hint": "Think about the trend of survival probability for a patient who has already successfully navigated the first few weeks of the illness."
       },
       {
         "question": "In the study of methylnaltrexone for acute pancreatitis, how did the treatment affect morphine equivalent doses and pain scores at 48 hours?",
         "options": [
-          "A. It allowed for a 50% reduction in opioid requirements due to synergistic effects",
-          "B. It significantly reduced the need for opioids by enhancing endogenous analgesia",
-          "C. It increased pain interference due to the blockade of peripheral receptors",
+          "A. It increased pain interference due to the blockade of peripheral receptors",
+          "B. It allowed for a 50% reduction in opioid requirements due to synergistic effects",
+          "C. It significantly reduced the need for opioids by enhancing endogenous analgesia",
           "D. There were no differences between the methylnaltrexone and placebo groups in pain severity or opioid use"
         ],
         "correct": "D",
@@ -476,9 +476,9 @@ const scheduleResources = {
       {
         "question": "The updated ASGE guideline on the management of benign pancreatic disease specifically addresses the endoscopic management of which complication?",
         "options": [
-          "A. Type 1 Autoimmune Pancreatitis diagnostic criteria",
+          "A. Malignant pancreatic ductal adenocarcinoma",
           "B. Routine screening for pancreatic cysts in asymptomatic patients",
-          "C. Malignant pancreatic ductal adenocarcinoma",
+          "C. Type 1 Autoimmune Pancreatitis diagnostic criteria",
           "D. Pancreatic fluid collections and duct disruptions"
         ],
         "correct": "D",
@@ -488,22 +488,22 @@ const scheduleResources = {
       {
         "question": "What percentage of patients with acute pancreatitis are estimated to progress to severe complications such as pancreatic necrosis or organ failure?",
         "options": [
-          "A. Nearly one-fifth of patients",
-          "B. Over 50% of all hospital admissions",
-          "C. Exactly 35% across all populations",
-          "D. Approximately 5%"
+          "A. Over 50% of all hospital admissions",
+          "B. Approximately 5%",
+          "C. Nearly one-fifth of patients",
+          "D. Exactly 35% across all populations"
         ],
-        "correct": "A",
+        "correct": "C",
         "explanation": "The ACG abstract notes that while most patients have mild disease, almost 20% experience severe complications.",
         "hint": "Identify the fraction of the population that moves from typical symptoms to the need for intensive or radiologic intervention."
       },
       {
         "question": "The random survival forest model for IPN patients identified which of the following as one of the seven foremost predictors of mortality?",
         "options": [
-          "A. Serum Calcium levels",
+          "A. History of alcohol consumption",
           "B. Duration of organ failure",
-          "C. History of alcohol consumption",
-          "D. Presence of a pseudocyst"
+          "C. Presence of a pseudocyst",
+          "D. Serum Calcium levels"
         ],
         "correct": "B",
         "explanation": "Both the number and the duration of organ failure were identified as critical predictors of mortality in the prospective cohort.",
@@ -630,48 +630,48 @@ const scheduleResources = {
       {
         "question": "According to the recent systematic review and network meta-analysis of pharmacological therapies for MASH, which of the following agents achieved the highest SUCRA (Surface Under the Cumulative Ranking Curve) score for fibrosis regression of at least one stage without worsening of steatohepatitis?",
         "options": [
-          "A. Pegozafermin",
-          "B. Tirzepatide",
-          "C. Resmetirom",
-          "D. Semaglutide"
+          "A. Resmetirom",
+          "B. Semaglutide",
+          "C. Tirzepatide",
+          "D. Pegozafermin"
         ],
-        "correct": "A",
+        "correct": "D",
         "explanation": "In the network meta-analysis, pegozafermin was ranked as the most effective intervention for fibrosis regression with a SUCRA score of 79.92.",
         "hint": "Consider the ranking of a fibroblast growth factor 21 (FGF-21) analog mentioned in the meta-analysis."
       },
       {
         "question": "In the B-Well 1 and B-Well 2 phase 3 trials, what was the primary mechanism of action for bepirovirsen in the treatment of chronic hepatitis B virus (HBV) infection?",
         "options": [
-          "A. Monoclonal antibody neutralizing HBsAg",
-          "B. Antisense oligonucleotide targeting HBV transcripts",
-          "C. Nucleoside analogue inhibiting viral polymerase",
-          "D. Capsid assembly modulator blocking viral encasement"
+          "A. Antisense oligonucleotide targeting HBV transcripts",
+          "B. Monoclonal antibody neutralizing HBsAg",
+          "C. Capsid assembly modulator blocking viral encasement",
+          "D. Nucleoside analogue inhibiting viral polymerase"
         ],
-        "correct": "B",
+        "correct": "A",
         "explanation": "Bepirovirsen works by binding to and promoting the degradation of viral RNA, which can lead to a reduction in viral proteins and a potential functional cure.",
         "hint": "Focus on the specific molecular strategy used to degrade viral genetic messages."
       },
       {
         "question": "Based on the B-Well trial results for chronic HBV, which laboratory abnormality was identified as the most common grade 3 or higher adverse event in patients receiving bepirovirsen?",
         "options": [
-          "A. Serum creatinine elevation",
-          "B. Bilirubin elevation reaching Hy's Law criteria",
-          "C. Increase in alanine aminotransferase (ALT) level",
-          "D. Decrease in absolute neutrophil count"
+          "A. Bilirubin elevation reaching Hy's Law criteria",
+          "B. Serum creatinine elevation",
+          "C. Decrease in absolute neutrophil count",
+          "D. Increase in alanine aminotransferase (ALT) level"
         ],
-        "correct": "C",
+        "correct": "D",
         "explanation": "ALT flares were noted in 6% of the bepirovirsen group and are often associated with the immune clearance of infected hepatocytes during treatment.",
         "hint": "Think about common markers of liver inflammation or immune-mediated hepatocyte turnover."
       },
       {
         "question": "Which of the following describes the definition of a 'functional cure' as used in the phase 3 trials of bepirovirsen for noncirrhotic chronic HBV infection?",
         "options": [
-          "A. Undetectable HBV DNA while remaining on stable nucleoside analogue therapy",
+          "A. HBeAg seroconversion with persistence of low-level HBsAg",
           "B. Complete eradication of intrahepatic cccDNA",
-          "C. HBeAg seroconversion with persistence of low-level HBsAg",
-          "D. Sustained HBsAg loss and HBV DNA below the LLOQ for at least 24 weeks after therapy"
+          "C. Sustained HBsAg loss and HBV DNA below the LLOQ for at least 24 weeks after therapy",
+          "D. Undetectable HBV DNA while remaining on stable nucleoside analogue therapy"
         ],
-        "correct": "D",
+        "correct": "C",
         "explanation": "A functional cure implies the host immune system has controlled the virus to the point where surface antigen is undetectable and viral load is suppressed post-treatment.",
         "hint": "This term refers to a specific clinical state maintained after the discontinuation of all antiviral medications."
       },
@@ -679,9 +679,9 @@ const scheduleResources = {
         "question": "In the context of MASLD (formerly NAFLD) management, what is the primary clinical utility of the 'Clinical care pathway' recently emphasized by the AGA and other major societies?",
         "options": [
           "A. Standardizing noninvasive fibrosis risk stratification and management",
-          "B. Mandating liver biopsy for all patients with metabolic syndrome",
-          "C. Providing a legal framework for insurance coverage of bariatric surgery",
-          "D. Replacing lifestyle interventions with early-stage pharmacotherapy"
+          "B. Replacing lifestyle interventions with early-stage pharmacotherapy",
+          "C. Mandating liver biopsy for all patients with metabolic syndrome",
+          "D. Providing a legal framework for insurance coverage of bariatric surgery"
         ],
         "correct": "A",
         "explanation": "Care pathways are designed to help clinicians move beyond simple diagnosis toward actionable staging using noninvasive tests to guide therapy.",
@@ -691,11 +691,11 @@ const scheduleResources = {
         "question": "Which of the following pharmacological agents ranked highest for achieving MASH resolution without worsening fibrosis in the 2025 network meta-analysis?",
         "options": [
           "A. Obeticholic acid",
-          "B. Pegozafermin",
-          "C. Lanifibranor",
-          "D. Vitamin E"
+          "B. Vitamin E",
+          "C. Pegozafermin",
+          "D. Lanifibranor"
         ],
-        "correct": "B",
+        "correct": "C",
         "explanation": "Pegozafermin achieved the highest SUCRA score (91.75) for MASH resolution, slightly outperforming other potent agents like survodutide.",
         "hint": "This agent is a long-acting glycopegylated FGF-21 analog."
       },
@@ -704,19 +704,19 @@ const scheduleResources = {
         "options": [
           "A. Radiofrequency ablation and mucosal resection",
           "B. Hemostatic powder spray and clip placement",
-          "C. Cyanoacrylate injection and band ligation",
-          "D. Sclerotherapy and argon plasma coagulation"
+          "C. Sclerotherapy and argon plasma coagulation",
+          "D. Cyanoacrylate injection and band ligation"
         ],
-        "correct": "C",
+        "correct": "D",
         "explanation": "These techniques are standard endoscopic approaches for managing gastric and esophageal varices, with cyanoacrylate being particularly relevant for certain gastric variceal types.",
         "hint": "Think about the specialized 'glue' used for gastric varices versus the standard 'looping' method for esophageal ones."
       },
       {
         "question": "What significant change in nomenclature was introduced to replace the term 'Nonalcoholic Fatty Liver Disease (NAFLD)' to better reflect the underlying pathophysiology and reduce stigma?",
         "options": [
-          "A. Metabolic-associated fatty liver disease (MAFLD)",
-          "B. Insulin-resistant hepatosteatosis syndrome (IRHS)",
-          "C. Metabolic dysfunction-associated steatohepatitis (MASH)",
+          "A. Insulin-resistant hepatosteatosis syndrome (IRHS)",
+          "B. Metabolic dysfunction-associated steatohepatitis (MASH)",
+          "C. Metabolic-associated fatty liver disease (MAFLD)",
           "D. Metabolic dysfunction-associated steatotic liver disease (MASLD)"
         ],
         "correct": "D",
@@ -726,24 +726,24 @@ const scheduleResources = {
       {
         "question": "In the pooled analysis of the B-Well trials for bepirovirsen, what was the approximate percentage of patients who achieved a functional cure at week 72?",
         "options": [
-          "A. 19-20%",
-          "B. 5-10%",
-          "C. 40-50%",
+          "A. 40-50%",
+          "B. 19-20%",
+          "C. 5-10%",
           "D. 75-80%"
         ],
-        "correct": "A",
+        "correct": "B",
         "explanation": "The B-Well 1 and B-Well 2 trials reported functional cure rates of 20% and 19% respectively, which were significantly higher than the 0% in the placebo groups.",
         "hint": "The percentage is approximately one-fifth of the treated population."
       },
       {
         "question": "Based on the pharmacological comparison for MASH resolution, which of the following 'dual' agents (targeting both GIP and GLP-1 receptors) was significantly better than placebo?",
         "options": [
-          "A. Resmetirom",
-          "B. Tirzepatide",
-          "C. Semaglutide",
-          "D. Liraglutide"
+          "A. Tirzepatide",
+          "B. Liraglutide",
+          "C. Resmetirom",
+          "D. Semaglutide"
         ],
-        "correct": "B",
+        "correct": "A",
         "explanation": "Tirzepatide is a dual GIP and GLP-1 receptor agonist that demonstrated high efficacy for MASH resolution in the network meta-analysis.",
         "hint": "This medication is known for its dual action on glucose-dependent insulinotropic polypeptide and glucagon-like peptide-1 receptors."
       }
@@ -900,12 +900,12 @@ const scheduleResources = {
       {
         "question": "According to the 2025 ACG guidelines, which of the following defines 'deep remission' in patients with ulcerative colitis (UC)?",
         "options": [
-          "A. The combination of symptomatic remission and endoscopic healing.",
+          "A. Sustained clinical remission without the use of corticosteroids for at least 6 months.",
           "B. Normalization of fecal calprotectin (FC) and C-reactive protein (CRP) levels.",
-          "C. Sustained clinical remission without the use of corticosteroids for at least 6 months.",
-          "D. Histologic remission confirmed by a gastrointestinal pathologist."
+          "C. Histologic remission confirmed by a gastrointestinal pathologist.",
+          "D. The combination of symptomatic remission and endoscopic healing."
         ],
-        "correct": "A",
+        "correct": "D",
         "explanation": "Deep remission is defined as achieving both patient-reported symptomatic improvement and restoration of intact mucosa without friability.",
         "hint": "Consider the dual requirements of patient-reported outcomes and mucosal appearance."
       },
@@ -913,20 +913,20 @@ const scheduleResources = {
         "question": "In a prospective study of IBD patients treated with Infliximab (IFX), which pharmacokinetic parameter was identified as the primary predictor of infection risk?",
         "options": [
           "A. Peak serum concentration measured 2 hours post-infusion.",
-          "B. Preinfusion trough concentration (C_{trough}).",
-          "C. Cumulative exposure represented by AUC_{0-8wk}.",
+          "B. Cumulative exposure represented by AUC_{0-8wk}.",
+          "C. Preinfusion trough concentration (C_{trough}).",
           "D. The presence of high-titer anti-Infliximab antibodies."
         ],
-        "correct": "C",
+        "correct": "B",
         "explanation": "The area under the concentration-time curve over 8 weeks was found to be the primary predictor, suggesting cumulative exposure drives safety concerns.",
         "hint": "Focus on the parameter that represents total drug exposure over a dosing interval."
       },
       {
         "question": "A patient is diagnosed with ulcerative colitis involving the rectum and extending to the splenic flexure. How should this disease extent be categorized according to ACG guidelines?",
         "options": [
-          "A. Extensive colitis",
-          "B. Proctosigmoiditis",
-          "C. Proctitis",
+          "A. Proctitis",
+          "B. Extensive colitis",
+          "C. Proctosigmoiditis",
           "D. Left-sided colitis"
         ],
         "correct": "D",
@@ -936,12 +936,12 @@ const scheduleResources = {
       {
         "question": "Based on the integration of six phase 3 trials, what was the safety finding regarding upadacitinib use in patients with moderate-to-severe IBD?",
         "options": [
-          "A. No new safety signals were identified compared to previous data.",
+          "A. Safety signals were only evident in the 30 mg maintenance group.",
           "B. A dose-dependent increase in gastrointestinal perforations.",
-          "C. Safety signals were only evident in the 30 mg maintenance group.",
+          "C. No new safety signals were identified compared to previous data.",
           "D. Increased risk of major adverse cardiovascular events (MACE) compared to placebo."
         ],
-        "correct": "A",
+        "correct": "C",
         "explanation": "The six-trial analysis confirmed the existing safety profile of upadacitinib without uncovering novel risks in UC or Crohn's disease.",
         "hint": "Consider the overall conclusion regarding the emergence of novel adverse events."
       },
@@ -949,9 +949,9 @@ const scheduleResources = {
         "question": "When managing a patient with mildly to moderately active UC, within what timeframe should they be reassessed to determine the response to induction therapy?",
         "options": [
           "A. 2 weeks",
-          "B. 4 weeks",
+          "B. 12 weeks",
           "C. 8 weeks",
-          "D. 12 weeks"
+          "D. 4 weeks"
         ],
         "correct": "C",
         "explanation": "The 2025 ACG guidelines recommend reassessing patients within 8 weeks to determine if the induction therapy has been successful.",
@@ -972,48 +972,48 @@ const scheduleResources = {
       {
         "question": "In the context of Infliximab therapy, which of the following was associated with a REDUCED risk of infection (OR: 0.51) in the GLMM analysis?",
         "options": [
-          "A. Concomitant corticosteroid use.",
-          "B. Younger age at diagnosis.",
+          "A. Younger age at diagnosis.",
+          "B. Low-dose immunomodulator use.",
           "C. Subcutaneous (SC) dosing vs Intravenous (IV) dosing.",
-          "D. Low-dose immunomodulator use."
+          "D. Concomitant corticosteroid use."
         ],
-        "correct": "D",
+        "correct": "B",
         "explanation": "Surprisingly, the use of low-dose immunomodulators was associated with a lower risk of infection in this specific cohort analysis.",
         "hint": "Look for a therapy often used in combination with biologics that showed an unexpected protective association in this study."
       },
       {
         "question": "For a patient suspected of having UC, what is the recommended endoscopic procedure to confirm the diagnosis and assess disease extent?",
         "options": [
-          "A. Colonoscopy with intubation of the ileum and biopsies of affected and unaffected areas.",
+          "A. Flexible sigmoidoscopy with rectal biopsy.",
           "B. Wireless capsule endoscopy to evaluate the entire small bowel.",
-          "C. Upper endoscopy and cross-sectional imaging for all patients.",
-          "D. Flexible sigmoidoscopy with rectal biopsy."
+          "C. Colonoscopy with intubation of the ileum and biopsies of affected and unaffected areas.",
+          "D. Upper endoscopy and cross-sectional imaging for all patients."
         ],
-        "correct": "A",
+        "correct": "C",
         "explanation": "Guidelines require full colonoscopy and ileal intubation to distinguish UC from Crohn's and accurately map disease extent.",
         "hint": "A complete evaluation of the colon and the final segment of the small intestine is necessary."
       },
       {
         "question": "What was the week-16 remission rate for patients who had failed prior therapy when treated with upadacitinib, compared to comparator therapies?",
         "options": [
-          "A. 35% with upadacitinib vs 15% with comparator.",
-          "B. 48% with upadacitinib vs 27% with comparator.",
-          "C. 60% with upadacitinib vs 40% with comparator.",
-          "D. Remission rates were equal across both groups at week 16."
+          "A. Remission rates were equal across both groups at week 16.",
+          "B. 60% with upadacitinib vs 40% with comparator.",
+          "C. 48% with upadacitinib vs 27% with comparator.",
+          "D. 35% with upadacitinib vs 15% with comparator."
         ],
-        "correct": "B",
+        "correct": "C",
         "explanation": "Patients with prior UC therapy failure achieved a significantly higher remission rate of 48% with upadacitinib compared to 27% with other treatments.",
         "hint": "The remission rate for the drug of interest was nearly double that of the comparator in this refractory group."
       },
       {
         "question": "Which of the following is considered a 'weaker' prognostic factor when deciding whether to treat mildly to moderately active UC with therapies usually reserved for moderate-to-severe disease?",
         "options": [
-          "A. Low serum albumin levels.",
-          "B. Severe endoscopic activity (e.g., UCEIS score).",
-          "C. Age alone.",
-          "D. Previous need for hospitalization."
+          "A. Previous need for hospitalization.",
+          "B. Age alone.",
+          "C. Severe endoscopic activity (e.g., UCEIS score).",
+          "D. Low serum albumin levels."
         ],
-        "correct": "C",
+        "correct": "B",
         "explanation": "Guidelines state that age alone is a weaker prognostic factor than endoscopic severity, though young age combined with other factors is significant.",
         "hint": "Identify the factor that requires combination with other clinical findings to carry significant weight in shared decision-making."
       }
@@ -1170,45 +1170,45 @@ const scheduleResources = {
       {
         "question": "In the management of pregnant patients with inflammatory bowel disease (IBD), what is the central guiding principle recommended by the Global Consensus Group to achieve the best outcomes for the infant?",
         "options": [
-          "A. The health of the mother best supports the health of the infant.",
-          "B. Fetal safety should always take precedence over maternal symptom control.",
-          "C. All IBD medications should be discontinued during the first trimester to prevent teratogenicity.",
+          "A. All IBD medications should be discontinued during the first trimester to prevent teratogenicity.",
+          "B. The health of the mother best supports the health of the infant.",
+          "C. Fetal safety should always take precedence over maternal symptom control.",
           "D. Neonatal outcomes are primarily determined by the mode of delivery rather than maternal disease activity."
         ],
-        "correct": "A",
+        "correct": "B",
         "explanation": "The consensus emphasizes that maintaining maternal disease control is the primary driver for successful pregnancy and neonatal outcomes.",
         "hint": "Consider the relationship between maternal wellness and neonatal health mentioned in the consensus statement."
       },
       {
         "question": "A 13-year follow-up analysis of the NordICC trial evaluated the impact of colonoscopy screening invitations on colorectal cancer (CRC) incidence. What was the observed reduction in CRC incidence in the intention-to-screen analysis?",
         "options": [
-          "A. 84%",
-          "B. 19%",
-          "C. 50%",
-          "D. 5%"
+          "A. 5%",
+          "B. 50%",
+          "C. 19%",
+          "D. 84%"
         ],
-        "correct": "B",
+        "correct": "C",
         "explanation": "The multicountry randomized trial found that being invited to colonoscopy screening lowered the incidence of CRC by 19% over a 13-year median follow-up.",
         "hint": "The reduction was significant but reflected the challenges of an intention-to-screen population analysis."
       },
       {
         "question": "Regarding Lynch syndrome surveillance, what is the primary clinical benefit of frequent surveillance according to recent findings?",
         "options": [
-          "A. Decreased rates of late-stage cancer diagnosis",
-          "B. Prevention of extracolonic malignancies",
-          "C. Lower overall mortality",
-          "D. A significant reduction in colorectal cancer incidence"
+          "A. A significant reduction in colorectal cancer incidence",
+          "B. Lower overall mortality",
+          "C. Prevention of extracolonic malignancies",
+          "D. Decreased rates of late-stage cancer diagnosis"
         ],
-        "correct": "C",
+        "correct": "B",
         "explanation": "The evidence indicates that while surveillance may not prevent the occurrence of cancer, it is linked to better survival outcomes and lower mortality.",
         "hint": "Distinguish between the occurrence of the disease and the ultimate survival of the patient."
       },
       {
         "question": "An integrated safety analysis of six phase 3 trials for upadacitinib in patients with ulcerative colitis and Crohn's disease concluded which of the following?",
         "options": [
-          "A. Safety signals were significantly higher in the 30 mg maintenance group compared to induction.",
-          "B. A new association between upadacitinib and gastric cancer was discovered.",
-          "C. The placebo group had higher rates of serious adverse events than the 15 mg group.",
+          "A. A new association between upadacitinib and gastric cancer was discovered.",
+          "B. The placebo group had higher rates of serious adverse events than the 15 mg group.",
+          "C. Safety signals were significantly higher in the 30 mg maintenance group compared to induction.",
           "D. No new safety signals were identified compared to existing data."
         ],
         "correct": "D",
@@ -1218,72 +1218,72 @@ const scheduleResources = {
       {
         "question": "The AGA Living Clinical Practice Guideline on pharmacological management of moderate-to-severe ulcerative colitis (UC) includes 14 specific recommendations. Which of these is a major focus area of the guideline?",
         "options": [
-          "A. Advanced therapies and treatment positioning",
-          "B. Surgical techniques for total proctocolectomy",
-          "C. Management of mild, distal ulcerative proctitis",
+          "A. Management of mild, distal ulcerative proctitis",
+          "B. Advanced therapies and treatment positioning",
+          "C. Surgical techniques for total proctocolectomy",
           "D. Standardization of random biopsy protocols for dysplasia"
         ],
-        "correct": "A",
+        "correct": "B",
         "explanation": "The guideline emphasizes the role and sequence of advanced therapies, including combination therapy, for managing moderate-to-severe UC.",
         "hint": "Focus on the pharmacological scope and the level of disease severity being addressed."
       },
       {
         "question": "According to the British Columbia Colon Screening Program cohort study, what is the recommended management for a patient who has a positive fecal immunochemical test (FIT) following a recent colonoscopy?",
         "options": [
-          "A. Disregard the FIT result as a false positive due to the recent colonoscopy.",
-          "B. Offer a repeat colonoscopy.",
-          "C. Wait for 10 years before the next surveillance colonoscopy.",
-          "D. Perform a breath test for small intestinal bacterial overgrowth (SIBO)."
+          "A. Wait for 10 years before the next surveillance colonoscopy.",
+          "B. Perform a breath test for small intestinal bacterial overgrowth (SIBO).",
+          "C. Disregard the FIT result as a false positive due to the recent colonoscopy.",
+          "D. Offer a repeat colonoscopy."
         ],
-        "correct": "B",
+        "correct": "D",
         "explanation": "The study found that a positive interval FIT is a significant marker for post-colonoscopy colorectal cancer, warranting another exam.",
         "hint": "Think about how an interval 'red flag' test should influence the clinical workflow regardless of prior screening."
       },
       {
         "question": "In the context of gastric cancer risk, what HR (hazard ratio) is associated with the daily consumption of sugary drinks?",
         "options": [
-          "A. 1.00",
-          "B. 4.04",
-          "C. 2.45",
-          "D. 1.19"
+          "A. 4.04",
+          "B. 2.45",
+          "C. 1.19",
+          "D. 1.00"
         ],
-        "correct": "C",
+        "correct": "B",
         "explanation": "The source explicitly states that daily consumption of sugary drinks is linked to a more than double risk, specifically HR 2.45 (95% CI, 1.49-4.04).",
         "hint": "The risk is described as 'more than double' the baseline."
       },
       {
         "question": "The Global Consensus on Pregnancy and IBD highlights that varied practices and fear of fetal harm among providers are largely driven by which of the following?",
         "options": [
-          "A. A surplus of high-quality randomized controlled trials (RCTs)",
-          "B. The universal adoption of the GRADE process across all countries",
-          "C. High rates of medication adherence among pregnant patients",
-          "D. Limited knowledge and high reliance on local dogma"
+          "A. The universal adoption of the GRADE process across all countries",
+          "B. A surplus of high-quality randomized controlled trials (RCTs)",
+          "C. Limited knowledge and high reliance on local dogma",
+          "D. High rates of medication adherence among pregnant patients"
         ],
-        "correct": "D",
+        "correct": "C",
         "explanation": "The consensus identifies limited provider knowledge and individual interpretation of literature as key reasons for inconsistent care.",
         "hint": "Look for the factor that explains why different doctors might treat the same pregnancy differently."
       },
       {
         "question": "The ASGE guideline on IBD management addresses the role of endoscopy in surveillance. Which technique is specifically mentioned for the management of IBD-related complications such as strictures?",
         "options": [
-          "A. Endoscopic therapy",
+          "A. Routine capsule endoscopy in active colitis",
           "B. Prophylactic surgical bypass",
-          "C. Routine capsule endoscopy in active colitis",
+          "C. Endoscopic therapy",
           "D. Total mesenteric excision"
         ],
-        "correct": "A",
+        "correct": "C",
         "explanation": "The guideline covers the use of endoscopic therapy for managing complications like strictures in patients with Crohn's disease and UC.",
         "hint": "The question asks for a non-surgical, procedure-based intervention discussed in the guideline."
       },
       {
         "question": "Which of the following describes the study population in the six-phase 3 trial integrated safety analysis of upadacitinib?",
         "options": [
-          "A. Healthy volunteers aged 55-64 years in Sweden",
-          "B. Patients with moderate-to-severe ulcerative colitis or Crohn's disease",
-          "C. Pregnant women with active IBD flares",
-          "D. Individuals with Lynch syndrome undergoing routine surveillance"
+          "A. Patients with moderate-to-severe ulcerative colitis or Crohn's disease",
+          "B. Pregnant women with active IBD flares",
+          "C. Individuals with Lynch syndrome undergoing routine surveillance",
+          "D. Healthy volunteers aged 55-64 years in Sweden"
         ],
-        "correct": "B",
+        "correct": "A",
         "explanation": "The trials specifically included patients with moderate-to-severe presentations of these two primary forms of IBD.",
         "hint": "The study was designed to evaluate a medication used for specific levels of IBD severity."
       }
@@ -1454,45 +1454,45 @@ const scheduleResources = {
       {
         "question": "Which histologic feature most strongly distinguishes a conventional adenoma from a hyperplastic polyp?",
         "options": [
-          "A. Architectural and cytologic dysplasia",
+          "A. Foamy lamina propria macrophages",
           "B. Surface serration limited to the upper crypt",
-          "C. Foamy lamina propria macrophages",
+          "C. Architectural and cytologic dysplasia",
           "D. Prominent lymphoid aggregates"
         ],
-        "correct": "A",
+        "correct": "C",
         "explanation": "Conventional adenomas are dysplastic epithelial lesions; hyperplastic polyps may be serrated but lack the adenomatous cytologic dysplasia that drives neoplastic risk."
       },
       {
         "question": "For a 10-19 mm nonpedunculated colorectal lesion, what quality principle is emphasized by modern polypectomy guidance?",
         "options": [
-          "A. Avoid photo documentation",
-          "B. Aim for complete resection with a margin of normal tissue and careful defect inspection",
-          "C. Cold biopsy forceps are preferred",
+          "A. Cold biopsy forceps are preferred",
+          "B. Avoid photo documentation",
+          "C. Aim for complete resection with a margin of normal tissue and careful defect inspection",
           "D. Tattoo directly under every lesion"
         ],
-        "correct": "B",
+        "correct": "C",
         "explanation": "Complete excision, inspection of the defect, and documentation are central quality steps because incomplete resection contributes to interval neoplasia."
       },
       {
         "question": "Sessile serrated lesions are clinically important because they are associated with which pathway?",
         "options": [
-          "A. Pancreaticobiliary dysplasia",
-          "B. Portal-hypertensive colopathy",
-          "C. Serrated colorectal carcinogenesis, often right-sided",
-          "D. Squamous metaplasia of the anal canal"
+          "A. Squamous metaplasia of the anal canal",
+          "B. Pancreaticobiliary dysplasia",
+          "C. Portal-hypertensive colopathy",
+          "D. Serrated colorectal carcinogenesis, often right-sided"
         ],
-        "correct": "C",
+        "correct": "D",
         "explanation": "Sessile serrated lesions are precursor lesions in the serrated pathway and are commonly proximal/right-sided."
       },
       {
         "question": "What feature should raise concern for invasive cancer in a colorectal polyp specimen?",
         "options": [
-          "A. Mucus cap on the surface",
-          "B. Small size alone",
-          "C. A left-colon location",
-          "D. Submucosal invasion"
+          "A. A left-colon location",
+          "B. Mucus cap on the surface",
+          "C. Submucosal invasion",
+          "D. Small size alone"
         ],
-        "correct": "D",
+        "correct": "C",
         "explanation": "Submucosal invasion changes management because it raises lymph-node and residual-disease risk and may require surgical evaluation depending on adverse features."
       }
     ],
@@ -1625,41 +1625,41 @@ const scheduleResources = {
       {
         "question": "A low-grade appendiceal mucinous neoplasm is most clinically concerning when associated with what finding?",
         "options": [
-          "A. Extra-appendiceal mucin or peritoneal spread",
-          "B. Mild acute appendicitis only",
-          "C. A normal serosa",
+          "A. Mild acute appendicitis only",
+          "B. A normal serosa",
+          "C. Extra-appendiceal mucin or peritoneal spread",
           "D. Lymphoid hyperplasia alone"
         ],
-        "correct": "A",
+        "correct": "C",
         "explanation": "Mucin outside the appendix, especially with epithelial cells, raises concern for peritoneal dissemination/pseudomyxoma peritonei risk."
       },
       {
         "question": "Anal squamous intraepithelial lesions are most closely linked to which risk factor?",
         "options": [
-          "A. Celiac-associated HLA type",
-          "B. High-risk HPV infection",
-          "C. Helicobacter pylori",
-          "D. Primary sclerosing cholangitis"
+          "A. Helicobacter pylori",
+          "B. Primary sclerosing cholangitis",
+          "C. High-risk HPV infection",
+          "D. Celiac-associated HLA type"
         ],
-        "correct": "B",
+        "correct": "C",
         "explanation": "High-risk HPV drives most anal squamous dysplasia and carcinoma, informing screening and prevention strategies."
       },
       {
         "question": "Which anatomic distinction matters for anal pathology interpretation?",
         "options": [
           "A. Fundic versus antral mucosa",
-          "B. Intrahepatic versus extrahepatic bile duct",
-          "C. Squamous/transitional zone versus colorectal-type mucosa",
-          "D. Duodenal bulb versus second portion"
+          "B. Duodenal bulb versus second portion",
+          "C. Intrahepatic versus extrahepatic bile duct",
+          "D. Squamous/transitional zone versus colorectal-type mucosa"
         ],
-        "correct": "C",
+        "correct": "D",
         "explanation": "The anal canal includes squamous, transitional, and glandular mucosa; lesion type and differential diagnosis depend on location."
       },
       {
         "question": "For appendiceal neuroendocrine tumors, what commonly influences management beyond diagnosis alone?",
         "options": [
-          "A. Serum amylase only",
-          "B. Presence of diverticulosis",
+          "A. Presence of diverticulosis",
+          "B. Serum amylase only",
           "C. Colonoscopy withdrawal time",
           "D. Tumor size, margin status, mesoappendiceal invasion, and grade"
         ],
@@ -1749,34 +1749,34 @@ const scheduleResources = {
       {
         "question": "Which initial serologic test is most commonly used for suspected celiac disease in an IgA-sufficient patient?",
         "options": [
-          "A. Tissue transglutaminase IgA",
-          "B. Anti-mitochondrial antibody",
-          "C. p-ANCA",
-          "D. Serum gastrin"
+          "A. Serum gastrin",
+          "B. p-ANCA",
+          "C. Tissue transglutaminase IgA",
+          "D. Anti-mitochondrial antibody"
         ],
-        "correct": "A",
+        "correct": "C",
         "explanation": "tTG-IgA is the usual first-line test, paired with total IgA to avoid missing IgA deficiency."
       },
       {
         "question": "What diet state is preferred when performing diagnostic serology or duodenal biopsy for celiac disease?",
         "options": [
-          "A. Low-FODMAP diet",
-          "B. Eating gluten",
-          "C. Strict gluten avoidance for 6 months",
-          "D. Elemental diet"
+          "A. Eating gluten",
+          "B. Low-FODMAP diet",
+          "C. Elemental diet",
+          "D. Strict gluten avoidance for 6 months"
         ],
-        "correct": "B",
+        "correct": "A",
         "explanation": "Testing is most reliable while the patient is consuming gluten; gluten avoidance can normalize serology and histology."
       },
       {
         "question": "Classic untreated celiac disease histology includes which pattern?",
         "options": [
-          "A. Pseudomembranes",
+          "A. Crypt abscesses with transmural granulomas",
           "B. Eosinophilic microabscesses only",
-          "C. Villous atrophy with increased intraepithelial lymphocytes",
-          "D. Crypt abscesses with transmural granulomas"
+          "C. Pseudomembranes",
+          "D. Villous atrophy with increased intraepithelial lymphocytes"
         ],
-        "correct": "C",
+        "correct": "D",
         "explanation": "Celiac disease typically shows increased intraepithelial lymphocytes, crypt hyperplasia, and varying villous atrophy."
       },
       {
@@ -1784,10 +1784,10 @@ const scheduleResources = {
         "options": [
           "A. Empiric colectomy",
           "B. Chronic broad-spectrum antibiotics",
-          "C. Avoid all dietary fat",
-          "D. Dietitian-supported gluten-free diet and follow-up for response/adherence"
+          "C. Dietitian-supported gluten-free diet and follow-up for response/adherence",
+          "D. Avoid all dietary fat"
         ],
-        "correct": "D",
+        "correct": "C",
         "explanation": "Management centers on a strict gluten-free diet, nutritional assessment, and follow-up of symptoms and serologic response."
       }
     ],
@@ -1883,12 +1883,12 @@ const scheduleResources = {
       {
         "question": "For suspected small-bowel bleeding after negative EGD and colonoscopy, what test is often used early?",
         "options": [
-          "A. Video capsule endoscopy",
+          "A. Hydrogen breath test as first-line bleeding evaluation",
           "B. Barium swallow only",
-          "C. Routine ERCP",
-          "D. Hydrogen breath test as first-line bleeding evaluation"
+          "C. Video capsule endoscopy",
+          "D. Routine ERCP"
         ],
-        "correct": "A",
+        "correct": "C",
         "explanation": "Capsule endoscopy is commonly used to evaluate mucosal small-bowel bleeding sources after standard endoscopy is unrevealing."
       },
       {
@@ -1905,20 +1905,20 @@ const scheduleResources = {
       {
         "question": "Which small-intestinal pathology pattern is typical for celiac disease?",
         "options": [
-          "A. Goblet-cell loss limited to rectum",
-          "B. Mallory-Denk bodies",
-          "C. Villous blunting with intraepithelial lymphocytosis",
-          "D. Caseating granulomas only"
+          "A. Villous blunting with intraepithelial lymphocytosis",
+          "B. Goblet-cell loss limited to rectum",
+          "C. Caseating granulomas only",
+          "D. Mallory-Denk bodies"
         ],
-        "correct": "C",
+        "correct": "A",
         "explanation": "Celiac disease is a prototypical small-bowel mucosal disorder with villous blunting and increased intraepithelial lymphocytes."
       },
       {
         "question": "When capsule endoscopy identifies a treatable small-bowel lesion, what procedure may allow therapy or biopsy?",
         "options": [
           "A. Flexible sigmoidoscopy only",
-          "B. Transjugular liver biopsy",
-          "C. Endoscopic ultrasound of the pancreas",
+          "B. Endoscopic ultrasound of the pancreas",
+          "C. Transjugular liver biopsy",
           "D. Device-assisted enteroscopy"
         ],
         "correct": "D",
@@ -2044,21 +2044,21 @@ const scheduleResources = {
       {
         "question": "Before using an AI tool for GI research writing or analysis, what is a key safety step?",
         "options": [
-          "A. Verify outputs against primary sources and disclose AI assistance when appropriate",
-          "B. Assume all citations are correct",
-          "C. Upload identifiable patient data to public tools",
-          "D. Skip human review"
+          "A. Upload identifiable patient data to public tools",
+          "B. Skip human review",
+          "C. Verify outputs against primary sources and disclose AI assistance when appropriate",
+          "D. Assume all citations are correct"
         ],
-        "correct": "A",
+        "correct": "C",
         "explanation": "AI outputs can be wrong or fabricated; verification, privacy protection, and disclosure are core safeguards."
       },
       {
         "question": "Which project is highest risk for unrestricted public-AI use?",
         "options": [
-          "A. A generic grammar edit",
+          "A. A de-identified teaching outline",
           "B. A dataset containing protected health information",
           "C. A public PubMed search strategy",
-          "D. A de-identified teaching outline"
+          "D. A generic grammar edit"
         ],
         "correct": "B",
         "explanation": "PHI and sensitive unpublished data require institution-approved, secure workflows rather than open public tools."
@@ -2066,23 +2066,23 @@ const scheduleResources = {
       {
         "question": "In AI-assisted literature review, what should remain human-controlled?",
         "options": [
-          "A. Nothing once prompts are written",
+          "A. Final inclusion decisions and interpretation of clinical relevance",
           "B. The browser zoom level",
-          "C. Final inclusion decisions and interpretation of clinical relevance",
-          "D. Only font choice"
+          "C. Only font choice",
+          "D. Nothing once prompts are written"
         ],
-        "correct": "C",
+        "correct": "A",
         "explanation": "AI can help screen and organize, but investigators must make and document final evidence judgments."
       },
       {
         "question": "A practical way to reduce hallucinated references is to:",
         "options": [
-          "A. Ask for more confident wording",
-          "B. Remove citations",
-          "C. Use only longer prompts",
-          "D. Use source-grounded retrieval and check every citation/DOI"
+          "A. Use source-grounded retrieval and check every citation/DOI",
+          "B. Ask for more confident wording",
+          "C. Remove citations",
+          "D. Use only longer prompts"
         ],
-        "correct": "D",
+        "correct": "A",
         "explanation": "Grounding outputs in retrieved sources and verifying citations helps prevent fabricated or mismatched references."
       }
     ],
@@ -2252,8 +2252,8 @@ const scheduleResources = {
         "question": "Which finding defines invasive colorectal adenocarcinoma in a polyp?",
         "options": [
           "A. Invasion through muscularis mucosae into submucosa",
-          "B. Low-grade dysplasia confined to mucosa",
-          "C. A serrated surface",
+          "B. A serrated surface",
+          "C. Low-grade dysplasia confined to mucosa",
           "D. A mucus cap"
         ],
         "correct": "A",
@@ -2262,31 +2262,31 @@ const scheduleResources = {
       {
         "question": "Lynch syndrome screening of colorectal cancer tissue commonly uses:",
         "options": [
-          "A. Fecal elastase",
-          "B. Mismatch-repair immunohistochemistry or MSI testing",
-          "C. Serum lipase",
-          "D. H. pylori stool antigen"
+          "A. H. pylori stool antigen",
+          "B. Fecal elastase",
+          "C. Mismatch-repair immunohistochemistry or MSI testing",
+          "D. Serum lipase"
         ],
-        "correct": "B",
+        "correct": "C",
         "explanation": "MMR IHC/MSI testing identifies tumors that may indicate Lynch syndrome and guides genetic evaluation and immunotherapy relevance."
       },
       {
         "question": "Which pathology result most directly affects post-polypectomy surveillance intervals?",
         "options": [
-          "A. Sedation medication",
-          "B. Room temperature",
-          "C. Number, size, histology, and dysplasia of adenomas/serrated lesions",
-          "D. Patient shoe size"
+          "A. Patient shoe size",
+          "B. Sedation medication",
+          "C. Room temperature",
+          "D. Number, size, histology, and dysplasia of adenomas/serrated lesions"
         ],
-        "correct": "C",
+        "correct": "D",
         "explanation": "Surveillance recommendations depend on polyp burden and risk features such as size, villous histology, high-grade dysplasia, and serrated-lesion features."
       },
       {
         "question": "Poor differentiation, lymphovascular invasion, and positive margin in a malignant polyp generally imply:",
         "options": [
-          "A. No need for follow-up",
+          "A. Celiac disease",
           "B. Benign hyperplastic change",
-          "C. Celiac disease",
+          "C. No need for follow-up",
           "D. Higher risk features that may prompt surgical evaluation"
         ],
         "correct": "D",

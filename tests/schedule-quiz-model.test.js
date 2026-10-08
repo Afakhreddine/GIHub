@@ -36,30 +36,34 @@ test("cleans AutoContent inline math artifacts from quiz text", () => {
 });
 
 test("normalizes AutoContent quiz output into GIHub's UI-friendly quiz shape", () => {
-  const normalized = normalizeAutoContentQuiz(autocontentQuiz, { limit: 10 });
+  const rngValues = [0.1, 0.2, 0.3, 0.4, 0.9, 0.8, 0.7, 0.6];
+  let rngIndex = 0;
+  const normalized = normalizeAutoContentQuiz(autocontentQuiz, {
+    limit: 10,
+    rng: () => rngValues[rngIndex++ % rngValues.length],
+  });
 
   assert.equal(normalized.length, 2);
-  assert.deepEqual(normalized[0], {
-    question: "What is the best next step?",
-    options: [
-      "A. Treat H. pylori",
-      "B. Ignore the finding",
-      "C. Start chemotherapy",
-      "D. Repeat CT daily",
-    ],
-    correct: "A",
-    explanation: "Eradication is recommended.",
-    hint: "Think guideline-based management.",
-  });
-  assert.deepEqual(normalized[1], {
-    question: "Which study result is most important?",
-    options: ["A. No intervention", "B. Lower rebleeding", "C. Higher mortality", "D. No follow-up"],
-    correct: "B",
-    explanation: "The trial outcome focused on reduced recurrent bleeding.",
-  });
+  assert.equal(normalized[0].question, "What is the best next step?");
+  assert.equal(normalized[0].explanation, "Eradication is recommended.");
+  assert.equal(normalized[0].hint, "Think guideline-based management.");
+  assert.equal(normalized[0].options.length, 4);
+  assert.ok(normalized[0].options.some(option => option.endsWith("Treat H. pylori")));
+  assert.match(
+    normalized[0].options.find(option => option.startsWith(`${normalized[0].correct}. `)),
+    /Treat H\. pylori$/,
+  );
+
+  assert.equal(normalized[1].question, "Which study result is most important?");
+  assert.equal(normalized[1].explanation, "The trial outcome focused on reduced recurrent bleeding.");
+  assert.equal(normalized[1].options.length, 4);
+  assert.match(
+    normalized[1].options.find(option => option.startsWith(`${normalized[1].correct}. `)),
+    /Lower rebleeding$/,
+  );
 });
 
-test("normalizes AutoContent quizzes without leaving every correct answer in option A", () => {
+test("randomizes AutoContent answer positions while preserving the correct-answer mapping", () => {
   const allFirstAnswerPayload = {
     quiz: Array.from({ length: 8 }, (_, index) => ({
       question: `Question ${index + 1}?`,
@@ -71,12 +75,22 @@ test("normalizes AutoContent quizzes without leaving every correct answer in opt
       ],
     })),
   };
+  const rngValues = [0.9, 0.1, 0.6, 0.2, 0.8, 0.3, 0.7, 0.4, 0.05, 0.95, 0.15, 0.85, 0.25, 0.75, 0.35, 0.65, 0.45, 0.55, 0.12, 0.62, 0.32, 0.82, 0.22, 0.72];
+  let rngIndex = 0;
 
-  const normalized = normalizeAutoContentQuiz(allFirstAnswerPayload, { limit: 8 });
+  const normalized = normalizeAutoContentQuiz(allFirstAnswerPayload, {
+    limit: 8,
+    rng: () => rngValues[rngIndex++ % rngValues.length],
+  });
   const correctLetters = new Set(normalized.map(item => item.correct));
 
   assert.equal(normalized.length, 8);
   assert.ok(correctLetters.size > 1, "correct answers should be distributed across positions");
+  assert.notDeepEqual(
+    normalized.map(item => item.correct),
+    ["A", "B", "C", "D", "A", "B", "C", "D"],
+    "correct-answer positions should not follow the old deterministic rotation pattern",
+  );
   for (const item of normalized) {
     const correctOption = item.options.find(option => option.startsWith(`${item.correct}. `));
     assert.match(correctOption, /Correct answer/, "the marked correct letter should still point to the correct option text");
