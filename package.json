@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "node --import ./tests/register-jsx.mjs --test tests/*.test.js tests/*.test.jsx",
-    "schedule:targeted-pull": "node scripts/populate-schedule-targeted-candidates.mjs"
+    "schedule:targeted-pull": "node scripts/populate-schedule-targeted-candidates.mjs",
+    "schedule:quiz-generate": "node scripts/generate-schedule-autocontent-quizzes.mjs",
+    "schedule:quiz-import": "node scripts/apply-schedule-autocontent-quizzes.mjs"
   },
   "dependencies": {
     "react": "^19.2.4",
