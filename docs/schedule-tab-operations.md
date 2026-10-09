@@ -13,6 +13,7 @@ GIHub Schedule is moving to the same repo-managed model as Weekly Update: Hermes
 - Guidelines should include the most recent relevant guideline per society when available, so a topic may show ACG + AGA + ASGE + AASLD.
 - Each clickable schedule topic should always have an interactive quiz.
 - Preferred quiz generation is AutoContent from PDFs pulled for the relevant guidelines/articles; store the resulting quiz JSON and render with the existing interactive quiz component.
+- Schedule quiz generation should request AutoContent `quiz_difficulty: hard` using the repo wrapper below, with clinical-reasoning/board-review instructions and plausible distractors. The import step still randomizes answer order and recomputes the correct letter.
 
 ## Repo-managed files
 
@@ -38,7 +39,14 @@ When Ali provides a lecture schedule image:
    - Search `weekly.js` + `weeklyArchive.js` for matching News and Articles.
    - Always run `npm run schedule:targeted-pull` after `src/scheduleConfig.js` is updated. The script derives its topic list from the current calendar automatically, replaces prior `targeted-online-pull` candidates for those current slugs, and writes review-only PubMed candidates to `src/data/scheduleResources.js`.
    - Pull relevant PDFs for guidelines/articles when authorized.
-   - Send PDFs to AutoContent quiz generation.
+   - Generate hard AutoContent quizzes from the source manifest:
+     ```bash
+     npm run schedule:quiz-generate -- --source-manifest /path/to/source-manifest.json --out-dir /opt/data/autocontent_outputs/gihub_schedule_quizzes
+     ```
+   - Import the generated quiz JSON into repo-managed resources:
+     ```bash
+     npm run schedule:quiz-import -- --artifact-dir /opt/data/autocontent_outputs/gihub_schedule_quizzes --source-manifest /path/to/source-manifest.json
+     ```
    - Store quiz JSON in `src/data/scheduleResources.js`.
 4. Close or supersede any stale open Schedule review PRs from prior calendars before sharing `/review/schedule`; otherwise the latest-PR selector can show old cards.
 5. Run `npm test`, `npm run lint`, `npm run build`, `git diff --check`.
