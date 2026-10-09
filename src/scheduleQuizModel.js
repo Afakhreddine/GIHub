@@ -63,6 +63,13 @@ export function normalizeAutoContentQuiz(payload, options = {}) {
   if (!Array.isArray(quiz)) return [];
 
   return quiz
+    .filter(item => {
+      if (item?.type === "multiple_select") return false;
+      if (Array.isArray(item?.answerOptions)) {
+        return item.answerOptions.filter(option => option?.isCorrect === true).length <= 1;
+      }
+      return true;
+    })
     .map(item => {
       const normalized = normalizeOptions(item, rng);
       return {
@@ -82,10 +89,16 @@ export function applyScheduleQuizArtifacts(resources = {}, artifacts = {}) {
   for (const [slug, artifact] of Object.entries(artifacts || {})) {
     if (!next[slug]) continue;
     const quiz = normalizeAutoContentQuiz(artifact.quizJson, { limit: 10 });
+    const quizStatus =
+      quiz.length >= 10 && next[slug]?.quizStatus === "repo-managed-complete"
+        ? "repo-managed-complete"
+        : quiz.length >= 10
+          ? "autocontent-complete"
+          : "autocontent-incomplete";
     next[slug] = {
       ...next[slug],
       quiz,
-      quizStatus: quiz.length >= 10 ? "autocontent-complete" : "autocontent-incomplete",
+      quizStatus,
       quizSourcePdfs: Array.isArray(artifact.sourcePdfs) ? artifact.sourcePdfs : [],
       quizGeneratedAt: artifact.generatedAt || new Date().toISOString(),
     };

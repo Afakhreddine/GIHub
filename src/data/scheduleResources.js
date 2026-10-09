@@ -1,6 +1,3 @@
-// Repo-managed Schedule tab resources.
-// Built by Hermes from guidelines, weekly updates, weeklyArchive, targeted pulls, and AutoContent quizzes.
-
 const scheduleResources = {
   "stomach-pathology": {
     "guidelines": [
@@ -1452,55 +1449,131 @@ const scheduleResources = {
     ],
     "quiz": [
       {
-        "question": "Which histologic feature most strongly distinguishes a conventional adenoma from a hyperplastic polyp?",
+        "question": "According to international expert consensus statements regarding the endoscopic resection of intermediate (10–19 mm) colorectal polyps, what target ceiling was established for incomplete resection rates?",
         "options": [
-          "A. Foamy lamina propria macrophages",
-          "B. Surface serration limited to the upper crypt",
-          "C. Architectural and cytologic dysplasia",
-          "D. Prominent lymphoid aggregates"
+          "A. A target ceiling of 20% for incomplete resection, without requiring post-resection inspection or tissue margin evaluation.",
+          "B. A maximum incomplete resection rate ceiling of 10%, combined with a recommended 1-mm normal-tissue margin and defect inspection.",
+          "C. An incomplete resection rate ceiling of 5%, provided all resections are performed with routine thermal margin ablation.",
+          "D. An incomplete resection ceiling of 1%, achievable only when utilizing piecemeal endoscopic mucosal resection."
         ],
-        "correct": "C",
-        "explanation": "Conventional adenomas are dysplastic epithelial lesions; hyperplastic polyps may be serrated but lack the adenomatous cytologic dysplasia that drives neoplastic risk."
+        "correct": "B",
+        "explanation": "Expert consensus set a 10% ceiling on incomplete resections for 10–19 mm polyps while emphasizing a 1-mm histologic margin, deliberate defect inspection, and photo documentation.",
+        "hint": "Consider the quality benchmarks and margin recommendations set by the international Delphi consensus panel."
       },
       {
-        "question": "For a 10-19 mm nonpedunculated colorectal lesion, what quality principle is emphasized by modern polypectomy guidance?",
+        "question": "A clinical trial evaluating AI-assisted second-look colonoscopy in the right colon demonstrated increased nonadvanced adenoma detection but prolonged median examination time from 11.7 to 13.3 minutes. Which methodological limitation complicates attributing the higher adenoma yield purely to AI technology?",
         "options": [
-          "A. Cold biopsy forceps are preferred",
-          "B. Avoid photo documentation",
-          "C. Aim for complete resection with a margin of normal tissue and careful defect inspection",
-          "D. Tattoo directly under every lesion"
+          "A. The investigators failed to document withdrawal or inspection times during the colonoscopy procedures.",
+          "B. The trial design cannot isolate the detection benefit of the AI software from the physical effect of performing a second examination pass.",
+          "C. The study exclusively evaluated advanced neoplasia reduction, ignoring smaller nonadvanced mucosal lesions.",
+          "D. The inspection protocol was restricted entirely to left-sided colon procedures, rendering right-colon inferences invalid."
         ],
-        "correct": "C",
-        "explanation": "Complete excision, inspection of the defect, and documentation are central quality steps because incomplete resection contributes to interval neoplasia."
+        "correct": "B",
+        "explanation": "Because every AI-assisted evaluation involved an additional physical pass, the confounding effect of the second pass itself cannot be separated from the AI's diagnostic contribution.",
+        "hint": "Think about co-interventions in procedural trials that can independently increase lesion detection."
       },
       {
-        "question": "Sessile serrated lesions are clinically important because they are associated with which pathway?",
+        "question": "The 2024 ACG Clinical Guideline update for colorectal cancer screening reaffirms which starting age for average-risk screening, and how does it frame post-procedure risk stratification?",
         "options": [
-          "A. Squamous metaplasia of the anal canal",
-          "B. Pancreaticobiliary dysplasia",
-          "C. Portal-hypertensive colopathy",
-          "D. Serrated colorectal carcinogenesis, often right-sided"
+          "A. Initiation at age 50, with post-procedure risk stratification based strictly on age-related genetic screening panels.",
+          "B. Initiation at age 45, with post-procedure surveillance risk stratification anchored around adenomas and serrated lesions.",
+          "C. Initiation at age 45, eliminating post-polypectomy risk stratification in favor of routine 10-year colonoscopy intervals for all patients.",
+          "D. Initiation at age 40, framing surveillance intervals exclusively around clinical symptoms and family history."
+        ],
+        "correct": "B",
+        "explanation": "The ACG guideline update maintains average-risk screening initiation at age 45 and stratifies post-polypectomy risk based on adenoma and serrated lesion burden.",
+        "hint": "Recall the recommended age shift for average-risk individuals and the primary lesion types used to guide follow-up intervals."
+      },
+      {
+        "question": "In the evaluation of colorectal polyposis syndromes, which statement accurately reflects current scientific understanding regarding Serrated Polyposis Syndrome (SPS)?",
+        "options": [
+          "A. SPS pathogenesis is universally caused by symptomatic intestinal spirochaetosis that resolves completely following targeted antibiotic therapy.",
+          "B. SPS is recognized as the most common colorectal polyposis syndrome, with most cases occurring sporadically and having poorly understood environmental drivers.",
+          "C. SPS is a rare juvenile polyposis subtype that affects exclusively the distal rectum and anal canal.",
+          "D. SPS is an autosomal dominant hereditary syndrome caused by single-gene APC germline mutations in over 90% of affected patients."
+        ],
+        "correct": "B",
+        "explanation": "SPS is the most frequent colorectal polyposis syndrome, predominantly sporadic in presentation, with underlying environmental and environmental-gene interactions remaining actively investigated.",
+        "hint": "Focus on the relative frequency and genetic inheritance pattern characteristic of most SPS presentations."
+      },
+      {
+        "question": "How does serrated colorectal neoplasia distinctively develop toward malignancy compared to the conventional adenoma-carcinoma sequence?",
+        "options": [
+          "A. It develops rapidly without any precursor epithelial lesions or intermediate dysplastic changes.",
+          "B. It exhibits molecular, epigenetic, and microenvironmental evolution identical to that of conventional tubular adenomas.",
+          "C. It progresses via distinct molecular alterations, unique epithelial programs, and tumor-promoting microenvironmental inflammation.",
+          "D. It relies strictly on early TP53 inactivation and classical chromosomal instability without microenvironmental immune involvement."
+        ],
+        "correct": "C",
+        "explanation": "Serrated neoplasia follows an alternative carcinogenic pathway characterized by unique molecular alterations, distinct epithelial dynamics, and inflammatory tumor microenvironment interactions.",
+        "hint": "Consider the biological features that distinguish serrated neoplasia from traditional adenomatous pathways."
+      },
+      {
+        "question": "According to recommendations for quality improvement in endoscopic polyp removal, what post-resection procedural steps should endoscopists perform routinely?",
+        "options": [
+          "A. Obtain emergent CT imaging for all resections exceeding 10 mm to rule out occult perforation before photo documentation.",
+          "B. Place prophylactic endoscopic clips across every mucosal defect regardless of lesion location, appearance, or bleeding risk.",
+          "C. Perform routine blind thermal ablation of all surrounding normal mucosa without inspectable defect boundaries.",
+          "D. Conduct a deliberate inspection of the resection defect and capture before-and-after photo documentation."
         ],
         "correct": "D",
-        "explanation": "Sessile serrated lesions are precursor lesions in the serrated pathway and are commonly proximal/right-sided."
+        "explanation": "Delphi consensus guidelines mandate deliberate defect inspection and high-quality photo documentation before and after resection to ensure completeness and patient safety.",
+        "hint": "Identify the key procedural quality and documentation standards recommended immediately after polyp excision."
       },
       {
-        "question": "What feature should raise concern for invasive cancer in a colorectal polyp specimen?",
+        "question": "A real-world implementation trial across the Veterans Health Administration (VHA) network evaluated computer-aided detection (GI Genius). What was the design and scale of this health system evaluation?",
         "options": [
-          "A. A left-colon location",
-          "B. Mucus cap on the surface",
-          "C. Submucosal invasion",
-          "D. Small size alone"
+          "A. A randomized crossover study evaluating wireless capsule endoscopy in 50 patients with occult gastrointestinal bleeding.",
+          "B. A cluster-randomized trial comparing 42 facilities adopting computer-aided detection against 97 control facilities across more than 334,000 colonoscopies.",
+          "C. A single-center prospective cohort study comparing 5 endoscopists across 1,000 screening colonoscopies.",
+          "D. A retrospective survey of private ambulatory surgery centers analyzing equipment costs without clinical detection endpoints."
+        ],
+        "correct": "B",
+        "explanation": "The VHA network study utilized a massive cluster-randomized design involving 42 CADe-adopting facilities and 97 control facilities covering over 334,000 procedures.",
+        "hint": "Reflect on the large-scale, health-system-wide nature of the VHA artificial intelligence study."
+      },
+      {
+        "question": "In a first-in-human 50-patient feasibility study evaluating a novel robotic colonoscopy platform, what notable procedural result was reported regarding cecal intubation?",
+        "options": [
+          "A. Cecal intubation was successful in 75% of cases, with one-third requiring conversion to conventional adult colonoscopes.",
+          "B. Cecal intubation required mandatory repositioning to the supine position under general anesthesia in all subjects.",
+          "C. Cecal intubation was achieved in 100% of cases while maintaining patients in the left lateral position without repositioning or conversion.",
+          "D. Cecal intubation failed in over half of the cohort due to uncontrollable robotic arm loop formation."
         ],
         "correct": "C",
-        "explanation": "Submucosal invasion changes management because it raises lymph-node and residual-disease risk and may require surgical evaluation depending on adverse features."
+        "explanation": "The pilot robotic study achieved a 100% cecal intubation rate entirely in the left lateral position without needing patient repositioning or manual conversion.",
+        "hint": "Consider the key position and success rate benchmarks highlighted in early robotic device trials."
+      },
+      {
+        "question": "Proposed 2027 Centers for Medicare & Medicaid Services (CMS) policy updates impact gastroenterology practices primarily through which changes?",
+        "options": [
+          "A. Reductions in GI reimbursement rates alongside updates to remote-monitoring and colonoscopy quality-measure policies.",
+          "B. Restricting Medicare coverage for colonoscopy exclusively to patients with known genetic polyposis syndromes.",
+          "C. An across-the-board 20% rate increase for diagnostic colonoscopy paired with complete deregulation of quality metrics.",
+          "D. Mandatory requirement that all screening colonoscopies be performed using robotic endoscopy platforms by 2027."
+        ],
+        "correct": "A",
+        "explanation": "Proposed 2027 CMS rules involve payment rate cuts for GI services and altered policies surrounding remote monitoring and colonoscopy quality measures.",
+        "hint": "Think about the financial pressures and regulatory quality-reporting shifts facing gastroenterology practices."
+      },
+      {
+        "question": "The US Multi-Society Task Force (USMSTF) guidelines on the endoscopic removal of colorectal lesions emphasize which core strategy to minimize incomplete polyp resection and optimize outcomes?",
+        "options": [
+          "A. Mandatory surgical resection for all non-pedunculated polyps larger than 5 mm located in the proximal colon.",
+          "B. Rigorous pre-resection lesion assessment, selection of the appropriate resection technique, and deliberate verification of complete excision.",
+          "C. Scheduling mandatory repeat colonoscopy at 3 months for all patients regardless of polyp size, complete excision, or histologic subtype.",
+          "D. Exclusive use of hot biopsy forceps for all flat sessile serrated lesions to ensure deep stromal margin destruction."
+        ],
+        "correct": "B",
+        "explanation": "USMSTF guidelines stress that accurate lesion assessment, choice of optimal resection modality (e.g., cold snare vs. EMR), and thorough margin verification are essential for complete polyp removal.",
+        "hint": "Focus on the systematic endoscopist-driven steps prior to, during, and after polyp resection emphasized in society guidelines."
       }
     ],
     "quizStatus": "repo-managed-complete",
     "quizSourcePdfs": [
       "colon-polyps-pathology.pdf"
     ],
-    "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
+    "quizGeneratedAt": "2026-10-09T01:45:00.000Z",
     "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "approved"
@@ -1623,55 +1696,131 @@ const scheduleResources = {
     ],
     "quiz": [
       {
-        "question": "A low-grade appendiceal mucinous neoplasm is most clinically concerning when associated with what finding?",
+        "question": "A 58-year-old male undergoes upper endoscopy, and gastric biopsies demonstrate intestinal metaplasia. Histological subtyping reveals incomplete intestinal metaplasia. According to recent observational meta-analyses, how does the gastric cancer progression rate in incomplete metaplasia compare to complete metaplasia?",
         "options": [
-          "A. Mild acute appendicitis only",
-          "B. A normal serosa",
-          "C. Extra-appendiceal mucin or peritoneal spread",
-          "D. Lymphoid hyperplasia alone"
+          "A. It is twice as high, driven exclusively by concurrent Helicobacter pylori infection status.",
+          "B. It is approximately sevenfold higher (12.15 vs. 1.73 per 1,000 person-years).",
+          "C. It is lower because complete metaplasia carries a higher density of dysplastic change.",
+          "D. It is equivalent, as progression risk depends solely on whether the disease is limited or extensive."
+        ],
+        "correct": "B",
+        "explanation": "Recent meta-analyses show that incomplete intestinal metaplasia progresses to gastric cancer at 12.15 per 1,000 person-years compared to 1.73 per 1,000 person-years for complete metaplasia, representing a sevenfold increase.",
+        "hint": "Focus on how histological subtype impacts the numerical incidence rate per 1,000 person-years."
+      },
+      {
+        "question": "When risk-stratifying patients with gastric intestinal metaplasia based on recent clinical cohort analyses, which disease characteristic demonstrated NO significant difference in gastric cancer progression rates?",
+        "options": [
+          "A. Incomplete versus complete histological subtype",
+          "B. Presence versus absence of intestinal metaplasia overall",
+          "C. Limited versus extensive disease distribution",
+          "D. Progression speed over long-term follow-up cohorts"
         ],
         "correct": "C",
-        "explanation": "Mucin outside the appendix, especially with epithelial cells, raises concern for peritoneal dissemination/pseudomyxoma peritonei risk."
+        "explanation": "Cohort analysis reveals that progression rates between limited and extensive gastric intestinal metaplasia do not differ significantly.",
+        "hint": "Consider which anatomical spread metric failed to show a statistically significant variation in progression incidence."
       },
       {
-        "question": "Anal squamous intraepithelial lesions are most closely linked to which risk factor?",
+        "question": "In a large claims analysis evaluating 15,687 adults with inflammatory bowel disease (IBD) receiving advanced therapies, which pattern of three-year cumulative cancer incidence was observed across drug classes?",
         "options": [
-          "A. Helicobacter pylori",
-          "B. Primary sclerosing cholangitis",
-          "C. High-risk HPV infection",
-          "D. Celiac-associated HLA type"
+          "A. JAK inhibitors demonstrated a significantly lower risk of cancer than anti-interleukin therapies.",
+          "B. Vedolizumab was associated with a statistically significant 5-fold increase in malignancy risk compared to TNF antagonists.",
+          "C. Anti-interleukin therapy showed complete elimination of incident cancer events over three years.",
+          "D. Cumulative cancer incidence ranged between 2.0% and 2.7% with no significant adjusted class differences."
+        ],
+        "correct": "D",
+        "explanation": "Three-year cumulative cancer incidence ranged from 2.0% to 2.7% across TNF antagonists, vedolizumab, anti-ILs, and JAK inhibitors, with no significant adjusted difference among classes.",
+        "hint": "Look at the overall range of cumulative incidence percentages and whether class-level statistical significance was reached."
+      },
+      {
+        "question": "A gastroenterologist is reviewing safety data for advanced IBD therapies regarding malignancy risk. Based on recent cohort findings in over 15,000 IBD patients, what was the three-year cumulative incidence of cancer observed specifically in patients treated with vedolizumab?",
+        "options": [
+          "A. 2.7%",
+          "B. 1.0%",
+          "C. 8.2%",
+          "D. 5.4%"
+        ],
+        "correct": "A",
+        "explanation": "Claims data analysis revealed a 3-year cumulative cancer incidence of 2.7% among patients receiving vedolizumab.",
+        "hint": "Identify the specific percentage point lying within the 2.0% to 2.7% range reported across advanced therapy classes."
+      },
+      {
+        "question": "A 42-year-old female presents with chronic watery, non-bloody diarrhea. Endoscopy is normal, but biopsies confirm microscopic colitis. According to recent pharmacoepidemiologic analyses, which medication exposure is significantly associated with an elevated risk signal for microscopic colitis?",
+        "options": [
+          "A. Direct oral anticoagulants",
+          "B. H2-receptor antagonists",
+          "C. Oral contraceptives",
+          "D. Thiazide diuretics"
         ],
         "correct": "C",
-        "explanation": "High-risk HPV drives most anal squamous dysplasia and carcinoma, informing screening and prevention strategies."
+        "explanation": "Retrospective matched cohort analyses identified a statistically significant increased risk signal for microscopic colitis among users of oral contraceptives (e.g., RR 1.32; OR 1.66).",
+        "hint": "Think about reproductive endocrine therapies evaluated in retrospective analysis for microscopic colitis incidence."
       },
       {
-        "question": "Which anatomic distinction matters for anal pathology interpretation?",
+        "question": "Alongside selected hormonal therapies, retrospective database analyses revealed a drug-specific risk association for microscopic colitis with which class of medications?",
         "options": [
-          "A. Fundic versus antral mucosa",
-          "B. Duodenal bulb versus second portion",
-          "C. Intrahepatic versus extrahepatic bile duct",
-          "D. Squamous/transitional zone versus colorectal-type mucosa"
+          "A. Selected antidepressants (SSRIs/SNRIs)",
+          "B. Beta-blockers",
+          "C. Anticonvulsants",
+          "D. Statins"
         ],
-        "correct": "D",
-        "explanation": "The anal canal includes squamous, transitional, and glandular mucosa; lesion type and differential diagnosis depend on location."
+        "correct": "A",
+        "explanation": "Selected antidepressants, specifically SSRIs and SNRIs, demonstrated drug-specific risk signals associated with microscopic colitis development.",
+        "hint": "Consider common neuro-psychotropic agents routinely prescribed for mood disorders that demonstrate drug-specific associations."
       },
       {
-        "question": "For appendiceal neuroendocrine tumors, what commonly influences management beyond diagnosis alone?",
+        "question": "A patient with refractory fecal incontinence undergoes neuromodulation therapy. According to recent clinical trial evaluation data, which clinical outcome improved following intervention WITHOUT demonstrating a statistically significant between-group benefit?",
         "options": [
-          "A. Presence of diverticulosis",
-          "B. Serum amylase only",
-          "C. Colonoscopy withdrawal time",
-          "D. Tumor size, margin status, mesoappendiceal invasion, and grade"
+          "A. Peripheral nerve conduction measures",
+          "B. Incontinence severity scores",
+          "C. Anal squeeze pressure",
+          "D. Between-group quality-of-life benefit"
         ],
         "correct": "D",
-        "explanation": "Risk stratification uses size and pathologic adverse features to decide whether appendectomy alone is adequate or additional surgery is considered."
+        "explanation": "Although objective parameters and severity scores improved, a statistically significant between-group quality-of-life benefit was not demonstrated.",
+        "hint": "Focus on the patient-reported outcome measure where statistically significant between-group divergence was not established despite physiological improvements."
+      },
+      {
+        "question": "When reviewing the ASCRS Clinical Practice Guidelines for the Management of Appendiceal Neoplasms, which spectrum of pathology is explicitly addressed to guide evaluation and surgical decision-making?",
+        "options": [
+          "A. Squamous cell carcinoma of the appendix and perianal fistulizing Crohn's disease",
+          "B. Appendiceal epithelial tumors, mucinous neoplasms, and peritoneal spread",
+          "C. Isolated neuroendocrine carcinoid tumors of less than 0.5 cm only",
+          "D. Gastrointestinal stromal tumors (GIST) and leiomyosarcomas exclusively"
+        ],
+        "correct": "B",
+        "explanation": "The 2019 ASCRS guidelines focus on appendiceal epithelial tumors, mucinous neoplasms, and their potential for peritoneal dissemination.",
+        "hint": "Consider the major histological classification of appendiceal primary lesions that frequently present with pseudomyxoma peritonei or mucinous ascites."
+      },
+      {
+        "question": "According to the ASCRS Clinical Practice Guidelines for Anal Squamous Cell Cancers, what core components comprise the recommended clinical approach for anal squamous neoplasia?",
+        "options": [
+          "A. Annual screening colonoscopy as the sole surveillance modality for localized disease",
+          "B. Diagnosis, staging, treatment, and surveillance of anal squamous neoplasia",
+          "C. Immediate total pelvic exenteration for all low-grade dysplastic lesions",
+          "D. Empiric systemic chemotherapy without histologic tissue confirmation"
+        ],
+        "correct": "B",
+        "explanation": "Guidelines establish comprehensive standards encompassing prompt diagnosis, accurate staging, multi-modality treatment, and structured surveillance protocols.",
+        "hint": "Think about the comprehensive clinical progression from initial tissue identification through oncologic follow-up."
+      },
+      {
+        "question": "Based on recent global incidence analyses evaluating the overall burden of malignancy attributable to infectious agents, what is the primary clinical and public health implication for cancer prevention strategies?",
+        "options": [
+          "A. Oncogenic infectious agents only account for gastrointestinal malignancies in low-income nations.",
+          "B. Infectious agents represent an important, preventable cause of cancer globally that requires targeted prevention and incidence tracking.",
+          "C. Infectious etiologies are non-modifiable and cannot be targeted by public health vaccination or eradication initiatives.",
+          "D. Vaccine-preventable viral infections have been completely eliminated as drivers of global cancer incidence."
+        ],
+        "correct": "B",
+        "explanation": "Worldwide incidence analyses emphasize that infectious agents are a major preventable cause of global cancer burden, supporting targeted eradication and prevention strategies.",
+        "hint": "Focus on the potential for prevention and global burden reduction highlighted by tracking carcinogenic infectious agents."
       }
     ],
     "quizStatus": "repo-managed-complete",
     "quizSourcePdfs": [
       "appendix-and-anus-pathology.pdf"
     ],
-    "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
+    "quizGeneratedAt": "2026-10-09T01:45:00.000Z",
     "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "approved"
@@ -1747,55 +1896,131 @@ const scheduleResources = {
     ],
     "quiz": [
       {
-        "question": "Which initial serologic test is most commonly used for suspected celiac disease in an IgA-sufficient patient?",
+        "question": "In a 2026 nationwide cohort study investigating long-term hepatic outcomes in celiac disease, which specific liver-related outcome was found to be significantly elevated in patients with biopsy-proven celiac disease compared to matched controls over a mean 12.1-year follow-up?",
         "options": [
-          "A. Serum gastrin",
-          "B. p-ANCA",
-          "C. Tissue transglutaminase IgA",
-          "D. Anti-mitochondrial antibody"
-        ],
-        "correct": "C",
-        "explanation": "tTG-IgA is the usual first-line test, paired with total IgA to avoid missing IgA deficiency."
-      },
-      {
-        "question": "What diet state is preferred when performing diagnostic serology or duodenal biopsy for celiac disease?",
-        "options": [
-          "A. Eating gluten",
-          "B. Low-FODMAP diet",
-          "C. Elemental diet",
-          "D. Strict gluten avoidance for 6 months"
+          "A. Liver transplant risk",
+          "B. Primary sclerosing cholangitis without endoscopic involvement",
+          "C. Isolated acute liver failure from drug toxicity",
+          "D. Spontaneous resolution of metabolic fatty liver disease"
         ],
         "correct": "A",
-        "explanation": "Testing is most reliable while the patient is consuming gluten; gluten avoidance can normalize serology and histology."
+        "explanation": "The Swedish nationwide matched cohort study specifically demonstrated an increased long-term risk of requiring a liver transplant among patients with biopsy-proven celiac disease.",
+        "hint": "Think about severe, end-stage liver disease interventions evaluated in the Swedish cohort."
       },
       {
-        "question": "Classic untreated celiac disease histology includes which pattern?",
+        "question": "A nationwide epidemiological study conducted between 2000 and 2023 evaluated long-term hepatic complications in celiac disease. Which study design feature characterized the patient cohort used to establish this association?",
         "options": [
-          "A. Crypt abscesses with transmural granulomas",
-          "B. Eosinophilic microabscesses only",
-          "C. Pseudomembranes",
-          "D. Villous atrophy with increased intraepithelial lymphocytes"
+          "A. Biopsy-proven celiac disease matched with comparator individuals from the general population",
+          "B. Prospective randomized trial cohort comparing a strict gluten-free diet to gluten challenge",
+          "C. Serology-positive patients without duodenal biopsy confirmation compared to self-reported controls",
+          "D. Cross-sectional survey of outpatient tertiary gastroenterology clinics"
         ],
-        "correct": "D",
-        "explanation": "Celiac disease typically shows increased intraepithelial lymphocytes, crypt hyperplasia, and varying villous atrophy."
+        "correct": "A",
+        "explanation": "The study leveraged nationwide registry data using histologically confirmed celiac disease cases paired with matched general population comparators.",
+        "hint": "Consider the diagnostic gold standard required for inclusion in the registry study."
       },
       {
-        "question": "A key long-term management step after diagnosis is:",
+        "question": "In the 2000–2023 nationwide matched cohort study assessing liver transplant risk in celiac disease, what was the mean follow-up duration for the study population?",
         "options": [
-          "A. Empiric colectomy",
-          "B. Chronic broad-spectrum antibiotics",
-          "C. Dietitian-supported gluten-free diet and follow-up for response/adherence",
-          "D. Avoid all dietary fat"
+          "A. 5.0 years",
+          "B. 12.1 years",
+          "C. 1.2 years",
+          "D. 20.5 years"
+        ],
+        "correct": "B",
+        "explanation": "Follow-up across the study cohort averaged 12.1 years, providing sufficient longitudinal scope to observe rare hepatobiliary endpoints.",
+        "hint": "Recall the multi-decade longitudinal duration reported for tracking hepatobiliary endpoints."
+      },
+      {
+        "question": "According to recent expert consensus from the Society for the Study of Celiac Disease and Celiac Disease Foundation policy symposium, how is the overarching paradigm of celiac care evolving?",
+        "options": [
+          "A. Shifting toward broader screening strategies and therapeutic modalities beyond strict gluten avoidance",
+          "B. Replacing duodenal biopsy entirely with genetic HLA testing for primary treatment monitoring",
+          "C. Mandating lifelong immunosuppression alongside an unrestricted gluten diet",
+          "D. Restricting screening strictly to symptomatic patients while eliminating serologic monitoring"
+        ],
+        "correct": "A",
+        "explanation": "Recent expert consensus emphasizes moving beyond sole reliance on strict gluten avoidance toward proactive screening and novel adjunctive therapies.",
+        "hint": "Consider emerging management strategies discussed at the policy symposium that expand beyond dietary elimination."
+      },
+      {
+        "question": "The 2023 American College of Gastroenterology (ACG) Clinical Guidelines provide evidence-based recommendations for celiac disease. Which of the following clinical domains is explicitly emphasized in these guidelines?",
+        "options": [
+          "A. Routine prophylactic splenectomy in all adult patients diagnosed with celiac disease",
+          "B. Refractory celiac disease, serologic testing, duodenal biopsy, and special populations",
+          "C. Empirical high-dose corticosteroid therapy prior to serologic evaluation",
+          "D. Universal restriction of lactose and fructose as a replacement for gluten avoidance"
+        ],
+        "correct": "B",
+        "explanation": "The ACG guidelines provide comprehensive evidence-based recommendations encompassing initial serology, biopsy protocols, refractory disease management, and special populations.",
+        "hint": "Focus on the core diagnostic, management, and monitoring topics detailed in the ACG framework."
+      },
+      {
+        "question": "In the Swedish nationwide matched cohort study analyzing liver transplantation risk (2000–2023), approximately how many biopsy-proven celiac disease cases were evaluated against matched comparators?",
+        "options": [
+          "A. 1,200 biopsy-proven celiac disease patients matched to 2,400 comparators",
+          "B. 500,000 biopsy-proven celiac disease patients matched to 500,000 comparators",
+          "C. 41,277 biopsy-proven celiac disease patients matched to 196,863 comparators",
+          "D. 196,863 biopsy-proven celiac disease patients matched to 41,277 comparators"
         ],
         "correct": "C",
-        "explanation": "Management centers on a strict gluten-free diet, nutritional assessment, and follow-up of symptoms and serologic response."
+        "explanation": "The nationwide study incorporated 41,277 biopsy-proven celiac patients matched to 196,863 general population controls.",
+        "hint": "The study featured a celiac cohort of over 40,000 individuals matched to nearly 200,000 population controls."
+      },
+      {
+        "question": "When reviewing recent gastroenterology literature from April 2026, which major general medical journal published a comprehensive review article dedicated to Celiac Disease (PMID: 41950475)?",
+        "options": [
+          "A. American Journal of Surgical Pathology",
+          "B. New England Journal of Medicine",
+          "C. Gastroenterology & Endoscopy News",
+          "D. Journal of Pediatric Hepatology"
+        ],
+        "correct": "B",
+        "explanation": "The New England Journal of Medicine published a detailed clinical review on celiac disease in April 2026.",
+        "hint": "Identify the major general medical review publication listed in the source packet PubMed pull."
+      },
+      {
+        "question": "What key clinical practice transition was highlighted during the 2026 policy symposium co-hosted by the Society for the Study of Celiac Disease and the Celiac Disease Foundation?",
+        "options": [
+          "A. Transitioning away from biopsy-proven diagnostic standards to pure symptom-based questionnaires",
+          "B. Approaching a turning point toward broader population screening and non-dietary adjunctive therapies",
+          "C. Recommending total gluten reintroduction after 5 years of strict dietary compliance",
+          "D. Discontinuing all research into pharmacological alternatives to the gluten-free diet"
+        ],
+        "correct": "B",
+        "explanation": "Symposium leaders highlighted an upcoming shift toward broader active case-finding and non-dietary therapeutic options.",
+        "hint": "Reflect on the policy symposium's message regarding the future of detection and non-dietary interventions."
+      },
+      {
+        "question": "In evaluating the methodological rigor of the Swedish nationwide liver-transplant study (2000–2023), why was biopsy confirmation utilized for defining the celiac disease cohort?",
+        "options": [
+          "A. Biopsy proof ensures high diagnostic specificity for celiac disease within nationwide registry data",
+          "B. Biopsy proof was required to confirm non-celiac gluten sensitivity before cohort enrollment",
+          "C. Biopsy proof guarantees that patients will not require long-term serologic follow-up",
+          "D. Biopsy proof is the only method available in Sweden for detecting transglutaminase antibodies"
+        ],
+        "correct": "A",
+        "explanation": "Biopsy proof provides rigorous confirmation of enteropathy, minimizing misclassification in large registry-based research.",
+        "hint": "Consider why historical population registries rely on histopathologic diagnostic coding to define true celiac cases."
+      },
+      {
+        "question": "The 2023 ACG Clinical Guidelines address the evaluation and monitoring of celiac disease. Which management component is essential when evaluating patients with persistent or recurrent symptoms despite reported adherence to a gluten-free diet?",
+        "options": [
+          "A. Immediate permanent discontinuation of all serologic testing",
+          "B. Systematic evaluation for dietary non-adherence and refractory celiac disease",
+          "C. Immediate escalation to liver transplantation evaluation",
+          "D. Substitution of the gluten-free diet with an exclusive elemental diet without diagnostic workup"
+        ],
+        "correct": "B",
+        "explanation": "Guidelines recommend systematic evaluation for inadvertent gluten exposure, dietary non-adherence, and refractory celiac disease in non-responsive patients.",
+        "hint": "Guidelines address persistent symptoms by distinguishing non-adherence from complicated refractory states."
       }
     ],
     "quizStatus": "repo-managed-complete",
     "quizSourcePdfs": [
       "celiac-disease.pdf"
     ],
-    "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
+    "quizGeneratedAt": "2026-10-09T01:45:00.000Z",
     "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "approved"
@@ -1881,55 +2106,131 @@ const scheduleResources = {
     ],
     "quiz": [
       {
-        "question": "For suspected small-bowel bleeding after negative EGD and colonoscopy, what test is often used early?",
+        "question": "In a nationwide Swedish matched cohort study (2000–2023) evaluating patients with biopsy-proven celiac disease over a mean follow-up of 12.1 years, which long-term hepatic outcome was specifically demonstrated?",
         "options": [
-          "A. Hydrogen breath test as first-line bleeding evaluation",
-          "B. Barium swallow only",
-          "C. Video capsule endoscopy",
-          "D. Routine ERCP"
-        ],
-        "correct": "C",
-        "explanation": "Capsule endoscopy is commonly used to evaluate mucosal small-bowel bleeding sources after standard endoscopy is unrevealing."
-      },
-      {
-        "question": "Which lesion is a common small-bowel bleeding source in older adults?",
-        "options": [
-          "A. Anal fissure",
-          "B. Angioectasia",
-          "C. Barrett's esophagus",
-          "D. Fundic gland polyp"
+          "A. A reduction in the incidence of primary biliary cholangitis following gluten elimination.",
+          "B. An increased risk of liver transplantation compared to matched population controls.",
+          "C. Equivalent rates of end-stage liver outcomes when compared to non-celiac controls.",
+          "D. Complete normalization of chronic liver disease risk once mucosal healing is documented."
         ],
         "correct": "B",
-        "explanation": "Small-bowel angioectasias are frequent causes of obscure/small-bowel bleeding, especially in older patients."
+        "explanation": "The Swedish nationwide cohort study identified a statistically significant elevation in the risk of liver transplantation among patients with biopsy-proven celiac disease compared to matched population controls.",
+        "hint": "Consider the long-term hepatic complications investigated in large Scandinavian population cohorts."
       },
       {
-        "question": "Which small-intestinal pathology pattern is typical for celiac disease?",
+        "question": "According to the ACG Clinical Guideline on Small Bowel Bleeding, what is the primary diagnostic modality recommended for initial evaluation of suspected small bowel bleeding after negative upper and lower GI endoscopy?",
         "options": [
-          "A. Villous blunting with intraepithelial lymphocytosis",
-          "B. Goblet-cell loss limited to rectum",
-          "C. Caseating granulomas only",
-          "D. Mallory-Denk bodies"
+          "A. Video capsule endoscopy.",
+          "B. Push enteroscopy.",
+          "C. Technetium-99m labeled red blood cell scan.",
+          "D. CT enterography."
         ],
         "correct": "A",
-        "explanation": "Celiac disease is a prototypical small-bowel mucosal disorder with villous blunting and increased intraepithelial lymphocytes."
+        "explanation": "Video capsule endoscopy provides non-invasive visualization of the complete small bowel mucosa and is recommended as the first-line diagnostic investigation following negative EGD and colonoscopy.",
+        "hint": "Think about the least invasive initial visualization procedure that covers the entire length of the small intestine."
       },
       {
-        "question": "When capsule endoscopy identifies a treatable small-bowel lesion, what procedure may allow therapy or biopsy?",
+        "question": "A 34-year-old adult presents with chronic diarrhea and weight loss. According to the 2023 ACG Clinical Guidelines for Celiac Disease, which approach represents the standard diagnostic strategy to confirm celiac disease?",
         "options": [
-          "A. Flexible sigmoidoscopy only",
-          "B. Endoscopic ultrasound of the pancreas",
-          "C. Transjugular liver biopsy",
-          "D. Device-assisted enteroscopy"
+          "A. HLA-DQ2/DQ8 gene testing alone to establish active mucosal disease without endoscopic tissue sampling.",
+          "B. IgA anti-tissue transglutaminase (tTG) serology combined with duodenal biopsies showing intraepithelial lymphocytosis and villous atrophy while on a gluten-containing diet.",
+          "C. An empiric 6-month trial of a gluten-free diet followed by clinical reassessment without baseline serology or endoscopy.",
+          "D. Fecal calprotectin testing followed by capsule endoscopy to inspect the distal ileum."
+        ],
+        "correct": "B",
+        "explanation": "ACG guidelines mandate serologic evaluation alongside endoscopic duodenal biopsies obtained while the patient is maintaining a gluten-containing diet to definitively confirm celiac disease in adults.",
+        "hint": "Consider the combination of serologic screening and duodenal tissue sampling under normal dietary conditions."
+      },
+      {
+        "question": "Based on expert symposium updates regarding the future trajectory of celiac disease management, which shift in disease screening and treatment paradigms is currently being prioritized?",
+        "options": [
+          "A. Replacing all baseline histological and serological testing with empiric dietary elimination.",
+          "B. Eliminating intestinal biopsy entirely in favor of universal genetic screening across all adult populations.",
+          "C. Transitioning toward broader population screening strategies and non-dietary adjunct therapies beyond strict gluten avoidance.",
+          "D. Discontinuing routine clinical and laboratory follow-up once initial serologic normalization occurs."
+        ],
+        "correct": "C",
+        "explanation": "Recent expert consensus emphasizes expanding screening approaches and developing pharmacological therapies to supplement lifelong gluten-free diets.",
+        "hint": "Focus on modern policy discussions addressing the limitations of strict dietary restriction alone."
+      },
+      {
+        "question": "When evaluating a patient with persistent intestinal symptoms despite reported adherence to a gluten-free diet, which step is essential in the management algorithm for suspected refractory celiac disease according to clinical guidelines?",
+        "options": [
+          "A. Ordering a nuclear bleeding scan to evaluate occult microvascular enteropathy.",
+          "B. Proceeding directly to surgical resection of the affected small intestinal segment.",
+          "C. Immediately starting systemic high-dose corticosteroids without repeating duodenal endoscopy or checking dietary compliance.",
+          "D. Re-assessing dietary compliance with a specialized dietitian and performing repeat mucosal biopsies with immunophenotyping to distinguish Type 1 from Type 2 disease."
         ],
         "correct": "D",
-        "explanation": "Deep/device-assisted enteroscopy can reach small-bowel lesions for therapy, biopsy, or tattooing after capsule localization."
+        "explanation": "Investigating non-responsive celiac disease requires rule-out of ongoing inadvertent gluten exposure followed by histologic re-evaluation and immunophenotyping to differentiate Refractory Celiac Disease Type 1 from Type 2.",
+        "hint": "Distinguishing non-responsive disease from true refractory subtype requires systematic verification of gluten exposure and histological analysis."
+      },
+      {
+        "question": "According to ACG guidelines on small bowel bleeding, in which clinical scenario is deep enteroscopy (such as double-balloon or single-balloon enteroscopy) most strongly indicated?",
+        "options": [
+          "A. For routine annual mucosal surveillance in uncomplicated celiac disease without bleeding.",
+          "B. In patients presenting with acute upper GI bleeding prior to standard esophagogastroduodenoscopy.",
+          "C. When video capsule endoscopy identifies a localized small bowel lesion requiring tissue sampling or endoluminal therapeutic intervention.",
+          "D. As the primary screening tool prior to non-invasive video capsule endoscopy."
+        ],
+        "correct": "C",
+        "explanation": "Deep enteroscopy is indicated for direct therapeutic maneuvers (e.g., argon plasma coagulation) or target biopsy when capsule endoscopy localizes a lesion.",
+        "hint": "This invasive procedure is best utilized when therapeutic intervention or tissue biopsy is needed following capsule visualization."
+      },
+      {
+        "question": "According to the 2023 ACG Clinical Guidelines on Celiac Disease, how should clinical response and mucosal recovery be monitored after starting a gluten-free diet?",
+        "options": [
+          "A. Via daily fecal calprotectin testing to adjust dietary gluten thresholds.",
+          "B. By performing annual deep balloon enteroscopy regardless of patient symptom status.",
+          "C. With routine cross-sectional CT enterography every 6 months to measure small bowel wall thickness.",
+          "D. Through periodic clinical symptom reassessment and serologic monitoring, with repeat duodenal biopsy considered to confirm mucosal healing or evaluate persistent symptoms."
+        ],
+        "correct": "D",
+        "explanation": "Guidelines recommend systematic non-invasive clinical and serologic monitoring, utilizing follow-up endoscopy and mucosal biopsy selectively to verify healing or investigate refractory symptoms.",
+        "hint": "Long-term management balances non-invasive serologic monitoring with selective histological re-evaluation."
+      },
+      {
+        "question": "The nationwide Swedish matched cohort study (2000–2023) investigating long-term hepatic outcomes in celiac disease utilized which core methodology?",
+        "options": [
+          "A. A matched cohort design comparing 41,277 biopsy-proven celiac disease patients to 196,863 population comparators over a mean follow-up of 12.1 years.",
+          "B. A pediatric-only registry evaluation tracking congenital biliary duct abnormalities.",
+          "C. A 6-month randomized controlled trial testing drug therapies in 41,277 patients with primary biliary cholangitis.",
+          "D. A retrospective survey relying strictly on patient self-reported gluten sensitivity without mucosal histopathology."
+        ],
+        "correct": "A",
+        "explanation": "The study utilized nationwide registry data in Sweden tracking 41,277 biopsy-verified celiac patients against 196,863 matched controls across an average 12.1-year follow-up period.",
+        "hint": "Note the cohort size, multi-decade registry scope, and verified biopsy criteria in Scandinavian registry data."
+      },
+      {
+        "question": "When examining small intestinal mucosal biopsies, which principle accurately describes the pathopathologic specificity of intraepithelial lymphocytosis accompanied by villous atrophy?",
+        "options": [
+          "A. Intraepithelial lymphocytosis is clinically relevant only when accompanied by transmural neutrophilic crypt abscesses.",
+          "B. While characteristic of celiac disease, identical histological features can occur in non-celiac enteropathies, requiring correlation with serology and dietary history.",
+          "C. Negative serology completely excludes celiac disease regardless of severe mucosal architectural changes.",
+          "D. The pattern is pathognomonic for celiac disease and excludes all other intestinal pathology."
+        ],
+        "correct": "B",
+        "explanation": "Duodenal villous atrophy with intraepithelial lymphocytosis is classic for celiac disease but can be mimicked by medication-induced enteropathy, autoimmune enteropathy, or tropical sprue, necessitating clinicopathologic correlation.",
+        "hint": "Histologic patterns in the small intestine require clinical and serological context due to overlapping features with non-celiac enteropathies."
+      },
+      {
+        "question": "In a patient with overt suspected small bowel bleeding where capsule endoscopy is contraindicated due to a high suspicion of bowel stricture, which initial diagnostic modality is recommended?",
+        "options": [
+          "A. Cross-sectional imaging such as CT enterography or MR enterography.",
+          "B. Immediate exploratory laparotomy with empirical resection of the ileum.",
+          "C. Push enteroscopy as a complete survey of the distal ileum.",
+          "D. Technetium-99m sulfur colloid scan as the definitive structural anatomical evaluation."
+        ],
+        "correct": "A",
+        "explanation": "ACG guidelines recommend CT enterography or MR enterography when video capsule endoscopy is contraindicated due to suspected obstruction or stricture to evaluate mural and luminal disease safely.",
+        "hint": "Consider cross-sectional imaging techniques designed to detect structural bowel wall disease and patency issue prior to endoluminal procedures."
       }
     ],
     "quizStatus": "repo-managed-complete",
     "quizSourcePdfs": [
       "small-intestine-pathology.pdf"
     ],
-    "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
+    "quizGeneratedAt": "2026-10-09T01:45:00.000Z",
     "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "approved"
@@ -2042,55 +2343,131 @@ const scheduleResources = {
     ],
     "quiz": [
       {
-        "question": "Before using an AI tool for GI research writing or analysis, what is a key safety step?",
+        "question": "A gastroenterologist evaluates the evidence regarding an AI-assisted second look during colonoscopy to improve right-colon adenoma detection. When critically appraising clinical trials on this approach, which confounding factor or study limitation must be accounted for?",
         "options": [
-          "A. Upload identifiable patient data to public tools",
-          "B. Skip human review",
-          "C. Verify outputs against primary sources and disclose AI assistance when appropriate",
-          "D. Assume all citations are correct"
-        ],
-        "correct": "C",
-        "explanation": "AI outputs can be wrong or fabricated; verification, privacy protection, and disclosure are core safeguards."
-      },
-      {
-        "question": "Which project is highest risk for unrestricted public-AI use?",
-        "options": [
-          "A. A de-identified teaching outline",
-          "B. A dataset containing protected health information",
-          "C. A public PubMed search strategy",
-          "D. A generic grammar edit"
+          "A. Randomized tandem trials on right-colon AI second look consistently demonstrate a reduction in post-colonoscopy interval colorectal cancers.",
+          "B. The study design fails to isolate the benefit of computer-aided detection (CADe) from the independent effect of performing a second mucosal pass.",
+          "C. The added second pass significantly decreases total procedure examination time, confounding withdrawal quality metrics.",
+          "D. AI-assisted second-look colonoscopy predominantly increases the detection of advanced adenomas while missing flat nonadvanced lesions."
         ],
         "correct": "B",
-        "explanation": "PHI and sensitive unpublished data require institution-approved, secure workflows rather than open public tools."
+        "explanation": "The study design cannot isolate AI from the second look pass itself, making it difficult to determine whether increased detection stems from the technology or the extra inspection time and pass.",
+        "hint": "Consider how adding an extra procedural inspection phase introduces an independent variable alongside the algorithm itself."
       },
       {
-        "question": "In AI-assisted literature review, what should remain human-controlled?",
+        "question": "A health system's endoscopy committee is reviewing real-world pragmatic data on computer-aided detection (CADe) implementation across a large integrated network (Veterans Health Administration). Which study design element best characterizes the trial evaluating GI Genius across 42 adopting facilities versus 97 control facilities?",
         "options": [
-          "A. Final inclusion decisions and interpretation of clinical relevance",
-          "B. The browser zoom level",
-          "C. Only font choice",
-          "D. Nothing once prompts are written"
+          "A. A double-blind, sham-controlled single-center crossover trial in non-veteran academic medical centers.",
+          "B. A retrospective case-control study matched exclusively on patients with high-risk serrated polyposis syndrome.",
+          "C. A small prospective single-center feasibility cohort comparing trainee versus expert withdrawal times.",
+          "D. A cluster-randomized design evaluating system-wide adoption across over 334,000 colonoscopies."
         ],
-        "correct": "A",
-        "explanation": "AI can help screen and organize, but investigators must make and document final evidence judgments."
+        "correct": "D",
+        "explanation": "The VA study utilized a cluster-randomized design evaluating adoption across 42 facilities versus 97 controls in more than 334,000 colonoscopies.",
+        "hint": "Focus on the organizational level at which the intervention was assigned across dozens of medical centers in a large health system."
       },
       {
-        "question": "A practical way to reduce hallucinated references is to:",
+        "question": "Endoscopists express concern regarding potential operator 'deskilling' when performing unassisted colonoscopies after prolonged exposure to computer-aided detection (CADe) tools. According to recent multicenter evidence assessing unassisted diagnostic colonoscopies before and after CADe exposure, how is this phenomenon evaluated?",
         "options": [
-          "A. Use source-grounded retrieval and check every citation/DOI",
-          "B. Ask for more confident wording",
-          "C. Remove citations",
-          "D. Use only longer prompts"
+          "A. Tracking changes in sedative medication dosage requirements before and after automated lesion detection implementation.",
+          "B. Assessing endoscopist withdrawal velocity via automated artificial intelligence eye-tracking algorithms during colonoscopy.",
+          "C. Comparing unassisted adenoma detection rates (ADR) before and after CADe exposure in multicenter observational cohorts.",
+          "D. Measuring changes in histopathologic agreement for cecal intubation failure rates."
+        ],
+        "correct": "C",
+        "explanation": "Adenoma detection rate during unassisted colonoscopies before and after exposure to CADe serves as the primary metric to quantify potential endoscopist deskilling.",
+        "hint": "Look for the benchmark mucosal inspection metric traditionally used to measure endoscopist diagnostic quality in screening colonoscopies."
+      },
+      {
+        "question": "High-definition white-light endoscopy (HD-WLE) is standard for surveillance in patients with Lynch syndrome. When investigating the clinical utility of artificial intelligence (GI Genius) in this specific high-risk hereditary population, which study design is considered optimal for demonstrating incremental polyp detection yield?",
+        "options": [
+          "A. An unblinded survey evaluating endoscopist diagnostic confidence in identifying flat lesions.",
+          "B. A retrospective single-arm chart review comparing historic withdrawal times across tertiary cancer registries.",
+          "C. A randomized tandem-colonoscopy trial comparing AI-assisted colonoscopy with HD-WLE.",
+          "D. A prospective non-randomized observational registry without a head-to-head comparison group."
+        ],
+        "correct": "C",
+        "explanation": "Randomized tandem-colonoscopy trials provide the strongest evidence for incremental detection rate by allowing same-patient back-to-back comparisons between AI assistance and HD-WLE.",
+        "hint": "Consider the experimental setup where each participant receives two back-to-back examinations to directly calculate missed lesions."
+      },
+      {
+        "question": "A gastroenterology research group is drafting a manuscript based on a machine learning model developed to predict inflammatory bowel disease flare-ups. According to the 2026 AGA Practical Guide for AI tools in GI research, what is a mandatory requirement regarding AI implementation in published studies?",
+        "options": [
+          "A. Transparent disclosure of AI tool usage and rigorous source verification of generated data or model outputs.",
+          "B. Mandatory replacement of human peer review with automated large language model manuscript approval algorithms.",
+          "C. Exclusive reliance on unverified open-source generative models without human expert oversight.",
+          "D. Complete suppression of algorithmic details to protect proprietary commercial developer software licenses."
         ],
         "correct": "A",
-        "explanation": "Grounding outputs in retrieved sources and verifying citations helps prevent fabricated or mismatched references."
+        "explanation": "Guidelines dictate that researchers must fully disclose the use of AI tools and independently verify all data, citations, and model output prior to publication.",
+        "hint": "Think about principles of scientific integrity, transparency, and clinical responsibility in reporting computational methodologies."
+      },
+      {
+        "question": "During a Quality Improvement committee meeting, an endoscopist notes that implementing an AI-assisted second-look protocol for the right colon alters workflow parameters. Based on clinical data evaluating this protocol, what expected change in procedure mechanics occurs alongside the potential improvement in nonadvanced adenoma detection?",
+        "options": [
+          "A. Complete automated optical biopsy classification replacing formal tissue histopathology.",
+          "B. Significant reduction in required bowel preparation quality thresholds for the cecum.",
+          "C. Elimination of the need to perform retroflexion in the cecum or ascending colon.",
+          "D. Prolongation of total median examination time (e.g., from approximately 11.7 to 13.3 minutes)."
+        ],
+        "correct": "D",
+        "explanation": "Adding an AI-assisted second pass in the right colon increases median overall examination time, as observed in clinical evaluations.",
+        "hint": "Think about the pragmatic temporal trade-off required to re-examine a segment of the bowel with automated assistance."
+      },
+      {
+        "question": "A clinical investigator is designing an AI-driven clinical trial in gastroenterology. Following the risk-tiered framework established in the 2026 AGA Practical Guide, how should high-risk AI research use cases (such as direct diagnostic or therapeutic decision-support tools) be managed compared to low-risk administrative workflows?",
+        "options": [
+          "A. High-risk use cases are exempt from institutional review board (IRB) oversight if pre-trained on open clinical datasets.",
+          "B. Low-risk administrative use cases require greater algorithmic auditing than direct patient-facing diagnostic models.",
+          "C. High-risk clinical tools can be deployed immediately in patient care without pre-specified clinical endpoints if approved by software developers.",
+          "D. High-risk use cases require stringent prospective validation, risk-mitigation strategies, and formal human-in-the-loop oversight."
+        ],
+        "correct": "D",
+        "explanation": "High-risk clinical AI applications demand prospective clinical validation, proactive risk management, and mandatory human expert oversight.",
+        "hint": "Consider how regulatory frameworks scale oversight proportionally to the potential impact on patient safety and diagnostic decision-making."
+      },
+      {
+        "question": "When counseling an endoscopy unit on the clinical expectations of computer-aided detection (CADe) during screening colonoscopies, which statement accurately reflects the established impact of AI assistance on lesion subtypes?",
+        "options": [
+          "A. CADe exclusively increases the detection of advanced colorectal carcinomas while missing diminutive polyps.",
+          "B. CADe has been proven to significantly reduce 10-year post-colonoscopy interval cancer mortality in prospective randomized trials.",
+          "C. CADe predominantly increases the detection rate of small, nonadvanced adenomas rather than advanced adenomas.",
+          "D. CADe eliminates inter-observer variability among endoscopists regardless of baseline individual unassisted ADR."
+        ],
+        "correct": "C",
+        "explanation": "Multiple clinical studies show that the primary yield benefit of CADe is driven by increased identification of small, nonadvanced adenomas.",
+        "hint": "Consider the typical size and morphological characteristics of polyps that are most frequently missed during routine white-light withdrawal."
+      },
+      {
+        "question": "A gastroenterology fellow plans to use anonymized patient endoscopic images to train a computer-vision algorithm for vascular pattern recognition in ulcerative colitis. According to guidelines on data privacy and security in AI research, what critical requirement must be fulfilled prior to uploading clinical data into AI platforms?",
+        "options": [
+          "A. Ensuring full removal of Protected Health Information (PHI) and verifying compliance with institutional privacy standards.",
+          "B. Publicly publishing unmasked patient identification details on open-access research repositories for transparency.",
+          "C. Obtaining commercial patent clearance from the medical device manufacturer of the endoscope before model training.",
+          "D. Converting all endoscopic color images into black-and-white vector graphics prior to model ingestion."
+        ],
+        "correct": "A",
+        "explanation": "AI research guidelines emphasize strict adherence to patient privacy laws, requiring complete PHI removal and institutional governance approval.",
+        "hint": "Focus on federal patient confidentiality mandates and regulatory safeguards governing health data usage in research."
+      },
+      {
+        "question": "In evaluating a trial comparing AI-assisted colonoscopy (GI Genius) versus high-definition white-light endoscopy (HD-WLE) in Lynch syndrome patients, why is a randomized tandem design particularly suitable for this patient population?",
+        "options": [
+          "A. It controls for intra-individual anatomical variations by having each patient act as their own control in immediate succession.",
+          "B. It allows researchers to perform colonoscopies without bowel preparation in high-risk genetic cohorts.",
+          "C. It removes the requirement for statistical power calculations due to the deterministic nature of genetic predisposition.",
+          "D. It guarantees that flat serrated lesions will undergo automatic in vivo histopathologic degradation without resection."
+        ],
+        "correct": "A",
+        "explanation": "A tandem design minimizes confounding from inter-patient anatomical and mucosal differences by conducting back-to-back examinations in the same individual.",
+        "hint": "Consider the benefit of using a subject as their own baseline control when assessing subtle mucosal differences between two endoscopic technologies."
       }
     ],
     "quizStatus": "repo-managed-complete",
     "quizSourcePdfs": [
       "ai-in-gi-research.pdf"
     ],
-    "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
+    "quizGeneratedAt": "2026-10-09T01:45:00.000Z",
     "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "approved"
@@ -2249,55 +2626,131 @@ const scheduleResources = {
     ],
     "quiz": [
       {
-        "question": "Which finding defines invasive colorectal adenocarcinoma in a polyp?",
+        "question": "An endoscopist is performing an endoscopic mucosal resection (EMR) of a 15-mm non-pedunculated polyp in the ascending colon. Based on international expert consensus recommendations regarding endoscopic resection quality for 10-19 mm polyps, which procedural standard should be maintained to minimize incomplete resection?",
         "options": [
-          "A. Invasion through muscularis mucosae into submucosa",
-          "B. A serrated surface",
-          "C. Low-grade dysplasia confined to mucosa",
-          "D. A mucus cap"
-        ],
-        "correct": "A",
-        "explanation": "Submucosal invasion distinguishes invasive carcinoma from intramucosal dysplasia in colorectal lesions."
-      },
-      {
-        "question": "Lynch syndrome screening of colorectal cancer tissue commonly uses:",
-        "options": [
-          "A. H. pylori stool antigen",
-          "B. Fecal elastase",
-          "C. Mismatch-repair immunohistochemistry or MSI testing",
-          "D. Serum lipase"
+          "A. Aim for a 5-mm normal-tissue margin, routinely apply thermal ablation to all clear mucosal margins, and obtain post-resection tissue biopsies.",
+          "B. Limit resection attempts if the polyp exceeds 10 mm and directly refer for surgical segmentectomy to avoid incomplete resection exceeding a 20% threshold.",
+          "C. Ensure at least a 1-mm normal-tissue rim, conduct deliberate inspection of the resection defect, and capture before-and-after photographic documentation.",
+          "D. Perform piecemeal resection without defect inspection as long as histological evaluation confirms negative lateral margins on frozen section."
         ],
         "correct": "C",
-        "explanation": "MMR IHC/MSI testing identifies tumors that may indicate Lynch syndrome and guides genetic evaluation and immunotherapy relevance."
+        "explanation": "Expert consensus establishes that achieving at least a 1-mm clear margin, inspecting the resection defect floor, and documenting before-and-after photos are key practices to ensure complete resection of 10-19 mm polyps.",
+        "hint": "Consider the recommended quality metrics for margin width, defect evaluation, and visual recording."
       },
       {
-        "question": "Which pathology result most directly affects post-polypectomy surveillance intervals?",
+        "question": "A gastroenterologist evaluates clinical trial evidence regarding the implementation of an AI-assisted second-look examination of the right colon during screening colonoscopy. Which of the following represents a key limitation or finding documented in evaluations of this technique?",
         "options": [
-          "A. Patient shoe size",
-          "B. Sedation medication",
-          "C. Room temperature",
-          "D. Number, size, histology, and dysplasia of adenomas/serrated lesions"
+          "A. The intervention showed a statistically significant reduction in 5-year post-colonoscopy colorectal cancer incidence across all study arms.",
+          "B. The strategy significantly decreased the total examination time by automating mucosal inspection, thereby reducing procedure duration to under 10 minutes.",
+          "C. The study design failed to isolate the independent effect of the AI software from the impact of performing a second endoscopic pass, and interval cancer reduction was not evaluated.",
+          "D. The addition of an AI-assisted second pass significantly increased the detection of advanced adenomas while having no effect on nonadvanced adenomas."
         ],
-        "correct": "D",
-        "explanation": "Surveillance recommendations depend on polyp burden and risk features such as size, villous histology, high-grade dysplasia, and serrated-lesion features."
+        "correct": "C",
+        "explanation": "Dual-intervention designs combining second-look passes with AI technology cannot isolate whether improved yield stems from the AI software or the additional inspection pass, and long-term interval cancer impacts remain unmeasured.",
+        "hint": "Think about the confounding factors introduced when combining two distinct diagnostic interventions simultaneously."
       },
       {
-        "question": "Poor differentiation, lymphovascular invasion, and positive margin in a malignant polyp generally imply:",
+        "question": "Endoscopy leaders are evaluating the potential phenomenon of operator 'deskilling' following prolonged reliance on computer-aided detection (CADe) systems during screening colonoscopy. In observational studies examining unassisted diagnostic colonoscopies before and after CADe exposure, which quality metric serves as the primary benchmark to assess unassisted endoscopist diagnostic performance?",
         "options": [
-          "A. Celiac disease",
-          "B. Benign hyperplastic change",
-          "C. No need for follow-up",
-          "D. Higher risk features that may prompt surgical evaluation"
+          "A. Withdrawal speed in clean mucosal segments",
+          "B. Adenoma detection rate (ADR)",
+          "C. Cecal intubation time (CIT)",
+          "D. Serrated polyposis syndrome diagnostic yield"
+        ],
+        "correct": "B",
+        "explanation": "Adenoma detection rate (ADR) is the principal benchmark metric used to quantify an endoscopist's diagnostic capability and evaluate potential deskilling after CADe exposure.",
+        "hint": "Recall the core primary quality indicator widely used to assess endoscopist mucosal inspection efficacy."
+      },
+      {
+        "question": "A clinical trial investigates a novel robotic colonoscopy platform in a first-in-human cohort of 50 patients. Which procedural parameter was successfully demonstrated as a primary outcome in this preliminary study?",
+        "options": [
+          "A. A 50% reduction in interval colorectal cancer rates compared to conventional optical colonoscopy at 3-year follow-up.",
+          "B. Complete cecal intubation in 100% of cases performed entirely in the left lateral position without patient repositioning or conversion.",
+          "C. Universal elimination of sedation requirements across all enrolled patients while maintaining high patient satisfaction scores.",
+          "D. Routine complete resection of large (>20 mm) malignant lesions with zero risk of perforation or bleeding."
+        ],
+        "correct": "B",
+        "explanation": "First-in-human trial data demonstrated 100% cecal intubation in the left lateral position without repositioning, conversion, or major adverse events.",
+        "hint": "Focus on the primary anatomical and procedural success metrics established in initial robotic colonoscopy trials."
+      },
+      {
+        "question": "A 62-year-old patient undergoes screening colonoscopy, and a proximal colon lesion is identified and resected. Histology reveals a sessile serrated lesion (SSL) with focal dysplasia. In the serrated pathway of colorectal carcinogenesis, what critical clinical significance does SSL with dysplasia (SSLd) represent?",
+        "options": [
+          "A. It represents an indolent non-neoplastic lesion that carries no elevated risk of malignant transformation compared to hyperplastic polyps.",
+          "B. It is pathognomonic for Familial Adenomatous Polyposis (FAP) driven by germline APC gene mutations.",
+          "C. It serves as the critical intermediary pathological stage through which SSLs progress toward invasive colorectal adenocarcinoma.",
+          "D. It requires immediate emergency surgical bowel resection because endoscopic resection is universally ineffective at preventing recurrence."
+        ],
+        "correct": "C",
+        "explanation": "SSL with dysplasia represents the pivotal intermediate lesion in the serrated pathway that portends rapid progression to invasive colorectal cancer.",
+        "hint": "Consider the histological precursor stage that directly precedes invasive carcinoma in the serrated pathway."
+      },
+      {
+        "question": "An endoscopy unit director is updating quality monitoring standards for colorectal polyp resections measuring 10-19 mm. According to expert consensus guidelines, what is the maximum recommended upper ceiling for the incomplete resection rate (IRR) of these intermediate-sized polyps?",
+        "options": [
+          "A. 25%",
+          "B. 18%",
+          "C. 1%",
+          "D. 10%"
         ],
         "correct": "D",
-        "explanation": "Adverse histologic features increase the risk of residual disease or nodal metastasis and may alter management."
+        "explanation": "International expert consensus established a maximum ceiling of 10% for incomplete resections of intermediate-sized (10-19 mm) colorectal polyps.",
+        "hint": "Think of the recommended upper limit percentage established by expert consensus for EMR failure in intermediate polyps."
+      },
+      {
+        "question": "A large health network evaluates the implementation of computer-aided detection (CADe) across multiple medical centers compared to standard colonoscopy controls. In a cluster-randomized trial within the Veterans Health Administration (VHA) network encompassing over 334,000 colonoscopies, what primary endpoint was evaluated regarding the adoption of this AI tool?",
+        "options": [
+          "A. Evaluating whether AI technology can replace the need for formal histopathological examination in polyps smaller than 5 mm.",
+          "B. Demonstrating a significant reduction in procedure-related perforation rates during complex endoscopic mucosal resection.",
+          "C. Assessing the impact of AI computer-aided detection on adenoma detection rates across diverse clinical practice settings.",
+          "D. Determining if automated AI colonoscopy eliminates the necessity for standard bowel preparation prior to colonoscopy."
+        ],
+        "correct": "C",
+        "explanation": "The multi-center VHA study evaluated how integrating computer-aided detection systems influences adenoma detection rates across real-world clinical practices.",
+        "hint": "Focus on the primary diagnostic quality metric evaluated in large-scale AI colonoscopy implementation trials."
+      },
+      {
+        "question": "A gastroenterology practice administrator is reviewing proposed Centers for Medicare & Medicaid Services (CMS) rule changes for 2027. Which regulatory and financial shift is anticipated under these proposed updates?",
+        "options": [
+          "A. Mandatory implementation of robotic colonoscopy for all outpatient screening procedures to receive Medicare reimbursement.",
+          "B. Complete elimination of quality-measure reporting requirements for endoscopic procedures performed in ambulatory surgical centers.",
+          "C. A guaranteed 15% increase in relative value unit (RVU) reimbursement for screening colonoscopies incorporating artificial intelligence.",
+          "D. Potential reductions in GI payment rates alongside revisions to remote-monitoring policies and colonoscopy quality-measure reporting."
+        ],
+        "correct": "D",
+        "explanation": "CMS 2027 proposed updates encompass prospective cuts to gastroenterology reimbursement rates alongside adjustments to remote monitoring and colonoscopy quality reporting policies.",
+        "hint": "Consider the broader economic and quality reporting trends currently impacting physician reimbursement."
+      },
+      {
+        "question": "During a screening colonoscopy, an endoscopist resects a 12-mm sessile polyp in the cecum using submucosal injection and snare electrocautery. To adhere to quality recommendations established for optimizing resection completeness and defect assessment, what action should immediately follow snare excision?",
+        "options": [
+          "A. Take surrounding random mucosal biopsies at 1-cm intervals to pathologically confirm complete lateral excision.",
+          "B. Administer topical fluorouracil onto the defect floor to eradicate residual microscopic dysplasia.",
+          "C. Routinely place full-thickness endoscopic clips across the base regardless of visible vessel or muscularis propria exposure.",
+          "D. Perform a deliberate inspection of the resection defect margin and secure high-quality before-and-after photo documentation."
+        ],
+        "correct": "D",
+        "explanation": "Thorough inspection of the resection defect rim combined with objective photo documentation before and after excision is recommended to verify complete mucosal removal.",
+        "hint": "Focus on the immediate post-resection quality verification steps recommended prior to complete procedure termination."
+      },
+      {
+        "question": "A clinical director is assessing performance metrics during colonoscopy when using AI-assisted computer-aided detection (CADe) techniques. Based on clinical evidence regarding AI-assisted second-look right-colon examinations, how does adding a second pass with AI impact procedure dynamics?",
+        "options": [
+          "A. It selectively eliminates the need for cecal landmark identification by automatically confirming anatomical position.",
+          "B. It reduces overall withdrawal time by accelerating mucosal inspection without affecting polyp yield.",
+          "C. It modestly prolongs median total examination time while enhancing nonadvanced adenoma detection.",
+          "D. It doubles the advanced adenoma detection rate while reducing overall examination time by half."
+        ],
+        "correct": "C",
+        "explanation": "Adding an AI-assisted second inspection pass lengthens procedure duration modestly (median time increases from 11.7 to 13.3 minutes) while increasing nonadvanced adenoma yield.",
+        "hint": "Think about how adding an additional diagnostic pass affects both procedural duration and polyp sub-type yield."
       }
     ],
     "quizStatus": "repo-managed-complete",
     "quizSourcePdfs": [
       "colon-pathology.pdf"
     ],
-    "quizGeneratedAt": "2026-10-02T00:00:00.000Z",
+    "quizGeneratedAt": "2026-10-09T01:45:00.000Z",
     "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "approved"

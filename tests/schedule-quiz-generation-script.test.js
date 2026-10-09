@@ -45,6 +45,9 @@ with open(os.environ["CALLS_PATH"], "a", encoding="utf-8") as handle:
   assert.ok(args.includes("--quiz-instructions"));
   const instructions = args[args.indexOf("--quiz-instructions") + 1];
   assert.match(instructions, /hard/i);
+  assert.match(instructions, /single-best-answer/i);
+  assert.match(instructions, /multiple_choice/i);
+  assert.match(instructions, /do not create multiple_select/i);
   assert.match(instructions, /clinical reasoning/i);
   assert.match(instructions, /not simple recall/i);
   assert.match(instructions, /plausible distractors/i);

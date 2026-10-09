@@ -4,9 +4,10 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 
 export const HARD_SCHEDULE_QUIZ_INSTRUCTIONS = [
-  "Create a hard gastroenterology board-review style multiple-choice quiz for fellows/attendings.",
+  "Create exactly 10 hard gastroenterology board-review single-best-answer multiple-choice questions for fellows/attendings.",
+  "Use ONLY single-best-answer multiple_choice questions; do not create multiple_select, select-all-that-apply, multi-correct, all-of-the-above, none-of-the-above, or true/false questions.",
   "Use clinical reasoning, pathology/diagnostic distinctions, management implications, and nuanced guideline application; not simple recall.",
-  "Write 10 questions when source material supports it, each with 4 answer options and one best answer.",
+  "Each question must have exactly 4 answer options and exactly 1 correct answer.",
   "Use plausible distractors that are educational and close enough to require reasoning; avoid obviously wrong choices.",
   "Include concise explanations/rationales for the correct answer.",
   "Avoid putting the correct answer consistently in the same option position; answer order will also be locally randomized on import.",
