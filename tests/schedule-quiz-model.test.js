@@ -63,6 +63,38 @@ test("normalizes AutoContent quiz output into GIHub's UI-friendly quiz shape", (
   );
 });
 
+test("skips AutoContent multiple-select questions that the single-best-answer UI cannot represent", () => {
+  const payload = {
+    quiz: [
+      {
+        type: "multiple_select",
+        question: "Which are correct?",
+        answerOptions: [
+          { text: "Correct one", isCorrect: true, rationale: "One." },
+          { text: "Correct two", isCorrect: true, rationale: "Two." },
+          { text: "Wrong", isCorrect: false },
+          { text: "Also wrong", isCorrect: false },
+        ],
+      },
+      {
+        type: "multiple_choice",
+        question: "Which is the single best answer?",
+        answerOptions: [
+          { text: "Right", isCorrect: true, rationale: "Right rationale." },
+          { text: "Wrong A", isCorrect: false },
+          { text: "Wrong B", isCorrect: false },
+          { text: "Wrong C", isCorrect: false },
+        ],
+      },
+    ],
+  };
+
+  const normalized = normalizeAutoContentQuiz(payload, { rng: () => 0 });
+
+  assert.equal(normalized.length, 1);
+  assert.equal(normalized[0].question, "Which is the single best answer?");
+});
+
 test("randomizes AutoContent answer positions while preserving the correct-answer mapping", () => {
   const allFirstAnswerPayload = {
     quiz: Array.from({ length: 8 }, (_, index) => ({
@@ -128,4 +160,35 @@ test("applies 10-question AutoContent quizzes to schedule resources with complet
   assert.equal(next["stomach-pathology"].quizStatus, "autocontent-complete");
   assert.deepEqual(next["stomach-pathology"].quizSourcePdfs, ["/tmp/source-1.pdf", "/tmp/source-2.pdf"]);
   assert.equal(next["stomach-pathology"].quizGeneratedAt, "2026-09-15T00:00:00.000Z");
+});
+
+test("preserves repo-managed-complete status when refreshing an already-published schedule quiz", () => {
+  const resources = {
+    "colon-pathology": {
+      guidelines: [],
+      newsAndArticles: [],
+      quiz: [],
+      quizStatus: "repo-managed-complete",
+      quizSourcePdfs: [],
+    },
+  };
+  const artifactQuiz = {
+    quiz: Array.from({ length: 10 }, (_, index) => ({
+      question: `Question ${index + 1}?`,
+      options: ["A. Alpha", "B. Beta", "C. Gamma", "D. Delta"],
+      correct: "A",
+      explanation: `Explanation ${index + 1}.`,
+    })),
+  };
+
+  const next = applyScheduleQuizArtifacts(resources, {
+    "colon-pathology": {
+      quizJson: artifactQuiz,
+      sourcePdfs: ["/tmp/source.pdf"],
+      generatedAt: "2026-10-09T01:45:00.000Z",
+    },
+  });
+
+  assert.equal(next["colon-pathology"].quiz.length, 10);
+  assert.equal(next["colon-pathology"].quizStatus, "repo-managed-complete");
 });

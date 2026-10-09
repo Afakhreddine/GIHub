@@ -39,7 +39,7 @@ When Ali provides a lecture schedule image:
    - Search `weekly.js` + `weeklyArchive.js` for matching News and Articles.
    - Always run `npm run schedule:targeted-pull` after `src/scheduleConfig.js` is updated. The script derives its topic list from the current calendar automatically, replaces prior `targeted-online-pull` candidates for those current slugs, and writes review-only PubMed candidates to `src/data/scheduleResources.js`.
    - Pull relevant PDFs for guidelines/articles when authorized.
-   - Generate hard AutoContent quizzes from the source manifest:
+   - Generate hard AutoContent quizzes from the source manifest. The wrapper requests `--quiz-difficulty hard` and explicitly requires exactly 10 single-best-answer `multiple_choice` questions only; no multiple-select/select-all questions because the GIHub quiz UI is single-answer.
      ```bash
      npm run schedule:quiz-generate -- --source-manifest /path/to/source-manifest.json --out-dir /opt/data/autocontent_outputs/gihub_schedule_quizzes
      ```
