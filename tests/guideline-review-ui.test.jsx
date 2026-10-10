@@ -9,9 +9,10 @@ import candidates from "../src/data/guidelineReviewCandidates.js";
 test("guideline review route renders candidate and publish controls", () => {
   const html = renderToStaticMarkup(React.createElement(GuidelineReview, { items:candidates }));
   assert.match(html, /Guideline Candidate Review/);
-  assert.match(html, /Adenomatous Colorectal Polyposis Syndromes/);
+  assert.match(html, /Surveillance of Pancreatic Cystic Lesions and Hepatocellular Carcinoma in Older Adults/);
+  assert.match(html, /Serrated Polyposis Syndrome/);
   assert.match(html, /Publish approved/);
-  assert.match(html, /PubMed 42683623/);
+  assert.match(html, /PubMed 42820904/);
 });
 
 test("review hub includes Guidelines tab", () => {
