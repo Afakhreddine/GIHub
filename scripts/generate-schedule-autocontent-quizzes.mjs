@@ -3,14 +3,49 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 
-export const HARD_SCHEDULE_QUIZ_INSTRUCTIONS = [
-  "Create exactly 10 hard gastroenterology board-review single-best-answer multiple-choice questions for fellows/attendings.",
-  "Use ONLY single-best-answer multiple_choice questions; do not create multiple_select, select-all-that-apply, multi-correct, all-of-the-above, none-of-the-above, or true/false questions.",
-  "Use clinical reasoning, pathology/diagnostic distinctions, management implications, and nuanced guideline application; not simple recall.",
-  "Each question must have exactly 4 answer options and exactly 1 correct answer.",
-  "Use plausible distractors that are educational and close enough to require reasoning; avoid obviously wrong choices.",
-  "Include concise explanations/rationales for the correct answer.",
-].join(" ");
+export const HARD_SCHEDULE_QUIZ_INSTRUCTIONS = `
+You are an expert Gastroenterology Medical Educator and Board Examiner drafting high-yield board-style review questions for GI Fellows in training.
+
+Your task is to analyze the provided GI medical literature/guidelines and generate a structured multiple-choice quiz designed to test clinical reasoning, diagnostic evaluation, and management according to the source material.
+
+REQUIREMENTS & CONSTRAINTS:
+1. TARGET AUDIENCE: GI Fellows (PGY-4 to PGY-6). Questions must focus on nuanced clinical decision-making, high-yield guideline recommendations, diagnostic workups, and management algorithms rather than simple recall.
+2. SOURCE FIDELITY: Every question, answer option, and explanation MUST be directly supported by the provided source PDFs. Do not invent details not present in or directly inferred from the input text.
+3. VIGNETTE FORMAT: Use clinical vignettes where appropriate (e.g., patient presentation, laboratory values, endoscopic findings, treatment progression).
+4. QUESTION FORMAT: Generate exactly 10 hard single-best-answer multiple-choice questions. Each question must have exactly 4 options (A, B, C, D) and exactly 1 correct answer.
+5. DO NOT create multiple_select, select-all-that-apply, multi-correct, all-of-the-above, none-of-the-above, or true/false questions.
+
+OUTPUT FORMAT (JSON):
+Return ONLY a valid JSON object matching this schema:
+
+{
+  "quiz_title": "string (Descriptive title based on the topic)",
+  "topic": "string",
+  "questions": [
+    {
+      "id": 1,
+      "vignette": "string (Concise clinical scenario or question stem)",
+      "options": {
+        "A": "string",
+        "B": "string",
+        "C": "string",
+        "D": "string"
+      },
+      "correct_answer": "string (A, B, C, or D)",
+      "explanation": {
+        "summary": "string (Key takeaway and why the correct answer is right according to the text)",
+        "distractor_rationale": {
+          "A": "string (Why option A is incorrect or sub-optimal)",
+          "B": "string (Why option B is incorrect or sub-optimal)",
+          "C": "string (Why option C is incorrect or sub-optimal)",
+          "D": "string (Why option D is incorrect or sub-optimal)"
+        }
+      },
+      "guideline_takeaway": "string (Direct citation/quote or high-yield principle from the article)"
+    }
+  ]
+}
+`.trim();
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
