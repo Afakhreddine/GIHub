@@ -1977,7 +1977,7 @@ const scheduleResources = {
         ],
         "correct": "B",
         "explanation": "The New England Journal of Medicine published a detailed clinical review on celiac disease in April 2026.",
-        "hint": "Identify the major general medical review publication listed in the source packet PubMed pull."
+        "hint": "Identify the major general medical review publication listed in the PubMed source."
       },
       {
         "question": "What key clinical practice transition was highlighted during the 2026 policy symposium co-hosted by the Society for the Study of Celiac Disease and the Celiac Disease Foundation?",

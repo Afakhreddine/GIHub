@@ -25,10 +25,18 @@ test("schedule AutoContent import script writes completed quizzes into scheduleR
   const output = path.join(tmp, "scheduleResources.js");
   fs.mkdirSync(path.join(artifactDir, "stomach-pathology"), { recursive: true });
   fs.writeFileSync(path.join(artifactDir, "stomach-pathology", "stomach-pathology-quiz.json"), JSON.stringify(quizPayload()));
-  const sourcePdf = path.join(tmp, "stomach-pathology.pdf");
+  const sourcePdf = path.join(tmp, "stomach-pathology-guideline.pdf");
+  const articlePdf = path.join(tmp, "stomach-pathology-article.pdf");
   fs.writeFileSync(sourcePdf, "%PDF-1.4\n% fake test PDF\n");
+  fs.writeFileSync(articlePdf, "%PDF-1.4\n% fake article PDF\n");
   const manifest = path.join(tmp, "source-manifest.json");
-  fs.writeFileSync(manifest, JSON.stringify({ "stomach-pathology": { topic: "Stomach Pathology", pdf: sourcePdf } }));
+  fs.writeFileSync(manifest, JSON.stringify({
+    "stomach-pathology": {
+      topic: "Stomach Pathology",
+      sourceType: "source-pdfs",
+      pdfs: [sourcePdf, articlePdf],
+    },
+  }));
 
   execFileSync("node", [
     "scripts/apply-schedule-autocontent-quizzes.mjs",
@@ -41,5 +49,6 @@ test("schedule AutoContent import script writes completed quizzes into scheduleR
   const written = fs.readFileSync(output, "utf8");
   assert.match(written, /autocontent-complete/);
   assert.match(written, /Question 10\?/);
-  assert.match(written, /stomach-pathology\.pdf/);
+  assert.match(written, /stomach-pathology-guideline\.pdf/);
+  assert.match(written, /stomach-pathology-article\.pdf/);
 });
