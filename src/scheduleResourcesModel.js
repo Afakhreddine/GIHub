@@ -192,7 +192,7 @@ export function mergeScheduleResourceCandidates(resources = {}, matches = []) {
 }
 
 const PUBLIC_APPROVED_STATUSES = new Set(["approved", "published", "trusted"]);
-const PUBLIC_REVIEW_REPOSITORIES = new Set(["targeted-online-pull", "targeted-pubmed-pull"]);
+const PUBLIC_REVIEW_REPOSITORIES = new Set(["targeted-online-pull"]);
 
 export function isPublicApprovedResource(item = {}) {
   if (!item || typeof item !== "object") return false;
@@ -201,14 +201,20 @@ export function isPublicApprovedResource(item = {}) {
   return true;
 }
 
+export function isPublicScheduleNewsArticle(item = {}) {
+  if (!item || typeof item !== "object") return false;
+  if (PUBLIC_REVIEW_REPOSITORIES.has(item.sourceRepository)) return PUBLIC_APPROVED_STATUSES.has(item.status);
+  return !["rejected", "reject", "held", "hold"].includes(String(item.status || "").toLowerCase());
+}
+
 export function sanitizeScheduleResourceForPublic(resource = {}) {
   return {
     ...resource,
     guidelines: (resource.guidelines || []).filter(isPublicApprovedResource),
     guideline: (resource.guideline || resource.guidelines || []).filter(isPublicApprovedResource),
-    newsAndArticles: (resource.newsAndArticles || []).filter(isPublicApprovedResource),
-    articles: (resource.articles || []).filter(isPublicApprovedResource),
-    news: (resource.news || []).filter(isPublicApprovedResource),
+    newsAndArticles: (resource.newsAndArticles || []).filter(isPublicScheduleNewsArticle),
+    articles: (resource.articles || []).filter(isPublicScheduleNewsArticle),
+    news: (resource.news || []).filter(isPublicScheduleNewsArticle),
     quiz: Array.isArray(resource.quiz) ? resource.quiz : [],
   };
 }
