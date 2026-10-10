@@ -20,7 +20,10 @@ test("October schedule topics have public guidelines and quizzes", () => {
     const publicResource = sanitizeScheduleResourceForPublic(resource);
     assert.ok(publicResource.guidelines.length > 0, `${event.slug} should expose approved guidelines publicly`);
     assert.ok(publicResource.quiz.length > 0, `${event.slug} should expose a public quiz`);
-    assert.ok(publicResource.newsAndArticles.every(item => item.status !== "candidate"), `${event.slug} public articles must not include candidate cards`);
+    assert.ok(
+      publicResource.newsAndArticles.every(item => item.sourceRepository !== "targeted-online-pull" || item.status === "approved"),
+      `${event.slug} public articles must not include unapproved targeted online-search cards`,
+    );
   }
 });
 
