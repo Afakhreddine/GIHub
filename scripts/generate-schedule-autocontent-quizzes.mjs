@@ -10,7 +10,6 @@ export const HARD_SCHEDULE_QUIZ_INSTRUCTIONS = [
   "Each question must have exactly 4 answer options and exactly 1 correct answer.",
   "Use plausible distractors that are educational and close enough to require reasoning; avoid obviously wrong choices.",
   "Include concise explanations/rationales for the correct answer.",
-  "Avoid putting the correct answer consistently in the same option position; answer order will also be locally randomized on import.",
 ].join(" ");
 
 function readJson(filePath) {
@@ -41,10 +40,24 @@ function parseArgs(argv) {
   return args;
 }
 
-function runAutoContent({ helper, pdf, outDir, timeout }) {
+function normalizeSourcePdfs(slug, entry) {
+  if (!entry || !["source-pdf", "source-pdfs"].includes(entry.sourceType)) {
+    throw new Error(`${slug}: source manifest entries must set sourceType to "source-pdf" or "source-pdfs"; metadata/source-packet PDFs are not allowed`);
+  }
+  const rawPdfs = Array.isArray(entry.pdfs) ? entry.pdfs : entry.pdf ? [entry.pdf] : [];
+  if (rawPdfs.length === 0) throw new Error(`${slug}: missing source PDF path(s)`);
+  return rawPdfs.map(rawPdf => {
+    const pdf = path.resolve(rawPdf);
+    if (path.extname(pdf).toLowerCase() !== ".pdf") throw new Error(`${slug}: source must be a PDF: ${pdf}`);
+    if (!fs.existsSync(pdf)) throw new Error(`${slug}: source PDF not found: ${pdf}`);
+    return pdf;
+  });
+}
+
+function runAutoContent({ helper, pdfs, outDir, timeout }) {
   fs.mkdirSync(outDir, { recursive: true });
   const result = spawnSync(helper, [
-    pdf,
+    ...pdfs,
     "--out-dir", outDir,
     "--no-audio",
     "--quiz-difficulty", "hard",
@@ -52,7 +65,7 @@ function runAutoContent({ helper, pdf, outDir, timeout }) {
     "--timeout", timeout,
   ], { encoding: "utf8" });
   if (result.status !== 0) {
-    throw new Error(`AutoContent quiz generation failed for ${pdf}:\n${result.stdout || ""}\n${result.stderr || ""}`);
+    throw new Error(`AutoContent quiz generation failed for ${pdfs.join(", ")}:\n${result.stdout || ""}\n${result.stderr || ""}`);
   }
   return result;
 }
@@ -61,10 +74,8 @@ const args = parseArgs(process.argv);
 const manifest = readJson(args.sourceManifest);
 
 for (const [slug, entry] of Object.entries(manifest)) {
-  if (!entry?.pdf) throw new Error(`Missing pdf for ${slug}`);
-  const pdf = path.resolve(entry.pdf);
-  if (!fs.existsSync(pdf)) throw new Error(`PDF not found for ${slug}: ${pdf}`);
+  const pdfs = normalizeSourcePdfs(slug, entry);
   const outDir = path.join(args.outDir, slug);
-  runAutoContent({ helper: args.autocontentHelper, pdf, outDir, timeout: args.timeout });
-  console.log(`${slug}: requested hard AutoContent quiz in ${outDir}`);
+  runAutoContent({ helper: args.autocontentHelper, pdfs, outDir, timeout: args.timeout });
+  console.log(`${slug}: requested hard AutoContent quiz from ${pdfs.length} source PDF(s) in ${outDir}`);
 }

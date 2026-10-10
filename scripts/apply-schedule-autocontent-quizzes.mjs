@@ -37,13 +37,22 @@ function findQuizArtifact(artifactDir, slug) {
   throw new Error(`Missing quiz artifact for ${slug}`);
 }
 
+function sourcePdfBasenames(slug, entry) {
+  if (!entry || !["source-pdf", "source-pdfs"].includes(entry.sourceType)) {
+    throw new Error(`${slug}: source manifest entries must set sourceType to "source-pdf" or "source-pdfs"`);
+  }
+  const pdfs = Array.isArray(entry.pdfs) ? entry.pdfs : entry.pdf ? [entry.pdf] : [];
+  if (pdfs.length === 0) throw new Error(`${slug}: missing source PDF path(s)`);
+  return pdfs.map(pdf => path.basename(pdf));
+}
+
 const args = parseArgs(process.argv);
 const manifest = readJson(args.sourceManifest);
 const artifacts = {};
 for (const [slug, entry] of Object.entries(manifest)) {
   artifacts[slug] = {
     quizJson: readJson(findQuizArtifact(args.artifactDir, slug)),
-    sourcePdfs: [path.basename(entry.pdf)],
+    sourcePdfs: sourcePdfBasenames(slug, entry),
     generatedAt: args.generatedAt,
   };
 }
