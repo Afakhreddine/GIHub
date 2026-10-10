@@ -33,6 +33,23 @@ function shuffleOptions(options, correctIndex, rng = Math.random) {
 }
 
 function normalizeOptions(item, rng = Math.random) {
+  if (item?.options && !Array.isArray(item.options) && typeof item.options === "object") {
+    const rawOptions = LETTERS.map(letter => stripOptionPrefix(item.options[letter])).filter(Boolean);
+    const correctLetter = String(item?.correct_answer || item?.correct || item?.answer || "").trim().slice(0, 1).toUpperCase();
+    const correctIndex = LETTERS.indexOf(correctLetter);
+    const shuffled = shuffleOptions(rawOptions, correctIndex, rng);
+    const summary = typeof item?.explanation === "object" ? item.explanation?.summary : item?.explanation;
+    const distractorRationale = typeof item?.explanation === "object" ? item.explanation?.distractor_rationale : null;
+    const rationaleText = distractorRationale
+      ? LETTERS.map(letter => distractorRationale[letter] ? `${letter}: ${distractorRationale[letter]}` : "").filter(Boolean).join(" ")
+      : "";
+    return {
+      options: shuffled.options,
+      correct: shuffled.correct,
+      explanation: [summary, rationaleText].filter(Boolean).join(" "),
+    };
+  }
+
   if (Array.isArray(item?.answerOptions)) {
     const rawOptions = item.answerOptions.slice(0, 4).map(option => stripOptionPrefix(option?.text));
     const correctIndex = item.answerOptions.findIndex(option => option?.isCorrect === true);
@@ -59,7 +76,7 @@ function normalizeOptions(item, rng = Math.random) {
 export function normalizeAutoContentQuiz(payload, options = {}) {
   const limit = options.limit ?? 10;
   const rng = options.rng || Math.random;
-  const quiz = Array.isArray(payload) ? payload : payload?.quiz;
+  const quiz = Array.isArray(payload) ? payload : payload?.questions || payload?.quiz;
   if (!Array.isArray(quiz)) return [];
 
   return quiz
@@ -73,11 +90,11 @@ export function normalizeAutoContentQuiz(payload, options = {}) {
     .map(item => {
       const normalized = normalizeOptions(item, rng);
       return {
-        question: cleanQuizText(item?.question),
+        question: cleanQuizText(item?.question || item?.vignette),
         options: normalized.options,
         correct: normalized.correct,
         explanation: cleanQuizText(normalized.explanation),
-        ...(item?.hint ? { hint: cleanQuizText(item.hint) } : {}),
+        ...(item?.hint || item?.guideline_takeaway ? { hint: cleanQuizText(item.hint || item.guideline_takeaway) } : {}),
       };
     })
     .filter(item => item.question && item.options.length === 4 && LETTERS.includes(item.correct) && item.explanation)

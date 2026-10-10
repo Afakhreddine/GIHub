@@ -63,6 +63,49 @@ test("normalizes AutoContent quiz output into GIHub's UI-friendly quiz shape", (
   );
 });
 
+test("normalizes the expert-educator JSON schema requested from AutoContent", () => {
+  const payload = {
+    quiz_title: "Colon Polyp Management",
+    topic: "Colon Polyps",
+    questions: [
+      {
+        id: 1,
+        vignette: "A 62-year-old undergoes colonoscopy and has a 12 mm sessile serrated lesion removed. What is the best next management principle?",
+        options: {
+          A: "Document complete excision and plan surveillance based on polyp risk",
+          B: "Ignore serrated lesions unless cancer is present",
+          C: "Schedule daily CT scans",
+          D: "Treat with empiric chemotherapy",
+        },
+        correct_answer: "A",
+        explanation: {
+          summary: "The source emphasizes complete excision and risk-stratified surveillance.",
+          distractor_rationale: {
+            A: "Correct because the source supports complete excision and surveillance planning.",
+            B: "Incorrect because serrated lesions carry risk.",
+            C: "Incorrect because serial CT is not the management pathway.",
+            D: "Incorrect because malignancy is not described.",
+          },
+        },
+        guideline_takeaway: "Risk-stratify surveillance after complete polyp excision.",
+      },
+    ],
+  };
+
+  const normalized = normalizeAutoContentQuiz(payload, { rng: () => 0 });
+
+  assert.equal(normalized.length, 1);
+  assert.match(normalized[0].question, /^A 62-year-old/);
+  assert.equal(normalized[0].options.length, 4);
+  assert.match(
+    normalized[0].options.find(option => option.startsWith(`${normalized[0].correct}. `)),
+    /Document complete excision/,
+  );
+  assert.match(normalized[0].explanation, /complete excision/);
+  assert.match(normalized[0].explanation, /B: Incorrect/);
+  assert.equal(normalized[0].hint, "Risk-stratify surveillance after complete polyp excision.");
+});
+
 test("skips AutoContent multiple-select questions that the single-best-answer UI cannot represent", () => {
   const payload = {
     quiz: [
