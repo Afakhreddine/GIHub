@@ -70,6 +70,57 @@ const guidelineReviewCandidates = [
     queuedAt: "2026-10-04",
     status: "candidate-review",
     reviewReason: "New this cycle. The ACG guideline library and AGA clinical-guidance index both list this September 30 US Multi-Society Task Force statement, and PubMed classifies it as a Practice Guideline. It is absent from the live merged repository; ACG is used as the schema organization because ACG lists it in its guideline library."
+  },
+  {
+    org: "ACG",
+    year: "2026",
+    month: "Oct",
+    topic: "Cirrhosis / Preventive Care",
+    urgency: "High",
+    title: "ACG Clinical Guideline: Preventive Care for Patients With Cirrhosis",
+    summary: "Provides 18 GRADE-assessed recommendations and 6 key concepts covering prevention of cirrhosis complications, infection prevention, lifestyle measures, nutrition and exercise, osteoporosis care, and implementation in routine practice.",
+    url: "https://pubmed.ncbi.nlm.nih.gov/42831646/",
+    pmid: "42831646",
+    doi: "10.14309/ajg.0000000000004186",
+    source: "PubMed / ACG guideline library",
+    detectedAt: "2026-10-11",
+    queuedAt: "2026-10-11",
+    status: "candidate-review",
+    reviewReason: "New this cycle. ArticleDate and PubMed/Entrez history are October 5, and the ACG guideline library links the same DOI. The live merged repository has related cirrhosis guidelines but no record matching this PMID, DOI, title, or preventive-care scope, so this is a distinct successor rather than a duplicate."
+  },
+  {
+    org: "ASGE",
+    year: "2026",
+    month: "Oct",
+    topic: "Endoscopic Sedation",
+    urgency: "Moderate",
+    title: "Role of remimazolam in gastrointestinal endoscopy: American Society for Gastrointestinal Endoscopy clinical practice update",
+    summary: "Reviews efficacy, safety, dosing, and patient selection for remimazolam as a rapid, organ-independent procedural sedative, with particular attention to integrating it into endoscopy practice for higher-risk patients.",
+    url: "https://pubmed.ncbi.nlm.nih.gov/42848339/",
+    pmid: "42848339",
+    doi: "10.1016/j.gie.2026.08.019",
+    source: "PubMed; ASGE Clinical Practice Update",
+    detectedAt: "2026-10-11",
+    queuedAt: "2026-10-11",
+    status: "candidate-review",
+    reviewReason: "New this cycle. ArticleDate is October 7, PubMed/Entrez is October 8, PubMed classifies it as a Practice Guideline, and the title explicitly identifies it as an ASGE Clinical Practice Update. It is not yet on ASGE's Newly Published index and is absent from the live repository; the older general sedation guidelines do not cover this remimazolam-specific update."
+  },
+  {
+    org: "AASLD",
+    year: "2026",
+    month: "Oct",
+    topic: "Liver Biopsy",
+    urgency: "Moderate",
+    title: "AASLD EXPO: Liver biopsy",
+    summary: "Provides expert-practice recommendations on indications, selection among percutaneous, transjugular, and endoscopic ultrasound-guided techniques, safety and tissue adequacy, and evolving uses of liver biopsy in contemporary hepatology.",
+    url: "https://pubmed.ncbi.nlm.nih.gov/42841770/",
+    pmid: "42841770",
+    doi: "10.1097/HEP.0000000000001828",
+    source: "PubMed; AASLD Practice Guidelines Committee / AASLD EXPO program",
+    detectedAt: "2026-10-11",
+    queuedAt: "2026-10-11",
+    status: "candidate-review",
+    reviewReason: "New this cycle. ArticleDate and PubMed/Entrez history are October 7, and the abstract verifies appointment by the AASLD Practice Guidelines Committee and unanimously agreed expert-opinion statements. AASLD identifies EXPOs as clinical recommendation resources that may update existing guidelines. The live repository's Liver Biopsy item points to the March 2009 guidance, so this 2026 EXPO is a materially updated successor, not a duplicate."
   }
 ];
 
