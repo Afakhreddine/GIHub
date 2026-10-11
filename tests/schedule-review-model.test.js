@@ -42,9 +42,26 @@ test("schedule review only queues new targeted online search-result cards", () =
     },
   };
   const allItems = flattenScheduleResources(resources);
-  const reviewItems = flattenScheduleReviewItems(resources);
+  const reviewItems = flattenScheduleReviewItems(resources, new Set(["topic-a"]));
   assert.equal(allItems.length, 3);
   assert.deepEqual(reviewItems.map(item => item.title), ["New online candidate"]);
+});
+
+test("schedule review defaults to the current published schedule slugs", () => {
+  const resources = {
+    "stomach-pathology": {
+      newsAndArticles:[
+        { title:"Old September card", url:"https://example.com/old", sourceRepository:"targeted-online-pull" },
+      ],
+    },
+    "colon-polyps-pathology": {
+      newsAndArticles:[
+        { title:"Current October card", url:"https://example.com/current", sourceRepository:"targeted-online-pull" },
+      ],
+    },
+  };
+  const items = flattenScheduleReviewItems(resources);
+  assert.deepEqual(items.map(item => item.title), ["Current October card"]);
 });
 
 test("schedule review filters and publication readiness mirror weekly review", () => {
@@ -57,7 +74,7 @@ test("schedule review filters and publication readiness mirror weekly review", (
       ],
     },
   };
-  const items = flattenScheduleReviewItems(resources);
+  const items = flattenScheduleReviewItems(resources, new Set(["topic-a"]));
   const first = items[0];
   const decisions = Object.fromEntries(items.map(item => [scheduleReviewItemId(item), "Approve"]));
   assert.equal(canPublishScheduleReview(items, decisions), true);

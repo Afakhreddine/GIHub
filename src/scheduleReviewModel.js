@@ -1,3 +1,5 @@
+import { LECTURE_TOPICS } from "./scheduleConfig.js";
+
 const STORAGE_KEY = "gihub_schedule_review_decisions_v1";
 
 export function isScheduleReviewPath(pathname) {
@@ -60,8 +62,15 @@ export function isNewScheduleSearchCard(item) {
   return item?.kind === "News and Articles" && item?.sourceRepository === "targeted-online-pull";
 }
 
-export function flattenScheduleReviewItems(resources = {}) {
-  return flattenScheduleResources(resources).filter(isNewScheduleSearchCard);
+export function currentScheduleSlugs(topics = LECTURE_TOPICS) {
+  return new Set((topics || []).map((topic) => topic.slug).filter(Boolean));
+}
+
+export function flattenScheduleReviewItems(resources = {}, slugs = currentScheduleSlugs()) {
+  const allowed = slugs instanceof Set ? slugs : new Set(slugs || []);
+  return flattenScheduleResources(resources)
+    .filter((item) => !allowed.size || allowed.has(item.slug))
+    .filter(isNewScheduleSearchCard);
 }
 
 export function filterScheduleReviewItems(items, { query, slug, kind, decision, decisions }) {

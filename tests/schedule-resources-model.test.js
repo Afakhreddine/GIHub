@@ -92,7 +92,7 @@ test("schedule screener merge de-duplicates DOI, PMID, URL, or title", () => {
   assert.equal(merged["irritable-bowel-syndrome"].newsAndArticles.length, 1);
 });
 
-test("public schedule resource sanitizer hides unapproved review candidates", () => {
+test("public schedule resource sanitizer hides only unapproved targeted-search cards while showing trusted weekly/archive articles", () => {
   const resource = {
     guidelines: [
       { title: "Approved guideline", status: "approved" },
@@ -100,8 +100,13 @@ test("public schedule resource sanitizer hides unapproved review candidates", ()
     ],
     newsAndArticles: [
       { title: "Approved archive card", status: "approved", sourceRepository: "weeklyArchive" },
+      { title: "Trusted weekly candidate label should still publish", status: "candidate", sourceRepository: "weekly" },
+      { title: "Trusted archive candidate label should still publish", status: "candidate", sourceRepository: "weeklyArchive" },
+      { title: "Local PDF library candidate label should still publish", status: "candidate", sourceRepository: "local-pdf-library" },
       { title: "Unreviewed search card", status: "candidate", sourceRepository: "targeted-online-pull" },
-      { title: "Implicit targeted card needs review", sourceRepository: "targeted-pubmed-pull" },
+      { title: "PubMed pull should publish", status: "candidate", sourceRepository: "targeted-pubmed-pull" },
+      { title: "Approved targeted search card", status: "approved", sourceRepository: "targeted-online-pull" },
+      { title: "Rejected archive card stays hidden", status: "rejected", sourceRepository: "weeklyArchive" },
       { title: "Legacy trusted archive card", sourceRepository: "weeklyArchive" },
     ],
     quiz: [{ question: "Q?", options: ["A", "B", "C", "D"], correct: "A", explanation: "Because." }],
@@ -109,6 +114,14 @@ test("public schedule resource sanitizer hides unapproved review candidates", ()
 
   const publicResource = sanitizeScheduleResourceForPublic(resource);
   assert.deepEqual(publicResource.guidelines.map(item => item.title), ["Approved guideline"]);
-  assert.deepEqual(publicResource.newsAndArticles.map(item => item.title), ["Approved archive card", "Legacy trusted archive card"]);
+  assert.deepEqual(publicResource.newsAndArticles.map(item => item.title), [
+    "Approved archive card",
+    "Trusted weekly candidate label should still publish",
+    "Trusted archive candidate label should still publish",
+    "Local PDF library candidate label should still publish",
+    "PubMed pull should publish",
+    "Approved targeted search card",
+    "Legacy trusted archive card",
+  ]);
   assert.equal(publicResource.quiz.length, 1);
 });

@@ -44,7 +44,7 @@ test("schedule publish filter preserves prior-approved resources and filters onl
       quizStatus:"pending-autocontent-pdf-pull",
     },
   };
-  const items = flattenScheduleReviewItems(resources);
+  const items = flattenScheduleReviewItems(resources, new Set(["topic-a"]));
   const approvedItems = items.filter(item => /Keep/.test(item.title));
   const filtered = filterScheduleResourcesToApproved(resources, approvedItems);
   assert.deepEqual(filtered["topic-a"].guidelines.map(item => item.title), ["Preserve guideline"]);

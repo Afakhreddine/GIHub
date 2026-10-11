@@ -1,5 +1,15 @@
 const weeklyPodcasts = [
   {
+    id: "weekly-2026-10-02",
+    title: "GIHub Weekly Update Podcast — Oct 2, 2026",
+    date: "2026-10-02",
+    displayDate: "Oct 2, 2026",
+    duration: "18:57",
+    sourceCount: 4,
+    audioUrl: "/audio/weekly/weekly-2026-10-02.mp3",
+    description: "Audio review of four fresh GIHub Weekly Update studies, covering apraglutide for short bowel syndrome-intestinal failure, elafibranor in primary biliary cholangitis, malignancy risk in Crohn's disease, and a colorectal cancer microbiome recurrence biomarker study."
+  },
+  {
     id: "weekly-2026-09-29",
     title: "GIHub Weekly Update Podcast — Sep 29, 2026",
     date: "2026-09-29",
@@ -19,17 +29,6 @@ const weeklyPodcasts = [
     relatedPr: 37,
     audioUrl: "/audio/weekly/weekly-2026-09-22.mp3",
     description: "Audio review of the published GIHub Weekly Update cards, including AI colonoscopy, UC monitoring and de-escalation, ERCP stent follow-up, Rome V IBS criteria, hepatitis B therapy, and endoscopy technology."
-  },
-  {
-    id: "weekly-2026-09-15",
-    title: "GIHub Weekly Update Podcast — Sep 15, 2026",
-    date: "2026-09-15",
-    displayDate: "Sep 15, 2026",
-    duration: "18:45",
-    sourceCount: 7,
-    relatedPr: 34,
-    audioUrl: "/audio/weekly/weekly-2026-09-15.mp3",
-    description: "Prior GIHub Weekly Update podcast generated after the published weekly PR."
   }
 ];
 

@@ -20,7 +20,10 @@ test("October schedule topics have public guidelines and quizzes", () => {
     const publicResource = sanitizeScheduleResourceForPublic(resource);
     assert.ok(publicResource.guidelines.length > 0, `${event.slug} should expose approved guidelines publicly`);
     assert.ok(publicResource.quiz.length > 0, `${event.slug} should expose a public quiz`);
-    assert.ok(publicResource.newsAndArticles.every(item => item.status !== "candidate"), `${event.slug} public articles must not include candidate cards`);
+    assert.ok(
+      publicResource.newsAndArticles.every(item => item.sourceRepository !== "targeted-online-pull" || item.status === "approved"),
+      `${event.slug} public articles must not include unapproved targeted online-search cards`,
+    );
   }
 });
 
@@ -62,5 +65,14 @@ test("schedule topic quiz text is cleaned for plain-text rendering when quizzes 
         assert.doesNotMatch(field, /\\%/, `quiz text should render literal percent signs: ${field}`);
       }
     }
+  }
+});
+
+test("schedule topic quizzes do not put every correct answer in the same position", () => {
+  for (const [slug, resource] of Object.entries(scheduleResources)) {
+    const quiz = resource.quiz || [];
+    if (quiz.length < 4) continue;
+    const correctLetters = new Set(quiz.map(item => item.correct));
+    assert.ok(correctLetters.size > 1, `${slug} should distribute correct answers across positions`);
   }
 });

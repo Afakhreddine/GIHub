@@ -3,6 +3,90 @@
 
 const weeklyArchive = [
   {
+    "title": "FDA approves lirafugratinib for FGFR2-altered cholangiocarcinoma",
+    "oneLineSummary": "FDA approval on Sep 23 adds a selective FGFR2 option after chemotherapy and reinforces molecular testing, but absent comparator and verified full publication plus ocular, phosphate, mineralization, and fetal risks require caution.",
+    "doi": "",
+    "pmid": "",
+    "source": "news.gastro.org + healio.com",
+    "url": "https://news.gastro.org/issues/2026/september-2026/fda-approves-lirafugratinib-for-fgfr2altered-cholangiocarcinoma/",
+    "date": "Sep 24, 2026",
+    "topic": "Cholangiocarcinoma",
+    "type": "FDA",
+    "archivedFrom": "2026-10-06"
+  },
+  {
+    "title": "Incomplete intestinal metaplasia progressed to gastric cancer sevenfold faster, analysis finds",
+    "oneLineSummary": "Across 83 prevalence studies plus progression cohorts, incomplete intestinal metaplasia accounted for 53% of confirmed cases and progressed at 12.15 versus 1.73 gastric cancers per 1,000 person-years for complete metaplasia, while limited versus extensive disease rates did not di",
+    "doi": "",
+    "pmid": "42680048",
+    "source": "news.gastro.org",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42680048/",
+    "date": "Sep 25, 2026",
+    "topic": "Gastric Intestinal Metaplasia",
+    "type": "Research",
+    "archivedFrom": "2026-10-06"
+  },
+  {
+    "title": "MRCP screening finds radiological PSC in 8% of new IBD diagnoses",
+    "oneLineSummary": "This highlights occult disease but does not establish routine screening because agreement was moderate and participation, controls, follow-up, central review, and confounding limit interpretation.",
+    "doi": "",
+    "pmid": "42685962",
+    "source": "news.gastro.org",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42685962/",
+    "date": "Sep 24, 2026",
+    "topic": "IBD and PSC",
+    "type": "Research",
+    "archivedFrom": "2026-10-06"
+  },
+  {
+    "title": "Cancer risk comparable across advanced IBD therapies in claims analysis",
+    "oneLineSummary": "The results are reassuring for shared decisions but do not prove equivalence or long-term safety because JAK exposure, follow-up, events, prior-cancer ascertainment, and claims-based confounding were limited.",
+    "doi": "",
+    "pmid": "42607853",
+    "source": "news.gastro.org",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42607853/",
+    "date": "Sep 23, 2026",
+    "topic": "IBD Safety",
+    "type": "Research",
+    "archivedFrom": "2026-10-06"
+  },
+  {
+    "title": "Crohn’s surgery risk held steady as advanced therapy use climbed",
+    "oneLineSummary": "In 3,044 patients with Crohn’s disease and 3,893 with ulcerative colitis, five-year advanced-therapy use rose to 65% and 38%, respectively, while Crohn’s major surgery remained 13% versus 10% and ulcerative-colitis colectomy fell from 7% to 4%.",
+    "doi": "",
+    "pmid": "41997334",
+    "source": "news.gastro.org",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/41997334/",
+    "date": "Sep 25, 2026",
+    "topic": "IBD Treatment Trends",
+    "type": "Research",
+    "archivedFrom": "2026-10-06"
+  },
+  {
+    "title": "Nearly a quarter of adults treated for HCV lack follow-up RNA testing",
+    "oneLineSummary": "Among 18,246 direct-acting antiviral initiators, 73.2% had a negative follow-up RNA result, 3.7% remained positive, and 23.2% had no recorded follow-up test, although 90.8% of the untested group had at least 56 days of dispensed therapy.",
+    "doi": "",
+    "pmid": "42406405",
+    "source": "healio.com",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42406405/",
+    "date": "Sep 25, 2026",
+    "topic": "Hepatitis C",
+    "type": "Research",
+    "archivedFrom": "2026-10-06"
+  },
+  {
+    "title": "Microscopic colitis risk signals reported with hormonal contraception and selected antidepressants",
+    "oneLineSummary": "In DDW retrospective analyses, matched oral-contraceptive users had microscopic-colitis incidence of 1.39% versus 1.06% (RR 1.32; 95% CI, 1.22-1.43), a second cohort found 0.389% versus 0.235% (OR 1.66; P=.007), and selected antidepressants showed drug-specific associations.",
+    "doi": "",
+    "pmid": "",
+    "source": "gastroendonews.com",
+    "url": "https://www.gastroendonews.com/PRN/Article/09-26/Microscopic-Colitis-Risk-With-Contraceptives-and-SSRIs-SNRIs/81540",
+    "date": "Sep 21, 2026",
+    "topic": "Microscopic Colitis",
+    "type": "Research",
+    "archivedFrom": "2026-10-06"
+  },
+  {
     "title": "AI-assisted second look may raise right-colon adenoma detection",
     "oneLineSummary": "The added pass prolonged median total examination time from 11.7 to 13.3 minutes and may improve nonadvanced adenoma detection, but the design cannot isolate AI from the second look and did not assess interval cancers.",
     "doi": "",
