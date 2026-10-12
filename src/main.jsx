@@ -6,11 +6,14 @@ import WeeklyReview from './WeeklyReview.jsx'
 import ScheduleReview from './ScheduleReview.jsx'
 import ReviewHub from './ReviewHub.jsx'
 import GuidelineReview from './GuidelineReview.jsx'
+import LookSandbox from './LookSandbox.jsx'
 import { isWeeklyReviewPath } from './weeklyReviewModel.js'
 import { isReviewHomePath, isScheduleReviewPath } from './scheduleReviewModel.js'
 import { isGuidelineReviewPath } from './guidelineReviewModel.js'
 
-const route = isReviewHomePath(window.location.pathname)
+const route = window.location.pathname === '/sandbox/look'
+  ? <LookSandbox />
+  : isReviewHomePath(window.location.pathname)
   ? <ReviewHub />
   : isWeeklyReviewPath(window.location.pathname)
   ? <WeeklyReview />
