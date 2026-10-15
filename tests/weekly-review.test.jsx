@@ -4,6 +4,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import React from "react";
 import weekly from "../src/data/weekly.js";
 import WeeklyReview from "../src/WeeklyReview.jsx";
+import ScheduleReview from "../src/ScheduleReview.jsx";
+import GuidelineReview from "../src/GuidelineReview.jsx";
 import {
   buildApprovalSummary,
   filterWeeklyItems,
@@ -30,6 +32,14 @@ test("weekly review route renders repo-managed cards and review controls", () =>
   assert.ok(html.includes(weekly[0].url));
   assert.ok(html.includes(weekly[0].studyUrl));
   assert.match(html, /Publish approved/);
+});
+
+test("review pages do not show published production data while looking for an open PR", () => {
+  for (const Component of [WeeklyReview, ScheduleReview, GuidelineReview]) {
+    const html = renderToStaticMarkup(<Component />);
+    assert.match(html, /0 of 0 (cards|candidates)/);
+    assert.doesNotMatch(html, /<article\b/);
+  }
 });
 
 test("reviewed counter ignores saved decisions for cards no longer in the current PR", () => {

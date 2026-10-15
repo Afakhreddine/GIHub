@@ -53,6 +53,7 @@ export async function loadWeeklyReviewDataForPr(pr, env = process.env) {
   const pullNumber = Number.parseInt(pr, 10);
   if (!Number.isFinite(pullNumber) || pullNumber <= 0) throw new Error("A valid pull-request number is required.");
   const pull = await githubFetch(`/pulls/${pullNumber}`, env);
+  if (pull.state !== "open") return { pr:pullNumber, items:[], reviewStatus:pull.merged_at ? "published" : "closed" };
   const file = await githubFetch(`/contents/src/data/weekly.js?ref=${encodeURIComponent(pull.head.ref)}`, env);
   const source = Buffer.from(file.content || "", file.encoding || "base64").toString("utf8");
   return {
@@ -66,7 +67,7 @@ export async function loadWeeklyReviewDataForPr(pr, env = process.env) {
 export async function loadLatestWeeklyReviewData(env = process.env) {
   const pulls = await githubFetch("/pulls?state=open&per_page=50&sort=updated&direction=desc", env);
   const pull = chooseLatestWeeklyReviewPull(pulls);
-  if (!pull) throw new Error("No open weekly-update PR was found.");
+  if (!pull) return { pr:null, items:[], reviewStatus:"no-open-pr" };
   return loadWeeklyReviewDataForPr(pull.number, env);
 }
 
@@ -86,7 +87,9 @@ export default async function handler(req, res) {
     }
     if (req.method !== "GET") return json(res, 405, { error:"Method not allowed" });
     const data = pr ? await loadWeeklyReviewDataForPr(pr) : await loadLatestWeeklyReviewData();
-    const saved = await loadReviewDecisions({ workflow:"weekly", pullNumber:data.pr });
+    const saved = data.pr && !data.reviewStatus
+      ? await loadReviewDecisions({ workflow:"weekly", pullNumber:data.pr })
+      : { decisions:{}, configured:false };
     return json(res, 200, { ...data, savedDecisions:saved.decisions, decisionsConfigured:saved.configured });
   } catch (error) {
     return json(res, 400, { error:error.message || "Could not load weekly review data" });

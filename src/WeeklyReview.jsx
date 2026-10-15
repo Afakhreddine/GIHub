@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import weekly from "./data/weekly.js";
 import { buildPublishPayload, canPublishWeeklyReview, filterWeeklyItems, loadDecisions, saveDecisions, weeklyItemId, weeklyReviewDataApiPath, weeklyReviewDecisionCounts, weeklyReviewSourceFromLocation } from "./weeklyReviewModel.js";
 
 async function saveServerDecisions(pullNumber, decisions) {
@@ -14,7 +13,7 @@ async function saveServerDecisions(pullNumber, decisions) {
   return body;
 }
 
-export default function WeeklyReview({ items = weekly }) {
+export default function WeeklyReview({ items = [] }) {
   const [query, setQuery] = useState("");
   const [type, setType] = useState("All");
   const [decisionFilter, setDecisionFilter] = useState("All");
@@ -41,6 +40,10 @@ export default function WeeklyReview({ items = weekly }) {
         const pullNumber = String(body.pr || source.pr || "");
         setReviewItems(body.items);
         setReviewPullNumber(pullNumber);
+        if (body.reviewStatus) {
+          setSourceStatus(body.reviewStatus === "published" ? `PR #${body.pr} has been published · no cards awaiting review` : body.reviewStatus === "closed" ? `PR #${body.pr} is closed · no cards awaiting review` : "No open weekly PR · no cards awaiting review");
+          return;
+        }
         setSourceStatus(`Reviewing PR #${body.pr} · ${body.items.length} cards · loading saved decisions…`);
         try {
           const saved = body.savedDecisions || {};
@@ -90,6 +93,10 @@ export default function WeeklyReview({ items = weekly }) {
       const result = await response.json();
       if (!response.ok || !result.ok) throw new Error(result.error || result.reason || "Publish failed");
       setPublishStatus(result.published ? `Published PR #${result.pullNumber}` : result.message || "Updated PR to approved cards");
+      if (result.published) {
+        setReviewItems([]);
+        setSourceStatus(`PR #${result.pullNumber} has been published · no cards awaiting review`);
+      }
     } catch (error) {
       setPublishStatus(error.message || "Publish failed");
     } finally {
@@ -138,7 +145,7 @@ export default function WeeklyReview({ items = weekly }) {
               </div>
             </article>
           ))}
-          {visibleItems.length === 0 && <p style={{ color:"#3a5878", padding:"32px 0", textAlign:"center" }}>No weekly updates match these filters.</p>}
+          {visibleItems.length === 0 && <p style={{ color:"#3a5878", padding:"32px 0", textAlign:"center" }}>{reviewItems.length ? "No weekly updates match these filters." : "No weekly cards awaiting review."}</p>}
         </div>
         <div style={{ position:"sticky", bottom:16, marginTop:24, padding:"14px 16px", border:"1px solid rgba(91,138,240,0.25)", borderRadius:12, background:"rgba(10,20,40,0.96)", display:"flex", alignItems:"center", justifyContent:"space-between", gap:12, flexWrap:"wrap", boxShadow:"0 8px 30px rgba(0,0,0,0.35)" }}>
           <span style={{ fontSize:12, color:"#5a6a88", fontFamily:"monospace" }}>{weeklyReviewDecisionCounts(reviewItems, decisions).reviewed}/{reviewItems.length} reviewed</span>

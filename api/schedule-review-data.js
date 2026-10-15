@@ -68,6 +68,7 @@ export async function loadScheduleReviewDataForPr(pr, env = process.env) {
   const pullNumber = Number.parseInt(pr, 10);
   if (!Number.isFinite(pullNumber) || pullNumber <= 0) throw new Error("A valid pull-request number is required.");
   const pull = await githubFetch(`/pulls/${pullNumber}`, env);
+  if (pull.state !== "open") return { pr:pullNumber, resources:{}, reviewStatus:pull.merged_at ? "published" : "closed" };
   const file = await githubFetch(`/contents/src/data/scheduleResources.js?ref=${encodeURIComponent(pull.head.ref)}`, env);
   const source = Buffer.from(file.content || "", file.encoding || "base64").toString("utf8");
   return {
@@ -82,6 +83,7 @@ export async function loadGuidelineReviewDataForPr(pr, env = process.env) {
   const pullNumber = Number.parseInt(pr, 10);
   if (!Number.isFinite(pullNumber) || pullNumber <= 0) throw new Error("A valid pull-request number is required.");
   const pull = await githubFetch(`/pulls/${pullNumber}`, env);
+  if (pull.state !== "open") return { pr:pullNumber, items:[], reviewStatus:pull.merged_at ? "published" : "closed" };
   const file = await githubFetch(`/contents/src/data/guidelineReviewCandidates.js?ref=${encodeURIComponent(pull.head.ref)}`, env);
   const source = Buffer.from(file.content || "", file.encoding || "base64").toString("utf8");
   return {
@@ -95,14 +97,14 @@ export async function loadGuidelineReviewDataForPr(pr, env = process.env) {
 export async function loadLatestScheduleReviewData(env = process.env) {
   const pulls = await githubFetch("/pulls?state=open&per_page=50&sort=updated&direction=desc", env);
   const pull = chooseLatestScheduleReviewPull(pulls);
-  if (!pull) throw new Error("No open schedule PR was found.");
+  if (!pull) return { pr:null, resources:{}, reviewStatus:"no-open-pr" };
   return loadScheduleReviewDataForPr(pull.number, env);
 }
 
 export async function loadLatestGuidelineReviewData(env = process.env) {
   const pulls = await githubFetch("/pulls?state=open&per_page=50&sort=updated&direction=desc", env);
   const pull = chooseLatestGuidelineReviewPull(pulls);
-  if (!pull) throw new Error("No open guideline-candidate PR was found.");
+  if (!pull) return { pr:null, items:[], reviewStatus:"no-open-pr" };
   return loadGuidelineReviewDataForPr(pull.number, env);
 }
 
@@ -127,7 +129,9 @@ export default async function handler(req, res) {
     const data = isGuidelines
       ? (pr ? await loadGuidelineReviewDataForPr(pr) : await loadLatestGuidelineReviewData())
       : (pr ? await loadScheduleReviewDataForPr(pr) : await loadLatestScheduleReviewData());
-    const saved = await loadReviewDecisions({ workflow:isGuidelines ? "guidelines" : "schedule", pullNumber:data.pr });
+    const saved = data.pr && !data.reviewStatus
+      ? await loadReviewDecisions({ workflow:isGuidelines ? "guidelines" : "schedule", pullNumber:data.pr })
+      : { decisions:{}, configured:false };
     return json(res, 200, { ...data, savedDecisions:saved.decisions, decisionsConfigured:saved.configured });
   } catch (error) {
     return json(res, 400, { error:error.message || "Could not load review data" });
