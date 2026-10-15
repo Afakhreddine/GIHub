@@ -32,6 +32,25 @@ test("weekly review route renders repo-managed cards and review controls", () =>
   assert.match(html, /Publish approved/);
 });
 
+test("reviewed counter ignores saved decisions for cards no longer in the current PR", () => {
+  const items = weekly.slice(0, 2);
+  const decisions = {
+    [weeklyItemId(items[0])]: "Approve",
+    "old date|removed card": "Reject",
+    "older date|another removed card": "Hold",
+  };
+  const previousWindow = globalThis.window;
+  globalThis.window = { localStorage:{ getItem:() => JSON.stringify(decisions) } };
+  try {
+    const html = renderToStaticMarkup(<WeeklyReview items={items} />);
+    assert.match(html, /1\/2 reviewed/);
+    assert.doesNotMatch(html, /3\/2 reviewed/);
+  } finally {
+    if (previousWindow === undefined) delete globalThis.window;
+    else globalThis.window = previousWindow;
+  }
+});
+
 test("weekly review search and filters match card content and decisions", () => {
   const approvedId = weeklyItemId(weekly[0]);
   const decisions = { [approvedId]: "Approve" };

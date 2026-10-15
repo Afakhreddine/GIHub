@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import weekly from "./data/weekly.js";
-import { buildPublishPayload, canPublishWeeklyReview, filterWeeklyItems, loadDecisions, saveDecisions, weeklyItemId, weeklyReviewDataApiPath, weeklyReviewSourceFromLocation } from "./weeklyReviewModel.js";
+import { buildPublishPayload, canPublishWeeklyReview, filterWeeklyItems, loadDecisions, saveDecisions, weeklyItemId, weeklyReviewDataApiPath, weeklyReviewDecisionCounts, weeklyReviewSourceFromLocation } from "./weeklyReviewModel.js";
 
 async function saveServerDecisions(pullNumber, decisions) {
   if (!pullNumber) return null;
@@ -141,7 +141,7 @@ export default function WeeklyReview({ items = weekly }) {
           {visibleItems.length === 0 && <p style={{ color:"#3a5878", padding:"32px 0", textAlign:"center" }}>No weekly updates match these filters.</p>}
         </div>
         <div style={{ position:"sticky", bottom:16, marginTop:24, padding:"14px 16px", border:"1px solid rgba(91,138,240,0.25)", borderRadius:12, background:"rgba(10,20,40,0.96)", display:"flex", alignItems:"center", justifyContent:"space-between", gap:12, flexWrap:"wrap", boxShadow:"0 8px 30px rgba(0,0,0,0.35)" }}>
-          <span style={{ fontSize:12, color:"#5a6a88", fontFamily:"monospace" }}>{Object.keys(decisions).length}/{reviewItems.length} reviewed</span>
+          <span style={{ fontSize:12, color:"#5a6a88", fontFamily:"monospace" }}>{weeklyReviewDecisionCounts(reviewItems, decisions).reviewed}/{reviewItems.length} reviewed</span>
           <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
             {publishStatus && <span style={{ fontSize:12, color:publishStatus.startsWith("Published") ? "#4caf7d" : "#e09a2a", fontFamily:"monospace" }}>{publishStatus}</span>}
             <button type="button" onClick={publishApprovedWeeklyUpdate} disabled={!publishReady || publishBusy} style={{ background:publishReady ? "rgba(76,175,125,0.16)" : "rgba(255,255,255,0.04)", border:`1px solid ${publishReady ? "rgba(76,175,125,0.55)" : "rgba(255,255,255,0.08)"}`, color:publishReady ? "#7ee0aa" : "#42546f", borderRadius:8, padding:"9px 14px", cursor:publishReady ? "pointer" : "not-allowed", fontWeight:700 }}>{publishBusy ? "Publishing…" : "Publish approved"}</button>
