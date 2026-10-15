@@ -26,7 +26,7 @@ export function buildPrompts() {
       `Step 3: Search PubMed (https://pubmed.ncbi.nlm.nih.gov/?term={study+title+first+author}) and use https://pubmed.ncbi.nlm.nih.gov/{PMID}/ if found. ` +
       `Set studyUrl to the best link found. If the study is only a conference abstract (DDW, ASCO, UEG, ACG meeting) and not yet published in a journal, leave studyUrl empty — do not fabricate a link. ` +
       `(E) Items of type "Guideline" are handled separately — include them so the system can cross-reference the guideline repository, but set org to the publishing society (ACG|AGA|ASGE|AASLD). ` +
-      `(F) Return up to 12 items total (10 non-guideline + any detected guidelines). STRICT DATE RULE: every item confirmed between ${cutoff} and ${today}. ` +
+      `(F) Return all verified, relevant items without a fixed card count; do not add filler. STRICT DATE RULE: every item confirmed between ${cutoff} and ${today}. ` +
       `Return ONLY a JSON array: ` +
       `{"type":"Research|FDA|Guideline|News|Opinion","org":"ACG|AGA|ASGE|AASLD|","multiSource":false,"date":"","topic":"","title":"","authors":"","source":"","summary":"2-3 sentences","url":"","studyUrl":""}`,
   };

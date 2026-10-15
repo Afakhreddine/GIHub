@@ -230,7 +230,6 @@ export function triageCandidates(candidates) {
   audit.duplicatesRemoved = duplicates.length;
   audit.duplicateTitles = duplicates.map((item) => item.title).filter(Boolean);
 
-  if (unique.length > 12) throw new Error("Triage produced more than 12 weekly items");
   return { weeklyItems:unique, audit, candidates: normalized };
 }
 

@@ -77,7 +77,6 @@ function assertUrl(value, field, index) {
 function validate(items) {
   if (!Array.isArray(items)) throw new Error("Input must be a JSON array");
   if (items.length === 0) throw new Error("Weekly update cannot be empty");
-  if (items.length > 12) throw new Error("Weekly update should contain at most 12 items");
 
   return items.map((item, i) => {
     const out = {
