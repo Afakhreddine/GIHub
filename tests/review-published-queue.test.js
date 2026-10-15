@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import weeklyHandler from "../api/weekly-review-data.js";
-import scheduleHandler from "../api/schedule-review-data.js";
+import scheduleHandler, { chooseLatestScheduleReviewPull } from "../api/schedule-review-data.js";
 
 async function get(handler, url, githubResponse) {
   const previousFetch = globalThis.fetch;
@@ -63,3 +63,16 @@ for (const workflow of ["schedule", "guidelines"]) {
     else assert.deepEqual(result.body.items, []);
   });
 }
+
+test("schedule queue ignores unrelated open PRs that merely mention scheduling", async () => {
+  const unrelated = { number:2, state:"open", title:"Auth-gate cron endpoints + actually schedule the lecture-content cron", head:{ ref:"fix/cron-auth-and-scheduling" }, updated_at:"2026-10-15T23:00:00Z" };
+  assert.equal(chooseLatestScheduleReviewPull([unrelated]), null);
+  assert.equal(chooseLatestScheduleReviewPull([
+    unrelated,
+    { number:53, title:"October schedule review cards", head:{ ref:"chore/october-schedule-card-review" }, updated_at:"2026-10-01T00:00:00Z" },
+  ]).number, 53);
+  const result = await get(scheduleHandler, "/api/schedule-review-data", () => [unrelated]);
+  assert.equal(result.code, 200);
+  assert.equal(result.body.reviewStatus, "no-open-pr");
+  assert.deepEqual(result.body.resources, {});
+});

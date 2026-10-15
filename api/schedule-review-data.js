@@ -23,9 +23,9 @@ export function parseGuidelineCandidatesModuleSource(source) {
 }
 
 export function isScheduleReviewPull(pull) {
-  const title = String(pull?.title || "").toLowerCase();
   const ref = String(pull?.head?.ref || "").toLowerCase();
-  return ref.includes("schedule") || title.includes("schedule");
+  // Only candidate-data PRs enter this queue; feature/cron fixes may mention scheduling.
+  return ref.startsWith("chore/") && ref.includes("schedule") && (ref.includes("review") || ref.includes("candidate") || ref.includes("resource") || ref.includes("article"));
 }
 
 export function isGuidelineReviewPull(pull) {
