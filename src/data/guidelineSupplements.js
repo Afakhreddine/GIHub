@@ -494,6 +494,56 @@ const GUIDELINE_SUPPLEMENTS = [
     "url": "https://pubmed.ncbi.nlm.nih.gov/42683623/",
     "addedAt": "2026-10-03",
     "detectedAt": "2026-09-06"
+  },
+  {
+    "org": "AGA",
+    "year": "2026",
+    "month": "Sep",
+    "topic": "Pancreatobiliary",
+    "urgency": "High",
+    "title": "AGA Clinical Practice Update on Management of Ampullary Neoplasms: Expert Review",
+    "summary": "Provides 15 best-practice statements on evaluation, staging, endoscopic papillectomy, surgical referral, adverse-event prevention, and post-resection surveillance for ampullary neoplasms.",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42720640/"
+  },
+  {
+    "org": "AGA",
+    "year": "2026",
+    "month": "Sep",
+    "topic": "Hepatology",
+    "urgency": "High",
+    "title": "AGA Clinical Practice Update on the Evaluation and Management of Metabolic Dysfunction- and Alcohol-Associated Liver Disease: Expert Review",
+    "summary": "Provides best-practice advice for classifying MetALD, assessing alcohol use and fibrosis risk, counseling abstinence, managing cardiometabolic and nutritional risks, and treating alcohol use disorder.",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42776095/"
+  },
+  {
+    "org": "AGA",
+    "year": "2026",
+    "month": "Sep",
+    "topic": "Pancreatic Cysts / HCC Surveillance",
+    "urgency": "Moderate",
+    "title": "AGA Clinical Practice Update on Surveillance of Pancreatic Cystic Lesions and Hepatocellular Carcinoma in Older Adults: Expert Review",
+    "summary": "Provides patient-centered best-practice advice on when to continue or discontinue pancreatic cyst and hepatocellular carcinoma surveillance in older adults based on lesion stability, comorbidity, treatment candidacy, and life expectancy.",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42820904/"
+  },
+  {
+    "org": "ACG",
+    "year": "2026",
+    "month": "Sep",
+    "topic": "Hereditary Cancer",
+    "urgency": "High",
+    "title": "Serrated Polyposis Syndrome: A Review and Consensus Statement by the US Multi-Society Task Force on Colorectal Cancer",
+    "summary": "Reviews diagnostic criteria, colorectal cancer risk, colon clearing and surveillance, indications for surgery, genetic evaluation, and screening of first-degree relatives in serrated polyposis syndrome.",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42814045/"
+  },
+  {
+    "org": "ACG",
+    "year": "2026",
+    "month": "Oct",
+    "topic": "Cirrhosis / Preventive Care",
+    "urgency": "High",
+    "title": "ACG Clinical Guideline: Preventive Care for Patients With Cirrhosis",
+    "summary": "Provides 18 GRADE-assessed recommendations and 6 key concepts covering prevention of cirrhosis complications, infection prevention, lifestyle measures, nutrition and exercise, osteoporosis care, and implementation in routine practice.",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42831646/"
   }
 ];
 
