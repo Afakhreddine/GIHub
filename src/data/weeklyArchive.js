@@ -3,6 +3,66 @@
 
 const weeklyArchive = [
   {
+    "title": "Weekly apraglutide cuts parenteral support in phase 3 short bowel syndrome trial",
+    "oneLineSummary": "The once-weekly GLP-2 analog may reduce infusion burden, but colon-in-continuity benefits at week 48 were not significant and apraglutide remains investigational.",
+    "doi": "",
+    "pmid": "42692160",
+    "source": "news.gastro.org",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42692160/",
+    "date": "Oct 2, 2026",
+    "topic": "Short Bowel Syndrome",
+    "type": "Research",
+    "archivedFrom": "2026-10-15"
+  },
+  {
+    "title": "Elafibranor responses in PBC held through three years, trial data show",
+    "oneLineSummary": "These data support durable biochemical activity for an approved second-line PBC therapy but do not establish improved clinical outcomes or fibrosis regression.",
+    "doi": "",
+    "pmid": "42660235",
+    "source": "news.gastro.org",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42660235/",
+    "date": "Sep 30, 2026",
+    "topic": "Primary Biliary Cholangitis",
+    "type": "Research",
+    "archivedFrom": "2026-10-15"
+  },
+  {
+    "title": "Most excess cancer in Crohn’s disease may be nonmelanoma skin cancer",
+    "oneLineSummary": "The absolute-risk framing supports counseling and skin-cancer prevention but does not establish comparative drug causality.",
+    "doi": "",
+    "pmid": "42467952",
+    "source": "news.gastro.org",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42467952/",
+    "date": "Sep 29, 2026",
+    "topic": "Crohn’s Disease Safety",
+    "type": "Research",
+    "archivedFrom": "2026-10-15"
+  },
+  {
+    "title": "Serologic immunity to hepatitis A, B ‘remains suboptimal’ among US adults",
+    "oneLineSummary": "The large protection gaps, including HAV immunity of 26.7%-63.7% and vaccine-derived HBV immunity of 14.0%-38.6% across high-risk groups, support systematic vaccination assessment.",
+    "doi": "",
+    "pmid": "42606884",
+    "source": "healio.com",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42606884/",
+    "date": "Oct 1, 2026",
+    "topic": "Viral Hepatitis Vaccination",
+    "type": "Research",
+    "archivedFrom": "2026-10-15"
+  },
+  {
+    "title": "Microbiome holds biomarker predictive of CRC recurrence",
+    "oneLineSummary": "The result is hypothesis-generating and should not change surveillance without validation or a demonstrated clinical-use strategy.",
+    "doi": "",
+    "pmid": "41971848",
+    "source": "gastroendonews.com",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/41971848/",
+    "date": "Sep 29, 2026",
+    "topic": "Colorectal Cancer",
+    "type": "Research",
+    "archivedFrom": "2026-10-15"
+  },
+  {
     "title": "FDA approves lirafugratinib for FGFR2-altered cholangiocarcinoma",
     "oneLineSummary": "FDA approval on Sep 23 adds a selective FGFR2 option after chemotherapy and reinforces molecular testing, but absent comparator and verified full publication plus ocular, phosphate, mineralization, and fetal risks require caution.",
     "doi": "",
