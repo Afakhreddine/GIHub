@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import guidelineReviewCandidates from "./data/guidelineReviewCandidates.js";
-import { buildGuidelinePublishPayload, canPublishGuidelineReview, filterGuidelineItems, guidelineItemId, guidelineReviewDataApiPath, guidelineReviewSourceFromLocation, loadGuidelineDecisions, saveGuidelineDecisions } from "./guidelineReviewModel.js";
+import { buildGuidelinePublishPayload, canPublishGuidelineReview, filterGuidelineItems, guidelineItemId, guidelineReviewDataApiPath, guidelineReviewDecisionCounts, guidelineReviewSourceFromLocation, loadGuidelineDecisions, saveGuidelineDecisions } from "./guidelineReviewModel.js";
 
 async function saveServerDecisions(pullNumber, decisions) {
   if (!pullNumber) return null;
@@ -14,7 +13,7 @@ async function saveServerDecisions(pullNumber, decisions) {
   return body;
 }
 
-export default function GuidelineReview({ items = guidelineReviewCandidates }) {
+export default function GuidelineReview({ items = [] }) {
   const [query, setQuery] = useState("");
   const [org, setOrg] = useState("All");
   const [decisionFilter, setDecisionFilter] = useState("All");
@@ -41,6 +40,10 @@ export default function GuidelineReview({ items = guidelineReviewCandidates }) {
         const pullNumber = String(body.pr || source.pr || "");
         setReviewItems(body.items);
         setReviewPullNumber(pullNumber);
+        if (body.reviewStatus) {
+          setSourceStatus(body.reviewStatus === "published" ? `PR #${body.pr} has been published · no candidates awaiting review` : body.reviewStatus === "closed" ? `PR #${body.pr} is closed · no candidates awaiting review` : "No open guideline PR · no candidates awaiting review");
+          return;
+        }
         setSourceStatus(`Reviewing PR #${body.pr} · ${body.items.length} guideline candidate${body.items.length === 1 ? "" : "s"} · loading saved decisions…`);
         try {
           const saved = body.savedDecisions || {};
@@ -90,6 +93,10 @@ export default function GuidelineReview({ items = guidelineReviewCandidates }) {
       const result = await response.json();
       if (!response.ok || !result.ok) throw new Error(result.error || result.reason || "Publish failed");
       setPublishStatus(result.published ? `Published PR #${result.pullNumber}` : result.message || "Updated PR with approved guidelines");
+      if (result.published) {
+        setReviewItems([]);
+        setSourceStatus(`PR #${result.pullNumber} has been published · no candidates awaiting review`);
+      }
     } catch (error) {
       setPublishStatus(error.message || "Publish failed");
     } finally {
@@ -141,10 +148,10 @@ export default function GuidelineReview({ items = guidelineReviewCandidates }) {
               </div>
             </article>
           ))}
-          {visibleItems.length === 0 && <p style={{ color:"#3a5878", padding:"32px 0", textAlign:"center" }}>No guideline candidates match these filters.</p>}
+          {visibleItems.length === 0 && <p style={{ color:"#3a5878", padding:"32px 0", textAlign:"center" }}>{reviewItems.length ? "No guideline candidates match these filters." : "No guideline candidates awaiting review."}</p>}
         </div>
         <div style={{ position:"sticky", bottom:16, marginTop:24, padding:"14px 16px", border:"1px solid rgba(91,138,240,0.25)", borderRadius:12, background:"rgba(10,20,40,0.96)", display:"flex", alignItems:"center", justifyContent:"space-between", gap:12, flexWrap:"wrap", boxShadow:"0 8px 30px rgba(0,0,0,0.35)" }}>
-          <span style={{ fontSize:12, color:"#5a6a88", fontFamily:"monospace" }}>{Object.keys(decisions).length}/{reviewItems.length} reviewed</span>
+          <span style={{ fontSize:12, color:"#5a6a88", fontFamily:"monospace" }}>{guidelineReviewDecisionCounts(reviewItems, decisions).reviewed}/{reviewItems.length} reviewed</span>
           <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
             {publishStatus && <span style={{ fontSize:12, color:publishStatus.startsWith("Published") ? "#4caf7d" : "#e09a2a", fontFamily:"monospace" }}>{publishStatus}</span>}
             <button type="button" onClick={publishApprovedGuidelines} disabled={!publishReady || publishBusy} style={{ background:publishReady ? "rgba(76,175,125,0.16)" : "rgba(255,255,255,0.04)", border:`1px solid ${publishReady ? "rgba(76,175,125,0.55)" : "rgba(255,255,255,0.08)"}`, color:publishReady ? "#7ee0aa" : "#42546f", borderRadius:8, padding:"9px 14px", cursor:publishReady ? "pointer" : "not-allowed", fontWeight:700 }}>{publishBusy ? "Publishing…" : "Publish approved"}</button>
