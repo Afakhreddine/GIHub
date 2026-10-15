@@ -102,3 +102,13 @@ test("weekly item dedupe catches duplicate title-only source-only stories", () =
   assert.equal(unique.length, 1);
   assert.equal(duplicates.length, 1);
 });
+
+test("triage retains more than twelve distinct verified candidates", () => {
+  const candidates = Array.from({ length: 15 }, (_, i) => ({
+    ...baseCandidate, title: `Verified study ${i}`,
+    url: `https://example.org/article/${i}`,
+    studyUrl: `https://doi.org/10.1234/study-${i}`,
+  }));
+  const { weeklyItems } = triageCandidates(candidates);
+  assert.equal(weeklyItems.length, 15);
+});
