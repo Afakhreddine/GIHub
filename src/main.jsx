@@ -10,6 +10,7 @@ import LookSandbox from './LookSandbox.jsx'
 import { isWeeklyReviewPath } from './weeklyReviewModel.js'
 import { isReviewHomePath, isScheduleReviewPath } from './scheduleReviewModel.js'
 import { isGuidelineReviewPath } from './guidelineReviewModel.js'
+import { publicTabForPath } from './publicRoutes.js'
 
 const route = window.location.pathname === '/sandbox/look'
   ? <LookSandbox />
@@ -21,7 +22,7 @@ const route = window.location.pathname === '/sandbox/look'
     ? <ScheduleReview />
     : isGuidelineReviewPath(window.location.pathname)
       ? <GuidelineReview />
-      : <App />
+      : <App initialActive={publicTabForPath(window.location.pathname)} />
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

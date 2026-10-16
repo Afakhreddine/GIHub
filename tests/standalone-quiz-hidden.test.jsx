@@ -6,7 +6,8 @@ import App from "../src/App.jsx";
 
 test("top-level standalone Quiz tab is hidden for now", () => {
   const html = renderToStaticMarkup(<App />);
-  assert.match(html, /Clinical Guidelines/);
+  assert.match(html, /Stay curious/);
+  assert.match(html, /Guidelines/);
   assert.match(html, /Weekly Update/);
   assert.match(html, /Education/);
   assert.match(html, /Schedule/);

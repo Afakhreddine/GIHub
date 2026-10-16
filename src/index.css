@@ -109,3 +109,18 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+/* The public GIHub app uses a full-width shell; retain legacy review/sandbox framing. */
+#root:has(.gihub-app) {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  border: 0;
+  text-align: left;
+  background: #f5fbff;
+}
+
+#root:has(.gihub-app) :is(button, a, input):focus-visible {
+  outline: 3px solid #0a8fb5;
+  outline-offset: 3px;
+}

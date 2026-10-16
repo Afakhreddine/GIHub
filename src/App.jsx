@@ -5,6 +5,8 @@ import WEEKLY from "./data/weekly.js";
 import weeklyPodcasts from "./data/weeklyPodcasts.js";
 import scheduleResources from "./data/scheduleResources.js";
 import { isPublicApprovedResource, sanitizeScheduleResourceForPublic } from "./scheduleResourcesModel.js";
+import Home from "./Home.jsx";
+import { publicTabForPath, publicPathForTab } from "./publicRoutes.js";
 
 // ── SESSION CACHE ─────────────────────────────────────────────────────────────
 const sessionCache = {};
@@ -22,27 +24,27 @@ const EDU_LINKS = [
 ];
 
 const QUIZ_TOPICS = [
-  { id:"General GI",            label:"General GI",            icon:"🫁", color:"#5b8af0" },
-  { id:"Advanced Endoscopy",    label:"Advanced Endoscopy",    icon:"🔬", color:"#9c6af0" },
+  { id:"General GI",            label:"General GI",            icon:"🫁", color:"#0b779b" },
+  { id:"Advanced Endoscopy",    label:"Advanced Endoscopy",    icon:"🔬", color:"#7051ad" },
   { id:"IBD",                   label:"IBD",                   icon:"🧬", color:"#e05252" },
-  { id:"General Hepatology",    label:"General Hepatology",    icon:"🫀", color:"#e09a2a" },
-  { id:"Motility",              label:"Motility",              icon:"⚡", color:"#00b8d4" },
-  { id:"Transplant Hepatology", label:"Transplant Hepatology", icon:"🏥", color:"#4caf7d" },
+  { id:"General Hepatology",    label:"General Hepatology",    icon:"🫀", color:"#a66b11" },
+  { id:"Motility",              label:"Motility",              icon:"⚡", color:"#0b779b" },
+  { id:"Transplant Hepatology", label:"Transplant Hepatology", icon:"🏥", color:"#128566" },
 ];
 
 const SECTION_META = {
-  guidelines: { label:"Clinical Guidelines", icon:"⚕️",  color:"#5b8af0" },
-  weekly:     { label:"Weekly Update",       icon:"📰", color:"#e09a2a" },
+  guidelines: { label:"Clinical Guidelines", icon:"⚕️",  color:"#0b93bb" },
+  weekly:     { label:"Weekly Update",       icon:"📰", color:"#a66b11" },
 };
 
-const urgencyColor      = { High:"#e05252", Moderate:"#e09a2a", Routine:"#4caf7d" };
-const impactColor       = { "Practice-changing":"#5b8af0", "High Impact":"#9c6af0", Noteworthy:"#4caf7d" };
-const weeklyTypeColor   = { Research:"#9c6af0", FDA:"#e05252", Guideline:"#5b8af0", News:"#00b8d4", Opinion:"#e09a2a" };
+const urgencyColor      = { High:"#e05252", Moderate:"#a66b11", Routine:"#128566" };
+const impactColor       = { "Practice-changing":"#0b93bb", "High Impact":"#7051ad", Noteworthy:"#128566" };
+const weeklyTypeColor   = { Research:"#7051ad", FDA:"#e05252", Guideline:"#0b93bb", News:"#0b779b", Opinion:"#a66b11" };
 const SOCIETY_COLORS = {
-  ACG:   { color:"#e08c3a", bg:"rgba(224,140,58,0.08)",  border:"rgba(224,140,58,0.2)"  },
-  AGA:   { color:"#5b8af0", bg:"rgba(91,138,240,0.08)",  border:"rgba(91,138,240,0.2)"  },
-  ASGE:  { color:"#9c6af0", bg:"rgba(156,106,240,0.08)", border:"rgba(156,106,240,0.2)" },
-  AASLD: { color:"#4caf7d", bg:"rgba(76,175,61,0.08)",   border:"rgba(76,175,61,0.2)"  },
+  ACG:   { color:"#9a5a17", bg:"#fff6ea", border:"#f0d5b5" },
+  AGA:   { color:"#0b779b", bg:"#eaf8fc", border:"#c8e8f1" },
+  ASGE:  { color:"#7051ad", bg:"#f4f0fc", border:"#ded2f2" },
+  AASLD: { color:"#128566", bg:"#eaf9f4", border:"#c3eadc" },
 };
 const DAY_LABELS     = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
 
@@ -66,28 +68,28 @@ async function apiCall(body) {
 }
 
 function Badge({ label, color }) {
-  return <span style={{ display:"inline-block", padding:"2px 10px", borderRadius:20, fontSize:11, fontWeight:700, color:"#fff", background:color||"#334", whiteSpace:"nowrap" }}>{label}</span>;
+  return <span style={{ display:"inline-block", padding:"3px 10px", borderRadius:20, fontSize:11, fontWeight:700, color:"#fff", background:color==="#0b93bb"?"#0b779b":color||"#17324d", whiteSpace:"nowrap" }}>{label}</span>;
 }
 
-function Spinner({ size=16, color="#5b8af0" }) {
+function Spinner({ size=16, color="#0b93bb" }) {
   return <span style={{ display:"inline-block", width:size, height:size, border:`2px solid ${color}33`, borderTop:`2px solid ${color}`, borderRadius:"50%", animation:"spin 0.7s linear infinite", flexShrink:0 }} />;
 }
 
 function ContentCard({ item, type }) {
   const [hov, setHov] = useState(false);
-  const ac = SECTION_META[type]?.color || "#5b8af0";
+  const ac = SECTION_META[type]?.color || "#0b93bb";
   const isWeekly = type === "weekly";
   return (
     <div onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
       onClick={()=>item.url&&window.open(item.url,"_blank")}
-      style={{ background:hov?"rgba(255,255,255,0.055)":"rgba(255,255,255,0.025)", border:`1px solid ${hov?ac+"66":"rgba(255,255,255,0.08)"}`, borderLeft:`3px solid ${hov?ac:"rgba(255,255,255,0.12)"}`, borderRadius:12, padding:"20px 22px", display:"flex", flexDirection:"column", gap:10, transform:hov?"translateY(-2px)":"none", transition:"all 0.18s", cursor:item.url?"pointer":"default" }}>
+      style={{ background:hov?"#f6fcff":"#fff", border:`1px solid ${hov?"#b9e3ee":"#dcecf1"}`, borderLeft:`3px solid ${hov?ac:"#b9dee8"}`, borderRadius:16, padding:"20px 22px", display:"flex", flexDirection:"column", gap:10, transform:hov?"translateY(-2px)":"none", transition:"all 0.18s", boxShadow:hov?"0 12px 28px rgba(23,50,77,0.09)":"0 4px 18px rgba(23,50,77,0.04)", cursor:item.url?"pointer":"default" }}>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:8, flexWrap:"wrap" }}>
-        <span style={{ fontSize:11, fontWeight:700, color:"#5a6a88", fontFamily:"monospace" }}>
+        <span style={{ fontSize:11, fontWeight:700, color:"#536b7b", fontFamily:"monospace" }}>
           {type==="guidelines"&&`${item.org} · ${item.month} ${item.year}`}
           {isWeekly&&`${item.source} · ${item.date}`}
         </span>
         <div style={{ display:"flex", gap:5, flexWrap:"wrap" }}>
-          {type==="guidelines"&&<><Badge label={item.topic} color="#1a2535"/><Badge label={item.urgency} color={urgencyColor[item.urgency]}/></>}
+          {type==="guidelines"&&<><Badge label={item.topic} color="#17324d"/><Badge label={item.urgency} color={urgencyColor[item.urgency]}/></>}
           {isWeekly&&<>
             {item.type==="FDA"    &&<Badge label="FDA Approval" color={weeklyTypeColor.FDA}/>}
             {item.type==="Opinion"&&<Badge label="Opinion"      color={weeklyTypeColor.Opinion}/>}
@@ -95,13 +97,13 @@ function ContentCard({ item, type }) {
           </>}
         </div>
       </div>
-      <div style={{ fontSize:14.5, fontWeight:600, color:hov?"#e8f0ff":"#c8d8f0", lineHeight:1.5 }}>{item.title||item.headline}</div>
-      {isWeekly&&item.authors&&<div style={{ fontSize:11.5, color:"#445570", fontStyle:"italic" }}>{item.authors}</div>}
-      <div style={{ fontSize:13, color:"#6a7a90", lineHeight:1.75 }}>{item.summary}</div>
+      <div style={{ fontSize:14.5, fontWeight:600, color:"#17324d", lineHeight:1.5 }}>{item.title||item.headline}</div>
+      {isWeekly&&item.authors&&<div style={{ fontSize:11.5, color:"#536b7b", fontStyle:"italic" }}>{item.authors}</div>}
+      <div style={{ fontSize:13, color:"#516779", lineHeight:1.75 }}>{item.summary}</div>
       {isWeekly&&item.studyUrl&&(
         <div style={{ marginTop:4 }}>
           <button onClick={e=>{e.stopPropagation();window.open(item.studyUrl,"_blank");}}
-            style={{ background:"rgba(76,175,61,0.12)", border:"1px solid rgba(76,175,61,0.3)", color:"#4caf7d", fontSize:11, fontWeight:700, padding:"5px 12px", borderRadius:7, cursor:"pointer", fontFamily:"monospace", letterSpacing:0.3 }}>
+            style={{ background:"#eaf9f4", border:"1px solid #b9e5d7", color:"#128566", fontSize:11, fontWeight:700, padding:"5px 12px", borderRadius:7, cursor:"pointer", fontFamily:"monospace", letterSpacing:0.3 }}>
             Link to Study ↗
           </button>
         </div>
@@ -121,34 +123,34 @@ function WeeklyPodcastPanel({ podcasts = weeklyPodcasts }) {
   const previous = podcasts.slice(1);
 
   return (
-    <section aria-label="Weekly Update podcasts" style={{ background:"linear-gradient(135deg,rgba(224,154,42,0.12),rgba(91,138,240,0.08))", border:"1px solid rgba(224,154,42,0.24)", borderRadius:14, padding:"18px 20px", marginBottom:22, boxShadow:"0 16px 40px rgba(0,0,0,0.14)" }}>
+    <section aria-label="Weekly Update podcasts" style={{ background:"linear-gradient(135deg,#fff 0%,#eaf8fc 75%,#eaf9f4 100%)", border:"1px solid #c8e8f1", borderRadius:18, padding:"20px 22px", marginBottom:22, boxShadow:"0 10px 32px rgba(23,50,77,0.07)" }}>
       <div style={{ display:"flex", justifyContent:"space-between", gap:14, flexWrap:"wrap", alignItems:"flex-start" }}>
         <div style={{ flex:"1 1 320px" }}>
-          <div style={{ fontSize:11, fontWeight:800, color:"#e09a2a", fontFamily:"monospace", letterSpacing:0.8, textTransform:"uppercase", marginBottom:6 }}>🎧 Weekly Podcast</div>
-          <h2 style={{ fontSize:18, color:"#e8f0ff", lineHeight:1.35, marginBottom:6 }}>{selected.title}</h2>
-          <p style={{ fontSize:12.5, color:"#7f92ad", lineHeight:1.65, maxWidth:760 }}>{selected.description}</p>
+          <div style={{ fontSize:11, fontWeight:800, color:"#a66b11", fontFamily:"monospace", letterSpacing:0.8, textTransform:"uppercase", marginBottom:6 }}>🎧 Weekly Podcast</div>
+          <h2 style={{ fontSize:18, color:"#17324d", lineHeight:1.35, marginBottom:6 }}>{selected.title}</h2>
+          <p style={{ fontSize:12.5, color:"#516779", lineHeight:1.65, maxWidth:760 }}>{selected.description}</p>
           <div style={{ display:"flex", flexWrap:"wrap", gap:7, marginTop:10 }}>
-            <Badge label={selected.displayDate} color="#1a2535" />
-            <Badge label={`${selected.duration} audio`} color="#e09a2a" />
-            <Badge label={`${selected.sourceCount} sources`} color="#5b8af0" />
-            {selected.relatedPr&&<Badge label={`PR #${selected.relatedPr}`} color="#4caf7d" />}
+            <Badge label={selected.displayDate} color="#17324d" />
+            <Badge label={`${selected.duration} audio`} color="#a66b11" />
+            <Badge label={`${selected.sourceCount} sources`} color="#0b93bb" />
+            {selected.relatedPr&&<Badge label={`PR #${selected.relatedPr}`} color="#128566" />}
           </div>
         </div>
         {previous.length > 0 && (
-          <label style={{ display:"flex", flexDirection:"column", gap:6, minWidth:230, color:"#4a6080", fontSize:11, fontWeight:700, fontFamily:"monospace" }}>
+          <label style={{ display:"flex", flexDirection:"column", gap:6, minWidth:230, color:"#536b7b", fontSize:11, fontWeight:700, fontFamily:"monospace" }}>
             Current and prior episodes
-            <select value={selected.id} onChange={e=>setSelectedId(e.target.value)} style={{ background:"rgba(8,15,30,0.75)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:9, color:"#c8d8f0", padding:"9px 10px", fontSize:12, outline:"none" }}>
+            <select value={selected.id} onChange={e=>setSelectedId(e.target.value)} style={{ background:"#fff", border:"1px solid #b9dce6", borderRadius:9, color:"#17324d", padding:"9px 10px", fontSize:12, outline:"none" }}>
               {podcasts.map(p => <option key={p.id} value={p.id}>{p.displayDate} · {p.duration}</option>)}
             </select>
           </label>
         )}
       </div>
-      <audio key={selected.audioUrl} controls preload="none" src={selected.audioUrl} style={{ width:"100%", marginTop:16 }}>
+      <audio key={selected.audioUrl} controls preload="none" src={selected.audioUrl} style={{ width:"100%", marginTop:16, borderRadius:12, background:"#eaf8fc" }}>
         <a href={selected.audioUrl}>Download {selected.title}</a>
       </audio>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", gap:10, flexWrap:"wrap", marginTop:10 }}>
-        <a href={selected.audioUrl} download style={{ color:"#8aafff", fontSize:12, fontWeight:700, textDecoration:"none" }}>Download MP3 ↧</a>
-        <span style={{ color:"#354a68", fontSize:11, fontFamily:"monospace" }}>Rolling archive: latest {podcasts.length} Weekly Update podcasts stored in-repo</span>
+        <a href={selected.audioUrl} download style={{ color:"#0b779b", fontSize:12, fontWeight:700, textDecoration:"none" }}>Download MP3 ↧</a>
+        <span style={{ color:"#536b7b", fontSize:11, fontFamily:"monospace" }}>Rolling archive: latest {podcasts.length} Weekly Update podcasts stored in-repo</span>
       </div>
     </section>
   );
@@ -214,39 +216,39 @@ function ContentSection({ type }) {
   const filtered = items.filter(i=>!search||JSON.stringify(i).toLowerCase().includes(search.toLowerCase()));
 
   const statusEl = {
-    loading: <><Spinner size={10} color="#5a6a88"/> Loading…</>,
-    repo:    <><span style={{ color:"#4caf7d", fontWeight:700 }}>● Repo-managed</span> · {total} {type === "guidelines" ? "guidelines" : "items"} · Updated through GitHub</>,
-    live:    <><span style={{ color:"#4caf7d", fontWeight:700 }}>● Live</span> · {ageHours!=null?`Updated ${ageHours}h ago`:"Fresh from web"} · Sources: news.gastro.org · gastroendonews.com · healio.com</>,
-    error:   <><span style={{ color:"#5a6a88", fontWeight:700 }}>● Fallback</span> · Showing curated content · Live data updates weekly</>,
+    loading: <><Spinner size={10} color="#536b7b"/> Loading…</>,
+    repo:    <><span style={{ color:"#128566", fontWeight:700 }}>● Repo-managed</span> · {total} {type === "guidelines" ? "guidelines" : "items"} · Updated through GitHub</>,
+    live:    <><span style={{ color:"#128566", fontWeight:700 }}>● Live</span> · {ageHours!=null?`Updated ${ageHours}h ago`:"Fresh from web"} · Sources: news.gastro.org · gastroendonews.com · healio.com</>,
+    error:   <><span style={{ color:"#536b7b", fontWeight:700 }}>● Fallback</span> · Showing curated content · Live data updates weekly</>,
   }[status] || null;
 
   return (
     <div>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:22, flexWrap:"wrap", gap:12 }}>
         <div>
-          <h1 style={{ fontSize:21, fontWeight:700, color:"#c8d8f0" }}>{meta.icon} {meta.label}</h1>
-          <p style={{ marginTop:4, fontSize:12, color:"#2e4060", display:"flex", alignItems:"center", gap:8 }}>{statusEl}</p>
+          <h1 style={{ fontSize:21, fontWeight:700, color:"#17324d" }}>{meta.icon} {meta.label}</h1>
+          <p style={{ marginTop:4, fontSize:12, color:"#536b7b", display:"flex", alignItems:"center", gap:8 }}>{statusEl}</p>
         </div>
         <div style={{ position:"relative" }}>
-          <span style={{ position:"absolute", left:9, top:"50%", transform:"translateY(-50%)", fontSize:12, color:"#2a3a50", pointerEvents:"none" }}>🔍</span>
+          <span style={{ position:"absolute", left:9, top:"50%", transform:"translateY(-50%)", fontSize:12, color:"#536b7b", pointerEvents:"none" }}>🔍</span>
           <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Filter…"
-            style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:8, color:"#90b0d0", fontSize:12, padding:"8px 12px 8px 28px", outline:"none", width:150 }}/>
+            style={{ background:"#fff", border:"1px solid #bfdce5", borderRadius:10, color:"#17324d", fontSize:13, padding:"9px 12px 9px 32px", outline:"none", width:170 }}/>
         </div>
       </div>
       {type === "weekly" && <WeeklyPodcastPanel />}
-      {search&&<div style={{ marginBottom:14, fontSize:12, color:"#3a5878", fontFamily:"monospace" }}>{filtered.length} result{filtered.length!==1?"s":""} for "{search}" <button onClick={()=>setSearch("")} style={{ background:"none", border:"none", color:"#5b8af0", fontSize:12, cursor:"pointer" }}>✕</button></div>}
+      {search&&<div style={{ marginBottom:14, fontSize:12, color:"#536b7b", fontFamily:"monospace" }}>{filtered.length} result{filtered.length!==1?"s":""} for "{search}" <button onClick={()=>setSearch("")} style={{ background:"none", border:"none", color:"#0b93bb", fontSize:12, cursor:"pointer" }}>✕</button></div>}
       {filtered.length===0
-        ?<div style={{ textAlign:"center", padding:"40px 0", color:"#1e2e40" }}>No results for "{search}"</div>
-        :<div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(440px,1fr))", gap:14 }}>
+        ?<div style={{ textAlign:"center", padding:"40px 0", color:"#536b7b" }}>No results for "{search}"</div>
+        :<div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(min(100%,440px),1fr))", gap:14 }}>
            {filtered.map((item,i)=><ContentCard key={i} item={item} type={type}/>)}
          </div>}
       {type === "guidelines" && pages > 1 && !search && (
         <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:12, marginTop:28 }}>
           <button onClick={()=>setPage(p=>Math.max(1,p-1))} disabled={page===1||loading}
-            style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.1)", color:page===1?"#1e2e40":"#6a8aaa", padding:"8px 16px", borderRadius:8, fontSize:13, cursor:page===1?"not-allowed":"pointer" }}>← Prev</button>
-          <span style={{ fontSize:12, color:"#3a5878", fontFamily:"monospace" }}>Page {page} of {pages}</span>
+            style={{ background:"#f5fbfd", border:"1px solid #d1e5eb", color:page===1?"#536b7b":"#476177", padding:"8px 16px", borderRadius:8, fontSize:13, cursor:page===1?"not-allowed":"pointer" }}>← Prev</button>
+          <span style={{ fontSize:12, color:"#536b7b", fontFamily:"monospace" }}>Page {page} of {pages}</span>
           <button onClick={()=>setPage(p=>Math.min(pages,p+1))} disabled={page===pages||loading}
-            style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.1)", color:page===pages?"#1e2e40":"#6a8aaa", padding:"8px 16px", borderRadius:8, fontSize:13, cursor:page===pages?"not-allowed":"pointer" }}>Next →</button>
+            style={{ background:"#f5fbfd", border:"1px solid #d1e5eb", color:page===pages?"#536b7b":"#476177", padding:"8px 16px", borderRadius:8, fontSize:13, cursor:page===pages?"not-allowed":"pointer" }}>Next →</button>
         </div>
       )}
     </div>
@@ -305,33 +307,33 @@ function SocietyWidget({ org, guidelines, search }) {
   }, [hasMore, filtered.length]);
 
   return (
-    <div style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:14, overflow:"hidden", display:"flex", flexDirection:"column" }}>
+    <div style={{ background:"#fff", border:"1px solid #dcecf1", borderRadius:16, overflow:"hidden", display:"flex", flexDirection:"column", boxShadow:"0 5px 22px rgba(23,50,77,0.05)" }}>
       {/* Header */}
       <div style={{ background:sc.bg, borderBottom:`1px solid ${sc.border}`, padding:"11px 16px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
         <span style={{ fontSize:15, fontWeight:800, color:sc.color, letterSpacing:0.5 }}>{org}</span>
-        <span style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace" }}>{guidelines.length} guidelines</span>
+        <span style={{ fontSize:11, color:"#536b7b", fontFamily:"monospace" }}>{guidelines.length} guidelines</span>
       </div>
       {/* Controls */}
-      <div style={{ display:"flex", gap:7, alignItems:"center", padding:"8px 12px", borderBottom:"1px solid rgba(255,255,255,0.04)", background:"rgba(0,0,0,0.12)" }}>
+      <div style={{ display:"flex", gap:7, alignItems:"center", padding:"8px 12px", borderBottom:"1px solid #e3f0f3", background:"#f8fcfd" }}>
         <button onClick={()=>{setNewOnly(n=>!n);setVisibleCount(3);}}
-          style={{ background:newOnly?sc.bg:"rgba(255,255,255,0.04)", border:`1px solid ${newOnly?sc.border:"rgba(255,255,255,0.08)"}`, color:newOnly?sc.color:"#3a5878", fontSize:11, fontWeight:700, padding:"5px 10px", borderRadius:7, cursor:"pointer", whiteSpace:"nowrap" }}>
+          style={{ background:newOnly?sc.bg:"#fff", border:`1px solid ${newOnly?sc.border:"#cbdfe6"}`, color:newOnly?sc.color:"#536b7b", fontSize:11, fontWeight:700, padding:"5px 10px", borderRadius:7, cursor:"pointer", whiteSpace:"nowrap" }}>
           {newOnly&&"● "}Last 3 months ({newCount})
         </button>
       </div>
       {/* List */}
       <div ref={containerRef} style={{ overflowY:"auto", maxHeight:480 }}>
         {visible.length === 0
-          ? <div style={{ padding:"24px 18px", fontSize:12, color:"#2a3a50", textAlign:"center" }}>No results</div>
+          ? <div style={{ padding:"24px 18px", fontSize:12, color:"#536b7b", textAlign:"center" }}>No results</div>
           : visible.map((g, i) => {
               const url = resolveUrl(g);
               return (
                 <div key={i} onClick={()=>url&&window.open(url,"_blank")}
-                  style={{ padding:"13px 18px", borderBottom:i<visible.length-1?"1px solid rgba(255,255,255,0.04)":"none", cursor:url?"pointer":"default" }}
-                  onMouseEnter={e=>url&&(e.currentTarget.style.background="rgba(255,255,255,0.03)")}
+                  style={{ padding:"13px 18px", borderBottom:i<visible.length-1?"1px solid #e6f1f4":"none", cursor:url?"pointer":"default" }}
+                  onMouseEnter={e=>url&&(e.currentTarget.style.background="#f4fbfd")}
                   onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
-                  <div style={{ fontSize:12, fontWeight:700, color:"#8aafcf", fontFamily:"monospace", marginBottom:5, letterSpacing:0.3 }}>{g.month} {g.year}</div>
-                  <div style={{ fontSize:13, fontWeight:600, color:"#c0d0e8", lineHeight:1.5, marginBottom:5 }}>{g.title}</div>
-                  <div style={{ fontSize:12, color:"#5a6a80", lineHeight:1.65 }}>{g.summary}</div>
+                  <div style={{ fontSize:12, fontWeight:700, color:"#0b779b", fontFamily:"monospace", marginBottom:5, letterSpacing:0.3 }}>{g.month} {g.year}</div>
+                  <div style={{ fontSize:13, fontWeight:600, color:"#17324d", lineHeight:1.5, marginBottom:5 }}>{g.title}</div>
+                  <div style={{ fontSize:12, color:"#516779", lineHeight:1.65 }}>{g.summary}</div>
                 </div>
               );
             })
@@ -393,9 +395,9 @@ function GuidelinesSection() {
   }, []);
 
   const statusEl = {
-    loading: <><Spinner size={10} color="#5a6a88"/> Loading…</>,
-    live:    <><span style={{ color:"#4caf7d", fontWeight:700 }}>● Repository</span> · {total} guidelines</>,
-    error:   <><span style={{ color:"#5a6a88", fontWeight:700 }}>● Fallback</span> · Showing curated content · Live data updates weekly</>,
+    loading: <><Spinner size={10} color="#536b7b"/> Loading…</>,
+    live:    <><span style={{ color:"#128566", fontWeight:700 }}>● Repository</span> · {total} guidelines</>,
+    error:   <><span style={{ color:"#536b7b", fontWeight:700 }}>● Fallback</span> · Showing curated content · Live data updates weekly</>,
   }[status];
 
   return (
@@ -409,13 +411,13 @@ function GuidelinesSection() {
               ? { href:alertUrl, target:"_blank", rel:"noopener noreferrer", title:`Open ${alert.title}` }
               : {};
             return (
-            <Wrapper key={i} {...wrapperProps} style={{ display:"block", textDecoration:"none", background:"linear-gradient(135deg,rgba(91,138,240,0.18),rgba(156,106,240,0.12))", border:"2px solid rgba(91,138,240,0.5)", borderLeft:"5px solid #5b8af0", borderRadius:14, padding:"20px 26px", boxShadow:"0 4px 24px rgba(91,138,240,0.15)", cursor:alertUrl?"pointer":"default" }}>
-              <div style={{ fontSize:22, fontWeight:900, color:"#a8d0ff", letterSpacing:0.8, textTransform:"uppercase", lineHeight:1.25 }}>
+            <Wrapper key={i} {...wrapperProps} style={{ display:"block", textDecoration:"none", background:"linear-gradient(135deg,#fff,#eaf8fc)", border:"1px solid #b9e3ee", borderLeft:"5px solid #0b93bb", borderRadius:16, padding:"20px 26px", boxShadow:"0 8px 28px rgba(23,50,77,0.07)", cursor:alertUrl?"pointer":"default" }}>
+              <div style={{ fontSize:22, fontWeight:900, color:"#0b779b", letterSpacing:0.8, textTransform:"uppercase", lineHeight:1.25 }}>
                 NEW {alert.org} GUIDELINE PUBLISHED
               </div>
-              <div style={{ fontSize:15, fontWeight:600, color:"#d0e8ff", marginTop:10, lineHeight:1.55 }}>{alert.title}</div>
+              <div style={{ fontSize:15, fontWeight:600, color:"#17324d", marginTop:10, lineHeight:1.55 }}>{alert.title}</div>
               {(alert.month || alert.year) && (
-                <div style={{ fontSize:11, color:"#4a7aaa", marginTop:8, fontFamily:"monospace" }}>{[alert.month, alert.year].filter(Boolean).join(" ")} · Added to repository{alertUrl ? " · Open guideline ↗" : ""}</div>
+                <div style={{ fontSize:11, color:"#536b7b", marginTop:8, fontFamily:"monospace" }}>{[alert.month, alert.year].filter(Boolean).join(" ")} · Added to repository{alertUrl ? " · Open guideline ↗" : ""}</div>
               )}
             </Wrapper>
           );})}
@@ -424,20 +426,20 @@ function GuidelinesSection() {
       <div style={{ marginBottom:20 }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:14, flexWrap:"wrap", gap:12 }}>
           <div>
-            <h1 style={{ fontSize:21, fontWeight:700, color:"#c8d8f0" }}>⚕️ Clinical Guidelines</h1>
-            <p style={{ marginTop:4, fontSize:12, color:"#2e4060", display:"flex", alignItems:"center", gap:8 }}>{statusEl}</p>
+            <h1 style={{ fontSize:21, fontWeight:700, color:"#17324d" }}>⚕️ Clinical Guidelines</h1>
+            <p style={{ marginTop:4, fontSize:12, color:"#536b7b", display:"flex", alignItems:"center", gap:8 }}>{statusEl}</p>
           </div>
         </div>
         <div style={{ position:"relative", maxWidth:380 }}>
-          <span style={{ position:"absolute", left:10, top:"50%", transform:"translateY(-50%)", fontSize:13, color:"#2a3a50", pointerEvents:"none" }}>🔍</span>
+          <span style={{ position:"absolute", left:10, top:"50%", transform:"translateY(-50%)", fontSize:13, color:"#536b7b", pointerEvents:"none" }}>🔍</span>
           <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search all guidelines…"
-            style={{ width:"100%", background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:9, color:"#90b0d0", fontSize:13, padding:"9px 12px 9px 32px", outline:"none" }}/>
-          {search && <button onClick={()=>setSearch("")} style={{ position:"absolute", right:10, top:"50%", transform:"translateY(-50%)", background:"none", border:"none", color:"#5b8af0", fontSize:13, cursor:"pointer", padding:0 }}>✕</button>}
+            style={{ width:"100%", background:"#fff", border:"1px solid #bfdce5", borderRadius:10, color:"#17324d", fontSize:13, padding:"10px 12px 10px 32px", outline:"none" }}/>
+          {search && <button onClick={()=>setSearch("")} style={{ position:"absolute", right:10, top:"50%", transform:"translateY(-50%)", background:"none", border:"none", color:"#0b93bb", fontSize:13, cursor:"pointer", padding:0 }}>✕</button>}
         </div>
       </div>
       {status === "loading" && <div style={{ textAlign:"center", padding:"60px 0" }}><Spinner size={28}/></div>}
       {grouped && (
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(440px,1fr))", gap:16 }}>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(min(100%,440px),1fr))", gap:16 }}>
           {["ACG","AGA","ASGE","AASLD"].map(org =>
             grouped[org]?.length > 0 ? <SocietyWidget key={org} org={org} guidelines={grouped[org]} search={search}/> : null
           )}
@@ -451,16 +453,16 @@ function EduCard({ edu }) {
   const [hov, setHov] = useState(false);
   return (
     <div onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} onClick={()=>window.open(edu.url,"_blank")}
-      style={{ background:hov?"rgba(255,255,255,0.06)":"rgba(255,255,255,0.03)", border:`1px solid ${hov?edu.color+"88":"rgba(255,255,255,0.08)"}`, borderRadius:14, overflow:"hidden", cursor:"pointer", transform:hov?"translateY(-3px)":"none", transition:"all 0.2s", boxShadow:hov?`0 8px 28px ${edu.color}22`:"none" }}>
+      style={{ background:"#fff", border:`1px solid ${hov?"#b9e3ee":"#dcecf1"}`, borderRadius:18, overflow:"hidden", cursor:"pointer", transform:hov?"translateY(-3px)":"none", transition:"all 0.2s", boxShadow:hov?"0 14px 30px rgba(23,50,77,0.1)":"0 4px 18px rgba(23,50,77,0.04)" }}>
       <div style={{ background:edu.gradient, padding:"20px 22px 16px", display:"flex", alignItems:"center", gap:14 }}>
         <div style={{ width:46, height:46, borderRadius:10, background:"rgba(255,255,255,0.15)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:800, color:"#fff", fontFamily:"monospace" }}>{edu.logo}</div>
         <div>
           <div style={{ fontSize:16, fontWeight:700, color:"#fff" }}>{edu.name}</div>
-          <div style={{ fontSize:11, color:"rgba(255,255,255,0.55)", marginTop:2 }}>{edu.url.replace("https://","").split("/")[0]}</div>
+          <div style={{ fontSize:11, color:"rgba(255,255,255,0.88)", marginTop:2 }}>{edu.url.replace("https://","").split("/")[0]}</div>
         </div>
       </div>
       <div style={{ padding:"16px 20px 18px" }}>
-        <p style={{ fontSize:13, color:"#7a8aa0", lineHeight:1.7, marginBottom:14 }}>{edu.description}</p>
+        <p style={{ fontSize:13, color:"#516779", lineHeight:1.7, marginBottom:14 }}>{edu.description}</p>
         <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
           {edu.features.map(f=><span key={f} style={{ fontSize:11, padding:"3px 10px", borderRadius:20, background:edu.color+"22", color:edu.color, border:`1px solid ${edu.color}44`, fontWeight:600 }}>{f}</span>)}
         </div>
@@ -473,9 +475,9 @@ function EduCard({ edu }) {
 function EducationSection() {
   return (
     <div>
-      <h1 style={{ fontSize:21, fontWeight:700, color:"#c8d8f0", marginBottom:6 }}>🎓 Education Hubs</h1>
-      <p style={{ fontSize:12.5, color:"#2e4060", marginBottom:28 }}>Official learning platforms from ACG, AGA, and ASGE — CME, board review, endoscopy training, and more.</p>
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(300px,1fr))", gap:20 }}>
+      <h1 style={{ fontSize:21, fontWeight:700, color:"#17324d", marginBottom:6 }}>🎓 Education Hubs</h1>
+      <p style={{ fontSize:12.5, color:"#536b7b", marginBottom:28 }}>Official learning platforms from ACG, AGA, and ASGE — CME, board review, endoscopy training, and more.</p>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(min(100%,300px),1fr))", gap:20 }}>
         {EDU_LINKS.map(edu=><EduCard key={edu.org} edu={edu}/>)}
       </div>
     </div>
@@ -514,21 +516,21 @@ function QuizDisplay({ quiz }) {
   return (
     <div style={{ marginTop:16 }}>
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 }}>
-        <div style={{ fontSize:12, fontWeight:700, color:"#5b8af0", fontFamily:"monospace", letterSpacing:1, marginBottom:14 }}>🧠 TOPIC QUIZ</div>
-        <div style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace" }}>Question {quizIndex+1} of {quiz.length}</div>
+        <div style={{ fontSize:12, fontWeight:700, color:"#0b93bb", fontFamily:"monospace", letterSpacing:1, marginBottom:14 }}>🧠 TOPIC QUIZ</div>
+        <div style={{ fontSize:11, color:"#536b7b", fontFamily:"monospace" }}>Question {quizIndex+1} of {quiz.length}</div>
       </div>
-      <div style={{ background:"rgba(255,255,255,0.025)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:12, padding:"16px" }}>
-        <div style={{ fontSize:13, color:"#c8d8f0", lineHeight:1.7, marginBottom:14 }}>{currentQ.question}</div>
+      <div style={{ background:"#fff", border:"1px solid #dcecf1", borderRadius:12, padding:"16px" }}>
+        <div style={{ fontSize:13, color:"#17324d", lineHeight:1.7, marginBottom:14 }}>{currentQ.question}</div>
         <div style={{ display:"flex", flexDirection:"column", gap:7 }}>
           {currentQ.options.map((opt,oi)=>{
             const letter = ["A","B","C","D"][oi];
             const isChosen = answers[quizIndex] === letter;
             const isRight  = letter === currentQ.correct;
-            let bg="rgba(255,255,255,0.03)", border="rgba(255,255,255,0.08)", color="#8898b0";
+            let bg="#f8fcfd", border="#dcecf1", color="#17324d";
             if (hasAnswered) {
-              if (isRight)          { bg="rgba(76,175,61,0.12)";  border="#4caf7d55"; color="#4caf7d"; }
-              else if (isChosen)    { bg="rgba(224,82,82,0.1)";   border="#e0525255"; color="#e05252"; }
-            } else if (isChosen)    { bg="rgba(91,138,240,0.13)"; border="#5b8af088"; color="#5b8af0"; }
+              if (isRight)          { bg="#eaf9f4";  border="#12856655"; color="#128566"; }
+              else if (isChosen)    { bg="#fff1ef";   border="#f1c9c6"; color="#e05252"; }
+            } else if (isChosen)    { bg="#eaf8fc"; border="#b9e3ee"; color="#0b93bb"; }
             return (
               <div key={oi} onClick={()=>selectAnswer(quizIndex, letter)}
                 style={{ background:bg, border:`1px solid ${border}`, borderRadius:8, padding:"8px 12px", fontSize:12, color, cursor:hasAnswered?"default":"pointer", transition:"all 0.15s", display:"flex", alignItems:"center", gap:8 }}>
@@ -541,22 +543,22 @@ function QuizDisplay({ quiz }) {
           })}
         </div>
         {hasAnswered&&(
-          <div style={{ marginTop:12, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:8, padding:"10px 12px" }}>
-            <div style={{ fontSize:10, fontWeight:700, color:"#4a6a8a", fontFamily:"monospace", marginBottom:4, letterSpacing:0.5 }}>EXPLANATION</div>
-            <div style={{ fontSize:12, color:"#6a8aaa", lineHeight:1.7 }}>{currentQ.explanation}</div>
+          <div style={{ marginTop:12, background:"#f5fbfd", border:"1px solid #dcecf1", borderRadius:8, padding:"10px 12px" }}>
+            <div style={{ fontSize:10, fontWeight:700, color:"#536b7b", fontFamily:"monospace", marginBottom:4, letterSpacing:0.5 }}>EXPLANATION</div>
+            <div style={{ fontSize:12, color:"#476177", lineHeight:1.7 }}>{currentQ.explanation}</div>
           </div>
         )}
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginTop:12 }}>
           <button onClick={()=>setQuizIndex(i=>Math.max(0,i-1))} disabled={quizIndex===0}
-            style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", color:quizIndex===0?"#1e2e40":"#6a8aaa", padding:"6px 14px", borderRadius:7, fontSize:12, cursor:quizIndex===0?"not-allowed":"pointer" }}>← Prev</button>
+            style={{ background:"#f5fbfd", border:"1px solid #dcecf1", color:quizIndex===0?"#536b7b":"#476177", padding:"6px 14px", borderRadius:7, fontSize:12, cursor:quizIndex===0?"not-allowed":"pointer" }}>← Prev</button>
           <div style={{ display:"flex", gap:6 }}>
             {quiz.map((_,i)=>(
               <div key={i} onClick={()=>setQuizIndex(i)}
-                style={{ width:8, height:8, borderRadius:"50%", background:i===quizIndex?"#5b8af0":answers[i]?(answers[i]===quiz[i].correct?"#4caf7d":"#e05252"):"rgba(255,255,255,0.1)", cursor:"pointer", transition:"all 0.15s" }}/>
+                style={{ width:8, height:8, borderRadius:"50%", background:i===quizIndex?"#0b93bb":answers[i]?(answers[i]===quiz[i].correct?"#128566":"#e05252"):"#d1e5eb", cursor:"pointer", transition:"all 0.15s" }}/>
             ))}
           </div>
           <button onClick={()=>setQuizIndex(i=>Math.min(quiz.length-1,i+1))} disabled={quizIndex===quiz.length-1}
-            style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.08)", color:quizIndex===quiz.length-1?"#1e2e40":"#6a8aaa", padding:"6px 14px", borderRadius:7, fontSize:12, cursor:quizIndex===quiz.length-1?"not-allowed":"pointer" }}>Next →</button>
+            style={{ background:"#f5fbfd", border:"1px solid #dcecf1", color:quizIndex===quiz.length-1?"#536b7b":"#476177", padding:"6px 14px", borderRadius:7, fontSize:12, cursor:quizIndex===quiz.length-1?"not-allowed":"pointer" }}>Next →</button>
         </div>
       </div>
     </div>
@@ -604,18 +606,18 @@ function LectureDetailPanel({ event, onClose }) {
   const hasQuiz = data?.quiz?.length > 0;
 
   return (
-    <div style={{ position:"fixed", top:0, right:0, bottom:0, width:"min(600px,100vw)", background:"#0c1526", borderLeft:"1px solid rgba(255,255,255,0.1)", zIndex:200, overflowY:"auto", boxShadow:"-8px 0 32px rgba(0,0,0,0.4)" }}>
-      <div style={{ position:"sticky", top:0, background:"rgba(12,21,38,0.97)", borderBottom:"1px solid rgba(255,255,255,0.07)", padding:"18px 24px", display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:12 }}>
+    <div style={{ position:"fixed", top:0, right:0, bottom:0, width:"min(600px,100vw)", background:"#f8fdff", borderLeft:"1px solid #d3e7ed", zIndex:200, overflowY:"auto", boxShadow:"-8px 0 32px rgba(23,50,77,0.18)" }}>
+      <div style={{ position:"sticky", top:0, background:"rgba(255,255,255,0.97)", borderBottom:"1px solid #dcecf1", padding:"18px 24px", display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:12, zIndex:1 }}>
         <div>
-          <div style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace", marginBottom:4 }}>{new Date(event.date+"T12:00:00").toLocaleDateString("en-US",{ weekday:"long", month:"long", day:"numeric", year:"numeric" })}</div>
-          <div style={{ fontSize:16, fontWeight:700, color:"#c8d8f0", lineHeight:1.4 }}>{event.topic}</div>
+          <div style={{ fontSize:11, color:"#536b7b", fontFamily:"monospace", marginBottom:4 }}>{new Date(event.date+"T12:00:00").toLocaleDateString("en-US",{ weekday:"long", month:"long", day:"numeric", year:"numeric" })}</div>
+          <div style={{ fontSize:16, fontWeight:700, color:"#17324d", lineHeight:1.4 }}>{event.topic}</div>
         </div>
-        <button onClick={onClose} style={{ background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", color:"#6a8aaa", width:32, height:32, borderRadius:8, cursor:"pointer", fontSize:16, flexShrink:0 }}>✕</button>
+        <button onClick={onClose} style={{ background:"#eaf8fc", border:"1px solid #c8e8f1", color:"#17324d", width:32, height:32, borderRadius:8, cursor:"pointer", fontSize:16, flexShrink:0 }}>✕</button>
       </div>
 
       <div style={{ padding:24 }}>
-        {loading&&<div style={{ textAlign:"center", padding:"60px 0" }}><Spinner size={28}/><div style={{ marginTop:14, fontSize:13, color:"#3a5878" }}>Loading lecture content…</div></div>}
-        {noData&&<div style={{ textAlign:"center", padding:"60px 0", color:"#2a3a50" }}><div style={{ fontSize:32, marginBottom:12 }}>📭</div><div style={{ fontSize:13 }}>No content yet. Run the schedule cron to populate.</div></div>}
+        {loading&&<div style={{ textAlign:"center", padding:"60px 0" }}><Spinner size={28}/><div style={{ marginTop:14, fontSize:13, color:"#536b7b" }}>Loading lecture content…</div></div>}
+        {noData&&<div style={{ textAlign:"center", padding:"60px 0", color:"#536b7b" }}><div style={{ fontSize:32, marginBottom:12 }}>📭</div><div style={{ fontSize:13 }}>No content yet. Run the schedule cron to populate.</div></div>}
 
         {!loading&&data&&(
           <div style={{ display:"flex", flexDirection:"column", gap:32 }}>
@@ -626,25 +628,25 @@ function LectureDetailPanel({ event, onClose }) {
               const visible = showAllGuidelines ? sorted : [sorted[0]];
               return (
               <div>
-                <div style={{ fontSize:12, fontWeight:700, color:"#5b8af0", fontFamily:"monospace", letterSpacing:1, marginBottom:12 }}>⚕️ RELEVANT GUIDELINE{data.guideline.length>1?"S":""}</div>
+                <div style={{ fontSize:12, fontWeight:700, color:"#0b93bb", fontFamily:"monospace", letterSpacing:1, marginBottom:12 }}>⚕️ RELEVANT GUIDELINE{data.guideline.length>1?"S":""}</div>
                 <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
                   {visible.map((g,i)=>{
-                    const sc = SOCIETY_COLORS[g.org] || { color:"#5b8af0", border:"rgba(91,138,240,0.2)" };
+                    const sc = SOCIETY_COLORS[g.org] || { color:"#0b93bb", border:"#c8e8f1" };
                     return (
                     <div key={i} onClick={()=>g.url&&window.open(g.url,"_blank")}
-                      style={{ background:"rgba(91,138,240,0.04)", border:`1px solid ${sc.border}`, borderLeft:`3px solid ${sc.color}`, borderRadius:10, padding:"14px 16px", cursor:g.url?"pointer":"default" }}>
+                      style={{ background:"#f2fafd", border:`1px solid ${sc.border}`, borderLeft:`3px solid ${sc.color}`, borderRadius:10, padding:"14px 16px", cursor:g.url?"pointer":"default" }}>
                       <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:8 }}>
-                        <span style={{ fontSize:11, fontWeight:700, color:sc.color, background:sc.bg||"rgba(91,138,240,0.12)", padding:"2px 8px", borderRadius:12 }}>{g.org}</span>
-                        <span style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace" }}>{g.month} {g.year}</span>
+                        <span style={{ fontSize:11, fontWeight:700, color:sc.color, background:sc.bg||"#eaf8fc", padding:"2px 8px", borderRadius:12 }}>{g.org}</span>
+                        <span style={{ fontSize:11, color:"#536b7b", fontFamily:"monospace" }}>{g.month} {g.year}</span>
                       </div>
-                      <div style={{ fontSize:14, fontWeight:600, color:"#c8d8f0", lineHeight:1.5, marginBottom:6 }}>{g.title}</div>
-                      <div style={{ fontSize:12, color:"#6a7a90", lineHeight:1.7 }}>{g.summary}</div>
+                      <div style={{ fontSize:14, fontWeight:600, color:"#17324d", lineHeight:1.5, marginBottom:6 }}>{g.title}</div>
+                      <div style={{ fontSize:12, color:"#516779", lineHeight:1.7 }}>{g.summary}</div>
                     </div>
                   );})}
                 </div>
                 {sorted.length > 1 && (
                   <button onClick={()=>setShowAllGuidelines(s=>!s)}
-                    style={{ marginTop:10, background:"none", border:"none", color:"#5b8af0", fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"monospace", padding:0 }}>
+                    style={{ marginTop:10, background:"none", border:"none", color:"#0b93bb", fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"monospace", padding:0 }}>
                     {showAllGuidelines ? "Show less ↑" : `Show ${sorted.length - 1} more guideline${sorted.length>2?"s":""} ↓`}
                   </button>
                 )}
@@ -652,7 +654,7 @@ function LectureDetailPanel({ event, onClose }) {
                 {/* Quiz button — only shown if quiz data exists */}
                 {hasQuiz&&!showQuiz&&(
                   <button onClick={()=>setShowQuiz(true)}
-                    style={{ marginTop:14, background:"linear-gradient(135deg,#1a3a6a,#2a5a9a)", border:"1px solid #2a5a9a55", color:"#90c0ff", padding:"8px 16px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:6 }}>
+                    style={{ marginTop:14, background:"linear-gradient(135deg,#0b779b,#128566)", border:"1px solid #0b779b", color:"#fff", padding:"8px 16px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:6 }}>
                     🧠 Show Topic Quiz
                   </button>
                 )}
@@ -666,19 +668,19 @@ function LectureDetailPanel({ event, onClose }) {
             {/* News and Articles */}
             {newsAndArticles.length>0&&(
               <div>
-                <div style={{ fontSize:12, fontWeight:700, color:"#00b8d4", fontFamily:"monospace", letterSpacing:1, marginBottom:12 }}>📡 NEWS AND ARTICLES</div>
+                <div style={{ fontSize:12, fontWeight:700, color:"#0b779b", fontFamily:"monospace", letterSpacing:1, marginBottom:12 }}>📡 NEWS AND ARTICLES</div>
                 <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
                   {newsAndArticles.map((item,i)=>(
                     <div key={i} onClick={()=>item.url&&window.open(item.url,"_blank")}
-                      style={{ background:"rgba(0,184,212,0.05)", border:"1px solid rgba(0,184,212,0.15)", borderLeft:"3px solid #00b8d4", borderRadius:10, padding:"12px 14px", cursor:item.url?"pointer":"default" }}>
+                      style={{ background:"#f2fafd", border:"1px solid #c8e8f1", borderLeft:"3px solid #0b779b", borderRadius:10, padding:"12px 14px", cursor:item.url?"pointer":"default" }}>
                       <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:6 }}>
-                        <span style={{ fontSize:11, fontWeight:700, color:"#fff", background:"#1a2535", padding:"2px 8px", borderRadius:12 }}>{item.source || item.journal || item.sourceRepository || "Source"}</span>
-                        {item.date&&<span style={{ fontSize:11, color:"#3a5878", fontFamily:"monospace" }}>{item.date}</span>}
+                        <span style={{ fontSize:11, fontWeight:700, color:"#0b779b", background:"#eaf8fc", padding:"2px 8px", borderRadius:12 }}>{item.source || item.journal || item.sourceRepository || "Source"}</span>
+                        {item.date&&<span style={{ fontSize:11, color:"#536b7b", fontFamily:"monospace" }}>{item.date}</span>}
                       </div>
-                      <div style={{ fontSize:13, fontWeight:600, color:"#c8d8f0", lineHeight:1.5, marginBottom:4 }}>{item.title || item.headline}</div>
-                      {item.authors&&<div style={{ fontSize:11, color:"#445570", fontStyle:"italic", marginBottom:4 }}>{item.authors}</div>}
-                      <div style={{ fontSize:12, color:"#6a7a90", lineHeight:1.7 }}>{item.oneLineSummary || item.summary}</div>
-                      {(item.doi||item.pmid)&&<div style={{ marginTop:6, fontSize:10.5, color:"#3a5878", fontFamily:"monospace" }}>{item.doi?`DOI ${item.doi}`:`PMID ${item.pmid}`}</div>}
+                      <div style={{ fontSize:13, fontWeight:600, color:"#17324d", lineHeight:1.5, marginBottom:4 }}>{item.title || item.headline}</div>
+                      {item.authors&&<div style={{ fontSize:11, color:"#536b7b", fontStyle:"italic", marginBottom:4 }}>{item.authors}</div>}
+                      <div style={{ fontSize:12, color:"#516779", lineHeight:1.7 }}>{item.oneLineSummary || item.summary}</div>
+                      {(item.doi||item.pmid)&&<div style={{ marginTop:6, fontSize:10.5, color:"#536b7b", fontFamily:"monospace" }}>{item.doi?`DOI ${item.doi}`:`PMID ${item.pmid}`}</div>}
                     </div>
                   ))}
                 </div>
@@ -701,21 +703,21 @@ function ScheduleSection() {
     <div>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:22, flexWrap:"wrap", gap:12 }}>
         <div>
-          <h1 style={{ fontSize:21, fontWeight:700, color:"#c8d8f0" }}>📅 Schedule</h1>
-          <p style={{ marginTop:4, fontSize:12, color:"#2e4060" }}>{CALENDAR_MONTH} · Click highlighted lectures for guidelines, articles & news</p>
+          <h1 style={{ fontSize:21, fontWeight:700, color:"#17324d" }}>📅 Schedule</h1>
+          <p style={{ marginTop:4, fontSize:12, color:"#536b7b" }}>{CALENDAR_MONTH} · Click highlighted lectures for guidelines, articles & news</p>
         </div>
-        <div style={{ display:"flex", gap:12, alignItems:"center", fontSize:11, color:"#3a5070" }}>
+        <div style={{ display:"flex", gap:12, alignItems:"center", fontSize:11, color:"#536b7b" }}>
           <span><span style={{ display:"inline-block", width:10, height:10, borderRadius:2, background:"#e05252", marginRight:4 }}/>Lecture</span>
-          <span><span style={{ display:"inline-block", width:10, height:10, borderRadius:2, background:"#e09a2a", marginRight:4 }}/>Conference</span>
-          <span><span style={{ display:"inline-block", width:10, height:10, borderRadius:2, background:"rgba(91,138,240,0.4)", border:"1px solid #5b8af0", marginRight:4 }}/>Clickable</span>
+          <span><span style={{ display:"inline-block", width:10, height:10, borderRadius:2, background:"#a66b11", marginRight:4 }}/>Conference</span>
+          <span><span style={{ display:"inline-block", width:10, height:10, borderRadius:2, background:"rgba(91,138,240,0.4)", border:"1px solid #0b93bb", marginRight:4 }}/>Clickable</span>
         </div>
       </div>
-      <div style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:14, overflow:"hidden" }}>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", borderBottom:"1px solid rgba(255,255,255,0.07)" }}>
-          {DAY_LABELS.map(d=><div key={d} style={{ padding:"10px 0", textAlign:"center", fontSize:11, fontWeight:700, color:"#2a4060", fontFamily:"monospace", letterSpacing:1 }}>{d}</div>)}
+      <div style={{ background:"#fff", border:"1px solid #dcecf1", borderRadius:16, overflow:"hidden", boxShadow:"0 5px 22px rgba(23,50,77,0.05)" }}>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", borderBottom:"1px solid #dcecf1", background:"#eaf8fc" }}>
+          {DAY_LABELS.map(d=><div key={d} style={{ padding:"10px 0", textAlign:"center", fontSize:11, fontWeight:700, color:"#536b7b", fontFamily:"monospace", letterSpacing:1 }}>{d}</div>)}
         </div>
         {Array.from({ length:5 }, (_,week)=>(
-          <div key={week} style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", borderBottom:week<4?"1px solid rgba(255,255,255,0.05)":"none" }}>
+          <div key={week} style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", borderBottom:week<4?"1px solid #e3eef2":"none" }}>
             {Array.from({ length:7 }, (_,day)=>{
               const dateStr = MONTH_DAYS[week*7+day];
               const d = new Date(dateStr+"T12:00:00");
@@ -725,15 +727,15 @@ function ScheduleSection() {
               return (
                 <div key={day}
                   onClick={()=>isClickable&&setSelectedEvent(event)}
-                  onMouseEnter={e=>{ if(isClickable) e.currentTarget.style.background="rgba(91,138,240,0.1)"; }}
-                  onMouseLeave={e=>{ if(isClickable) e.currentTarget.style.background="rgba(91,138,240,0.04)"; }}
-                  style={{ minHeight:90, padding:8, borderRight:day<6?"1px solid rgba(255,255,255,0.05)":"none", background:isClickable?"rgba(91,138,240,0.04)":"transparent", cursor:isClickable?"pointer":"default", transition:"background 0.15s" }}>
-                  <div style={{ fontSize:12, fontWeight:600, color:isCurrentMonth?"#4a6080":"#1e2e40", marginBottom:4 }}>{d.getDate()}</div>
+                  onMouseEnter={e=>{ if(isClickable) e.currentTarget.style.background="#dff3f8"; }}
+                  onMouseLeave={e=>{ if(isClickable) e.currentTarget.style.background="#f0fafe"; }}
+                  style={{ minHeight:90, padding:8, borderRight:day<6?"1px solid #e3eef2":"none", background:isClickable?"#f0fafe":"transparent", cursor:isClickable?"pointer":"default", transition:"background 0.15s" }}>
+                  <div style={{ fontSize:12, fontWeight:600, color:isCurrentMonth?"#17324d":"#8195a1", marginBottom:4 }}>{d.getDate()}</div>
                   {event&&(
                     <div style={{ fontSize:10.5, lineHeight:1.4, padding:"4px 6px", borderRadius:5,
-                      background:isClickable?"rgba(91,138,240,0.15)":event.topic?"#e0525222":"#e09a2a22",
-                      border:isClickable?"1px solid rgba(91,138,240,0.3)":event.topic?"1px solid #e0525233":"1px solid #e09a2a33",
-                      color:isClickable?"#90b8ff":event.topic?"#e05252":"#e09a2a",
+                      background:isClickable?"#dbf2f9":event.topic?"#fff0ef":"#fff6e8",
+                      border:isClickable?"1px solid #b4dfea":event.topic?"1px solid #f2d1cb":"1px solid #efdab4",
+                      color:isClickable?"#0b779b":event.topic?"#ac4545":"#865709",
                       fontWeight:isClickable?600:400 }}>
                       {isClickable&&<span style={{ marginRight:3 }}>🔗</span>}
                       {event.label}
@@ -792,38 +794,38 @@ function QuizSection() {
     <div>
       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6, flexWrap:"wrap", gap:12 }}>
         <div>
-          <h1 style={{ fontSize:21, fontWeight:700, color:"#c8d8f0" }}>🧠 GI Quiz</h1>
-          <p style={{ fontSize:12.5, color:"#2e4060", marginTop:4 }}>AI-generated board-style MCQ · Fresh question every time · Powered by Claude</p>
+          <h1 style={{ fontSize:21, fontWeight:700, color:"#17324d" }}>🧠 GI Quiz</h1>
+          <p style={{ fontSize:12.5, color:"#536b7b", marginTop:4 }}>AI-generated board-style MCQ · Fresh question every time · Powered by Claude</p>
         </div>
-        {pct!==null&&<div style={{ background:"rgba(91,138,240,0.08)", border:"1px solid rgba(91,138,240,0.2)", borderRadius:10, padding:"8px 16px", textAlign:"center" }}><div style={{ fontSize:20, fontWeight:700, color:"#5b8af0" }}>{pct}%</div><div style={{ fontSize:10, color:"#3a5070", fontFamily:"monospace" }}>AVG SCORE</div></div>}
+        {pct!==null&&<div style={{ background:"#eaf8fc", border:"1px solid #c8e8f1", borderRadius:10, padding:"8px 16px", textAlign:"center" }}><div style={{ fontSize:20, fontWeight:700, color:"#0b93bb" }}>{pct}%</div><div style={{ fontSize:10, color:"#536b7b", fontFamily:"monospace" }}>AVG SCORE</div></div>}
       </div>
       <div style={{ display:"flex", flexWrap:"wrap", gap:10, margin:"20px 0 28px" }}>
         {QUIZ_TOPICS.map(t=>(
           <button key={t.id} onClick={()=>generate(t.id)} disabled={loading}
-            style={{ background:sel===t.id?t.color+"33":"rgba(255,255,255,0.04)", border:`1px solid ${sel===t.id?t.color:"rgba(255,255,255,0.1)"}`, color:sel===t.id?t.color:"#4a6080", padding:"10px 18px", borderRadius:10, fontSize:13, fontWeight:600, display:"flex", alignItems:"center", gap:7, cursor:loading?"not-allowed":"pointer", opacity:loading?0.6:1, transition:"all 0.18s" }}>
+            style={{ background:sel===t.id?t.color+"33":"#f5fbfd", border:`1px solid ${sel===t.id?t.color:"#d1e5eb"}`, color:sel===t.id?t.color:"#536b7b", padding:"10px 18px", borderRadius:10, fontSize:13, fontWeight:600, display:"flex", alignItems:"center", gap:7, cursor:loading?"not-allowed":"pointer", opacity:loading?0.6:1, transition:"all 0.18s" }}>
             {t.icon} {t.label}
           </button>
         ))}
       </div>
       {error&&!loading&&<div style={{ background:"rgba(224,82,82,0.08)", border:"1px solid #e0525244", borderRadius:10, padding:"14px 18px", marginBottom:20 }}><div style={{ fontSize:12, fontWeight:700, color:"#e05252", marginBottom:4 }}>Error</div><div style={{ fontSize:12, color:"#a05050", fontFamily:"monospace" }}>{error}</div></div>}
-      {loading&&<div style={{ textAlign:"center", padding:"60px 0" }}><Spinner size={32}/><div style={{ marginTop:16, fontSize:14, color:"#3a5878" }}>Generating question…</div></div>}
+      {loading&&<div style={{ textAlign:"center", padding:"60px 0" }}><Spinner size={32}/><div style={{ marginTop:16, fontSize:14, color:"#536b7b" }}>Generating question…</div></div>}
       {submitted&&question&&(
-        <div style={{ background:answer===question.correct?"rgba(76,175,61,0.1)":"rgba(224,82,82,0.1)", border:`1px solid ${answer===question.correct?"#4caf7d":"#e05252"}55`, borderRadius:12, padding:"16px 22px", marginBottom:24, display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:10 }}>
-          <div style={{ fontSize:18, fontWeight:700, color:answer===question.correct?"#4caf7d":"#e05252" }}>{answer===question.correct?"Correct! 🎉":"Incorrect 📚"}</div>
-          <button onClick={()=>generate(sel)} style={{ background:"rgba(91,138,240,0.12)", border:"1px solid rgba(91,138,240,0.3)", color:"#8aafff", padding:"8px 16px", borderRadius:8, fontSize:13, fontWeight:600, cursor:"pointer" }}>New Question →</button>
+        <div style={{ background:answer===question.correct?"#eaf9f4":"#fff1ef", border:`1px solid ${answer===question.correct?"#128566":"#e05252"}55`, borderRadius:12, padding:"16px 22px", marginBottom:24, display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:10 }}>
+          <div style={{ fontSize:18, fontWeight:700, color:answer===question.correct?"#128566":"#e05252" }}>{answer===question.correct?"Correct! 🎉":"Incorrect 📚"}</div>
+          <button onClick={()=>generate(sel)} style={{ background:"#eaf8fc", border:"1px solid #b9e3ee", color:"#0b779b", padding:"8px 16px", borderRadius:8, fontSize:13, fontWeight:600, cursor:"pointer" }}>New Question →</button>
         </div>
       )}
       {!loading&&question&&(
-        <div style={{ background:"rgba(255,255,255,0.025)", border:"1px solid rgba(255,255,255,0.08)", borderRadius:12, padding:"20px 22px" }}>
+        <div style={{ background:"#fff", border:"1px solid #dcecf1", borderRadius:12, padding:"20px 22px" }}>
           <div style={{ display:"flex", gap:12, marginBottom:16 }}>
             <span style={{ background:ti?.color+"33", color:ti?.color, width:28, height:28, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:800, flexShrink:0 }}>Q</span>
-            <div style={{ fontSize:14, color:"#c8d8f0", lineHeight:1.7 }}>{question.question}</div>
+            <div style={{ fontSize:14, color:"#17324d", lineHeight:1.7 }}>{question.question}</div>
           </div>
           <div style={{ display:"flex", flexDirection:"column", gap:8, paddingLeft:40 }}>
             {question.options.map((opt,oi)=>{
               const letter=["A","B","C","D"][oi], isChosen=answer===letter, isRight=letter===question.correct;
-              let bg="rgba(255,255,255,0.03)", border="rgba(255,255,255,0.08)", color="#8898b0";
-              if (submitted) { if(isRight){bg="rgba(76,175,61,0.12)";border="#4caf7d55";color="#4caf7d";} else if(isChosen){bg="rgba(224,82,82,0.1)";border="#e0525255";color="#e05252";} }
+              let bg="#f8fcfd", border="#dcecf1", color="#17324d";
+              if (submitted) { if(isRight){bg="#eaf9f4";border="#12856655";color="#128566";} else if(isChosen){bg="#fff1ef";border="#f1c9c6";color="#e05252";} }
               else if (isChosen) { bg=ti?.color+"22"; border=ti?.color+"88"; color=ti?.color; }
               return (
                 <div key={oi} onClick={()=>!submitted&&setAnswer(letter)}
@@ -836,30 +838,30 @@ function QuizSection() {
               );
             })}
           </div>
-          {!submitted&&<div style={{ display:"flex", justifyContent:"flex-end", marginTop:16 }}><button onClick={submit} disabled={!answer} style={{ background:!answer?"rgba(255,255,255,0.05)":"linear-gradient(135deg,#3a6fd8,#7c4af0)", border:"none", color:!answer?"#2a3a50":"#fff", padding:"11px 26px", borderRadius:10, fontSize:14, fontWeight:700, cursor:!answer?"not-allowed":"pointer", transition:"all 0.2s" }}>Submit</button></div>}
+          {!submitted&&<div style={{ display:"flex", justifyContent:"flex-end", marginTop:16 }}><button onClick={submit} disabled={!answer} style={{ background:!answer?"#f3f9fb":"linear-gradient(135deg,#0b779b,#128566)", border:"none", color:!answer?"#536b7b":"#fff", padding:"11px 26px", borderRadius:10, fontSize:14, fontWeight:700, cursor:!answer?"not-allowed":"pointer", transition:"all 0.2s" }}>Submit</button></div>}
           {submitted&&question.explanation&&(
             <div style={{ marginTop:16, paddingLeft:40 }}>
-              <div style={{ background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.07)", borderRadius:8, padding:"12px 14px" }}>
-                <div style={{ fontSize:10.5, fontWeight:700, color:"#4a6a8a", fontFamily:"monospace", marginBottom:4, letterSpacing:0.5 }}>EXPLANATION</div>
-                <div style={{ fontSize:13, color:"#6a8aaa", lineHeight:1.7 }}>{question.explanation}</div>
+              <div style={{ background:"#f5fbfd", border:"1px solid #dcecf1", borderRadius:8, padding:"12px 14px" }}>
+                <div style={{ fontSize:10.5, fontWeight:700, color:"#536b7b", fontFamily:"monospace", marginBottom:4, letterSpacing:0.5 }}>EXPLANATION</div>
+                <div style={{ fontSize:13, color:"#476177", lineHeight:1.7 }}>{question.explanation}</div>
               </div>
             </div>
           )}
         </div>
       )}
-      {!loading&&!sel&&<div style={{ textAlign:"center", padding:"60px 0" }}><div style={{ fontSize:40, marginBottom:14 }}>🧠</div><div style={{ fontSize:15, color:"#2a3a50" }}>Select a topic above to generate a question</div></div>}
+      {!loading&&!sel&&<div style={{ textAlign:"center", padding:"60px 0" }}><div style={{ fontSize:40, marginBottom:14 }}>🧠</div><div style={{ fontSize:15, color:"#536b7b" }}>Select a topic above to generate a question</div></div>}
       {history.length>0&&(
         <div style={{ marginTop:48 }}>
           <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16 }}>
-            <h2 style={{ fontSize:16, fontWeight:700, color:"#8898b8" }}>📊 Score History</h2>
-            <button onClick={()=>{ setHistory([]); try{ localStorage.removeItem("gihub_quiz_history"); }catch{} }} style={{ background:"none", border:"1px solid rgba(255,255,255,0.07)", color:"#3a5070", fontSize:11, padding:"4px 10px", borderRadius:6, cursor:"pointer" }}>Clear</button>
+            <h2 style={{ fontSize:16, fontWeight:700, color:"#17324d" }}>📊 Score History</h2>
+            <button onClick={()=>{ setHistory([]); try{ localStorage.removeItem("gihub_quiz_history"); }catch{} }} style={{ background:"none", border:"1px solid #dcecf1", color:"#536b7b", fontSize:11, padding:"4px 10px", borderRadius:6, cursor:"pointer" }}>Clear</button>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(180px,1fr))", gap:10 }}>
             {history.map((h,i)=>(
-              <div key={i} style={{ background:"rgba(255,255,255,0.02)", border:"1px solid rgba(255,255,255,0.06)", borderRadius:10, padding:"12px 14px" }}>
-                <div style={{ fontSize:11, color:"#3a5070", fontFamily:"monospace" }}>{h.date} · {h.time}</div>
-                <div style={{ fontSize:12, fontWeight:600, color:"#6a8aaa", marginTop:3 }}>{h.topic}</div>
-                <div style={{ fontSize:16, fontWeight:700, color:h.correct?"#4caf7d":"#e05252", marginTop:6 }}>{h.correct?"✓ Correct":"✗ Incorrect"}</div>
+              <div key={i} style={{ background:"#fff", border:"1px solid #f1f9fc", borderRadius:10, padding:"12px 14px" }}>
+                <div style={{ fontSize:11, color:"#536b7b", fontFamily:"monospace" }}>{h.date} · {h.time}</div>
+                <div style={{ fontSize:12, fontWeight:600, color:"#476177", marginTop:3 }}>{h.topic}</div>
+                <div style={{ fontSize:16, fontWeight:700, color:h.correct?"#128566":"#e05252", marginTop:6 }}>{h.correct?"✓ Correct":"✗ Incorrect"}</div>
               </div>
             ))}
           </div>
@@ -872,58 +874,72 @@ function QuizSection() {
 const STANDALONE_QUIZ_ENABLED = false;
 
 const TABS = [
-  { id:"guidelines", label:"Clinical Guidelines", icon:"⚕️" },
+  { id:"home",       label:"Home",                 icon:"⌂" },
+  { id:"guidelines", label:"Clinical Guidelines",  icon:"⚕️" },
   { id:"weekly",     label:"Weekly Update",       icon:"📰" },
   { id:"education",  label:"Education",           icon:"🎓" },
   { id:"schedule",   label:"Schedule",            icon:"📅" },
   ...(STANDALONE_QUIZ_ENABLED ? [{ id:"quiz", label:"Quiz", icon:"🧠" }] : []),
 ];
 
-export default function GIHub({ initialActive = "guidelines" }) {
+export default function GIHub({ initialActive = "home" }) {
   const [active, setActive] = useState(
     initialActive === "quiz" && !STANDALONE_QUIZ_ENABLED ? "guidelines" : initialActive
   );
+  useEffect(() => {
+    const handleHistory = () => setActive(publicTabForPath(window.location.pathname));
+    window.addEventListener("popstate", handleHistory);
+    return () => window.removeEventListener("popstate", handleHistory);
+  }, []);
+  const navigate = tab => {
+    setActive(tab);
+    const path = publicPathForTab(tab);
+    if (window.location.pathname !== path) window.history.pushState(null, "", path);
+    window.scrollTo({ top:0, behavior:"instant" });
+  };
+  if (active === "home") return <div className="gihub-app"><Home onNavigate={navigate} /></div>;
   return (
-    <div style={{ minHeight:"100vh", background:"#080f1e", color:"#d0e0ff", fontFamily:"Georgia,'Times New Roman',serif", paddingBottom:80 }}>
+    <div className="gihub-app" style={{ minHeight:"100vh", background:"linear-gradient(145deg,#f8fcfd 0%,#eaf8fc 58%,#f4fcf8 100%)", color:"#17324d", fontFamily:"'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif", paddingBottom:80 }}>
       <style>{`
         *{box-sizing:border-box;margin:0;padding:0}
         button,input{font-family:inherit}
-        ::placeholder{color:#2a3a50}
+        ::placeholder{color:#657b8a;opacity:1}
+        input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid #0b93bb!important;outline-offset:2px}
         ::-webkit-scrollbar{width:5px}
-        ::-webkit-scrollbar-thumb{background:#1a2a3a;border-radius:3px}
+        ::-webkit-scrollbar-thumb{background:#bddce5;border-radius:3px}
         @keyframes spin{to{transform:rotate(360deg)}}
       `}</style>
-      <div style={{ position:"sticky", top:0, zIndex:100, background:"rgba(8,15,30,0.97)", backdropFilter:"blur(24px)", borderBottom:"1px solid rgba(255,255,255,0.06)", padding:"0 32px" }}>
+      <div style={{ position:"sticky", top:0, zIndex:100, background:"rgba(255,255,255,0.96)", backdropFilter:"blur(24px)", borderBottom:"1px solid #d6eaf0", boxShadow:"0 5px 22px rgba(23,50,77,0.04)", padding:"0 32px" }}>
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
           <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 0 10px", gap:12, flexWrap:"wrap" }}>
-            <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-              <div style={{ width:38, height:38, borderRadius:"50%", background:"linear-gradient(135deg,#3a6fd8,#7c4af0)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, boxShadow:"0 0 16px rgba(91,138,240,0.25)" }}>⚕️</div>
+            <button type="button" onClick={()=>navigate("home")} aria-label="GIHub home" style={{ display:"flex", alignItems:"center", gap:12, border:0, background:"transparent", cursor:"pointer", textAlign:"left" }}>
+              <div style={{ width:42, height:42, borderRadius:13, background:"linear-gradient(135deg,#0b93bb,#16af88)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:19, boxShadow:"0 6px 16px rgba(11,147,187,0.2)" }}>⚕️</div>
               <div>
-                <div style={{ fontSize:20, fontWeight:700, color:"#e0eeff" }}>GI<span style={{ color:"#5b8af0" }}>Hub</span>{" "}<span style={{ fontSize:11, background:"linear-gradient(135deg,#3a6fd8,#7c4af0)", color:"#fff", padding:"2px 8px", borderRadius:20, fontWeight:700, fontFamily:"monospace", verticalAlign:"middle" }}>AI</span></div>
-                <div style={{ fontSize:9.5, color:"#2a4060", letterSpacing:1.4, textTransform:"uppercase", fontFamily:"monospace" }}>Gastroenterology Educational Hub</div>
+                <div style={{ fontSize:20, fontWeight:800, color:"#17324d", letterSpacing:-0.6 }}>GI<span style={{ color:"#0b93bb" }}>Hub</span>{" "}<span style={{ fontSize:11, background:"#dff6f1", color:"#116e59", padding:"3px 8px", borderRadius:20, fontWeight:800, fontFamily:"monospace", verticalAlign:"middle" }}>AI</span></div>
+                <div style={{ fontSize:9.5, color:"#536b7b", letterSpacing:1.4, textTransform:"uppercase", fontFamily:"monospace" }}>Gastroenterology Educational Hub</div>
               </div>
-            </div>
-            <div style={{ fontSize:11, color:"#1a2e42", fontFamily:"monospace" }}>{new Date().toLocaleDateString("en-US",{ month:"long", day:"numeric", year:"numeric" })}</div>
+            </button>
+            <div style={{ fontSize:11, color:"#536b7b", fontFamily:"monospace" }}>{new Date().toLocaleDateString("en-US",{ month:"long", day:"numeric", year:"numeric" })}</div>
           </div>
-          <div style={{ display:"flex", borderTop:"1px solid rgba(255,255,255,0.04)", overflowX:"auto" }}>
+          <div style={{ display:"flex", borderTop:"1px solid #e6f1f4", overflowX:"auto", gap:4 }}>
             {TABS.map(t=>(
-              <button key={t.id} onClick={()=>setActive(t.id)}
-                style={{ background:active===t.id?"rgba(91,138,240,0.07)":"transparent", border:"none", borderBottom:`2px solid ${active===t.id?"#5b8af0":"transparent"}`, color:active===t.id?"#90b8ff":"#3a5070", padding:"11px 18px", fontSize:13, fontWeight:600, transition:"all 0.18s", whiteSpace:"nowrap", cursor:"pointer" }}>
+              <button key={t.id} type="button" onClick={()=>navigate(t.id)}
+                style={{ background:active===t.id?"#eaf8fc":"transparent", border:"none", borderBottom:`3px solid ${active===t.id?"#0b93bb":"transparent"}`, borderRadius:"10px 10px 0 0", color:active===t.id?"#0b779b":"#536b7b", padding:"12px 18px", fontSize:13, fontWeight:active===t.id?700:600, transition:"all 0.18s", whiteSpace:"nowrap", cursor:"pointer" }}>
                 {t.icon} {t.label}
               </button>
             ))}
           </div>
         </div>
       </div>
-      <div style={{ maxWidth:1100, margin:"0 auto", padding:"32px 32px 0" }}>
+      <div style={{ maxWidth:1100, margin:"0 auto", padding:"38px 32px 0" }}>
         {active==="guidelines"&&<GuidelinesSection/>}
         {active==="weekly"    &&<ContentSection key="weekly"     type="weekly"/>}
         {active==="education" &&<EducationSection/>}
         {active==="schedule"  &&<ScheduleSection/>}
         {STANDALONE_QUIZ_ENABLED&&active==="quiz"&&<QuizSection/>}
       </div>
-      <div style={{ maxWidth:1100, margin:"52px auto 0", padding:"16px 32px 0", borderTop:"1px solid rgba(255,255,255,0.04)" }}>
-        <p style={{ fontSize:10.5, color:"#141e2c", textAlign:"center", lineHeight:2, fontFamily:"monospace" }}>
+      <div style={{ maxWidth:1100, margin:"52px auto 0", padding:"18px 32px 0", borderTop:"1px solid #d6eaf0" }}>
+        <p style={{ fontSize:10.5, color:"#536b7b", textAlign:"center", lineHeight:2, fontFamily:"monospace" }}>
           GIHub is a curated educational reference tool for gastroenterologists. AI content generated via Claude with web search.<br/>
           Always verify against official society sources. Quiz questions are for educational purposes only. Not a substitute for clinical judgment.
         </p>
