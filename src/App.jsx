@@ -695,7 +695,19 @@ function LectureDetailPanel({ event, onClose }) {
 }
 
 function ScheduleSection() {
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(() => {
+    if (typeof window === "undefined") return null;
+    const slug = new URLSearchParams(window.location.search).get("lecture");
+    return slug ? CALENDAR_EVENTS.find(event => event.slug === slug) || null : null;
+  });
+  const closeSelectedEvent = () => {
+    setSelectedEvent(null);
+    if (typeof window !== "undefined" && window.location.search.includes("lecture=")) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("lecture");
+      window.history.replaceState(null, "", url.pathname + url.search + url.hash);
+    }
+  };
   const eventMap = {};
   CALENDAR_EVENTS.forEach(e=>{ eventMap[e.date]=e; });
 
@@ -749,8 +761,8 @@ function ScheduleSection() {
       </div>
       {selectedEvent&&(
         <>
-          <div onClick={()=>setSelectedEvent(null)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", zIndex:199 }}/>
-          <LectureDetailPanel event={selectedEvent} onClose={()=>setSelectedEvent(null)}/>
+          <div onClick={closeSelectedEvent} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", zIndex:199 }}/>
+          <LectureDetailPanel event={selectedEvent} onClose={closeSelectedEvent}/>
         </>
       )}
     </div>
