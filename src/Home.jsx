@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import guidelines from "./data/guidelines.js";
 import weekly from "./data/weekly.js";
 import weeklyPodcasts from "./data/weeklyPodcasts.js";
@@ -6,13 +5,6 @@ import scheduleResources from "./data/scheduleResources.js";
 import { CALENDAR_MONTH, CALENDAR_EVENTS } from "./scheduleConfig.js";
 import { isPublicApprovedResource, sanitizeScheduleResourceForPublic } from "./scheduleResourcesModel.js";
 import "./Home.css";
-
-const SECTIONS = [
-  { id: "guidelines", label: "Guidelines", description: "Society guidance & source documents", number: "01" },
-  { id: "weekly", label: "Weekly Update", description: "Curated research & clinical news", number: "02" },
-  { id: "schedule", label: "Schedule", description: "Teaching calendar & lecture resources", number: "03" },
-  { id: "education", label: "Education", description: "Learning tools & society resources", number: "04" },
-];
 
 const publishedWeekly = weekly.filter(isPublicApprovedResource);
 const recentWeekly = [...publishedWeekly]
@@ -38,19 +30,6 @@ function SectionButton({ id, children, onNavigate, className = "" }) {
 }
 
 export default function Home({ onNavigate }) {
-  const [guidelineTotal, setGuidelineTotal] = useState(null);
-  useEffect(() => {
-    const controller = new AbortController();
-    fetch("/api/claude", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "content", section: "guidelines", page: 1 }),
-      signal: controller.signal,
-    }).then(response => response.ok ? response.json() : null)
-      .then(result => { if (Number.isInteger(result?.total)) setGuidelineTotal(result.total); })
-      .catch(() => {}); // The featured local records remain available if the API is offline.
-    return () => controller.abort();
-  }, []);
   // Compare calendar dates in local time so an event does not disappear early in western time zones.
   const today = new Date();
   const localDay = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
@@ -61,45 +40,7 @@ export default function Home({ onNavigate }) {
 
   return (
     <main className="coastal-home">
-      <div className="coastal-home__shell">
-        <nav className="coastal-home__nav" aria-label="GIHub sections">
-          <div className="coastal-home__brand">
-            <span className="coastal-home__mark" aria-hidden="true">✳</span>
-            <span><strong>GI<span>Hub</span></strong><small>Gastroenterology education</small></span>
-          </div>
-          <div className="coastal-home__nav-links">
-            {SECTIONS.map(section => <SectionButton key={section.id} id={section.id} onNavigate={onNavigate}>{section.label}</SectionButton>)}
-          </div>
-        </nav>
-
-        <header className="coastal-home__hero">
-          <div className="coastal-home__hero-copy">
-            <p className="coastal-home__eyebrow"><span className="coastal-home__dot" /> Your clinical learning space</p>
-            <h1>Stay curious.<br /><em>Stay current.</em></h1>
-            <p className="coastal-home__lead">Guidelines, research updates, and teaching resources for gastroenterology fellows and faculty—all in one place.</p>
-            <div className="coastal-home__hero-actions">
-              <SectionButton id="guidelines" onNavigate={onNavigate} className="coastal-home__primary">Explore guidelines <span aria-hidden="true">↗</span></SectionButton>
-              <SectionButton id="weekly" onNavigate={onNavigate} className="coastal-home__secondary">Read the weekly update <span aria-hidden="true">→</span></SectionButton>
-            </div>
-          </div>
-          <div className="coastal-home__stats" aria-label="Repository at a glance">
-            <div className="coastal-home__stat"><strong>{guidelineTotal ?? guidelines.length}</strong><span>{guidelineTotal === null ? "Featured guidelines" : "Guidelines available"}</span><small>Source-linked references</small></div>
-            <div className="coastal-home__stat"><strong>{publishedWeekly.length}</strong><span>Weekly cards</span><small>Publicly available updates</small></div>
-            <div className="coastal-home__stat"><strong>{upcoming.length}</strong><span>Upcoming lectures</span><small>{CALENDAR_MONTH} calendar</small></div>
-          </div>
-          <div className="coastal-home__hero-orbit" aria-hidden="true" />
-        </header>
-
-        <div className="coastal-home__body">
-          <section className="coastal-home__pathways" aria-labelledby="coastal-pathways-title">
-            <div className="coastal-home__heading"><div><p className="coastal-home__eyebrow">Start here</p><h2 id="coastal-pathways-title">Find what you need</h2></div><p>Four ways into GIHub, one place to keep learning.</p></div>
-            <div className="coastal-home__path-grid">
-              {SECTIONS.map(section => <SectionButton key={section.id} id={section.id} onNavigate={onNavigate} className="coastal-home__path">
-                <span className="coastal-home__path-number">{section.number} / Explore</span><strong>{section.label}</strong><span>{section.description}</span><span className="coastal-home__path-arrow" aria-hidden="true">↗</span>
-              </SectionButton>)}
-            </div>
-          </section>
-
+      <div className="coastal-home__body">
           <section className="coastal-home__section" aria-labelledby="coastal-guidelines-title">
             <div className="coastal-home__heading"><div><p className="coastal-home__eyebrow">Clinical guidelines</p><h2 id="coastal-guidelines-title">Grounded in the source.</h2></div><SectionButton id="guidelines" onNavigate={onNavigate} className="coastal-home__text-link">Browse all guidelines <span aria-hidden="true">↗</span></SectionButton></div>
             <div className="coastal-home__card-grid">
@@ -143,7 +84,6 @@ export default function Home({ onNavigate }) {
             <SectionButton id="weekly" onNavigate={onNavigate} className="coastal-home__secondary">Listen in Weekly Update <span aria-hidden="true">→</span></SectionButton>
           </section>}
           <footer className="coastal-home__footer">GIHub is an educational reference. Verify guidance against original sources; not a substitute for clinical judgment.</footer>
-        </div>
       </div>
     </main>
   );

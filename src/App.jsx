@@ -897,7 +897,6 @@ export default function GIHub({ initialActive = "home" }) {
     if (window.location.pathname !== path) window.history.pushState(null, "", path);
     window.scrollTo({ top:0, behavior:"instant" });
   };
-  if (active === "home") return <div className="gihub-app"><Home onNavigate={navigate} /></div>;
   return (
     <div className="gihub-app" style={{ minHeight:"100vh", background:"linear-gradient(145deg,#f8fcfd 0%,#eaf8fc 58%,#f4fcf8 100%)", color:"#17324d", fontFamily:"'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif", paddingBottom:80 }}>
       <style>{`
@@ -932,18 +931,19 @@ export default function GIHub({ initialActive = "home" }) {
         </div>
       </div>
       <div style={{ maxWidth:1100, margin:"0 auto", padding:"38px 32px 0" }}>
+        {active==="home"&&<Home onNavigate={navigate}/>}
         {active==="guidelines"&&<GuidelinesSection/>}
         {active==="weekly"    &&<ContentSection key="weekly"     type="weekly"/>}
         {active==="education" &&<EducationSection/>}
         {active==="schedule"  &&<ScheduleSection/>}
         {STANDALONE_QUIZ_ENABLED&&active==="quiz"&&<QuizSection/>}
       </div>
-      <div style={{ maxWidth:1100, margin:"52px auto 0", padding:"18px 32px 0", borderTop:"1px solid #d6eaf0" }}>
+      {active!=="home"&&<div style={{ maxWidth:1100, margin:"52px auto 0", padding:"18px 32px 0", borderTop:"1px solid #d6eaf0" }}>
         <p style={{ fontSize:10.5, color:"#536b7b", textAlign:"center", lineHeight:2, fontFamily:"monospace" }}>
           GIHub is a curated educational reference tool for gastroenterologists. AI content generated via Claude with web search.<br/>
           Always verify against official society sources. Quiz questions are for educational purposes only. Not a substitute for clinical judgment.
         </p>
-      </div>
+      </div>}
     </div>
   );
 }
