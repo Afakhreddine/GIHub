@@ -30,7 +30,7 @@ test('home shares the subpage header and begins at the clinical guidelines secti
   assert.match(home, /Grounded in the source\./);
   assert.match(home, /On the reading list\./);
   assert.match(home, /Coming up next\./);
-  assert.match(home, /The Weekly Update, in your ears\./);
+  assert.match(home, /The Weekly Update, on the go\./);
 });
 
 test('deep links continue to render their requested section', () => {
