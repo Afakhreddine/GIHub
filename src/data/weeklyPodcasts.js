@@ -1,5 +1,15 @@
 const weeklyPodcasts = [
   {
+    id: "weekly-2026-10-15",
+    title: "GIHub Weekly Update Podcast — Oct 15, 2026",
+    date: "2026-10-15",
+    displayDate: "Oct 15, 2026",
+    duration: "15:28",
+    sourceCount: 14,
+    audioUrl: "/audio/weekly/weekly-2026-10-15.mp3",
+    description: "Audio review of 14 published Weekly Update cards, including PROFILE Crohn's follow-up, colorectal endoscopic resection and surveillance, EoE, antifungal therapy in acute-on-chronic liver failure, SGLT2 inhibitors and HCC, cannabis-related nausea, early esophageal cancer, diverticulitis NLP, IBS mortality, H. pylori regimens, childhood lifestyle and IBD, and clinical AI deskilling. Source note: 12 original journal PDFs; the childhood lifestyle/IBD journal PDF was inaccessible, so its PubMed abstract and published card were used. The AI news feature used its full article text rather than a journal PDF."
+  },
+  {
     id: "weekly-2026-10-02",
     title: "GIHub Weekly Update Podcast — Oct 2, 2026",
     date: "2026-10-02",
@@ -18,17 +28,6 @@ const weeklyPodcasts = [
     sourceCount: 8,
     audioUrl: "/audio/weekly/weekly-2026-09-29.mp3",
     description: "Audio review of the published GIHub Weekly Update cards, including lirafugratinib for FGFR2-altered cholangiocarcinoma, gastric intestinal metaplasia risk, PSC screening in new IBD, advanced IBD therapy safety, Crohn's surgery trends, HCV follow-up RNA testing, microscopic colitis risk signals, and GLP-1 receptor agonist gastrointestinal/hepatobiliary adverse-event data."
-  },
-  {
-    id: "weekly-2026-09-22",
-    title: "GIHub Weekly Update Podcast — Sep 22, 2026",
-    date: "2026-09-22",
-    displayDate: "Sep 22, 2026",
-    duration: "25:39",
-    sourceCount: 10,
-    relatedPr: 37,
-    audioUrl: "/audio/weekly/weekly-2026-09-22.mp3",
-    description: "Audio review of the published GIHub Weekly Update cards, including AI colonoscopy, UC monitoring and de-escalation, ERCP stent follow-up, Rome V IBS criteria, hepatitis B therapy, and endoscopy technology."
   }
 ];
 

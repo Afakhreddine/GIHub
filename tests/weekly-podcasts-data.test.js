@@ -8,6 +8,8 @@ test("weekly podcast metadata uses a rolling in-repo archive", () => {
   assert.ok(Array.isArray(weeklyPodcasts));
   assert.ok(weeklyPodcasts.length > 0);
   assert.ok(weeklyPodcasts.length <= 3, "keep only the latest 3 repo-stored podcasts");
+  assert.equal(weeklyPodcasts[0].id, "weekly-2026-10-15", "published PR #66 should be the featured episode");
+  assert.equal(weeklyPodcasts[0].sourceCount, 14);
 
   const dates = weeklyPodcasts.map(p => p.date);
   assert.deepEqual(dates, [...dates].sort().reverse(), "podcasts should be newest first");
