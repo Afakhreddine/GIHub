@@ -4,9 +4,9 @@ const weeklyPodcasts = [
     title: "GIHub Weekly Update Podcast — Oct 15, 2026",
     date: "2026-10-15",
     displayDate: "Oct 15, 2026",
-    duration: "44:54",
+    duration: "44:59",
     sourceCount: 14,
-    audioUrl: "/audio/weekly/weekly-2026-10-15-v4.mp3",
+    audioUrl: "/audio/weekly/weekly-2026-10-15-v5.mp3",
     description: "Audio review of all 14 published Weekly Update cards, including PROFILE Crohn's follow-up, colorectal endoscopic resection and surveillance, EoE, antifungal therapy in acute-on-chronic liver failure, SGLT2 inhibitors and HCC, cannabis-related nausea, early esophageal cancer, diverticulitis NLP, IBS mortality, H. pylori regimens, childhood lifestyle and IBD, and clinical AI deskilling. Source note: 12 original journal PDFs; the complete Guo study was sourced from PMC full-text article XML and provided as a labeled PDF ingestion copy, not the publisher PDF. The AI news feature used its complete article text rather than a journal PDF."
   },
   {
