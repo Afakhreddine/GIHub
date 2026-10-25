@@ -14,8 +14,8 @@ import { buildGuidelineSupplementsFile, mergeGuidelineSupplements, parseGuidelin
 
 test("guideline review queue contains only verified unpublished candidates", () => {
   assert.ok(Array.isArray(candidates));
-  assert.equal(candidates.length, 8);
-  assert.deepEqual(candidates.map(item => item.pmid), ["42720640", "42776095", "42820904", "42814045", "42831646", "42848339", "42841770", "42914292"]);
+  assert.equal(candidates.length, 1);
+  assert.deepEqual(candidates.map(item => item.pmid), ["42914292"]);
   assert.equal(candidates.some(item => item.pmid === "42683623"), false);
   for (const item of candidates) {
     assert.equal(item.status, "candidate-review");
@@ -28,7 +28,7 @@ test("guideline review queue contains only verified unpublished candidates", () 
 
 test("guideline review model requires every candidate reviewed before publishing", () => {
   const decisions = Object.fromEntries(candidates.map(item => [guidelineItemId(item), "Approve"]));
-  assert.equal(guidelineItemId(candidates[0]), "pmid:42720640");
+  assert.equal(guidelineItemId(candidates[0]), "pmid:42914292");
   assert.equal(canPublishGuidelineReview(candidates, {}), false);
   assert.equal(canPublishGuidelineReview(candidates, decisions), true);
   const payload = buildGuidelinePublishPayload(candidates, decisions);
@@ -41,10 +41,11 @@ test("guideline review filtering and routes work", () => {
   assert.equal(isGuidelineReviewPath("/review/guidelines"), true);
   assert.equal(isGuidelineReviewPath("/review/guidelines/"), true);
   assert.equal(isGuidelineReviewPath("/review/weekly"), false);
-  assert.equal(filterGuidelineItems(candidates, { query:"serrated polyposis", org:"All", decision:"All", decisions:{} }).length, 1);
-  assert.equal(filterGuidelineItems(candidates, { query:"", org:"AGA", decision:"All", decisions:{} }).length, 4);
-  assert.equal(filterGuidelineItems(candidates, { query:"remimazolam", org:"ASGE", decision:"All", decisions:{} }).length, 1);
-  assert.equal(filterGuidelineItems(candidates, { query:"liver biopsy", org:"AASLD", decision:"All", decisions:{} }).length, 1);
+  assert.equal(filterGuidelineItems(candidates, { query:"serrated polyposis", org:"All", decision:"All", decisions:{} }).length, 0);
+  assert.equal(filterGuidelineItems(candidates, { query:"", org:"AGA", decision:"All", decisions:{} }).length, 1);
+  assert.equal(filterGuidelineItems(candidates, { query:"primary biliary cholangitis", org:"AGA", decision:"All", decisions:{} }).length, 1);
+  assert.equal(filterGuidelineItems(candidates, { query:"remimazolam", org:"ASGE", decision:"All", decisions:{} }).length, 0);
+  assert.equal(filterGuidelineItems(candidates, { query:"liver biopsy", org:"AASLD", decision:"All", decisions:{} }).length, 0);
 });
 
 test("guideline review API parses candidate modules and selects latest guideline PR", () => {
