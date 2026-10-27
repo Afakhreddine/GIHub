@@ -7,6 +7,7 @@ import scheduleResources from "./data/scheduleResources.js";
 import { isPublicApprovedResource, sanitizeScheduleResourceForPublic } from "./scheduleResourcesModel.js";
 import Home from "./Home.jsx";
 import { publicTabForPath, publicPathForTab } from "./publicRoutes.js";
+import { resolveGuidelineLink } from "./guidelineLinks.js";
 
 // ── SESSION CACHE ─────────────────────────────────────────────────────────────
 const sessionCache = {};
@@ -255,23 +256,6 @@ function ContentSection({ type }) {
   );
 }
 
-const SOCIETY_FALLBACK_URLS = {
-  ACG:   "https://gi.org/guidelines",
-  AGA:   "https://gastro.org/clinical-guidance",
-  ASGE:  "https://www.asge.org/home/resources/publications/guidelines",
-  AASLD: "https://www.aasld.org/practice-guidelines",
-};
-
-function resolveUrl(g) {
-  const url = g.url;
-  if (!url) return SOCIETY_FALLBACK_URLS[g.org] || null;
-  const isIndex = url.includes("guidelinecentral.com") ||
-                  /\/guidelines\/?$/.test(url) ||
-                  url.includes("/pages/default.aspx") ||
-                  url.match(/journals\.lww\.com\/[^/]+\/?$/);
-  return isIndex ? (SOCIETY_FALLBACK_URLS[g.org] || null) : url;
-}
-
 function SocietyWidget({ org, guidelines, search }) {
   const [visibleCount, setVisibleCount] = useState(3);
   const [newOnly, setNewOnly]           = useState(false);
@@ -325,15 +309,16 @@ function SocietyWidget({ org, guidelines, search }) {
         {visible.length === 0
           ? <div style={{ padding:"24px 18px", fontSize:12, color:"#536b7b", textAlign:"center" }}>No results</div>
           : visible.map((g, i) => {
-              const url = resolveUrl(g);
+              const link = resolveGuidelineLink(g);
               return (
-                <div key={i} onClick={()=>url&&window.open(url,"_blank")}
-                  style={{ padding:"13px 18px", borderBottom:i<visible.length-1?"1px solid #e6f1f4":"none", cursor:url?"pointer":"default" }}
-                  onMouseEnter={e=>url&&(e.currentTarget.style.background="#f4fbfd")}
+                <div key={i} onClick={()=>link.url&&window.open(link.url,"_blank")}
+                  style={{ padding:"13px 18px", borderBottom:i<visible.length-1?"1px solid #e6f1f4":"none", cursor:link.url?"pointer":"default" }}
+                  onMouseEnter={e=>link.url&&(e.currentTarget.style.background="#f4fbfd")}
                   onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
                   <div style={{ fontSize:12, fontWeight:700, color:"#0b779b", fontFamily:"monospace", marginBottom:5, letterSpacing:0.3 }}>{g.month} {g.year}</div>
                   <div style={{ fontSize:13, fontWeight:600, color:"#17324d", lineHeight:1.5, marginBottom:5 }}>{g.title}</div>
                   <div style={{ fontSize:12, color:"#516779", lineHeight:1.65 }}>{g.summary}</div>
+                  <div style={{ fontSize:11, color:sc.color, marginTop:6 }}>{link.label}</div>
                 </div>
               );
             })
