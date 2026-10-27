@@ -2242,13 +2242,13 @@ const scheduleResources = {
   "ai-in-gi-research": {
     "guidelines": [
       {
-        "org": "AGA/CGH",
-        "year": "2026",
-        "month": "Mar",
-        "topic": "AI in GI Research",
-        "title": "Artificial Intelligence Tools for Gastrointestinal Research: A Practical Guide",
-        "summary": "Practical AGA-journal guide for using AI tools in GI research, including verification, privacy, disclosure, study design, and risk-tiered use cases.",
-        "url": "https://doi.org/10.1016/j.cgh.2026.03.032",
+        "org": "AGA",
+        "year": "2025",
+        "month": "Apr",
+        "topic": "AI-Assisted Colonoscopy",
+        "title": "AGA Living Clinical Practice Guideline on Computer-Aided Detection-Assisted Colonoscopy",
+        "summary": "The AGA panel makes no recommendation for or against CADe-assisted colonoscopy: ADR improves, but evidence for long-term colorectal cancer outcomes is very low certainty and modeled surveillance burden rises.",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/40121061/",
         "status": "approved"
       }
     ],
@@ -2347,131 +2347,131 @@ const scheduleResources = {
     ],
     "quiz": [
       {
-        "question": "A gastroenterology fellow is summarizing literature on biologics for ulcerative colitis. She needs an AI tool that directly answers her clinical question, displays an evidence 'Meter' reflecting consensus across studies, shows quality scores, and integrates with her Zotero library. Which tool best fits this requirement?",
+        "question": "What is the official American Gastroenterological Association (AGA) clinical practice guideline recommendation regarding the routine use of computer-aided detection (CADe)-assisted colonoscopy in adults undergoing screening, surveillance, or diagnostic colonoscopy?",
         "options": [
-          "A. Consensus",
-          "B. Elicit",
-          "C. Connected Papers",
-          "D. Scite.ai"
+          "A. The AGA makes no recommendation for or against the use of CADe-assisted colonoscopy due to very low certainty of evidence for critical long-term outcomes.",
+          "B. The AGA conditionally recommends against CADe-assisted colonoscopy because of the substantial risk of patient harm from procedural complications.",
+          "C. The AGA strongly recommends CADe-assisted colonoscopy specifically for endoscopists with a baseline adenoma detection rate below 25%.",
+          "D. The AGA conditionally recommends CADe-assisted colonoscopy to increase adenoma detection rate (ADR) across all clinical settings."
         ],
         "correct": "A",
-        "explanation": "Consensus provides a clear visual synthesis meter along with study quality scores and allows direct integration with Zotero collections.",
-        "hint": "Consider which platform features a distinct visual gauge of overall agreement and integrates directly with reference libraries."
+        "explanation": "The guideline panel issued a 'no recommendation' statement because the certainty of evidence for critical long-term clinical outcomes (CRC incidence and mortality) is very low, making the tradeoff against increased surveillance burden closely balanced.",
+        "hint": "Consider the balance between established surrogate markers and the level of certainty surrounding long-term patient-centered outcomes."
       },
       {
-        "question": "A GI research group is categorizing AI tools by maturity and operational risk according to a manuscript workflow framework. They plan to use ChatGPT for initial text drafting, Writefull for grammar polishing, and Elicit for paper discovery. How are these tasks risk-stratified based on operational risk to manuscript integrity?",
+        "question": "Under the GRADE framework applied in the guideline development process, which set of outcomes was categorized as critical for clinical decision-making, and what was the assessed certainty of evidence for these primary clinical endpoints?",
         "options": [
-          "A. Literature discovery with Elicit is high risk; drafting text with ChatGPT is medium risk; editing with Writefull is low risk.",
-          "B. Drafting text with ChatGPT is high risk; literature discovery with Elicit is low risk; editing with Writefull is low risk.",
-          "C. Editing with Writefull is high risk; literature discovery with Elicit is medium risk; drafting text with ChatGPT is low risk.",
-          "D. Literature discovery with Elicit is medium risk; drafting text with ChatGPT is low risk; editing with Writefull is high risk."
+          "A. Colorectal cancer incidence, colorectal cancer-related mortality, and post-colonoscopy colorectal cancer (PCCRC) incidence, with an overall certainty of evidence rated as very low to low.",
+          "B. Resection rate of non-neoplastic polyps and lifetime number of colonoscopies, with an overall certainty of evidence rated as high.",
+          "C. Sessile serrated lesion detection rate, advanced adenoma detection rate, and perforation rate, with an overall certainty of evidence rated as moderate.",
+          "D. Adenoma detection rate (ADR), adenoma miss rate (AMR), and withdrawal time, with an overall certainty of evidence rated as high."
+        ],
+        "correct": "A",
+        "explanation": "Patient-centered outcomes directly measuring cancer incidence and survival are designated as critical endpoints, but available modeling data provided only low to very low certainty of evidence for these outcomes.",
+        "hint": "Distinguish between surrogate quality indicators evaluated during mucosal inspection and direct long-term oncologic outcomes."
+      },
+      {
+        "question": "Which two detection rates improved across randomized trials with CADe compared with standard colonoscopy?",
+        "options": [
+          "A. No statistically significant change in baseline ADR, but a 19% reduction in advanced neoplasia detection due to shorter inspection times.",
+          "B. Absolute increase in ADR of 8% (44.8% vs 37.4%), but no statistically significant difference or change in advanced neoplasia detection rate (11.5% vs 11.5%).",
+          "C. Absolute increase in ADR of 18% (55.4% vs 37.4%) and absolute increase in advanced colorectal neoplasia detection rate of 10% (21.5% vs 11.5%).",
+          "D. Higher ADR (44.8% vs 37.4%) and higher advanced colorectal neoplasia detection rate (12.7% vs 11.5%)."
+        ],
+        "correct": "D",
+        "explanation": "Meta-analysis of RCT data reported relative risks of 1.22 for ADR and 1.16 for advanced colorectal neoplasia detection with CADe; the observed event rates are shown in the answer.",
+        "hint": "Recall the absolute percentage gains reported across trial meta-analyses for general adenomas versus advanced lesions."
+      },
+      {
+        "question": "In the 10-year microsimulation Markov model evaluating 100,000 individuals aged 60–69 years undergoing CRC screening and surveillance, what were the estimated long-term absolute effects of CADe-assisted colonoscopy on CRC incidence and CRC-related mortality per 10,000 individuals?",
+        "options": [
+          "A. Zero difference in CRC incidence (82 vs 82 per 10,000) but an increase of 15 CRC-related deaths per 10,000 individuals due to delayed surgery.",
+          "B. 2 fewer CRC cases per 10,000 individuals (low certainty) and 11 fewer CRC-related deaths per 10,000 individuals (very low certainty).",
+          "C. 11 fewer CRC cases per 10,000 individuals (very low certainty) and 2 fewer CRC-related deaths per 10,000 individuals (low certainty).",
+          "D. 635 fewer CRC cases per 10,000 individuals (high certainty) and 110 fewer CRC-related deaths per 10,000 individuals (moderate certainty)."
+        ],
+        "correct": "C",
+        "explanation": "The microsimulation model estimated a modest absolute reduction of 11 CRC cases (71 vs 82 per 10,000) and 2 CRC deaths (13 vs 15 per 10,000) over a 10-year period.",
+        "hint": "Look for the modest single-digit and low double-digit reductions per 10,000 subjects calculated in the simulation."
+      },
+      {
+        "question": "Microsimulation modeling projected that CADe deployment leads to an absolute increase of 635 surveillance colonoscopies per 10,000 individuals over 10 years. What primary mechanism accounts for this downstream increase in healthcare burden?",
+        "options": [
+          "A. Higher detection of diminutive (<5 mm) adenomas of low malignant potential, which shifts patients into shorter surveillance intervals.",
+          "B. Increased procedural complication rates requiring follow-up diagnostic endoscopies to manage bleeding and perforation site healing.",
+          "C. Elevated rates of incomplete polypectomies requiring early repeat index colonoscopies within 3 to 6 months.",
+          "D. Systematic misclassification of normal mucosal folds as advanced neoplasia by algorithm false-positive alerts."
+        ],
+        "correct": "A",
+        "explanation": "CADe preferentially enhances the detection of small and diminutive polyps that trigger post-polypectomy surveillance algorithms without substantially altering lifetime cancer risk.",
+        "hint": "Think about the size spectrum of lesions most commonly identified by machine learning detection algorithms."
+      },
+      {
+        "question": "When analyzing secondary clinical and technical outcomes from RCTs, how does CADe affect adenoma miss rate (AMR), non-neoplastic polyp resections, and total withdrawal time?",
+        "options": [
+          "A. AMR increases significantly due to operator distraction (45.0% vs 35.3%), while withdrawal time and non-neoplastic polyp resections remain identical.",
+          "B. AMR is unchanged (35.3% vs 35.3%), non-neoplastic polyp resections are reduced by 50%, and withdrawal time is extended by 4.5 minutes.",
+          "C. AMR is substantially reduced (16.1% vs 35.3%), non-neoplastic polyp resections are increased (34.0% vs 28.8%), and withdrawal time is trivially prolonged by 0.57 minutes.",
+          "D. AMR is reduced (16.1% vs 35.3%), but non-neoplastic polyp resections are reduced by 25% and withdrawal time is shortened by 1.2 minutes."
+        ],
+        "correct": "C",
+        "explanation": "Meta-analysis showed a relative risk of 0.47 for AMR (19% absolute reduction), an 11% relative increase in non-neoplastic polyp resection, and a minor mean difference of 0.57 minutes in withdrawal time.",
+        "hint": "Consider how tandem colonoscopy trials evaluate missed lesions alongside the minor time addition needed to inspect CADe visual alerts."
+      },
+      {
+        "question": "How does computer-aided detection (CADe)—the technology evaluated in this guideline—differ conceptually and functionally from computer-aided diagnosis (CADx)?",
+        "options": [
+          "A. CADe alerts the endoscopist to the presence and location of polyps in real time, whereas CADx predicts real-time histological characterization of polyps.",
+          "B. CADe operates solely during colonoscope insertion, whereas CADx operates exclusively during withdrawal inspection.",
+          "C. CADe provides real-time histological staging of invasive adenocarcinoma, whereas CADx assists with scope navigation and mucosal inspection depth.",
+          "D. CADe is an automated robotic resecting tool used during polypectomy, whereas CADx is a post-procedure quality reporting software."
+        ],
+        "correct": "A",
+        "explanation": "CADe functions as a detection assistance tool (bounding boxes identifying polypoid lesions), whereas CADx evaluates optical features to characterize histology (e.g., adenomatous vs hyperplastic).",
+        "hint": "Focus on the distinction between finding a visual lesion versus predicting its tissue pathology."
+      },
+      {
+        "question": "In contrast to the significant ADR increases reported in randomized controlled trials, what were the findings of the systematic review examining CADe performance in nonrandomized real-world observational studies?",
+        "options": [
+          "A. CADe resulted in a statistically significant decline in ADR in observational studies due to endoscopist fatigue (25% vs 38%; RR 0.66, 95% CI 0.52–0.84).",
+          "B. CADe demonstrated no statistically significant improvement in ADR compared to standard colonoscopy (44% vs 38%; RR 1.11, 95% CI 0.97–1.28).",
+          "C. CADe showed a significantly higher ADR gain in observational studies than in RCTs (58% vs 38%; RR 1.53, 95% CI 1.35–1.72).",
+          "D. Observational studies were excluded from systematic review because CADe algorithms are legally restricted to clinical trial settings."
         ],
         "correct": "B",
-        "explanation": "Tools that write prose for direct inclusion carry high risk due to reference fabrication, whereas tools that discover literature or polish grammar are classified as low risk.",
-        "hint": "Focus on whether the tool generates original manuscript text versus discovering or refining existing scholarly content."
+        "explanation": "Analysis of 8 nonrandomized observational studies comprising 9,782 participants showed that CADe did not yield a statistically significant gain in ADR in real-world practice settings.",
+        "hint": "Consider how clinical efficacy in tightly controlled trials can differ from real-world observational registry findings."
       },
       {
-        "question": "An investigator uploads a deidentified dataset comparing two clinical sites undergoing endoscopic submucosal dissection (ESD). An LLM generates a baseline Table 1 and selects statistical tests automatically. For body mass index (BMI), the AI reports median [IQR] and uses the Mann-Whitney U test instead of Student's t-test. What motivated this specific statistical selection?",
+        "question": "When considering health equity and resource allocation within the Evidence to Decision framework, what potential negative consequences of widespread CADe adoption were highlighted by the guideline panel?",
         "options": [
-          "A. The user specifically requested a Chi-square test for continuous demographic variables.",
-          "B. The BMI sample size was below 30 patients at Site A, forcing a non-parametric test.",
-          "C. The Shapiro-Wilk test indicated a non-normal distribution for BMI at Site A (P = .03).",
-          "D. The outcome variable was categorical with fewer than 5 expected events per cell."
-        ],
-        "correct": "C",
-        "explanation": "Detecting non-normality via a Shapiro-Wilk test prompts the model to switch from parametric t-tests to non-parametric Mann-Whitney U tests.",
-        "hint": "Recall how advanced LLMs evaluate continuous distributional assumptions prior to choosing parametric vs non-parametric hypothesis tests."
-      },
-      {
-        "question": "A researcher is prompting an AI tool to create a baseline outcomes table comparing three groups of biologic-naive patients receiving vedolizumab, adalimumab, or ustekinumab. What essential prompting instruction should be included to prevent inflating the false positive rate across multiple statistical comparisons?",
-        "options": [
-          "A. Specify a Bonferroni, Holm, or Benjamini-Hochberg correction for pairwise comparisons.",
-          "B. Request Student's t-tests across all three arms simultaneously without adjusting alpha.",
-          "C. Omit expected cell count criteria so Fisher's exact test is applied universally.",
-          "D. Instruct the model to convert all continuous variables into binary categorical variables."
+          "A. Unreimbursed acquisition costs may limit access to well-resourced facilities, while increased surveillance burdens may restrict endoscopy access for unscreened populations.",
+          "B. High processing power requirements of CADe cause frequent regional electrical grid shutdowns in rural endoscopy centers.",
+          "C. CADe software automatically increases out-of-pocket facility co-pays for patients belonging to minority demographic groups.",
+          "D. Implementation of CADe disqualifies patients from receiving future non-invasive screening options such as fecal immunochemical testing (FIT)."
         ],
         "correct": "A",
-        "explanation": "Without explicit instructions on multiple testing adjustments, LLMs may perform unadjusted pairwise comparisons, substantially inflating the type I error rate.",
-        "hint": "Think about statistical adjustments required when performing multiple simultaneous hypothesis tests across three treatment arms."
+        "explanation": "CADe equipment costs are not reimbursed by insurance, threatening equity for safety-net centers, and higher surveillance volume consumes colonoscopy capacity needed for primary screening.",
+        "hint": "Focus on direct institutional software expenses, lack of insurance billing codes, and system-wide colonoscopy slot availability."
       },
       {
-        "question": "A research group needs an AI platform specifically to evaluate manuscript baseline data, perform publication-ready layout formatting, and display output dynamically in LaTeX or Markdown via a live interactive user interface. According to the benchmarked comparison of LLMs for clinical data analysis, which platform is best suited for this publication task?",
+        "question": "Following public comment, the AGA guideline panel converted its initial draft recommendation suggesting CADe use into a final 'NO RECOMMENDATION' statement. What core clinical reasoning underpinned this shift?",
         "options": [
-          "A. Gemini (3.1 pro) due to its 2 million token context window.",
-          "B. NotebookLM due to its automatic RIS file parsing engine.",
-          "C. Claude (Opus 4.6) due to its clinical reasoning and Artifacts UI preview.",
-          "D. ChatGPT (GPT-5.4) due to its sandbox execution of Excel files."
-        ],
-        "correct": "C",
-        "explanation": "Claude leads in publication readiness and clinical reasoning because its 'Artifacts' interface delivers live previews of professional Markdown, HTML, or LaTeX tables.",
-        "hint": "Consider which model features an interactive 'Artifacts' environment tailored for live formatting of Markdown and LaTeX tables."
-      },
-      {
-        "question": "A GI fellow attempts to use an AI text-to-image generator to create a procedural schematic depicting an endoscopic ultrasound-guided gastrojejunostomy (EUS-GJ). The output shows misplaced stents and incorrect small bowel connectivity. Why do standard text-to-image AI generators consistently fail to produce accurate medical illustrations?",
-        "options": [
-          "A. They operate on statistical pixel probabilities rather than explicit functional anatomical maps.",
-          "B. Copyright protections on medical journals prevent AI models from training on clinical images.",
-          "C. Current image models are strictly restricted to processing non-medical clinical charts.",
-          "D. Medical illustrations require vector resolution that AI neural networks cannot process."
+          "A. The ADR gain is mostly driven by diminutive polyps of low malignant potential, creating a close tradeoff against the clear burdens of increased surveillance colonoscopies and uncertain long-term cancer reduction.",
+          "B. The FDA revoked marketing approval for all CADe systems due to algorithmic processing errors identified during routine audits.",
+          "C. Public comment revealed that gastroenterologists universally refuse to use artificial intelligence devices during routine procedures.",
+          "D. Newly published randomized trials proved that CADe deployment directly causes a statistically significant increase in post-colonoscopy colorectal cancer (PCCRC)."
         ],
         "correct": "A",
-        "explanation": "Generative image models prioritize likely pixel patterns from training data without understanding underlying anatomical orientation or functional connectivity rules.",
-        "hint": "Reflect on the underlying probabilistic mechanism of text-to-image AI models compared to rule-based anatomical knowledge."
-      },
-      {
-        "question": "To prevent anatomical hallucinations in a procedural figure, authors follow the recommended 'structure-first' workflow for GI anatomical illustrations. Which sequence represents the correct step-by-step methodology outlined in the review?",
-        "options": [
-          "A. Generate prompt in Midjourney \\rightarrow Upload to ChatGPT for vectorization ightarrow Manually draw labels in Word.",
-          "B. Create hand sketch in FigureLabs \\rightarrow Export to Gemini for complete prompt-based redrawing ightarrow Publish without manual editing.",
-          "C. Download validated template \\rightarrow Apply structural constraint prompt in AI ightarrow Use vectorization tool for manual element tuning.",
-          "D. Prompt DALL-E for base anatomy \\rightarrow Overlay statistical heatmaps in Python ightarrow Convert to JPG."
-        ],
-        "correct": "C",
-        "explanation": "The validated framework relies on starting with a structurally accurate base template, applying structural constraints during AI refinement, and using vector tools for final precise adjustments.",
-        "hint": "Recall the multi-step process that starts with an established, validated open-access anatomical reference image before applying selective AI modifications."
-      },
-      {
-        "question": "An author wants to copyedit the prose of a draft manuscript. She needs a tool specifically trained on academic datasets that preserves scientific formulas, citation keys, and numerical formatting during editing. Which tool is purpose-built for this requirement?",
-        "options": [
-          "A. Gamma",
-          "B. ChatGPT",
-          "C. Elicit",
-          "D. Paperpal"
-        ],
-        "correct": "D",
-        "explanation": "Paperpal is purpose-built for academic writing, maintaining scientific equations, citations, and precise numerical formatting while refining grammar.",
-        "hint": "Select the dedicated academic language editor designed to safeguard formatted numbers, references, and math symbols while editing."
-      },
-      {
-        "question": "Prior to journal submission, an investigator uploads the complete draft of a GI manuscript into an LLM to conduct a presubmission manuscript audit. What is a key quality control task suitable for an LLM during this audit phase?",
-        "options": [
-          "A. Generating original primary outcome conclusions without human oversight.",
-          "B. Calculating final P values and hazard ratios directly from raw, uncleaned patient records.",
-          "C. Replacing institutional IRB approval documentation with AI compliance certificates.",
-          "D. Checking numerical consistency between data reported in the Abstract and the Results tables."
-        ],
-        "correct": "D",
-        "explanation": "LLMs excel at cross-referencing text sections to spot discrepancies between Abstract summaries and body text or tables.",
-        "hint": "Consider the textual verification tasks where LLMs review existing manuscript sections to identify internal contradictions."
-      },
-      {
-        "question": "A research group plans to upload clinical data to a commercial cloud-based AI tool for statistical script generation. What administrative requirement must be satisfied before patient-level clinical data can be uploaded to a cloud AI platform?",
-        "options": [
-          "A. Disclosing the AI platform name in the manuscript's acknowledgment section prior to data processing.",
-          "B. Obtaining a verbal agreement from the platform's customer support agent.",
-          "C. Ensuring full deidentification per HIPAA standards or executing an institutional Business Associate Agreement (BAA) permitting cloud AI use.",
-          "D. Removing only the patient's full name while keeping medical record numbers and admission dates intact."
-        ],
-        "correct": "C",
-        "explanation": "HIPAA compliance mandates removing all 18 identifiers (Safe Harbor) or executing a formal institutional BAA with the cloud vendor before transferring patient data.",
-        "hint": "Identify the formal legal document or complete deidentification standard required when handling protected health information on cloud networks."
+        "explanation": "Panel consensus recognized that detecting minor diminutive polyps yields uncertain long-term cancer prevention benefits while imposing definite financial, psychological, and resource burdens from frequent surveillance.",
+        "hint": "Reflect on how the clinical value of detecting diminutive polyps compares to the downstream consequences of post-polypectomy surveillance."
       }
     ],
     "quizStatus": "repo-managed-complete",
     "quizSourcePdfs": [
-      "cgh-ai-tools-gi-research-practical-guide-2026.pdf"
+      "gihub_aga_living_cade_guideline_2025.pdf"
     ],
-    "quizGeneratedAt": "2026-10-10T04:20:00.000Z",
+    "quizGeneratedAt": "2026-10-27T02:25:00.000Z",
     "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "approved"

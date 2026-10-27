@@ -27,11 +27,14 @@ test("October schedule topics have public guidelines and quizzes", () => {
   }
 });
 
-test("October AI lecture includes the prior CGH AI tools practical guide", () => {
-  assert.ok(
-    scheduleResources["ai-in-gi-research"].newsAndArticles.some(item => /Artificial Intelligence Tools for Gastrointestinal Research/i.test(item.title) && item.doi === "10.1016/j.cgh.2026.03.032"),
-    "AI in GI Research should include the CGH practical-guide article previously pulled as a PDF",
-  );
+test("October AI lecture lists the AGA living CADe guideline, not the CGH practical guide, and has a source-PDF guideline quiz", () => {
+  const lecture = scheduleResources["ai-in-gi-research"];
+  assert.ok(lecture.guidelines.some(item => item.org === "AGA" && /Living Clinical Practice Guideline on Computer-Aided Detection/i.test(item.title) && item.url === "https://pubmed.ncbi.nlm.nih.gov/40121061/"));
+  assert.ok(lecture.guidelines.every(item => !/Artificial Intelligence Tools for Gastrointestinal Research/i.test(item.title)));
+  assert.ok(lecture.newsAndArticles.some(item => /Artificial Intelligence Tools for Gastrointestinal Research/i.test(item.title) && item.doi === "10.1016/j.cgh.2026.03.032"));
+  assert.equal(lecture.quiz.length, 10);
+  assert.ok(lecture.quizSourcePdfs.includes("gihub_aga_living_cade_guideline_2025.pdf"));
+  assert.ok(lecture.quiz.some(item => /no recommendation for or against/i.test(item.options.join(" "))));
 });
 
 test("October celiac/small-intestine topics include PubMed-backed review metadata", () => {
