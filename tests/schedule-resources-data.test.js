@@ -54,7 +54,14 @@ test("AI lecture presents verified citations from the speaker's slides as public
     assert.equal(matches[0].eventDate, event.date);
   }
   for (const url of [
-    "https://arxiv.org/abs/2509.14260",
+    "https://palisaderesearch.github.io/shutdown_avoidance/2025-05-announcement.html",
+    "https://time.com/article/2026/10/14/recursive-self-improvement-AI-report/",
+    "https://storage.googleapis.com/deepmind-media/gemini/gemini_4_safety_report.pdf",
+    "https://www.cnbc.com/2026/09/29/anthropic-warns-ai-existential-risks-ipo-filing-reuters.html",
+    "https://doi.org/10.1126/science.aeh7930",
+    "https://arxiv.org/abs/2610.05474",
+    "https://arxiv.org/abs/2610.16733",
+    "https://metr.org/blog/2026-10-22-red-teaming-openai-agent-monitoring/",
     "https://github.com/vectara/hallucination-leaderboard",
     "https://techcrunch.com/2026/10/22/microsofts-mustafa-suleyman-says-its-ai-outperforms-doctors-on-hard-cases-as-he-chases-medical-superintelligence/",
     "https://the-decoder.com/gpt-6-astra-solves-49-of-50-physics-research-problems-at-2-40-apiece/",
