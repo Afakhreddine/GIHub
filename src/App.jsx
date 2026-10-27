@@ -390,7 +390,7 @@ function GuidelinesSection() {
       {newAlerts.length > 0 && (
         <div style={{ marginBottom:28, display:"flex", flexDirection:"column", gap:14 }}>
           {newAlerts.map((alert, i) => {
-            const alertUrl = resolveUrl(alert);
+            const alertUrl = resolveGuidelineLink(alert).url;
             const Wrapper = alertUrl ? "a" : "div";
             const wrapperProps = alertUrl
               ? { href:alertUrl, target:"_blank", rel:"noopener noreferrer", title:`Open ${alert.title}` }
