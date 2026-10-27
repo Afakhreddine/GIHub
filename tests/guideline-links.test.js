@@ -2,6 +2,13 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { resolveGuidelineLink } from "../src/guidelineLinks.js";
 import { KNOWN_BROKEN_GUIDELINE_URLS } from "../src/data/knownBrokenGuidelineUrls.js";
+import { readFileSync } from "node:fs";
+
+test("all Clinical Guidelines views use the current resolver (including newly added alerts)", () => {
+  const source=readFileSync(new URL("../src/App.jsx",import.meta.url),"utf8");
+  assert.doesNotMatch(source,/\bresolveUrl\s*\(/);
+  assert.match(source,/const alertUrl = resolveGuidelineLink\(alert\)\.url/);
+});
 
 const title = "ASGE guideline on the endoscopic management of achalasia";
 const dead = "https://www.asge.org/home/resources/publications/guidelines/asge-guideline-achalasia";
