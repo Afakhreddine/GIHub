@@ -2415,7 +2415,7 @@ const scheduleResources = {
           "D. AMR is reduced (16.1% vs 35.3%), but non-neoplastic polyp resections are reduced by 25% and withdrawal time is shortened by 1.2 minutes."
         ],
         "correct": "C",
-        "explanation": "Meta-analysis showed a relative risk of 0.47 for AMR (19% absolute reduction), an 11% relative increase in non-neoplastic polyp resection, and a minor mean difference of 0.57 minutes in withdrawal time.",
+        "explanation": "Meta-analysis reported RR 0.47 for adenoma miss rate (16.1% vs 35.3%), pooled RR 1.11 for non-neoplastic polyp resection (34.0% vs 28.8% observed), and a mean withdrawal-time difference of 0.57 minutes. The pooled RR is not calculated directly from those displayed rates.",
         "hint": "Consider how tandem colonoscopy trials evaluate missed lesions alongside the minor time addition needed to inspect CADe visual alerts."
       },
       {

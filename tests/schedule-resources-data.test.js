@@ -35,6 +35,9 @@ test("October AI lecture lists the AGA living CADe guideline, not the CGH practi
   assert.equal(lecture.quiz.length, 10);
   assert.ok(lecture.quizSourcePdfs.includes("gihub_aga_living_cade_guideline_2025.pdf"));
   assert.ok(lecture.quiz.some(item => /no recommendation for or against/i.test(item.options.join(" "))));
+  const secondaryOutcomes = lecture.quiz.find(item => /adenoma miss rate \(AMR\)/i.test(item.question));
+  assert.match(secondaryOutcomes.explanation, /pooled RR 1\.11/);
+  assert.doesNotMatch(secondaryOutcomes.explanation, /11% relative increase/i);
 });
 
 test("October celiac/small-intestine topics include PubMed-backed review metadata", () => {
