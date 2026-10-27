@@ -54,6 +54,8 @@ test("AI lecture presents verified citations from the speaker's slides as public
     assert.equal(matches[0].eventDate, event.date);
   }
   for (const url of [
+    "https://arxiv.org/abs/2509.14260",
+    "https://github.com/vectara/hallucination-leaderboard",
     "https://techcrunch.com/2026/10/22/microsofts-mustafa-suleyman-says-its-ai-outperforms-doctors-on-hard-cases-as-he-chases-medical-superintelligence/",
     "https://the-decoder.com/gpt-6-astra-solves-49-of-50-physics-research-problems-at-2-40-apiece/",
     "https://www.theneuron.ai/digest/everything-that-happened-in-ai-today-friday-october-23-2026/",
