@@ -40,6 +40,29 @@ test("October AI lecture lists the AGA living CADe guideline, not the CGH practi
   assert.doesNotMatch(secondaryOutcomes.explanation, /11% relative increase/i);
 });
 
+test("AI lecture presents verified citations from the speaker's slides as public News and Articles", () => {
+  const lecture = scheduleResources["ai-in-gi-research"];
+  const event = CALENDAR_EVENTS.find(item => item.slug === "ai-in-gi-research");
+  assert.equal(event.date, "2026-10-27");
+  const citedPmids = ["41504353", "41920565", "42879271", "40816301", "40834302"];
+  const publicArticles = sanitizeScheduleResourceForPublic(lecture).newsAndArticles;
+  for (const pmid of citedPmids) {
+    const matches = publicArticles.filter(item => item.pmid === pmid);
+    assert.equal(matches.length, 1, `presentation citation ${pmid} should appear exactly once publicly`);
+    assert.equal(matches[0].url, `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`);
+    assert.equal(matches[0].status, "approved");
+    assert.equal(matches[0].eventDate, event.date);
+  }
+  for (const url of [
+    "https://techcrunch.com/2026/10/22/microsofts-mustafa-suleyman-says-its-ai-outperforms-doctors-on-hard-cases-as-he-chases-medical-superintelligence/",
+    "https://the-decoder.com/gpt-6-astra-solves-49-of-50-physics-research-problems-at-2-40-apiece/",
+    "https://www.theneuron.ai/digest/everything-that-happened-in-ai-today-friday-october-23-2026/",
+  ]) {
+    assert.equal(publicArticles.filter(item => item.url === url && item.status === "approved").length, 1);
+  }
+  assert.ok(lecture.newsAndArticles.every(item => !/Per Smith|fictional citation/i.test(item.title)));
+});
+
 test("October celiac/small-intestine topics include PubMed-backed review metadata", () => {
   assert.ok(
     scheduleResources["celiac-disease"].newsAndArticles.some(item => item.pmid === "41950475"),
