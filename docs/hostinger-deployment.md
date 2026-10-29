@@ -15,10 +15,10 @@ The website makes no Anthropic calls and runs no scheduled jobs: Hermes runs the
 | Source | GitHub `Afakhreddine/GIHub`, branch `main` |
 | Node version | 22 |
 | Package manager | npm |
-| Build command | `npm run build` |
+| Framework preset | Express |
 | Entry file | `server.js` |
 
-Hostinger assigns the port through `PORT`; the server reads it and falls back to 3000 locally.
+Hostinger's Express preset has no build command, so `package.json` runs `vite build` as a `postinstall` script: every `npm install` on deploy rebuilds `dist/`. Hostinger assigns the port through `PORT`; the server reads it and falls back to 3000 locally.
 
 ## Environment variables
 

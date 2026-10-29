@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "start": "node server.js",
+    "postinstall": "vite build",
     "test": "node --import ./tests/register-jsx.mjs --test tests/*.test.js tests/*.test.jsx",
     "schedule:targeted-pull": "node scripts/populate-schedule-targeted-candidates.mjs",
     "schedule:quiz-generate": "node scripts/generate-schedule-autocontent-quizzes.mjs",
