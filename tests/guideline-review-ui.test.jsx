@@ -9,14 +9,9 @@ import candidates from "../src/data/guidelineReviewCandidates.js";
 test("guideline review route renders candidate and publish controls", () => {
   const html = renderToStaticMarkup(React.createElement(GuidelineReview, { items:candidates }));
   assert.match(html, /Guideline Candidate Review/);
-  assert.match(html, /Surveillance of Pancreatic Cystic Lesions and Hepatocellular Carcinoma in Older Adults/);
-  assert.match(html, /Serrated Polyposis Syndrome/);
-  assert.match(html, /Preventive Care for Patients With Cirrhosis/);
-  assert.match(html, /Role of remimazolam/);
-  assert.match(html, /AASLD EXPO: Liver biopsy/);
+  assert.match(html, /AGA\/AASLD Clinical Practice Guideline on Management of Primary Biliary Cholangitis/);
   assert.match(html, /Publish approved/);
-  assert.match(html, /PubMed 42820904/);
-  assert.match(html, /PubMed 42848339/);
+  assert.match(html, /PubMed 42914292/);
 });
 
 test("review hub includes Guidelines tab", () => {
