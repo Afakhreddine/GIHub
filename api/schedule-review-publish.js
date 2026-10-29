@@ -1,3 +1,5 @@
+import { loadPrChecksState } from "../src/githubChecks.js";
+
 const DEFAULT_OWNER = "Afakhreddine";
 const DEFAULT_REPO = "GIHub";
 
@@ -180,8 +182,8 @@ export async function publishScheduleReview(config, payload) {
   const branchAlreadyPrepared = scheduleResourcesMatchApproved(resources, payload.approvedItems || []);
   if (!branchAlreadyPrepared) return updateScheduleResourcesOnBranch(config, pull, payload.approvedItems || [], payload.summary);
 
-  const statuses = await githubFetch(config, `/commits/${pull.head.sha}/status`);
-  if (statuses.state && statuses.state !== "success") return { ok:false, published:false, reason:`PR checks are ${statuses.state}; not publishing.` };
+  const checksState = await loadPrChecksState(githubFetch, config, pull.head.sha);
+  if (checksState !== "success") return { ok:false, published:false, reason:`PR checks are ${checksState}; not publishing.` };
   const result = await githubFetch(config, `/pulls/${config.pullNumber}/merge`, {
     method:"PUT",
     body:JSON.stringify({ merge_method:"squash", commit_title:`chore: publish schedule resource cards (#${config.pullNumber})`, commit_message:payload?.summary || "Approved in Schedule Review sandbox." }),
@@ -228,8 +230,8 @@ export async function publishGuidelineReview(config, payload) {
   const branchAlreadyPrepared = merged.length === existing.length;
   if (!branchAlreadyPrepared) return updateGuidelineSupplementsOnBranch(config, pull, payload.supplements || [], payload.summary);
 
-  const statuses = await githubFetch(config, `/commits/${pull.head.sha}/status`);
-  if (statuses.state && statuses.state !== "success") return { ok:false, published:false, reason:`PR checks are ${statuses.state}; not publishing.` };
+  const checksState = await loadPrChecksState(githubFetch, config, pull.head.sha);
+  if (checksState !== "success") return { ok:false, published:false, reason:`PR checks are ${checksState}; not publishing.` };
   const result = await githubFetch(config, `/pulls/${config.pullNumber}/merge`, {
     method:"PUT",
     body:JSON.stringify({ merge_method:"squash", commit_title:`chore: publish approved guideline candidates (#${config.pullNumber})`, commit_message:payload?.summary || "Approved in Guidelines Review sandbox." }),

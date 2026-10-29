@@ -1,3 +1,5 @@
+import { loadPrChecksState } from "../src/githubChecks.js";
+
 const DEFAULT_OWNER = "Afakhreddine";
 const DEFAULT_REPO = "GIHub";
 
@@ -225,9 +227,9 @@ export async function publishWeeklyReview(config, payload) {
     return updateWeeklyFileOnBranch(config, pull, payload.approvedItems, payload.summary);
   }
 
-  const statuses = await githubFetch(config, `/commits/${pull.head.sha}/status`);
-  if (statuses.state && statuses.state !== "success") {
-    return { ok:false, published:false, reason:`PR checks are ${statuses.state}; not publishing.` };
+  const checksState = await loadPrChecksState(githubFetch, config, pull.head.sha);
+  if (checksState !== "success") {
+    return { ok:false, published:false, reason:`PR checks are ${checksState}; not publishing.` };
   }
   const result = await githubFetch(config, `/pulls/${config.pullNumber}/merge`, {
     method:"PUT",

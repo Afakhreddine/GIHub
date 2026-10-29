@@ -27,7 +27,7 @@ export default function ReviewHub() {
           const selected = tab === item.id;
           return <button key={item.id} type="button" onClick={() => setTab(item.id)} aria-pressed={selected} style={{ color:selected ? "#7ee0aa" : "#5b8af0", background:selected ? "rgba(76,175,125,0.13)" : "rgba(91,138,240,0.08)", border:`1px solid ${selected ? "rgba(76,175,125,0.45)" : "rgba(91,138,240,0.2)"}`, borderRadius:999, padding:"8px 12px", fontSize:13, fontWeight:700, cursor:"pointer" }}>{item.label}</button>;
         })}
-        <span style={{ alignSelf:"center", color:"#3a5878", fontSize:12, fontFamily:"monospace" }}>gi-hub.vercel.app/review</span>
+        <span style={{ alignSelf:"center", color:"#3a5878", fontSize:12, fontFamily:"monospace" }}>mygihub.com/review</span>
       </nav>
       {tab === "guidelines" ? <GuidelineReview /> : tab === "schedule" ? <ScheduleReview /> : <WeeklyReview />}
     </>

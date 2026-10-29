@@ -15,7 +15,7 @@ The previous Vercel `/api/cron-guidelines` updater has been removed from the rep
 3. Verified, non-duplicate guideline candidates are written to `src/data/guidelineReviewCandidates.js` on a `chore/guideline-review-*` PR and surfaced at `/review/guidelines` for Approve / Hold / Reject.
 4. The protected Guidelines Review `Publish approved` flow appends approved candidates to `src/data/guidelineSupplements.js` and then merges the PR after checks pass.
 5. The API merges `guidelineSupplements.js` into the live repository/cache response only when absent, preserving the authoritative `gihub:guidelines:repo` cache and avoiding full-library rewrites.
-6. Merging the PR updates the site through Vercel's normal GitHub deployment.
+6. Merging the PR updates the site when Hostinger redeploys `main` (see `docs/hostinger-deployment.md`).
 
 For a deliberate full fallback-data replacement, Hermes can still run:
 

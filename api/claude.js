@@ -243,49 +243,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // ── QUIZ ──────────────────────────────────────────────────────────────
-    if (type === "quiz" || type === "lecture-quiz") {
-      const quizTopic = body.topic;
-      if (!quizTopic) return res.status(400).json({ error: "Missing topic" });
-
-      const isLecture = type === "lecture-quiz";
-      const prompt = isLecture
-        ? `Write exactly 5 clinical MCQs for a GI fellow testing the content of this guideline: "${quizTopic}". ` +
-          `Return ONLY a JSON array of 5 objects, no markdown: ` +
-          `[{"question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":"A|B|C|D","explanation":"..."}]`
-        : `Write 1 clinical vignette MCQ for a GI fellow on "${quizTopic}" based on current ACG/AGA/ASGE guidelines. ` +
-          `Return ONLY a JSON array of 1 object, no markdown: ` +
-          `[{"question":"...","options":["A. ...","B. ...","C. ...","D. ..."],"correct":"A|B|C|D","explanation":"..."}]`;
-
-      const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-      if (!apiKey) return res.status(500).json({ error: "API key not configured" });
-
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": apiKey,
-          "anthropic-version": "2023-06-01",
-        },
-        body: JSON.stringify({
-          model: "claude-haiku-4-5-20251001",
-          max_tokens: 1500,
-          messages: [{ role: "user", content: prompt }],
-        }),
-      });
-
-      const data = await response.json();
-      if (!response.ok) return res.status(response.status).json({ error: data?.error?.message || "Claude error" });
-
-      const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("");
-      const clean = text.replace(/```json|```/g, "").trim();
-      let parsed = null;
-      try { parsed = JSON.parse(clean); } catch {}
-      if (!parsed) { const m = clean.match(/\[[\s\S]*\]/); if (m) try { parsed = JSON.parse(m[0]); } catch {} }
-      if (!parsed?.length) return res.status(500).json({ error: "Could not parse quiz", raw: text.slice(0, 200) });
-      return res.status(200).json({ data: parsed });
-    }
-
     return res.status(400).json({ error: "Invalid type: " + type });
 
   } catch (err) {

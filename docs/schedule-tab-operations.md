@@ -1,6 +1,6 @@
 # Schedule tab operations
 
-GIHub Schedule is moving to the same repo-managed model as Weekly Update: Hermes edits data files, opens a PR, Vercel deploys after merge, and no production Redis mutation is required for the published site.
+GIHub Schedule is moving to the same repo-managed model as Weekly Update: Hermes edits data files, opens a PR, Hostinger deploys after merge, and no production Redis mutation is required for the published site.
 
 ## User-facing requirements
 

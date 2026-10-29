@@ -24,15 +24,6 @@ const EDU_LINKS = [
   { org:"ASGE", color:"#1a8a5a", gradient:"linear-gradient(135deg,#0e5c3a,#1a8a5a)", logo:"ASGE", name:"ASGE Education",         url:"https://www.asge.org/home/education-meetings/educational-offerings", description:"ASGE's hub for endoscopy training, procedural competency, quality benchmarking, and advanced fellowships.",                              features:["Endoscopy Training","FundamentalsofEndoscopy.org","Quality Metrics","Advanced Fellowships"] },
 ];
 
-const QUIZ_TOPICS = [
-  { id:"General GI",            label:"General GI",            icon:"🫁", color:"#0b779b" },
-  { id:"Advanced Endoscopy",    label:"Advanced Endoscopy",    icon:"🔬", color:"#7051ad" },
-  { id:"IBD",                   label:"IBD",                   icon:"🧬", color:"#e05252" },
-  { id:"General Hepatology",    label:"General Hepatology",    icon:"🫀", color:"#a66b11" },
-  { id:"Motility",              label:"Motility",              icon:"⚡", color:"#0b779b" },
-  { id:"Transplant Hepatology", label:"Transplant Hepatology", icon:"🏥", color:"#128566" },
-];
-
 const SECTION_META = {
   guidelines: { label:"Clinical Guidelines", icon:"⚕️",  color:"#0b93bb" },
   weekly:     { label:"Weekly Update",       icon:"📰", color:"#a66b11" },
@@ -754,134 +745,18 @@ function ScheduleSection() {
   );
 }
 
-function QuizSection() {
-  const [sel, setSel]             = useState(null);
-  const [question, setQuestion]   = useState(null);
-  const [answer, setAnswer]       = useState(null);
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading]     = useState(false);
-  const [error, setError]         = useState(null);
-  const [history, setHistory]     = useState(()=>{ try { return JSON.parse(localStorage.getItem("gihub_quiz_history")||"[]"); } catch { return []; } });
-
-  const ti = QUIZ_TOPICS.find(t=>t.id===sel);
-
-  async function generate(topicId) {
-    setSel(topicId); setQuestion(null); setAnswer(null); setSubmitted(false); setError(null); setLoading(true);
-    try {
-      const result = await apiCall({ type:"quiz", topic:topicId });
-      if (Array.isArray(result.data) && result.data.length>0) setQuestion(result.data[0]);
-      else setError("Could not generate question. Please try again.");
-    } catch(e) { setError(`Error: ${e.message}`); }
-    setLoading(false);
-  }
-
-  function submit() {
-    if (!answer) return;
-    setSubmitted(true);
-    const correct = answer===question.correct;
-    const entry = { topic:sel, correct, date:new Date().toLocaleDateString(), time:new Date().toLocaleTimeString([],{ hour:"2-digit", minute:"2-digit" }) };
-    const updated = [entry,...history].slice(0,20);
-    setHistory(updated);
-    try { localStorage.setItem("gihub_quiz_history", JSON.stringify(updated)); } catch {}
-  }
-
-  const pct = history.length ? Math.round(history.filter(h=>h.correct).length/history.length*100) : null;
-
-  return (
-    <div>
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:6, flexWrap:"wrap", gap:12 }}>
-        <div>
-          <h1 style={{ fontSize:21, fontWeight:700, color:"#17324d" }}>🧠 GI Quiz</h1>
-          <p style={{ fontSize:12.5, color:"#536b7b", marginTop:4 }}>AI-generated board-style MCQ · Fresh question every time · Powered by Claude</p>
-        </div>
-        {pct!==null&&<div style={{ background:"#eaf8fc", border:"1px solid #c8e8f1", borderRadius:10, padding:"8px 16px", textAlign:"center" }}><div style={{ fontSize:20, fontWeight:700, color:"#0b93bb" }}>{pct}%</div><div style={{ fontSize:10, color:"#536b7b", fontFamily:"monospace" }}>AVG SCORE</div></div>}
-      </div>
-      <div style={{ display:"flex", flexWrap:"wrap", gap:10, margin:"20px 0 28px" }}>
-        {QUIZ_TOPICS.map(t=>(
-          <button key={t.id} onClick={()=>generate(t.id)} disabled={loading}
-            style={{ background:sel===t.id?t.color+"33":"#f5fbfd", border:`1px solid ${sel===t.id?t.color:"#d1e5eb"}`, color:sel===t.id?t.color:"#536b7b", padding:"10px 18px", borderRadius:10, fontSize:13, fontWeight:600, display:"flex", alignItems:"center", gap:7, cursor:loading?"not-allowed":"pointer", opacity:loading?0.6:1, transition:"all 0.18s" }}>
-            {t.icon} {t.label}
-          </button>
-        ))}
-      </div>
-      {error&&!loading&&<div style={{ background:"rgba(224,82,82,0.08)", border:"1px solid #e0525244", borderRadius:10, padding:"14px 18px", marginBottom:20 }}><div style={{ fontSize:12, fontWeight:700, color:"#e05252", marginBottom:4 }}>Error</div><div style={{ fontSize:12, color:"#a05050", fontFamily:"monospace" }}>{error}</div></div>}
-      {loading&&<div style={{ textAlign:"center", padding:"60px 0" }}><Spinner size={32}/><div style={{ marginTop:16, fontSize:14, color:"#536b7b" }}>Generating question…</div></div>}
-      {submitted&&question&&(
-        <div style={{ background:answer===question.correct?"#eaf9f4":"#fff1ef", border:`1px solid ${answer===question.correct?"#128566":"#e05252"}55`, borderRadius:12, padding:"16px 22px", marginBottom:24, display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:10 }}>
-          <div style={{ fontSize:18, fontWeight:700, color:answer===question.correct?"#128566":"#e05252" }}>{answer===question.correct?"Correct! 🎉":"Incorrect 📚"}</div>
-          <button onClick={()=>generate(sel)} style={{ background:"#eaf8fc", border:"1px solid #b9e3ee", color:"#0b779b", padding:"8px 16px", borderRadius:8, fontSize:13, fontWeight:600, cursor:"pointer" }}>New Question →</button>
-        </div>
-      )}
-      {!loading&&question&&(
-        <div style={{ background:"#fff", border:"1px solid #dcecf1", borderRadius:12, padding:"20px 22px" }}>
-          <div style={{ display:"flex", gap:12, marginBottom:16 }}>
-            <span style={{ background:ti?.color+"33", color:ti?.color, width:28, height:28, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:800, flexShrink:0 }}>Q</span>
-            <div style={{ fontSize:14, color:"#17324d", lineHeight:1.7 }}>{question.question}</div>
-          </div>
-          <div style={{ display:"flex", flexDirection:"column", gap:8, paddingLeft:40 }}>
-            {question.options.map((opt,oi)=>{
-              const letter=["A","B","C","D"][oi], isChosen=answer===letter, isRight=letter===question.correct;
-              let bg="#f8fcfd", border="#dcecf1", color="#17324d";
-              if (submitted) { if(isRight){bg="#eaf9f4";border="#12856655";color="#128566";} else if(isChosen){bg="#fff1ef";border="#f1c9c6";color="#e05252";} }
-              else if (isChosen) { bg=ti?.color+"22"; border=ti?.color+"88"; color=ti?.color; }
-              return (
-                <div key={oi} onClick={()=>!submitted&&setAnswer(letter)}
-                  style={{ background:bg, border:`1px solid ${border}`, borderRadius:8, padding:"10px 14px", fontSize:13, color, cursor:submitted?"default":"pointer", transition:"all 0.15s", display:"flex", alignItems:"center", gap:10 }}>
-                  <span style={{ fontWeight:700, fontFamily:"monospace", fontSize:11, minWidth:14 }}>{letter}</span>
-                  <span>{opt.replace(/^[A-D][.)]\s*/i,"")}</span>
-                  {submitted&&isRight&&<span style={{ marginLeft:"auto" }}>✓</span>}
-                  {submitted&&isChosen&&!isRight&&<span style={{ marginLeft:"auto" }}>✗</span>}
-                </div>
-              );
-            })}
-          </div>
-          {!submitted&&<div style={{ display:"flex", justifyContent:"flex-end", marginTop:16 }}><button onClick={submit} disabled={!answer} style={{ background:!answer?"#f3f9fb":"linear-gradient(135deg,#0b779b,#128566)", border:"none", color:!answer?"#536b7b":"#fff", padding:"11px 26px", borderRadius:10, fontSize:14, fontWeight:700, cursor:!answer?"not-allowed":"pointer", transition:"all 0.2s" }}>Submit</button></div>}
-          {submitted&&question.explanation&&(
-            <div style={{ marginTop:16, paddingLeft:40 }}>
-              <div style={{ background:"#f5fbfd", border:"1px solid #dcecf1", borderRadius:8, padding:"12px 14px" }}>
-                <div style={{ fontSize:10.5, fontWeight:700, color:"#536b7b", fontFamily:"monospace", marginBottom:4, letterSpacing:0.5 }}>EXPLANATION</div>
-                <div style={{ fontSize:13, color:"#476177", lineHeight:1.7 }}>{question.explanation}</div>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-      {!loading&&!sel&&<div style={{ textAlign:"center", padding:"60px 0" }}><div style={{ fontSize:40, marginBottom:14 }}>🧠</div><div style={{ fontSize:15, color:"#536b7b" }}>Select a topic above to generate a question</div></div>}
-      {history.length>0&&(
-        <div style={{ marginTop:48 }}>
-          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16 }}>
-            <h2 style={{ fontSize:16, fontWeight:700, color:"#17324d" }}>📊 Score History</h2>
-            <button onClick={()=>{ setHistory([]); try{ localStorage.removeItem("gihub_quiz_history"); }catch{} }} style={{ background:"none", border:"1px solid #dcecf1", color:"#536b7b", fontSize:11, padding:"4px 10px", borderRadius:6, cursor:"pointer" }}>Clear</button>
-          </div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(180px,1fr))", gap:10 }}>
-            {history.map((h,i)=>(
-              <div key={i} style={{ background:"#fff", border:"1px solid #f1f9fc", borderRadius:10, padding:"12px 14px" }}>
-                <div style={{ fontSize:11, color:"#536b7b", fontFamily:"monospace" }}>{h.date} · {h.time}</div>
-                <div style={{ fontSize:12, fontWeight:600, color:"#476177", marginTop:3 }}>{h.topic}</div>
-                <div style={{ fontSize:16, fontWeight:700, color:h.correct?"#128566":"#e05252", marginTop:6 }}>{h.correct?"✓ Correct":"✗ Incorrect"}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-const STANDALONE_QUIZ_ENABLED = false;
-
 const TABS = [
   { id:"home",       label:"Home",                 icon:"⌂" },
   { id:"guidelines", label:"Clinical Guidelines",  icon:"⚕️" },
   { id:"weekly",     label:"Weekly Update",       icon:"📰" },
   { id:"education",  label:"Education",           icon:"🎓" },
   { id:"schedule",   label:"Schedule",            icon:"📅" },
-  ...(STANDALONE_QUIZ_ENABLED ? [{ id:"quiz", label:"Quiz", icon:"🧠" }] : []),
 ];
 
 export default function GIHub({ initialActive = "home" }) {
   const [active, setActive] = useState(
-    initialActive === "quiz" && !STANDALONE_QUIZ_ENABLED ? "guidelines" : initialActive
+    // The standalone AI quiz was retired; old links fall back to Guidelines.
+    initialActive === "quiz" ? "guidelines" : initialActive
   );
   useEffect(() => {
     const handleHistory = () => setActive(publicTabForPath(window.location.pathname));
@@ -933,7 +808,6 @@ export default function GIHub({ initialActive = "home" }) {
         {active==="weekly"    &&<ContentSection key="weekly"     type="weekly"/>}
         {active==="education" &&<EducationSection/>}
         {active==="schedule"  &&<ScheduleSection/>}
-        {STANDALONE_QUIZ_ENABLED&&active==="quiz"&&<QuizSection/>}
       </div>
       {active!=="home"&&<div style={{ maxWidth:1100, margin:"52px auto 0", padding:"18px 32px 0", borderTop:"1px solid #d6eaf0" }}>
         <p style={{ fontSize:10.5, color:"#536b7b", textAlign:"center", lineHeight:2, fontFamily:"monospace" }}>
