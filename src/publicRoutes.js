@@ -1,4 +1,4 @@
-export const PUBLIC_TABS = ['home', 'guidelines', 'weekly', 'schedule', 'education'];
+export const PUBLIC_TABS = ['home', 'guidelines', 'weekly', 'schedule', 'education', 'profile'];
 
 export function publicTabForPath(pathname) {
   const tab = pathname.replace(/^\/+|\/+$/g, '');

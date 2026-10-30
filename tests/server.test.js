@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readdir } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { apiHandlers } from '../app.js';
 
@@ -14,6 +14,7 @@ test('every api/*.js handler is mounted, and helper modules are not', async () =
   assert.deepEqual(Object.keys(apiHandlers).sort(), withHandlers.sort());
   assert.deepEqual(Object.keys(apiHandlers).sort(), [
     'claude',
+    'gihub-auth',
     'schedule-review-data',
     'schedule-review-publish',
     'weekly-review-data',
@@ -26,6 +27,14 @@ test('app.js loads through require(), as Hostinger\'s lsnode loader does', () =>
   const require = createRequire(import.meta.url);
   const mod = require('../app.js');
   assert.equal(typeof mod.createApp, 'function');
+});
+
+test('Vercel rewrites each same-origin GIHub auth endpoint to the auth function', async () => {
+  const config = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url), 'utf8'));
+  const rewriteMap = new Map(config.rewrites.map(({ source, destination }) => [source, destination]));
+  for (const action of ['login', 'logout', 'me', 'profile']) {
+    assert.equal(rewriteMap.get(`/api/gihub-auth/${action}`), `/api/gihub-auth?action=${action}`);
+  }
 });
 
 test('retired standalone quiz generation is no longer served', async () => {

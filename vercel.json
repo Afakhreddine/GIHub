@@ -5,6 +5,9 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "functions": {
+    "api/gihub-auth.js": {
+      "maxDuration": 10
+    },
     "api/weekly-review-data.js": {
       "maxDuration": 10
     },
@@ -19,6 +22,22 @@
     }
   },
   "rewrites": [
+    {
+      "source": "/api/gihub-auth/login",
+      "destination": "/api/gihub-auth?action=login"
+    },
+    {
+      "source": "/api/gihub-auth/logout",
+      "destination": "/api/gihub-auth?action=logout"
+    },
+    {
+      "source": "/api/gihub-auth/me",
+      "destination": "/api/gihub-auth?action=me"
+    },
+    {
+      "source": "/api/gihub-auth/profile",
+      "destination": "/api/gihub-auth?action=profile"
+    },
     {
       "source": "/api/claude",
       "destination": "/api/claude"

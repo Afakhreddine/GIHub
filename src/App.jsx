@@ -6,6 +6,7 @@ import weeklyPodcasts from "./data/weeklyPodcasts.js";
 import scheduleResources from "./data/scheduleResources.js";
 import { isPublicApprovedResource, sanitizeScheduleResourceForPublic } from "./scheduleResourcesModel.js";
 import Home from "./Home.jsx";
+import AuthProfile from "./AuthProfile.jsx";
 import { publicTabForPath, publicPathForTab } from "./publicRoutes.js";
 import { resolveGuidelineLink } from "./guidelineLinks.js";
 
@@ -751,6 +752,7 @@ const TABS = [
   { id:"weekly",     label:"Weekly Update",       icon:"📰" },
   { id:"education",  label:"Education",           icon:"🎓" },
   { id:"schedule",   label:"Schedule",            icon:"📅" },
+  { id:"profile",    label:"Profile",             icon:"👤" },
 ];
 
 export default function GIHub({ initialActive = "home" }) {
@@ -808,6 +810,7 @@ export default function GIHub({ initialActive = "home" }) {
         {active==="weekly"    &&<ContentSection key="weekly"     type="weekly"/>}
         {active==="education" &&<EducationSection/>}
         {active==="schedule"  &&<ScheduleSection/>}
+        {active==="profile"   &&<AuthProfile/>}
       </div>
       {active!=="home"&&<div style={{ maxWidth:1100, margin:"52px auto 0", padding:"18px 32px 0", borderTop:"1px solid #d6eaf0" }}>
         <p style={{ fontSize:10.5, color:"#536b7b", textAlign:"center", lineHeight:2, fontFamily:"monospace" }}>

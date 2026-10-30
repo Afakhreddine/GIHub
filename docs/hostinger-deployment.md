@@ -7,6 +7,7 @@ The website makes no Anthropic calls and runs no scheduled jobs: Hermes runs the
 - `/api/claude`: serves guidelines (Upstash Redis `gihub:guidelines:repo` plus repo supplements), new-guideline alerts and schedule lecture resources.
 - `/api/weekly-review-data`, `/api/schedule-review-data`: load the PR under review and store Approve/Hold/Reject decisions in Redis.
 - `/api/weekly-review-publish`, `/api/schedule-review-publish`: the protected `Publish approved` buttons on `/review`, which commit to and merge the PR with the GitHub token.
+- `/api/gihub-auth/login`, `/logout`, `/me`, `/profile`: same-origin GIHub sessions for existing EndoEval users. Credentials and the EndoEval JWT stay server-side; profile reads and writes are proxied to EndoEval.
 
 ## App settings (hPanel → Websites → mygihub.com)
 
@@ -31,9 +32,21 @@ GITHUB_TOKEN
 WEEKLY_REVIEW_PUBLISH_TOKEN
 SCHEDULE_REVIEW_PUBLISH_TOKEN
 GUIDELINE_REVIEW_PUBLISH_TOKEN
+GIHUB_SESSION_SECRET
 ```
 
-Optional: `GITHUB_OWNER`, `GITHUB_REPO`. `ANTHROPIC_API_KEY` and `CRON_SECRET` are no longer used by the website.
+`GIHUB_SESSION_SECRET` is independent from every EndoEval secret and is required for GIHub auth. Use a cryptographically random value of at least 32 bytes (for example, generate one outside the repo with `openssl rand -base64 48`). Never commit or copy the generated value into documentation. Auth routes fail closed when it is absent or too short.
+
+Optional auth settings:
+
+```text
+ENDOEVAL_AUTH_ORIGIN
+GIHUB_PUBLIC_ORIGIN
+```
+
+`ENDOEVAL_AUTH_ORIGIN` defaults to `https://endoeval.com`; an override must be a bare HTTPS origin with no path, query, fragment, or embedded credentials. `GIHUB_PUBLIC_ORIGIN` defaults to `https://mygihub.com` and is the exact browser `Origin` accepted for login, logout, and profile updates. Configure the same variables in Vercel only if the fallback deployment is in use. Do not add EndoEval credentials, JWTs, or database access to either host.
+
+Optional publishing settings: `GITHUB_OWNER`, `GITHUB_REPO`. `ANTHROPIC_API_KEY` and `CRON_SECRET` are no longer used by the website.
 
 ## Publishing and CI
 
