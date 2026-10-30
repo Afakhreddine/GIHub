@@ -29,7 +29,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['server.js', 'api/**/*.js', 'tests/**/*.js', 'tests/**/*.mjs'],
+    files: ['server.js', 'app.js', 'api/**/*.js', 'tests/**/*.js', 'tests/**/*.mjs'],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.node,
