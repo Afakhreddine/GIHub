@@ -46,6 +46,12 @@ GIHUB_PUBLIC_ORIGIN
 
 `ENDOEVAL_AUTH_ORIGIN` defaults to `https://endoeval.com`; an override must be a bare HTTPS origin with no path, query, fragment, or embedded credentials. `GIHUB_PUBLIC_ORIGIN` defaults to `https://mygihub.com` and is the exact browser `Origin` accepted for login, logout, and profile updates. Configure the same variables in Vercel only if the fallback deployment is in use. Do not add EndoEval credentials, JWTs, or database access to either host.
 
+### Auth rollout limitations
+
+- Logout deletes the browser cookie but does **not** revoke a previously copied cookie. The cookie is valid for at most 12 hours, subject to the EndoEval JWT's expiry and EndoEval's account-state checks. A shared server-side session/revocation store is needed if immediate sign-out invalidation is a requirement.
+- GIHub's five-attempt-per-email login throttle is process-local and resets on restart or another app instance. EndoEval also has a process-local account throttle. Add a shared limiter at the application or trusted edge before relying on either across multiple instances, and monitor abuse.
+- Deploy and verify EndoEval's account-state and reset changes before enabling GIHub login. A normal EndoEval auth login and profile read/write should succeed first; a password reset should invalidate existing sessions. Neither the draft PR nor local tests verifies the live Hostinger routing or SMTP behavior.
+
 Optional publishing settings: `GITHUB_OWNER`, `GITHUB_REPO`. `ANTHROPIC_API_KEY` and `CRON_SECRET` are no longer used by the website.
 
 ## Publishing and CI
