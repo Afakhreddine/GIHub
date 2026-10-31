@@ -74,7 +74,8 @@ function validUser(value) {
 }
 
 function validProfile(value) {
-  return value && typeof value.displayName === 'string' && value.displayName.length <= 200 &&
+  return value && typeof value.username === 'string' && (value.username === '' || /^[a-z][a-z0-9_]{2,29}$/.test(value.username)) &&
+    typeof value.displayName === 'string' && value.displayName.length <= 200 &&
     typeof value.specialty === 'string' && value.specialty.length <= 200 &&
     typeof value.institution === 'string' && value.institution.length <= 300 &&
     typeof value.bio === 'string' && value.bio.length <= 4000;
@@ -85,6 +86,7 @@ function publicAccount(data) {
   return {
     user: { id: data.user.id, email: data.user.email, name: data.user.name },
     profile: {
+      username: data.profile.username,
       displayName: data.profile.displayName,
       specialty: data.profile.specialty,
       institution: data.profile.institution,
@@ -131,10 +133,11 @@ export function createGihubAuthHandler({
       if (!sameOrigin(req, acceptedOrigin)) return send(res, 403, { error: 'Request origin not allowed' });
       const session = decryptSession(cookieValue(req, COOKIE_NAME), key);
       const nowSeconds = Math.floor(now() / 1000);
-      if (!session || typeof session.token !== 'string' || !Number.isSafeInteger(session.exp) || session.exp <= nowSeconds) {
+      if (!session || typeof session.token !== 'string' || !Number.isSafeInteger(session.exp) || session.exp <= nowSeconds || !Number.isSafeInteger(session.expiresAt) || session.expiresAt <= nowSeconds) {
         return send(res, 401, { error: 'Authentication required' });
       }
       const profile = {
+        username: req.body?.username,
         displayName: req.body?.displayName,
         specialty: req.body?.specialty,
         institution: req.body?.institution,
@@ -147,12 +150,14 @@ export function createGihubAuthHandler({
           method: 'PATCH',
           headers: { Authorization: `Bearer ${session.token}`, Accept: 'application/json', 'Content-Type': 'application/json' },
           body: JSON.stringify(profile),
+          redirect: 'error',
           signal: AbortSignal.timeout(10_000),
         });
       } catch {
         return send(res, 502, { error: 'Profile service unavailable' });
       }
       if (upstream.status === 401 || upstream.status === 403) return send(res, 401, { error: 'Authentication required' });
+      if (upstream.status === 409) return send(res, 409, { error: 'Username is already taken' });
       if (!upstream.ok) return send(res, 502, { error: 'Profile service unavailable' });
       let data;
       try { data = await upstream.json(); } catch { return send(res, 502, { error: 'Profile service unavailable' }); }
@@ -164,7 +169,7 @@ export function createGihubAuthHandler({
     if (req.method === 'GET' && (action === 'me' || action === 'profile')) {
       const session = decryptSession(cookieValue(req, COOKIE_NAME), key);
       const nowSeconds = Math.floor(now() / 1000);
-      if (!session || typeof session.token !== 'string' || !Number.isSafeInteger(session.exp) || session.exp <= nowSeconds) {
+      if (!session || typeof session.token !== 'string' || !Number.isSafeInteger(session.exp) || session.exp <= nowSeconds || !Number.isSafeInteger(session.expiresAt) || session.expiresAt <= nowSeconds) {
         return send(res, 401, { error: 'Authentication required' });
       }
       let upstream;
@@ -172,6 +177,7 @@ export function createGihubAuthHandler({
         upstream = await fetchImpl(`${origin}/api/auth/gihub-profile`, {
           method: 'GET',
           headers: { Authorization: `Bearer ${session.token}`, Accept: 'application/json' },
+          redirect: 'error',
           signal: AbortSignal.timeout(10_000),
         });
       } catch {
@@ -196,7 +202,8 @@ export function createGihubAuthHandler({
       return send(res, 400, { error: 'Invalid email or password' });
     }
 
-    const attemptKey = String(req.headers['x-forwarded-for'] || req.ip || 'unknown').split(',')[0].trim();
+    // Bound guesses per account even when a client can spoof X-Forwarded-For.
+    const attemptKey = email.trim().toLowerCase();
     const windowMs = 15 * 60 * 1000;
     const timestamp = now();
     if (!loginAttempts.has(attemptKey) && loginAttempts.size >= 10_000) {
@@ -220,6 +227,7 @@ export function createGihubAuthHandler({
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({ email, password }),
+        redirect: 'error',
         signal: AbortSignal.timeout(10_000),
       });
     } catch {
@@ -237,9 +245,12 @@ export function createGihubAuthHandler({
     if (!exp || exp <= nowSeconds || !validUser(data?.user)) {
       return send(res, 502, { error: 'Authentication service unavailable' });
     }
+    if (data.user.mustResetPassword === true) {
+      return send(res, 401, { error: 'Invalid email or password' });
+    }
     const maxAge = Math.min(MAX_SESSION_SECONDS, exp - nowSeconds);
     loginAttempts.delete(attemptKey);
-    const encrypted = encryptSession({ token: data.token, exp }, key);
+    const encrypted = encryptSession({ token: data.token, exp, expiresAt: nowSeconds + maxAge }, key);
     res.setHeader('Set-Cookie', `${COOKIE_NAME}=${encrypted}; Max-Age=${maxAge}; Path=/; HttpOnly; Secure; SameSite=Lax`);
     return send(res, 200, { user: { id: data.user.id, email: data.user.email, name: data.user.name } });
   };

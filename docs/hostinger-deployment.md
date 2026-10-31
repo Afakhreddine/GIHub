@@ -7,7 +7,7 @@ The website makes no Anthropic calls and runs no scheduled jobs: Hermes runs the
 - `/api/claude`: serves guidelines (Upstash Redis `gihub:guidelines:repo` plus repo supplements), new-guideline alerts and schedule lecture resources.
 - `/api/weekly-review-data`, `/api/schedule-review-data`: load the PR under review and store Approve/Hold/Reject decisions in Redis.
 - `/api/weekly-review-publish`, `/api/schedule-review-publish`: the protected `Publish approved` buttons on `/review`, which commit to and merge the PR with the GitHub token.
-- `/api/gihub-auth/login`, `/logout`, `/me`, `/profile`: same-origin GIHub sessions for existing EndoEval users. Credentials and the EndoEval JWT stay server-side; profile reads and writes are proxied to EndoEval.
+- `/api/gihub-auth/login`, `/logout`, `/me`, `/profile`: same-origin GIHub sessions for existing EndoEval users. Credentials pass only from GIHub's server to EndoEval; its JWT is encrypted inside a Secure, HttpOnly GIHub cookie (not available to browser JavaScript). Profile reads and writes are proxied to EndoEval.
 
 ## App settings (hPanel → Websites → mygihub.com)
 

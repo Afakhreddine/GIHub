@@ -7,7 +7,7 @@ import AuthProfile from '../src/AuthProfile.jsx';
 
 const account = {
   user: { id: 7, email: 'doctor@example.com', name: 'Dr Example' },
-  profile: { displayName: 'Dr. Example', specialty: 'Hepatology', institution: 'City Hospital', bio: 'Clinician educator.' },
+  profile: { username: 'dr_example', displayName: 'Dr. Example', specialty: 'Hepatology', institution: 'City Hospital', bio: 'Clinician educator.' },
 };
 
 test('navigation links to a GIHub profile without hiding public educational tabs', () => {
@@ -32,6 +32,9 @@ test('signed-out profile offers EndoEval login only, with no registration or GIH
 test('signed-in profile exposes editable basic fields and keeps email read-only', () => {
   const html = renderToStaticMarkup(<AuthProfile initialAccount={account} skipSessionCheck />);
   assert.match(html, /<input type="email"[^>]*readOnly=""[^>]*value="doctor@example.com"/);
+  assert.match(html, /Email remains your sign-in/);
+  assert.match(html, /pattern="\[a-z\]\[a-z0-9_\]\{2,29\}"[^>]*name="username"[^>]*value="dr_example"/);
+  assert.match(html, /Optional.*lowercase/);
   assert.match(html, /value="Dr\. Example"/);
   assert.match(html, /value="Hepatology"/);
   assert.match(html, /value="City Hospital"/);

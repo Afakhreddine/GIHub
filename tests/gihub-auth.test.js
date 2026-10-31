@@ -17,7 +17,7 @@ async function withServer(fetchImpl, run, options = {}) {
   const auth = createGihubAuthHandler({
     fetchImpl,
     env: options.env || { GIHUB_SESSION_SECRET: SECRET, ENDOEVAL_AUTH_ORIGIN: 'https://endoeval.com' },
-    now: () => NOW_SECONDS * 1000,
+    now: options.now || (() => NOW_SECONDS * 1000),
     publicOrigin: ORIGIN,
   });
   const app = createApp(undefined, { gihubAuthHandler: auth });
@@ -74,13 +74,13 @@ test('login rate limits repeated attempts before contacting EndoEval again', asy
   await withServer(async () => { calls += 1; return new Response('{}', { status: 401 }); }, async base => {
     for (let attempt = 0; attempt < 5; attempt += 1) {
       const response = await request(base, '/api/gihub-auth/login', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Forwarded-For': `203.0.113.${attempt + 1}` },
         body: JSON.stringify({ email: 'doctor@example.com', password: 'wrong-password' }),
       });
       assert.equal(response.status, 401);
     }
     const limited = await request(base, '/api/gihub-auth/login', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Forwarded-For': '203.0.113.99' },
       body: JSON.stringify({ email: 'doctor@example.com', password: 'wrong-password' }),
     });
     assert.equal(limited.status, 429);
@@ -106,7 +106,7 @@ test('profile PATCH sends only editable bounded fields and returns the validated
   const upstreamCalls = [];
   const account = {
     user: { id: 7, email: 'doctor@example.com', name: 'Dr Example' },
-    profile: { displayName: 'Dr. Example', specialty: 'Hepatology', institution: 'City Hospital', bio: 'Clinician educator.' },
+    profile: { username: 'dr_example', displayName: 'Dr. Example', specialty: 'Hepatology', institution: 'City Hospital', bio: 'Clinician educator.' },
   };
   const upstream = async (url, options) => {
     upstreamCalls.push({ url, options });
@@ -131,6 +131,58 @@ test('profile PATCH sends only editable bounded fields and returns the validated
   });
 });
 
+test('profile PATCH rejects invalid handles locally and reports an occupied handle as conflict', async () => {
+  const calls = [];
+  await withServer(async (url, options) => {
+    calls.push({ url, options });
+    return url.endsWith('/login')
+      ? Response.json({ token: jwt(), user: { id: 7, email: 'doctor@example.com', name: 'Doctor' } })
+      : Response.json({ error: 'private upstream details' }, { status: 409 });
+  }, async base => {
+    const login = await request(base, '/api/gihub-auth/login', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'doctor@example.com', password: 'secret' }),
+    });
+    const cookie = login.headers.get('set-cookie').split(';', 1)[0];
+    for (const username of ['ab', 'Ahandle', '_handle', 'sp ace', 'a'.repeat(31)]) {
+      const invalid = await request(base, '/api/gihub-auth/profile', {
+        method: 'PATCH', headers: { Cookie: cookie, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, displayName: '', specialty: '', institution: '', bio: '' }),
+      });
+      assert.equal(invalid.status, 400);
+    }
+    assert.equal(calls.length, 1);
+    const conflict = await request(base, '/api/gihub-auth/profile', {
+      method: 'PATCH', headers: { Cookie: cookie, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: 'claimed', displayName: '', specialty: '', institution: '', bio: '' }),
+    });
+    assert.equal(conflict.status, 409);
+    assert.deepEqual(await conflict.json(), { error: 'Username is already taken' });
+  });
+});
+
+test('every upstream auth request refuses redirects before credentials or tokens can be forwarded', async () => {
+  const calls = [];
+  await withServer(async (url, options) => {
+    calls.push({ url, options });
+    return url.endsWith('/login')
+      ? Response.json({ token: jwt(), user: { id: 7, email: 'doctor@example.com', name: 'Doctor' } })
+      : Response.json({ user: { id: 7, email: 'doctor@example.com', name: 'Doctor' }, profile: { username: '', displayName: '', specialty: '', institution: '', bio: '' } });
+  }, async base => {
+    const login = await request(base, '/api/gihub-auth/login', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'doctor@example.com', password: 'secret' }),
+    });
+    const cookie = login.headers.get('set-cookie').split(';', 1)[0];
+    await request(base, '/api/gihub-auth/me', { headers: { Cookie: cookie } });
+    await request(base, '/api/gihub-auth/profile', {
+      method: 'PATCH', headers: { Cookie: cookie, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: '', displayName: '', specialty: '', institution: '', bio: '' }),
+    });
+    assert.deepEqual(calls.map(call => call.options.redirect), ['error', 'error', 'error']);
+  });
+});
+
 test('me decrypts the session server-side and revalidates the account through EndoEval', async () => {
   const token = jwt();
   const upstreamCalls = [];
@@ -141,7 +193,7 @@ test('me decrypts the session server-side and revalidates the account through En
     }
     return Response.json({
       user: { id: 7, email: 'doctor@example.com', name: 'Dr Example' },
-      profile: { displayName: 'Dr. Example', specialty: 'Interventional GI', institution: 'City Hospital', bio: 'Clinician educator.' },
+      profile: { username: '', displayName: 'Dr. Example', specialty: 'Interventional GI', institution: 'City Hospital', bio: 'Clinician educator.' },
     });
   };
 
@@ -156,7 +208,7 @@ test('me decrypts the session server-side and revalidates the account through En
     assert.equal(response.status, 200);
     assert.deepEqual(await response.json(), {
       user: { id: 7, email: 'doctor@example.com', name: 'Dr Example' },
-      profile: { displayName: 'Dr. Example', specialty: 'Interventional GI', institution: 'City Hospital', bio: 'Clinician educator.' },
+      profile: { username: '', displayName: 'Dr. Example', specialty: 'Interventional GI', institution: 'City Hospital', bio: 'Clinician educator.' },
     });
     assert.equal(upstreamCalls[1].url, 'https://endoeval.com/api/auth/gihub-profile');
     assert.equal(upstreamCalls[1].options.headers.Authorization, `Bearer ${token}`);
@@ -193,6 +245,47 @@ test('login authenticates server-side and sets an encrypted secure session cooki
     assert.equal(upstreamCalls[0].url, 'https://endoeval.com/api/auth/login');
     assert.deepEqual(JSON.parse(upstreamCalls[0].options.body), { email: 'doctor@example.com', password: 'test-password-not-a-real-secret' });
   });
+});
+
+test('login refuses an EndoEval account that must complete password reset', async () => {
+  let calls = 0;
+  await withServer(async () => {
+    calls += 1;
+    return Response.json({
+      token: jwt(),
+      user: { id: 7, email: 'reset@example.com', name: 'Reset User', mustResetPassword: true },
+    });
+  }, async base => {
+    const response = await request(base, '/api/gihub-auth/login', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'reset@example.com', password: 'valid-temporary-password' }),
+    });
+    assert.equal(response.status, 401);
+    assert.equal(response.headers.get('set-cookie'), null);
+    assert.equal(calls, 1);
+  });
+});
+
+test('GIHub session cannot be replayed after its 12-hour lifetime, even with a longer EndoEval token', async () => {
+  let nowMs = NOW_SECONDS * 1000;
+  let calls = 0;
+  await withServer(async url => {
+    calls += 1;
+    return url.endsWith('/login')
+      ? Response.json({ token: jwt(NOW_SECONDS + 7 * 86400), user: { id: 7, email: 'doctor@example.com', name: 'Doctor' } })
+      : Response.json({ user: { id: 7, email: 'doctor@example.com', name: 'Doctor' }, profile: { displayName: '', specialty: '', institution: '', bio: '' } });
+  }, async base => {
+    const login = await request(base, '/api/gihub-auth/login', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'doctor@example.com', password: 'valid-password' }),
+    });
+    assert.equal(login.status, 200);
+    const cookie = login.headers.get('set-cookie').split(';', 1)[0];
+    nowMs += 13 * 3600 * 1000;
+    const response = await request(base, '/api/gihub-auth/me', { headers: { Cookie: cookie } });
+    assert.equal(response.status, 401);
+    assert.equal(calls, 1);
+  }, { now: () => nowMs });
 });
 
 test('state-changing auth requests reject cross-origin callers before upstream access', async () => {
