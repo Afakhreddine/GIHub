@@ -554,6 +554,16 @@ const GUIDELINE_SUPPLEMENTS = [
     "title": "ACG Clinical Guideline: Preventive Care for Patients With Cirrhosis",
     "summary": "Provides 18 GRADE-assessed recommendations and 6 key concepts covering prevention of cirrhosis complications, infection prevention, lifestyle measures, nutrition and exercise, osteoporosis care, and implementation in routine practice.",
     "url": "https://pubmed.ncbi.nlm.nih.gov/42831646/"
+  },
+  {
+    "org": "AGA",
+    "year": "2026",
+    "month": "Oct",
+    "topic": "Hepatology",
+    "urgency": "High",
+    "title": "AGA/AASLD Clinical Practice Guideline on Management of Primary Biliary Cholangitis",
+    "summary": "Provides six evidence-based recommendations covering antibody testing in AMA-negative suspected PBC, ursodeoxycholic acid first-line therapy, liver-stiffness prognostication, PPAR agonists after inadequate response or intolerance, linerixibat for moderate-to-severe pruritus, and post-transplant UDCA prophylaxis.",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42914292/"
   }
 ];
 
