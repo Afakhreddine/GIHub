@@ -22,8 +22,18 @@ test('home guideline and weekly cards are entire source links without source but
 });
 
 test('teaching card links directly to its schedule lecture panel', () => {
-  const html = renderToStaticMarkup(<App initialActive="home" />);
-  const links = [...html.matchAll(/<a href="(\/schedule\?lecture=[^"]+)" aria-label="Open lecture resources for ([^"]+)"/g)];
-  assert.ok(links.length > 0, 'upcoming lectures should link to their detail panels');
-  assert.ok(links.every(([, href]) => href.startsWith('/schedule?lecture=')));
+  const RealDate = globalThis.Date;
+  const fixedNow = RealDate.parse('2026-10-01T12:00:00');
+  globalThis.Date = class FixedDate extends RealDate {
+    constructor(...args) { super(...(args.length ? args : [fixedNow])); }
+    static now() { return fixedNow; }
+  };
+  try {
+    const html = renderToStaticMarkup(<App initialActive="home" />);
+    const links = [...html.matchAll(/<a href="(\/schedule\?lecture=[^"]+)" aria-label="Open lecture resources for ([^"]+)"/g)];
+    assert.ok(links.length > 0, 'upcoming lectures should link to their detail panels');
+    assert.ok(links.every(([, href]) => href.startsWith('/schedule?lecture=')));
+  } finally {
+    globalThis.Date = RealDate;
+  }
 });
