@@ -7,6 +7,7 @@ The website makes no Anthropic calls and runs no scheduled jobs: Hermes runs the
 - `/api/claude`: serves guidelines (Upstash Redis `gihub:guidelines:repo` plus repo supplements), new-guideline alerts and schedule lecture resources.
 - `/api/weekly-review-data`, `/api/schedule-review-data`: load the PR under review and store Approve/Hold/Reject decisions in Redis.
 - `/api/weekly-review-publish`, `/api/schedule-review-publish`: the protected `Publish approved` buttons on `/review`, which commit to and merge the PR with the GitHub token.
+- `/api/gihub-auth/login`, `/logout`, `/me`, `/profile`, `/change-password`: same-origin GIHub sessions for existing EndoEval users. Credentials pass only from GIHub's server to EndoEval; its JWT is encrypted inside a Secure, HttpOnly GIHub cookie (not available to browser JavaScript). Profile reads/writes and signed-in password changes are proxied to EndoEval. Password changes require the current password, update the *same* EndoEval account, and rotate the encrypted GIHub cookie without extending its original lifetime. A GIHub username is only a profile handle, not a separate login.
 
 ## App settings (hPanel → Websites → mygihub.com)
 
@@ -31,9 +32,27 @@ GITHUB_TOKEN
 WEEKLY_REVIEW_PUBLISH_TOKEN
 SCHEDULE_REVIEW_PUBLISH_TOKEN
 GUIDELINE_REVIEW_PUBLISH_TOKEN
+GIHUB_SESSION_SECRET
 ```
 
-Optional: `GITHUB_OWNER`, `GITHUB_REPO`. `ANTHROPIC_API_KEY` and `CRON_SECRET` are no longer used by the website.
+`GIHUB_SESSION_SECRET` is independent from every EndoEval secret and is required for GIHub auth. Use a cryptographically random value of at least 32 bytes (for example, generate one outside the repo with `openssl rand -base64 48`). Never commit or copy the generated value into documentation. Auth routes fail closed when it is absent or too short.
+
+Optional auth settings:
+
+```text
+ENDOEVAL_AUTH_ORIGIN
+GIHUB_PUBLIC_ORIGIN
+```
+
+`ENDOEVAL_AUTH_ORIGIN` defaults to `https://endoeval.com`; an override must be a bare HTTPS origin with no path, query, fragment, or embedded credentials. `GIHUB_PUBLIC_ORIGIN` defaults to `https://mygihub.com` and is the exact browser `Origin` accepted for login, logout, and profile updates. Configure the same variables in Vercel only if the fallback deployment is in use. Do not add EndoEval credentials, JWTs, or database access to either host.
+
+### Auth rollout limitations
+
+- Logout deletes the browser cookie but does **not** revoke a previously copied cookie. The cookie is valid for at most 12 hours, subject to the EndoEval JWT's expiry and EndoEval's account-state checks. A shared server-side session/revocation store is needed if immediate sign-out invalidation is a requirement.
+- GIHub's five-attempt-per-email login throttle is process-local and resets on restart or another app instance. EndoEval also has a process-local account throttle. Add a shared limiter at the application or trusted edge before relying on either across multiple instances, and monitor abuse.
+- Deploy and verify EndoEval's account-state and reset changes before enabling GIHub login. A normal EndoEval auth login and profile read/write should succeed first; a password reset should invalidate existing sessions. Neither the draft PR nor local tests verifies the live Hostinger routing or SMTP behavior.
+
+Optional publishing settings: `GITHUB_OWNER`, `GITHUB_REPO`. `ANTHROPIC_API_KEY` and `CRON_SECRET` are no longer used by the website.
 
 ## Publishing and CI
 

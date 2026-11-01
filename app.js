@@ -10,25 +10,35 @@ import scheduleReviewData from "./api/schedule-review-data.js";
 import scheduleReviewPublish from "./api/schedule-review-publish.js";
 import weeklyReviewData from "./api/weekly-review-data.js";
 import weeklyReviewPublish from "./api/weekly-review-publish.js";
+import gihubAuth from "./api/gihub-auth.js";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 export const distDir = path.join(root, "dist");
 
 export const apiHandlers = {
   "claude": claude,
+  "gihub-auth": gihubAuth,
   "schedule-review-data": scheduleReviewData,
   "schedule-review-publish": scheduleReviewPublish,
   "weekly-review-data": weeklyReviewData,
   "weekly-review-publish": weeklyReviewPublish,
 };
 
-export function createApp(handlers = apiHandlers) {
+export function createApp(handlers = apiHandlers, { gihubAuthHandler = gihubAuth } = {}) {
   const app = express();
   app.disable("x-powered-by");
-  // Vercel accepts request bodies up to 4.5 MB; keep the same ceiling.
+  app.use("/api/gihub-auth", (req, res, next) => {
+    res.set("Cache-Control", "no-store");
+    next();
+  });
+  app.all(["/api/gihub-auth", "/api/gihub-auth/:action"], express.json({ limit: "8kb" }), async (req, res, next) => {
+    try { await gihubAuthHandler(req, res); } catch (error) { next(error); }
+  });
+  // Vercel accepts request bodies up to 4.5 MB; keep the same ceiling for legacy APIs.
   app.use(express.json({ limit: "4.5mb" }));
 
   for (const [name, handler] of Object.entries(handlers)) {
+    if (name === "gihub-auth") continue;
     app.all(`/api/${name}`, async (req, res, next) => {
       try { await handler(req, res); } catch (error) { next(error); }
     });
@@ -43,6 +53,13 @@ export function createApp(handlers = apiHandlers) {
   });
 
   app.use((error, req, res, next) => {
+    if (req.path.startsWith("/api/gihub-auth")) {
+      if (res.headersSent) return next(error);
+      res.set("Cache-Control", "no-store");
+      const status = error?.type === "entity.too.large" ? 413 : (error instanceof SyntaxError ? 400 : 500);
+      if (status === 500) console.error(`${req.method} ${req.path} auth request failed`);
+      return res.status(status).json({ error: status === 500 ? "Authentication is unavailable" : "Invalid request" });
+    }
     console.error(`${req.method} ${req.path} failed:`, error);
     if (res.headersSent) return next(error);
     res.status(500).json({ error: "Internal server error" });
