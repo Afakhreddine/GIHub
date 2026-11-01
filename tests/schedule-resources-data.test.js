@@ -27,11 +27,49 @@ test("October schedule topics have public guidelines and quizzes", () => {
   }
 });
 
-test("October AI lecture includes the prior CGH AI tools practical guide", () => {
-  assert.ok(
-    scheduleResources["ai-in-gi-research"].newsAndArticles.some(item => /Artificial Intelligence Tools for Gastrointestinal Research/i.test(item.title) && item.doi === "10.1016/j.cgh.2026.03.032"),
-    "AI in GI Research should include the CGH practical-guide article previously pulled as a PDF",
-  );
+test("October AI lecture lists the AGA living CADe guideline, not the CGH practical guide, and has a source-PDF guideline quiz", () => {
+  const lecture = scheduleResources["ai-in-gi-research"];
+  assert.ok(lecture.guidelines.some(item => item.org === "AGA" && /Living Clinical Practice Guideline on Computer-Aided Detection/i.test(item.title) && item.url === "https://pubmed.ncbi.nlm.nih.gov/40121061/"));
+  assert.ok(lecture.guidelines.every(item => !/Artificial Intelligence Tools for Gastrointestinal Research/i.test(item.title)));
+  assert.ok(lecture.newsAndArticles.some(item => /Artificial Intelligence Tools for Gastrointestinal Research/i.test(item.title) && item.doi === "10.1016/j.cgh.2026.03.032"));
+  assert.equal(lecture.quiz.length, 10);
+  assert.ok(lecture.quizSourcePdfs.includes("gihub_aga_living_cade_guideline_2025.pdf"));
+  assert.ok(lecture.quiz.some(item => /no recommendation for or against/i.test(item.options.join(" "))));
+  const secondaryOutcomes = lecture.quiz.find(item => /adenoma miss rate \(AMR\)/i.test(item.question));
+  assert.match(secondaryOutcomes.explanation, /pooled RR 1\.11/);
+  assert.doesNotMatch(secondaryOutcomes.explanation, /11% relative increase/i);
+});
+
+test("AI lecture presents verified citations from the speaker's slides as public News and Articles", () => {
+  const lecture = scheduleResources["ai-in-gi-research"];
+  const event = CALENDAR_EVENTS.find(item => item.slug === "ai-in-gi-research");
+  assert.equal(event.date, "2026-10-27");
+  const citedPmids = ["41504353", "41920565", "42879271", "40816301", "40834302"];
+  const publicArticles = sanitizeScheduleResourceForPublic(lecture).newsAndArticles;
+  for (const pmid of citedPmids) {
+    const matches = publicArticles.filter(item => item.pmid === pmid);
+    assert.equal(matches.length, 1, `presentation citation ${pmid} should appear exactly once publicly`);
+    assert.equal(matches[0].url, `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`);
+    assert.equal(matches[0].status, "approved");
+    assert.equal(matches[0].eventDate, event.date);
+  }
+  for (const url of [
+    "https://palisaderesearch.github.io/shutdown_avoidance/2025-05-announcement.html",
+    "https://time.com/article/2026/10/14/recursive-self-improvement-AI-report/",
+    "https://storage.googleapis.com/deepmind-media/gemini/gemini_4_safety_report.pdf",
+    "https://www.cnbc.com/2026/09/29/anthropic-warns-ai-existential-risks-ipo-filing-reuters.html",
+    "https://doi.org/10.1126/science.aeh7930",
+    "https://arxiv.org/abs/2610.05474",
+    "https://arxiv.org/abs/2610.16733",
+    "https://metr.org/blog/2026-10-22-red-teaming-openai-agent-monitoring/",
+    "https://github.com/vectara/hallucination-leaderboard",
+    "https://techcrunch.com/2026/10/22/microsofts-mustafa-suleyman-says-its-ai-outperforms-doctors-on-hard-cases-as-he-chases-medical-superintelligence/",
+    "https://the-decoder.com/gpt-6-astra-solves-49-of-50-physics-research-problems-at-2-40-apiece/",
+    "https://www.theneuron.ai/digest/everything-that-happened-in-ai-today-friday-october-23-2026/",
+  ]) {
+    assert.equal(publicArticles.filter(item => item.url === url && item.status === "approved").length, 1);
+  }
+  assert.ok(lecture.newsAndArticles.every(item => !/Per Smith|fictional citation/i.test(item.title)));
 });
 
 test("October celiac/small-intestine topics include PubMed-backed review metadata", () => {

@@ -6,7 +6,7 @@ GIHub's Weekly Update section is now **repo-managed**. The website imports weekl
 src/data/weekly.js
 ```
 
-The previous Vercel `/api/cron-weekly` updater is no longer scheduled by `vercel.json` and is kept only as an explicit no-op legacy endpoint. The frontend and legacy `/api/claude` content route serve weekly-update data from the committed data file.
+The old `/api/cron-weekly` updater and the other website cron endpoints (`cron-schedule`, `cron-news`, `cron-articles`) have been removed; the website no longer calls Anthropic. The frontend and `/api/claude` content route serve weekly-update data from the committed data file.
 
 ## Source prompt
 
@@ -48,8 +48,8 @@ npm run build
 ```
 
 7. Open a GitHub PR with source links, candidate/audit counts, changed items, and test results.
-8. Review the PR preview at `/review/weekly`. Mark each card `Approve`, `Hold`, or `Reject`, then use `Publish approved` to publish only approved cards. Rejected/held cards are excluded from the published weekly data. If the publish endpoint has to rewrite `src/data/weekly.js` to remove rejected/held cards, wait for the updated PR preview checks to pass and click `Publish approved` again to merge.
-9. The Vercel site updates after the PR is merged.
+8. Review the PR at `https://mygihub.com/review/weekly`, which loads the latest open Weekly Update PR. Mark each card `Approve`, `Hold`, or `Reject`, then use `Publish approved` to publish only approved cards. Rejected/held cards are excluded from the published weekly data. If the publish endpoint has to rewrite `src/data/weekly.js` to remove rejected/held cards, wait for the updated PR's CI checks to pass and click `Publish approved` again to merge.
+9. The site updates after the PR is merged, when Hostinger redeploys `main` (see `docs/hostinger-deployment.md`).
 
 Full triage rules are documented in `docs/source-triage-workflow.md`.
 
@@ -96,17 +96,17 @@ The protected `Publish approved` endpoint archives the outgoing active `src/data
 
 ## Review sandbox publish button
 
-The `/review/weekly` sandbox supports a protected `Publish approved` flow for PR preview deployments. The short production URL `/review/weekly` automatically loads the latest open Weekly Update PR so it is easy to type on a computer; use `/review/weekly?pr=10` only as an explicit fallback/debug override.
+The `/review/weekly` sandbox supports a protected `Publish approved` flow. The short production URL `/review/weekly` automatically loads the latest open Weekly Update PR so it is easy to type on a computer; use `/review/weekly?pr=10` only as an explicit fallback/debug override.
 
 - Every weekly-update card must be reviewed as `Approve`, `Hold`, or `Reject`; unreviewed cards disable publishing.
 - At least one card must be approved.
 - Only approved cards are published; held/rejected cards are removed from the repo-managed weekly data before merge.
 - The button prompts for a publish code instead of embedding secrets in the browser bundle.
 - The client posts to `/api/weekly-review-publish`.
-- The server endpoint is available only on Vercel preview deployments with a pull-request id.
-- The endpoint checks the review publish code, verifies GitHub publishing configuration, checks PR status, and squash-merges the PR if checks are successful.
+- The client sends the reviewed PR number, so the endpoint works on production as well as on previews.
+- The endpoint checks the review publish code, verifies GitHub publishing configuration, checks the PR's commit statuses and GitHub Actions check runs, and squash-merges the PR only when all of them have passed (a PR with no checks reported yet is treated as pending).
 
-Required Vercel environment variables, stored server-side only:
+Required server environment variables (Hostinger app settings), stored server-side only:
 
 ```text
 WEEKLY_REVIEW_PUBLISH_TOKEN

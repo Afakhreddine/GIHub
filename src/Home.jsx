@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import guidelines from "./data/guidelines.js";
 import guidelineSupplements from "./data/guidelineSupplements.js";
 import { recentGuidelines } from "./homeGuidelines.js";
+import { resolveGuidelineLink } from "./guidelineLinks.js";
 import weekly from "./data/weekly.js";
 import weeklyPodcasts from "./data/weeklyPodcasts.js";
 import scheduleResources from "./data/scheduleResources.js";
@@ -63,7 +64,7 @@ export default function Home({ onNavigate }) {
           <section className="coastal-home__section" aria-labelledby="coastal-guidelines-title">
             <div className="coastal-home__heading"><div><p className="coastal-home__eyebrow">Clinical guidelines</p><h2 id="coastal-guidelines-title">Grounded in the source.</h2></div><SectionButton id="guidelines" onNavigate={onNavigate} className="coastal-home__text-link">Browse all guidelines <span aria-hidden="true">↗</span></SectionButton></div>
             <div className="coastal-home__card-grid">
-              {featuredGuidelines.map(item => <a className="coastal-home__card" href={sourceUrl(item.url)} target="_blank" rel="noopener noreferrer" aria-label={`Open source for ${item.title} (opens in new tab)`} key={`${item.org}-${item.title}`}>
+              {featuredGuidelines.map(item => <a className="coastal-home__card" href={resolveGuidelineLink(item).url} target="_blank" rel="noopener noreferrer" aria-label={`${resolveGuidelineLink(item).label === "View source ↗" ? "Open source" : "Search PubMed"} for ${item.title} (opens in new tab)`} key={`${item.org}-${item.title}`}>
                 <div className="coastal-home__card-meta"><span className="coastal-home__pill">{item.org}</span><span>{item.month} {item.year}</span></div>
                 <h3>{item.title}</h3><p>{item.summary}</p>
                 <div className="coastal-home__card-footer"><span>{item.topic}</span><span aria-hidden="true">↗</span></div>

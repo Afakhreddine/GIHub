@@ -4,6 +4,16 @@
 
 const GUIDELINE_SUPPLEMENTS = [
   {
+    "org": "AGA",
+    "year": "2025",
+    "month": "Apr",
+    "topic": "AI-Assisted Colonoscopy",
+    "urgency": "High",
+    "title": "AGA Living Clinical Practice Guideline on Computer-Aided Detection-Assisted Colonoscopy",
+    "summary": "No recommendation for or against CADe-assisted colonoscopy because evidence for long-term colorectal cancer outcomes remains very low certainty despite improved adenoma detection and increased modeled surveillance burden.",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/40121061/"
+  },
+  {
     "org": "ASGE",
     "year": "2022",
     "month": "Jan",
