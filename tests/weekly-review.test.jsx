@@ -15,6 +15,13 @@ import {
   weeklyItemId,
 } from "../src/weeklyReviewModel.js";
 
+// Review behavior must not depend on the number of cards left after publish prunes a PR.
+const reviewFixtures = [
+  { ...weekly[0], title: "Fixture review card one" },
+  { ...weekly[0], title: "Fixture review card two" },
+  { ...weekly[0], title: "Fixture review card three" },
+];
+
 test("weekly review route renders repo-managed cards and review controls", () => {
   assert.equal(isWeeklyReviewPath("/review/weekly"), true);
   assert.equal(isWeeklyReviewPath("/review/weekly/"), true);
@@ -43,7 +50,7 @@ test("review pages do not show published production data while looking for an op
 });
 
 test("reviewed counter ignores saved decisions for cards no longer in the current PR", () => {
-  const items = weekly.slice(0, 2);
+  const items = reviewFixtures.slice(0, 2);
   const decisions = {
     [weeklyItemId(items[0])]: "Approve",
     "old date|removed card": "Reject",
@@ -88,17 +95,17 @@ test("weekly review decisions persist locally and tolerate invalid saved data", 
 
 test("approval summary is ready to paste into WhatsApp or a PR", () => {
   const decisions = {
-    [weeklyItemId(weekly[0])]: "Approve",
-    [weeklyItemId(weekly[1])]: "Hold",
-    [weeklyItemId(weekly[2])]: "Reject",
+    [weeklyItemId(reviewFixtures[0])]: "Approve",
+    [weeklyItemId(reviewFixtures[1])]: "Hold",
+    [weeklyItemId(reviewFixtures[2])]: "Reject",
   };
 
-  const summary = buildApprovalSummary(weekly, decisions);
+  const summary = buildApprovalSummary(reviewFixtures, decisions);
   assert.match(summary, /^Weekly Update approval summary/m);
   assert.match(summary, /Approved \(1\)/);
-  assert.match(summary, new RegExp(weekly[0].title));
+  assert.match(summary, new RegExp(reviewFixtures[0].title));
   assert.match(summary, /Hold \(1\)/);
   assert.match(summary, /Rejected \(1\)/);
-  assert.match(summary, new RegExp(`${weekly.length - 3} unreviewed`));
-  assert.ok(summary.includes(weekly[0].url));
+  assert.match(summary, /0 unreviewed/);
+  assert.ok(summary.includes(reviewFixtures[0].url));
 });
