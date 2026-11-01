@@ -21,13 +21,19 @@ test('home guideline and weekly cards are entire source links without source but
   assert.match(html, /The Weekly Update, on the go\./);
 });
 
-test('teaching card links to upcoming lectures or shows its empty-calendar state', () => {
-  const html = renderToStaticMarkup(<App initialActive="home" />);
-  const links = [...html.matchAll(/<a href="(\/schedule\?lecture=[^"]+)" aria-label="Open lecture resources for ([^"]+)"/g)];
-  if (links.length) {
+test('teaching card links directly to its schedule lecture panel', () => {
+  const RealDate = globalThis.Date;
+  const fixedNow = RealDate.parse('2026-10-01T12:00:00');
+  globalThis.Date = class FixedDate extends RealDate {
+    constructor(...args) { super(...(args.length ? args : [fixedNow])); }
+    static now() { return fixedNow; }
+  };
+  try {
+    const html = renderToStaticMarkup(<App initialActive="home" />);
+    const links = [...html.matchAll(/<a href="(\/schedule\?lecture=[^"]+)" aria-label="Open lecture resources for ([^"]+)"/g)];
+    assert.ok(links.length > 0, 'upcoming lectures should link to their detail panels');
     assert.ok(links.every(([, href]) => href.startsWith('/schedule?lecture=')));
-    assert.doesNotMatch(html, /No upcoming lectures in the published/);
-  } else {
-    assert.match(html, /No upcoming lectures in the published .* calendar/);
+  } finally {
+    globalThis.Date = RealDate;
   }
 });
