@@ -23,6 +23,7 @@ export default function AuthProfile({ initialAccount, skipSessionCheck = false }
   const [loading, setLoading] = useState(!skipSessionCheck && initialAccount === undefined);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
+  const [passwordMessage, setPasswordMessage] = useState('');
 
   useEffect(() => {
     if (skipSessionCheck || initialAccount !== undefined) return;
@@ -78,6 +79,37 @@ export default function AuthProfile({ initialAccount, skipSessionCheck = false }
     }
   }
 
+  async function changePassword(event) {
+    event.preventDefault();
+    const formElement = event.currentTarget;
+    const currentPassword = formElement.elements.namedItem('currentPassword').value;
+    const newPassword = formElement.elements.namedItem('newPassword').value;
+    const confirmPassword = formElement.elements.namedItem('confirmPassword').value;
+    if (newPassword !== confirmPassword) {
+      formElement.reset();
+      setPasswordMessage('New passwords must match.');
+      return;
+    }
+    setBusy(true);
+    setPasswordMessage('');
+    try {
+      await authRequest('change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
+      setPasswordMessage('Password changed. You remain signed in.');
+    } catch (error) {
+      setPasswordMessage(error.status === 400 ? 'Check your current password and use at least 6 characters for the new password.' :
+        error.status === 401 ? 'Current password is incorrect or your session expired. Check it and try again; if expired, sign out and sign in again.' :
+          error.status === 403 ? 'Password change is unavailable for this account. Contact EndoEval support.' :
+            'Could not change password. Please try again; if it changed on EndoEval, sign in again.');
+    } finally {
+      formElement.reset();
+      setBusy(false);
+    }
+  }
+
   async function logout() {
     setBusy(true);
     setMessage('');
@@ -121,8 +153,17 @@ export default function AuthProfile({ initialAccount, skipSessionCheck = false }
         <label>Institution<input value={profile.institution} maxLength={300} onChange={event => setProfile({ ...profile, institution: event.target.value })} /></label>
       </div>
       <label>Bio<textarea value={profile.bio} maxLength={4000} rows={6} onChange={event => setProfile({ ...profile, bio: event.target.value })} /></label>
-      <div className="auth-profile__actions"><button className="auth-profile__primary" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save profile'}</button><a className="auth-profile__external" href="https://endoeval.com" rel="noopener noreferrer">Change or reset password on EndoEval <span aria-hidden="true">↗</span></a></div>
+      <div className="auth-profile__actions"><button className="auth-profile__primary" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save profile'}</button></div>
       {message && <p className="auth-profile__message" role={message === 'Profile saved.' ? 'status' : 'alert'}>{message}</p>}
+    </form>
+    <form data-password-change="" className="auth-profile__card auth-profile__form auth-profile__password" onSubmit={changePassword}>
+      <h2>Change your EndoEval password</h2>
+      <p>This changes the password for the same account on GIHub and EndoEval.</p>
+      <label>Current password<input name="currentPassword" type="password" autoComplete="current-password" maxLength={1024} required /></label>
+      <label>New password<input name="newPassword" type="password" autoComplete="new-password" minLength={6} maxLength={1024} required /></label>
+      <label>Confirm new password<input name="confirmPassword" type="password" autoComplete="new-password" minLength={6} maxLength={1024} required /></label>
+      <button className="auth-profile__primary" type="submit" disabled={busy}>{busy ? 'Changing…' : 'Change password'}</button>
+      {passwordMessage && <p className="auth-profile__message" role={passwordMessage.startsWith('Password changed') ? 'status' : 'alert'}>{passwordMessage}</p>}
     </form>
   </section>;
 }

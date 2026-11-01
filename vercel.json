@@ -39,6 +39,10 @@
       "destination": "/api/gihub-auth?action=profile"
     },
     {
+      "source": "/api/gihub-auth/change-password",
+      "destination": "/api/gihub-auth?action=change-password"
+    },
+    {
       "source": "/api/claude",
       "destination": "/api/claude"
     },

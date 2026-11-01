@@ -59,7 +59,7 @@ function tokenExpiry(token) {
   if (typeof token !== 'string' || token.length > 2600) return null;
   try {
     const parts = token.split('.');
-    if (parts.length !== 3) return null;
+    if (parts.length !== 3 || parts.some(part => !part || !/^[A-Za-z0-9_-]+$/.test(part))) return null;
     const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf8'));
     return Number.isSafeInteger(payload.exp) ? payload.exp : null;
   } catch {
@@ -127,6 +127,57 @@ export function createGihubAuthHandler({
       if (!sameOrigin(req, acceptedOrigin)) return send(res, 403, { error: 'Request origin not allowed' });
       res.setHeader('Set-Cookie', `${COOKIE_NAME}=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax`);
       return res.status(204).end();
+    }
+
+    if (req.method === 'POST' && action === 'change-password') {
+      if (!sameOrigin(req, acceptedOrigin)) return send(res, 403, { error: 'Request origin not allowed' });
+      const session = decryptSession(cookieValue(req, COOKIE_NAME), key);
+      const nowSeconds = Math.floor(now() / 1000);
+      if (!session || typeof session.token !== 'string' || !Number.isSafeInteger(session.exp) ||
+          session.exp <= nowSeconds || !Number.isSafeInteger(session.expiresAt) || session.expiresAt <= nowSeconds ||
+          tokenExpiry(session.token) !== session.exp) return send(res, 401, { error: 'Authentication required' });
+      const { currentPassword, newPassword } = req.body || {};
+      if (typeof currentPassword !== 'string' || currentPassword.length < 1 || currentPassword.length > 1024 ||
+          typeof newPassword !== 'string' || newPassword.length < 6 || newPassword.length > 1024) {
+        return send(res, 400, { error: 'Current password and a new password of at least 6 characters are required' });
+      }
+      let upstream;
+      try {
+        upstream = await fetchImpl(`${origin}/api/auth/change-password`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${session.token}`, Accept: 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({ currentPassword, password: newPassword }),
+          redirect: 'error',
+          signal: AbortSignal.timeout(10_000),
+        });
+      } catch {
+        return send(res, 502, { error: 'Password service unavailable. Please try again.' });
+      }
+      if (upstream.status === 400) return send(res, 400, { error: 'Check your current password and use a new password of at least 6 characters.' });
+      if (upstream.status === 401) return send(res, 401, { error: 'Current password is incorrect or your session has expired.' });
+      if (upstream.status === 403) return send(res, 403, { error: 'Password change is not available for this account.' });
+      if (!upstream.ok) return send(res, 502, { error: 'Password service unavailable. Please try again.' });
+      let data;
+      try { data = await upstream.json(); } catch { return send(res, 502, { error: 'Password service unavailable. Please try again.' }); }
+      const exp = tokenExpiry(data?.token);
+      let tokenMatchesAccount = false;
+      if (exp) {
+        try {
+          const [header, payload] = data.token.split('.');
+          const algorithm = JSON.parse(Buffer.from(header, 'base64url').toString('utf8')).alg;
+          const claims = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+          tokenMatchesAccount = algorithm === 'HS256' && String(claims.id) === String(session.userId) &&
+            claims.email === data.user?.email && claims.mustResetPassword !== true;
+        } catch { /* Reject invalid JWT fields. EndoEval validates the signature server-side on every subsequent request. */ }
+      }
+      if (!exp || exp <= nowSeconds || data.token === session.token || !validUser(data?.user) ||
+          !tokenMatchesAccount || data.user.mustResetPassword === true || String(data.user.id) !== String(session.userId)) {
+        return send(res, 502, { error: 'Password service unavailable. Please sign in again on EndoEval if needed.' });
+      }
+      const maxAge = Math.min(MAX_SESSION_SECONDS, exp - nowSeconds, session.expiresAt - nowSeconds);
+      const encrypted = encryptSession({ token: data.token, userId: data.user.id, exp, expiresAt: nowSeconds + maxAge }, key);
+      res.setHeader('Set-Cookie', `${COOKIE_NAME}=${encrypted}; Max-Age=${maxAge}; Path=/; HttpOnly; Secure; SameSite=Lax`);
+      return send(res, 200, { message: 'Password changed' });
     }
 
     if (req.method === 'PATCH' && action === 'profile') {
@@ -250,7 +301,7 @@ export function createGihubAuthHandler({
     }
     const maxAge = Math.min(MAX_SESSION_SECONDS, exp - nowSeconds);
     loginAttempts.delete(attemptKey);
-    const encrypted = encryptSession({ token: data.token, exp, expiresAt: nowSeconds + maxAge }, key);
+    const encrypted = encryptSession({ token: data.token, userId: data.user.id, exp, expiresAt: nowSeconds + maxAge }, key);
     res.setHeader('Set-Cookie', `${COOKIE_NAME}=${encrypted}; Max-Age=${maxAge}; Path=/; HttpOnly; Secure; SameSite=Lax`);
     return send(res, 200, { user: { id: data.user.id, email: data.user.email, name: data.user.name } });
   };

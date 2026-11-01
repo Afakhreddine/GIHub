@@ -10,7 +10,7 @@ const NOW_SECONDS = 1_800_000_000;
 
 function jwt(exp = NOW_SECONDS + 3600) {
   const encode = value => Buffer.from(JSON.stringify(value)).toString('base64url');
-  return `${encode({ alg: 'none' })}.${encode({ exp })}.signature`;
+  return `${encode({ alg: 'HS256' })}.${encode({ exp, id: 7, email: 'doctor@example.com' })}.signature`;
 }
 
 async function withServer(fetchImpl, run, options = {}) {
@@ -324,5 +324,149 @@ test('auth fails closed for missing or weak secrets and malformed upstream respo
     });
     assert.equal(response.status, 502);
     assert.equal(response.headers.get('set-cookie'), null);
+  });
+});
+
+test('password rotation cannot extend original GIHub session lifetime', async () => {
+  let nowMs = NOW_SECONDS * 1000;
+  await withServer(async url => Response.json({ token: url.endsWith('/login') ? jwt(NOW_SECONDS + 7 * 86400) : jwt(NOW_SECONDS + 6 * 86400), user: { id: 7, email: 'doctor@example.com', name: 'Doctor' } }), async base => {
+    const login = await request(base, '/api/gihub-auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'doctor@example.com', password: 'old-password' }) });
+    const cookie = login.headers.get('set-cookie').split(';', 1)[0];
+    nowMs += 11 * 3600 * 1000;
+    const changed = await request(base, '/api/gihub-auth/change-password', { method: 'POST', headers: { Cookie: cookie, 'Content-Type': 'application/json' }, body: JSON.stringify({ currentPassword: 'old-password', newPassword: 'new-password' }) });
+    assert.equal(changed.status, 200);
+    assert.match(changed.headers.get('set-cookie'), /Max-Age=3600;/);
+    nowMs += 2 * 3600 * 1000;
+    const me = await request(base, '/api/gihub-auth/me', { headers: { Cookie: changed.headers.get('set-cookie').split(';', 1)[0] } });
+    assert.equal(me.status, 401);
+  }, { now: () => nowMs });
+});
+
+test('change password rejects cross-origin, absent cookie and invalid fields without upstream access', async () => {
+  let calls = 0;
+  await withServer(async () => {
+    calls += 1;
+    return Response.json({ token: jwt(), user: { id: 7, email: 'doctor@example.com', name: 'Doctor' } });
+  }, async base => {
+    const cookie = (await request(base, '/api/gihub-auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'doctor@example.com', password: 'secret' }) })).headers.get('set-cookie').split(';', 1)[0];
+    for (const [headers, body, status] of [
+      [{ Origin: 'https://evil.example', Cookie: cookie }, { currentPassword: 'old', newPassword: 'new-secret' }, 403],
+      [{}, { currentPassword: 'old', newPassword: 'new-secret' }, 401],
+      [{ Cookie: 'gihub_session=invalid' }, { currentPassword: 'old', newPassword: 'new-secret' }, 401],
+      [{ Cookie: cookie }, { currentPassword: '', newPassword: 'new-secret' }, 400],
+      [{ Cookie: cookie }, { currentPassword: 'old', newPassword: 'short' }, 400],
+      [{ Cookie: cookie }, { currentPassword: 'x'.repeat(1025), newPassword: 'new-secret' }, 400],
+      [{ Cookie: cookie }, { currentPassword: 'old', newPassword: 'x'.repeat(1025) }, 400],
+    ]) {
+      const response = await request(base, '/api/gihub-auth/change-password', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', ...headers }, body: JSON.stringify(body),
+      });
+      assert.equal(response.status, status);
+      assert.equal(response.headers.get('set-cookie'), null);
+    }
+    assert.equal(calls, 1);
+  });
+});
+
+test('change password handles malformed success and upstream transport failure without replacing cookie', async () => {
+  for (const failure of ['json', 'network', 'same-token', 'expired']) {
+    let calls = 0;
+    await withServer(async url => {
+      calls += 1;
+      if (url.endsWith('/login')) return Response.json({ token: jwt(), user: { id: 7, email: 'doctor@example.com', name: 'Doctor' } });
+      if (failure === 'network') throw new Error('connection failed');
+      if (failure === 'json') return new Response('not json', { status: 200 });
+      return Response.json({ token: failure === 'same-token' ? jwt() : jwt(NOW_SECONDS - 1), user: { id: 7, email: 'doctor@example.com', name: 'Doctor' } });
+    }, async base => {
+      const login = await request(base, '/api/gihub-auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'doctor@example.com', password: 'old-password' }) });
+      const response = await request(base, '/api/gihub-auth/change-password', { method: 'POST', headers: { Cookie: login.headers.get('set-cookie').split(';', 1)[0], 'Content-Type': 'application/json' }, body: JSON.stringify({ currentPassword: 'old-password', newPassword: 'new-password' }) });
+      assert.equal(response.status, 502, failure);
+      assert.equal(response.headers.get('set-cookie'), null);
+      assert.equal(calls, 2);
+    });
+  }
+});
+
+test('wrong current password keeps cookie and maps upstream 400/401/403 without leaking details', async () => {
+  for (const [upstreamStatus, status] of [[400, 400], [401, 401], [403, 403], [500, 502]]) {
+    await withServer(async url => url.endsWith('/login')
+      ? Response.json({ token: jwt(), user: { id: 7, email: 'doctor@example.com', name: 'Doctor' } })
+      : Response.json({ error: 'sensitive upstream detail' }, { status: upstreamStatus }), async base => {
+      const login = await request(base, '/api/gihub-auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'doctor@example.com', password: 'old-password' }) });
+      const response = await request(base, '/api/gihub-auth/change-password', { method: 'POST', headers: { Cookie: login.headers.get('set-cookie').split(';', 1)[0], 'Content-Type': 'application/json' }, body: JSON.stringify({ currentPassword: 'wrong-password', newPassword: 'new-password' }) });
+      assert.equal(response.status, status);
+      assert.equal(response.headers.get('set-cookie'), null);
+      assert.doesNotMatch(JSON.stringify(await response.json()), /sensitive|upstream detail/);
+      assert.equal(response.headers.get('cache-control'), 'no-store');
+    });
+  }
+});
+
+test('change password rejects replacement JWT claims for a different user', async () => {
+  const encode = value => Buffer.from(JSON.stringify(value)).toString('base64url');
+  const wrongToken = `${encode({ alg: 'HS256' })}.${encode({ exp: NOW_SECONDS + 7200, id: 8, email: 'other@example.com' })}.signature`;
+  await withServer(async url => url.endsWith('/login')
+    ? Response.json({ token: jwt(), user: { id: 7, email: 'doctor@example.com', name: 'Doctor' } })
+    : Response.json({ token: wrongToken, user: { id: 7, email: 'doctor@example.com', name: 'Doctor' } }), async base => {
+    const login = await request(base, '/api/gihub-auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'doctor@example.com', password: 'old-password' }) });
+    const response = await request(base, '/api/gihub-auth/change-password', { method: 'POST', headers: { Cookie: login.headers.get('set-cookie').split(';', 1)[0], 'Content-Type': 'application/json' }, body: JSON.stringify({ currentPassword: 'old-password', newPassword: 'new-password' }) });
+    assert.equal(response.status, 502);
+    assert.equal(response.headers.get('set-cookie'), null);
+  });
+});
+
+test('change password rejects malformed replacement JWT without replacing cookie', async () => {
+  await withServer(async url => url.endsWith('/login')
+    ? Response.json({ token: jwt(), user: { id: 7, email: 'doctor@example.com', name: 'Doctor' } })
+    : Response.json({ token: `${jwt(NOW_SECONDS + 7200).split('.').slice(0, 2).join('.')}.`, user: { id: 7, email: 'doctor@example.com', name: 'Doctor' } }), async base => {
+    const login = await request(base, '/api/gihub-auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'doctor@example.com', password: 'old-password' }) });
+    const response = await request(base, '/api/gihub-auth/change-password', { method: 'POST', headers: { Cookie: login.headers.get('set-cookie').split(';', 1)[0], 'Content-Type': 'application/json' }, body: JSON.stringify({ currentPassword: 'old-password', newPassword: 'new-password' }) });
+    assert.equal(response.status, 502);
+    assert.equal(response.headers.get('set-cookie'), null);
+  });
+});
+
+test('change password rejects replacement token for a different account without replacing cookie', async () => {
+  await withServer(async url => url.endsWith('/login')
+    ? Response.json({ token: jwt(), user: { id: 7, email: 'doctor@example.com', name: 'Doctor' } })
+    : Response.json({ token: jwt(NOW_SECONDS + 7200), user: { id: 8, email: 'other@example.com', name: 'Other' } }), async base => {
+    const login = await request(base, '/api/gihub-auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'doctor@example.com', password: 'old-password' }) });
+    const response = await request(base, '/api/gihub-auth/change-password', { method: 'POST', headers: { Cookie: login.headers.get('set-cookie').split(';', 1)[0], 'Content-Type': 'application/json' }, body: JSON.stringify({ currentPassword: 'old-password', newPassword: 'new-password' }) });
+    assert.equal(response.status, 502);
+    assert.equal(response.headers.get('set-cookie'), null);
+  });
+});
+
+test('change password rotates encrypted cookie using EndoEval replacement token', async () => {
+  const oldToken = jwt(NOW_SECONDS + 3600);
+  const newToken = jwt(NOW_SECONDS + 7200);
+  const calls = [];
+  await withServer(async (url, options) => {
+    calls.push({ url, options });
+    if (url.endsWith('/login')) return Response.json({ token: oldToken, user: { id: 7, email: 'doctor@example.com', name: 'Doctor' } });
+    if (url.endsWith('/change-password')) return Response.json({ token: newToken, user: { id: 7, email: 'doctor@example.com', name: 'Doctor' } });
+    return Response.json({ user: { id: 7, email: 'doctor@example.com', name: 'Doctor' }, profile: { username: '', displayName: '', specialty: '', institution: '', bio: '' } });
+  }, async base => {
+    const login = await request(base, '/api/gihub-auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'doctor@example.com', password: 'old-password' }) });
+    assert.equal(login.status, 200);
+    const cookie = login.headers.get('set-cookie').split(';', 1)[0];
+    const changed = await request(base, '/api/gihub-auth/change-password', {
+      method: 'POST', headers: { Cookie: cookie, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ currentPassword: 'old-password', newPassword: 'new-password' }),
+    });
+    assert.equal(changed.status, 200);
+    assert.deepEqual(await changed.json(), { message: 'Password changed' });
+    const rotated = changed.headers.get('set-cookie');
+    assert.match(rotated, /HttpOnly; Secure; SameSite=Lax/);
+    assert.notEqual(rotated.split(';', 1)[0], cookie);
+    assert.doesNotMatch(rotated, /new-password|old-password|signature/);
+    assert.equal(calls[1].url, 'https://endoeval.com/api/auth/change-password');
+    assert.equal(calls[1].options.headers.Authorization, `Bearer ${oldToken}`);
+    assert.deepEqual(JSON.parse(calls[1].options.body), { currentPassword: 'old-password', password: 'new-password' });
+    assert.equal(calls[1].options.redirect, 'error');
+    assert.ok(calls[1].options.signal instanceof AbortSignal);
+    const me = await request(base, '/api/gihub-auth/me', { headers: { Cookie: rotated.split(';', 1)[0] } });
+    assert.equal(me.status, 200);
+    assert.equal(calls[2].options.headers.Authorization, `Bearer ${newToken}`);
   });
 });

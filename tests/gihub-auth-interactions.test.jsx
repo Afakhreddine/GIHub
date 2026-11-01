@@ -32,6 +32,53 @@ async function mount(run) {
   }
 }
 
+test('wrong current password clears both inputs but keeps signed-in profile and actionable alert', async () => {
+  await mount(async document => {
+    globalThis.fetch = async () => Response.json({ error: 'Current password is incorrect' }, { status: 401 });
+    const form = document.querySelector('form[data-password-change]');
+    const current = form.querySelector('[name="currentPassword"]');
+    const next = form.querySelector('[name="newPassword"]');
+    const confirm = form.querySelector('[name="confirmPassword"]');
+    await act(async () => {
+      current.value = 'wrong-password';
+      next.value = 'new-password';
+      confirm.value = 'new-password';
+      form.dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
+    });
+    assert.equal(current.value, '');
+    assert.equal(next.value, '');
+    assert.equal(confirm.value, '');
+    assert.match(document.body.textContent, /Welcome, Doctor/);
+    assert.match(document.querySelector('[role="alert"]')?.textContent || '', /current password is incorrect/i);
+  });
+});
+
+test('signed-in password form submits only credentials, clears fields and preserves profile on success', async () => {
+  await mount(async document => {
+    const calls = [];
+    globalThis.fetch = async (url, options) => { calls.push({ url, options }); return Response.json({ message: 'Password changed' }); };
+    const form = document.querySelector('form[data-password-change]');
+    assert.ok(form);
+    const current = form.querySelector('[name="currentPassword"]');
+    const next = form.querySelector('[name="newPassword"]');
+    const confirm = form.querySelector('[name="confirmPassword"]');
+    await act(async () => {
+      current.value = 'old-password';
+      next.value = 'new-password';
+      confirm.value = 'new-password';
+      form.dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
+    });
+    assert.deepEqual(calls.map(call => [call.url, call.options.method, JSON.parse(call.options.body)]), [
+      ['/api/gihub-auth/change-password', 'POST', { currentPassword: 'old-password', newPassword: 'new-password' }],
+    ]);
+    assert.equal(current.value, '');
+    assert.equal(next.value, '');
+    assert.equal(confirm.value, '');
+    assert.match(document.body.textContent, /Welcome, Doctor/);
+    assert.match(document.querySelector('[role="status"]')?.textContent || '', /password changed/i);
+  });
+});
+
 test('failed logout retains the signed-in account and alerts; successful 204 clears it', async () => {
   await mount(async document => {
     const calls = [];

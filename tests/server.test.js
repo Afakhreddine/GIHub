@@ -32,7 +32,7 @@ test('app.js loads through require(), as Hostinger\'s lsnode loader does', () =>
 test('Vercel rewrites each same-origin GIHub auth endpoint to the auth function', async () => {
   const config = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url), 'utf8'));
   const rewriteMap = new Map(config.rewrites.map(({ source, destination }) => [source, destination]));
-  for (const action of ['login', 'logout', 'me', 'profile']) {
+  for (const action of ['login', 'logout', 'me', 'profile', 'change-password']) {
     assert.equal(rewriteMap.get(`/api/gihub-auth/${action}`), `/api/gihub-auth?action=${action}`);
   }
 });
