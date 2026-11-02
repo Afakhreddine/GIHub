@@ -26,6 +26,16 @@ test("current schedule topics have public guidelines and quizzes", () => {
   }
 });
 
+test("November Appendix and Anus lecture uses verified guideline records and no unrelated article cards", () => {
+  const lecture = scheduleResources["appendix-and-anus-pathology"];
+  assert.deepEqual(
+    lecture.guidelines.map(item => item.url),
+    ["https://pubmed.ncbi.nlm.nih.gov/31725580/", "https://pubmed.ncbi.nlm.nih.gov/29878949/"],
+  );
+  assert.deepEqual(sanitizeScheduleResourceForPublic(lecture).newsAndArticles, []);
+  assert.equal(lecture.quiz.length, 10);
+});
+
 test("October AI lecture lists the AGA living CADe guideline, not the CGH practical guide, and has a source-PDF guideline quiz", () => {
   const lecture = scheduleResources["ai-in-gi-research"];
   assert.ok(lecture.guidelines.some(item => item.org === "AGA" && /Living Clinical Practice Guideline on Computer-Aided Detection/i.test(item.title) && item.url === "https://pubmed.ncbi.nlm.nih.gov/40121061/"));
