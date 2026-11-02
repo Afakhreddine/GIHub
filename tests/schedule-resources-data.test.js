@@ -4,12 +4,11 @@ import scheduleResources from "../src/data/scheduleResources.js";
 import { CALENDAR_EVENTS } from "../src/scheduleConfig.js";
 import { sanitizeScheduleResourceForPublic } from "../src/scheduleResourcesModel.js";
 
-const clickableOctoberEvents = CALENDAR_EVENTS.filter(event => event.slug);
+const clickableEvents = CALENDAR_EVENTS.filter(event => event.slug);
 
-test("October schedule topics have public guidelines and quizzes", () => {
-  assert.equal(clickableOctoberEvents.length, 6);
-
-  for (const event of clickableOctoberEvents) {
+test("current schedule topics have public guidelines and quizzes", () => {
+  assert.deepEqual(clickableEvents.map(event => event.slug), ["appendix-and-anus-pathology"]);
+  for (const event of clickableEvents) {
     const resource = scheduleResources[event.slug];
     assert.ok(resource, `${event.slug} should have a schedule resource bundle`);
     assert.ok(Array.isArray(resource.guidelines), `${event.slug} guidelines should be an array`);
@@ -42,8 +41,7 @@ test("October AI lecture lists the AGA living CADe guideline, not the CGH practi
 
 test("AI lecture presents verified citations from the speaker's slides as public News and Articles", () => {
   const lecture = scheduleResources["ai-in-gi-research"];
-  const event = CALENDAR_EVENTS.find(item => item.slug === "ai-in-gi-research");
-  assert.equal(event.date, "2026-10-27");
+  const eventDate = "2026-10-27"; // Historical speaker-slide citations retain their original event date.
   const citedPmids = ["41504353", "41920565", "42879271", "40816301", "40834302"];
   const publicArticles = sanitizeScheduleResourceForPublic(lecture).newsAndArticles;
   for (const pmid of citedPmids) {
@@ -51,7 +49,7 @@ test("AI lecture presents verified citations from the speaker's slides as public
     assert.equal(matches.length, 1, `presentation citation ${pmid} should appear exactly once publicly`);
     assert.equal(matches[0].url, `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`);
     assert.equal(matches[0].status, "approved");
-    assert.equal(matches[0].eventDate, event.date);
+    assert.equal(matches[0].eventDate, eventDate);
   }
   for (const url of [
     "https://palisaderesearch.github.io/shutdown_avoidance/2025-05-announcement.html",
