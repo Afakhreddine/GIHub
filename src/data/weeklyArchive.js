@@ -3,6 +3,18 @@
 
 const weeklyArchive = [
   {
+    "title": "Alcohol-attributable cancer mortality in the United States more than doubled since 1990",
+    "oneLineSummary": "A secondary analysis of Global Burden of Disease estimates found annual U.S.",
+    "doi": "10.1016/j.lana.2026.101599",
+    "pmid": "",
+    "source": "gastroendonews.com / The Lancet Regional Health - Americas",
+    "url": "https://doi.org/10.1016/j.lana.2026.101599",
+    "date": "Oct 29, 2026",
+    "topic": "Cancer Prevention",
+    "type": "Research",
+    "archivedFrom": "2026-11-02"
+  },
+  {
     "title": "PROFILE follow-up links anti-TNF at diagnosis to fewer surgeries in Crohn disease",
     "oneLineSummary": "Stricturing or penetrating progression was 7% versus 17%, and hospitalization was 11% versus 21%; however, follow-up after week 48 was retrospective, treatment reverted to local practice, and event counts were low.",
     "doi": "10.1016/S2468-1253(26",
