@@ -54,14 +54,14 @@ test("schedule review defaults to the current published schedule slugs", () => {
         { title:"Old September card", url:"https://example.com/old", sourceRepository:"targeted-online-pull" },
       ],
     },
-    "colon-polyps-pathology": {
+    "appendix-and-anus-pathology": {
       newsAndArticles:[
-        { title:"Current October card", url:"https://example.com/current", sourceRepository:"targeted-online-pull" },
+        { title:"Current November card", url:"https://example.com/current", sourceRepository:"targeted-online-pull" },
       ],
     },
   };
   const items = flattenScheduleReviewItems(resources);
-  assert.deepEqual(items.map(item => item.title), ["Current October card"]);
+  assert.deepEqual(items.map(item => item.title), ["Current November card"]);
 });
 
 test("schedule review filters and publication readiness mirror weekly review", () => {
