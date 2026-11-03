@@ -218,3 +218,20 @@ test("/api/claude returns only fresh new-guideline alerts and includes repo-mana
   assert.equal(polyposis.url, "https://pubmed.ncbi.nlm.nih.gov/42683623/");
   assert.equal(res.body.data[0].title, polyposis.title, "newest repo-managed addition should sort first by addedAt");
 });
+
+test("new-guidelines banner includes recently approved repo-managed records on Nov 3", async () => {
+  const originalNow = Date.now;
+  Date.now = () => Date.parse("2026-11-03T12:00:00Z");
+  mockRedis({ "gihub:guidelines:new": [] });
+  const req = { method: "POST", body: { type: "content", section: "guidelines-new" } };
+  const res = mockResponse();
+  try {
+    await handler(req, res);
+  } finally {
+    Date.now = originalNow;
+  }
+  assert.equal(res.statusCode, 200);
+  assert.ok(res.body.data.some(item => item.title === "ACG Clinical Guideline: Preventive Care for Patients With Cirrhosis" && item.url === "https://pubmed.ncbi.nlm.nih.gov/42831646/"));
+  assert.ok(res.body.data.some(item => item.title === "AGA/AASLD Clinical Practice Guideline on Management of Primary Biliary Cholangitis" && item.url === "https://pubmed.ncbi.nlm.nih.gov/42914292/"));
+  assert.ok(res.body.data.every(item => item.title !== "ACG Clinical Guideline: Diagnosis and Management of Adenomatous Colorectal Polyposis Syndromes"), "expired alerts must stay hidden");
+});
