@@ -100,7 +100,17 @@ test('failed logout retains the signed-in account and alerts; successful 204 cle
   });
 });
 
-test('duplicate username 409 gives actionable profile alert and preserves current account', async () => {
+test('invalid profile values show a field-neutral validation message', async () => {
+  await mount(async document => {
+    globalThis.fetch = async () => Response.json({ error: 'Invalid profile' }, { status: 400 });
+    await act(async () => document.querySelector('form').dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true })));
+    const alert = document.querySelector('[role="alert"]')?.textContent || '';
+    assert.match(alert, /profile field lengths/i);
+    assert.doesNotMatch(alert, /username|specialty|institution/i);
+  });
+});
+
+test('hidden profile fields are preserved on save and conflict errors do not mention removed fields', async () => {
   await mount(async document => {
     let body;
     globalThis.fetch = async (_url, options) => {
@@ -108,8 +118,9 @@ test('duplicate username 409 gives actionable profile alert and preserves curren
       return Response.json({ error: 'Username is already taken' }, { status: 409 });
     };
     await act(async () => document.querySelector('form').dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true })));
-    assert.equal(body.username, 'doctor_7');
+    assert.deepEqual(body, account.profile);
     assert.match(document.body.textContent, /Welcome, Doctor/);
-    assert.match(document.querySelector('[role="alert"]')?.textContent || '', /username.*taken/i);
+    assert.doesNotMatch(document.body.textContent, /Username|Specialty|Institution/i);
+    assert.match(document.querySelector('[role="alert"]')?.textContent || '', /profile could not be saved/i);
   });
 });

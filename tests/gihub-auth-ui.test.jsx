@@ -33,12 +33,9 @@ test('signed-in profile exposes editable basic fields and keeps email read-only'
   const html = renderToStaticMarkup(<AuthProfile initialAccount={account} skipSessionCheck />);
   assert.match(html, /<input type="email"[^>]*readOnly=""[^>]*value="doctor@example.com"/);
   assert.match(html, /Email remains your sign-in/);
-  assert.match(html, /pattern="\[a-z\]\[a-z0-9_\]\{2,29\}"[^>]*name="username"[^>]*value="dr_example"/);
-  assert.match(html, /Optional.*lowercase/);
   assert.match(html, /value="Dr\. Example"/);
-  assert.match(html, /value="Hepatology"/);
-  assert.match(html, /value="City Hospital"/);
   assert.match(html, />Clinician educator\.<\/textarea>/);
+  assert.doesNotMatch(html, /Username|name="username"|dr_example|Hepatology|City Hospital|Specialty|Institution/i);
   assert.match(html, /Save profile/);
   assert.match(html, /Sign out/);
 });
