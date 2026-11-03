@@ -15,7 +15,6 @@
 .auth-profile__form textarea { line-height: 1.55; resize: vertical; }
 .auth-profile__form input[readonly] { background: #edf5f7; color: #536b7b; cursor: not-allowed; }
 .auth-profile__form small { margin-top: -13px; color: #657b8a; }
-.auth-profile__row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .auth-profile__notice { margin: 0; padding: 13px 15px; border-left: 4px solid #0b93bb; border-radius: 8px; background: #eaf8fc; color: #36556a; font-size: .82rem; line-height: 1.5; }
 .auth-profile__primary, .auth-profile__secondary { min-height: 44px; border-radius: 999px; font: inherit; font-size: .86rem; font-weight: 800; cursor: pointer; }
 .auth-profile__primary { align-self: flex-start; min-width: 130px; padding: 11px 22px; border: 1px solid #087c9e; background: #087c9e; color: #fff; }
@@ -27,5 +26,5 @@
 .auth-profile__external:hover { text-decoration: underline; }
 .auth-profile__message { margin: 0; color: #8b3e3e; font-size: .83rem; line-height: 1.5; }
 .auth-profile__actions + .auth-profile__message { color: #116e59; }
-@media (max-width: 620px) { .auth-profile__header { flex-direction: column; } .auth-profile__row { grid-template-columns: 1fr; } .auth-profile__primary, .auth-profile__secondary { width: 100%; } .auth-profile__actions { align-items: stretch; flex-direction: column; } }
+@media (max-width: 620px) { .auth-profile__header { flex-direction: column; } .auth-profile__primary, .auth-profile__secondary { width: 100%; } .auth-profile__actions { align-items: stretch; flex-direction: column; } }
 @media (prefers-reduced-motion: reduce) { .auth-profile * { scroll-behavior: auto !important; } }

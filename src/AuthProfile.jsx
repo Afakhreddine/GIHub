@@ -73,7 +73,7 @@ export default function AuthProfile({ initialAccount, skipSessionCheck = false }
       setMessage('Profile saved.');
     } catch (error) {
       if (error.status === 401) setAccount(null);
-      setMessage(error.status === 409 ? 'Username is already taken. Please choose another.' : error.status === 400 ? 'Please check the username and profile field lengths.' : 'Profile could not be saved. Please try again.');
+      setMessage(error.status === 409 ? 'Profile could not be saved. Please try again.' : error.status === 400 ? 'Please check the profile field lengths.' : 'Profile could not be saved. Please try again.');
     } finally {
       setBusy(false);
     }
@@ -144,14 +144,8 @@ export default function AuthProfile({ initialAccount, skipSessionCheck = false }
     <div className="auth-profile__header"><div><p className="auth-profile__eyebrow">GIHub profile</p><h1 id="gihub-profile-title">Welcome, {profile.displayName || account.user.name}</h1><p>Your profile is stored with EndoEval and revalidated whenever GIHub loads it.</p></div><button className="auth-profile__secondary" type="button" onClick={logout} disabled={busy}>Sign out</button></div>
     <form key="signed-in" className="auth-profile__card auth-profile__form" onSubmit={saveProfile}>
       <label>Email<input type="email" value={account.user.email} readOnly aria-describedby="email-help" /></label>
-      <small id="email-help">Email remains your sign-in on GIHub and EndoEval; a username does not replace it.</small>
-      <label>Username (optional)<input name="username" pattern="[a-z][a-z0-9_]{2,29}" maxLength={30} value={profile.username} onChange={event => setProfile({ ...profile, username: event.target.value })} /></label>
-      <small>Optional: 3–30 lowercase letters, digits, or underscores; start with a letter. Leave blank if you do not want a username.</small>
+      <small id="email-help">Email remains your sign-in on GIHub and EndoEval.</small>
       <label>Display name<input value={profile.displayName} maxLength={200} onChange={event => setProfile({ ...profile, displayName: event.target.value })} /></label>
-      <div className="auth-profile__row">
-        <label>Specialty<input value={profile.specialty} maxLength={200} onChange={event => setProfile({ ...profile, specialty: event.target.value })} /></label>
-        <label>Institution<input value={profile.institution} maxLength={300} onChange={event => setProfile({ ...profile, institution: event.target.value })} /></label>
-      </div>
       <label>Bio<textarea value={profile.bio} maxLength={4000} rows={6} onChange={event => setProfile({ ...profile, bio: event.target.value })} /></label>
       <div className="auth-profile__actions"><button className="auth-profile__primary" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save profile'}</button></div>
       {message && <p className="auth-profile__message" role={message === 'Profile saved.' ? 'status' : 'alert'}>{message}</p>}
