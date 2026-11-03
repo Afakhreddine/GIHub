@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import App from '../src/App.jsx';
+import weeklyPodcasts from '../src/data/weeklyPodcasts.js';
 
 test('home presents real public GIHub sections and the published episode', () => {
   const html = renderToStaticMarkup(<App initialActive="home" />);
@@ -10,7 +11,7 @@ test('home presents real public GIHub sections and the published episode', () =>
   assert.match(html, /Weekly Update/);
   assert.match(html, /Education/);
   assert.match(html, /Schedule/);
-  assert.match(html, /Oct(?:ober)? 15,? 2026|October 15, 2026/);
+  assert.match(html, new RegExp(weeklyPodcasts[0].displayDate));
   assert.doesNotMatch(html, /Novel biologic strategy shows durable response/);
 });
 

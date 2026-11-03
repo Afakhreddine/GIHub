@@ -121,6 +121,7 @@ function WeeklyPodcastPanel({ podcasts = weeklyPodcasts }) {
         <div style={{ flex:"1 1 320px" }}>
           <div style={{ fontSize:11, fontWeight:800, color:"#a66b11", fontFamily:"monospace", letterSpacing:0.8, textTransform:"uppercase", marginBottom:6 }}>🎧 Weekly Podcast</div>
           <h2 style={{ fontSize:18, color:"#17324d", lineHeight:1.35, marginBottom:6 }}>{selected.title}</h2>
+          {selected.editorialNote && <p role="note" style={{ fontSize:12.5, color:"#754314", background:"#fff4db", border:"1px solid #e9c98f", padding:"10px 12px", borderRadius:8, lineHeight:1.6, maxWidth:760 }}><strong>Editorial corrections to this unedited recording:</strong> {selected.editorialNote}</p>}
           <p style={{ fontSize:12.5, color:"#516779", lineHeight:1.65, maxWidth:760 }}>{selected.description}</p>
           <div style={{ display:"flex", flexWrap:"wrap", gap:7, marginTop:10 }}>
             <Badge label={selected.displayDate} color="#17324d" />
