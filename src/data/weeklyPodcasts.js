@@ -1,5 +1,16 @@
 const weeklyPodcasts = [
   {
+    id: "weekly-2026-11-02",
+    title: "GIHub Weekly Update Podcast — Nov 2, 2026",
+    date: "2026-11-02",
+    displayDate: "Nov 2, 2026",
+    duration: "39:03",
+    sourceCount: 6,
+    audioUrl: "/audio/weekly/weekly-2026-11-02-attempt-3.mp3",
+    description: "The original, unedited attempt-3 recording covering alcohol-attributable cancer mortality, refractory constipation, young-adult colorectal neoplasia, GERD treatment cost-effectiveness, PBC treatment targets, and Zenker diverticulum repair. Sources: six verified original full-article PDFs. Published at the website owner's explicit request after editorial review identified the corrections below.",
+    editorialNote: "Corrections to the unedited audio: at 06:08, the source does not establish that hepatitis C- or metabolic-related liver-cancer mortality rose at the same pace as alcohol-attributable mortality; at 24:46, reducing PCAB cost below $91/week makes PCABs (not PPIs) cost-effective in the model; at 31:28, calling the conventional 12-month PBC response assessment ‘arbitrary’ overstates the evidence; at 36:43, the Zenker study did not report a power calculation supporting ‘vastly underpowered’ or ‘hundreds per arm.’ Please consult the original articles for clinical decisions."
+  },
+  {
     id: "weekly-2026-10-15",
     title: "GIHub Weekly Update Podcast — Oct 15, 2026",
     date: "2026-10-15",
@@ -18,16 +29,6 @@ const weeklyPodcasts = [
     sourceCount: 4,
     audioUrl: "/audio/weekly/weekly-2026-10-02.mp3",
     description: "Audio review of four fresh GIHub Weekly Update studies, covering apraglutide for short bowel syndrome-intestinal failure, elafibranor in primary biliary cholangitis, malignancy risk in Crohn's disease, and a colorectal cancer microbiome recurrence biomarker study."
-  },
-  {
-    id: "weekly-2026-09-29",
-    title: "GIHub Weekly Update Podcast — Sep 29, 2026",
-    date: "2026-09-29",
-    displayDate: "Sep 29, 2026",
-    duration: "15:49",
-    sourceCount: 8,
-    audioUrl: "/audio/weekly/weekly-2026-09-29.mp3",
-    description: "Audio review of the published GIHub Weekly Update cards, including lirafugratinib for FGFR2-altered cholangiocarcinoma, gastric intestinal metaplasia risk, PSC screening in new IBD, advanced IBD therapy safety, Crohn's surgery trends, HCV follow-up RNA testing, microscopic colitis risk signals, and GLP-1 receptor agonist gastrointestinal/hepatobiliary adverse-event data."
   }
 ];
 
