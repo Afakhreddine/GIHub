@@ -1,3 +1,5 @@
+import { validCommunitySource } from "./communityReviewMatch.js";
+
 const MONTH_SCORE = {
   jan: 1, january: 1,
   feb: 2, february: 2,
@@ -192,10 +194,11 @@ export function mergeScheduleResourceCandidates(resources = {}, matches = []) {
 }
 
 const PUBLIC_APPROVED_STATUSES = new Set(["approved", "published", "trusted"]);
-const PUBLIC_REVIEW_REPOSITORIES = new Set(["targeted-online-pull"]);
+const PUBLIC_REVIEW_REPOSITORIES = new Set(["targeted-online-pull", "community-suggestion"]);
 
 export function isPublicApprovedResource(item = {}) {
   if (!item || typeof item !== "object") return false;
+  if (item.sourceRepository === "community-suggestion" && !validCommunitySource(item)) return false;
   if (item.status && !PUBLIC_APPROVED_STATUSES.has(item.status)) return false;
   if (!item.status && PUBLIC_REVIEW_REPOSITORIES.has(item.sourceRepository)) return false;
   return true;
@@ -203,6 +206,7 @@ export function isPublicApprovedResource(item = {}) {
 
 export function isPublicScheduleNewsArticle(item = {}) {
   if (!item || typeof item !== "object") return false;
+  if (item.sourceRepository === "community-suggestion") return PUBLIC_APPROVED_STATUSES.has(item.status) && validCommunitySource(item);
   if (PUBLIC_REVIEW_REPOSITORIES.has(item.sourceRepository)) return PUBLIC_APPROVED_STATUSES.has(item.status);
   return !["rejected", "reject", "held", "hold"].includes(String(item.status || "").toLowerCase());
 }

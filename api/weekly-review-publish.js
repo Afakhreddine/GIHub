@@ -1,4 +1,5 @@
 import { loadPrChecksState } from "../src/githubChecks.js";
+import { validCommunityApprovals } from "../src/communityReviewMatch.js";
 
 const DEFAULT_OWNER = "Afakhreddine";
 const DEFAULT_REPO = "GIHub";
@@ -31,11 +32,19 @@ export function validatePublishRequest(req, env = process.env) {
   if (!Array.isArray(req?.body?.approvedItems) || req.body.approvedItems.length === 0) {
     return { ok:false, status:400, error:"No approved cards were provided for publication." };
   }
+  const selected = req.body.approvedItems;
+  if (!validCommunityApprovals(selected, Object.fromEntries(selected.map((_, index) => [index, "Approve"])), (_, index) => index)) {
+    return { ok:false, status:400, error:"Approve at most one verified PubMed match per reader suggestion." };
+  }
   return { ok:true, config };
 }
 
 export function buildUpdatedWeeklyFile(items) {
   return `const weekly = ${JSON.stringify(items, null, 2)};\n\nexport default weekly;\n`;
+}
+
+export function prepareApprovedWeeklyItems(items = []) {
+  return items.map((item) => item.sourceRepository === "community-suggestion" ? { ...item, status:"approved" } : item);
 }
 
 function stableWeeklyItem(item) {
@@ -46,6 +55,13 @@ function stableWeeklyItem(item) {
     type:String(item?.type || "").trim(),
     url:String(item?.url || "").trim(),
     studyUrl:String(item?.studyUrl || "").trim(),
+    sourceRepository:String(item?.sourceRepository || "").trim(),
+    status:String(item?.status || "").trim(),
+    matchStatus:String(item?.matchStatus || "").trim(),
+    suggestionId:String(item?.suggestionId || "").trim(),
+    pmid:String(item?.pmid || "").trim(),
+    matchRank:item?.matchRank ?? "",
+    matchCount:item?.matchCount ?? "",
   };
 }
 
@@ -222,9 +238,10 @@ export async function publishWeeklyReview(config, payload) {
   const existingArchive = await loadArchiveFromBranch(config, pull.head.ref);
   const currentBranchItems = await loadWeeklyItemsFromRef(config, pull.head.ref);
   const archived = weeklyArchiveContainsItems(existingArchive, currentPublishedItems);
-  const branchAlreadyPrepared = weeklyItemsMatchApproved(currentBranchItems, payload.approvedItems || []);
+  const approvedItems = prepareApprovedWeeklyItems(payload.approvedItems || []);
+  const branchAlreadyPrepared = weeklyItemsMatchApproved(currentBranchItems, approvedItems);
   if (!archived || !branchAlreadyPrepared) {
-    return updateWeeklyFileOnBranch(config, pull, payload.approvedItems, payload.summary);
+    return updateWeeklyFileOnBranch(config, pull, approvedItems, payload.summary);
   }
 
   const checksState = await loadPrChecksState(githubFetch, config, pull.head.sha);

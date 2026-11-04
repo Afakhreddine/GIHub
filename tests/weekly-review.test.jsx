@@ -41,6 +41,18 @@ test("weekly review route renders repo-managed cards and review controls", () =>
   assert.match(html, /Publish approved/);
 });
 
+test("Weekly review presents a provisional PubMed shortlist as distinct purple options", () => {
+  const options = [
+    { ...weekly[0], title:"Candidate A", sourceRepository:"community-suggestion", suggestionId:"lead-123", pmid:"42476609", matchStatus:"provisional", matchRank:1, matchCount:2, matchReason:"China multicenter chronic diarrhea; inpatient status unconfirmed", studyUrl:"https://pubmed.ncbi.nlm.nih.gov/42476609/" },
+    { ...weekly[0], title:"Candidate B", sourceRepository:"community-suggestion", suggestionId:"lead-123", pmid:"34414201", matchStatus:"provisional", matchRank:2, matchCount:2, matchReason:"Includes inpatients; chronic diarrhea cohort not established", studyUrl:"https://pubmed.ncbi.nlm.nih.gov/34414201/" },
+  ];
+  const html = renderToStaticMarkup(<WeeklyReview items={options} />);
+  assert.match(html, /Best guess · option 1 of 2/);
+  assert.match(html, /Alternative · option 2 of 2/);
+  assert.match(html, /inpatient status unconfirmed/);
+  assert.doesNotMatch(html, /PMID verified/);
+});
+
 test("review pages do not show published production data while looking for an open PR", () => {
   for (const Component of [WeeklyReview, ScheduleReview, GuidelineReview]) {
     const html = renderToStaticMarkup(<Component />);
