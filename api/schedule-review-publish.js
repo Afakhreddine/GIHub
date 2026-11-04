@@ -41,7 +41,7 @@ function identity(item) {
 }
 
 function isReviewableNewSearchItem(item) {
-  return item?.sourceRepository === "targeted-online-pull";
+  return item?.sourceRepository === "targeted-online-pull" && item?.status === "candidate";
 }
 
 export function parseScheduleResourcesSource(source) {
@@ -79,8 +79,8 @@ export function filterScheduleResourcesToApproved(resources = {}, approvedItems 
 
 function stableScheduleResources(resources = {}) {
   return Object.fromEntries(Object.entries(resources).map(([slug, resource]) => [slug, {
-    guidelines:(resource.guidelines || []).map((item) => ({ title:item.title || "", url:item.url || "", org:item.org || "" })),
-    newsAndArticles:(resource.newsAndArticles || []).map((item) => ({ title:item.title || item.headline || "", url:item.url || "", pmid:item.pmid || "", doi:item.doi || "" })),
+    guidelines:(resource.guidelines || []).map((item) => ({ title:item.title || "", url:item.url || "", org:item.org || "", status:item.status || "approved" })),
+    newsAndArticles:(resource.newsAndArticles || []).map((item) => ({ title:item.title || item.headline || "", url:item.url || "", pmid:item.pmid || "", doi:item.doi || "", status:item.status || "approved" })),
   }]));
 }
 
