@@ -1,0 +1,25 @@
+.community-contribution { background:#eef6f4; border-block:1px solid #c9deda; padding:8px clamp(12px,3vw,32px); color:#153c38; }
+.community-contribution>label { display:block; font-size:.83rem; font-weight:700; margin-bottom:5px; }
+.community-contribution__fields { display:flex; gap:8px; align-items:center; }
+.community-contribution input,.community-contribution button { font:inherit; border-radius:7px; padding:7px 10px; border:1px solid #a9c4bd; }
+.community-contribution input { flex:1; min-width:0; }
+.community-contribution__choices { display:flex; gap:5px; }
+.community-contribution__choices button { background:#fff; color:#126a61; cursor:pointer; white-space:nowrap; }
+.community-contribution__choices button[aria-pressed="true"] { background:#174e46; color:white; border-color:#174e46; }
+.community-contribution__fields>button,.community-discussion button[type=submit] { background:#126a61; color:white; border:0; cursor:pointer; }
+.community-contribution p { margin:4px 0 0; font-size:.85rem; }
+.community-discussion { margin-top:12px; color:#233; }
+.community-discussion>button { background:transparent; border:1px solid #baccc9; border-radius:20px; color:#126a61; padding:5px 12px; cursor:pointer; font:inherit; }
+.community-discussion__thread { margin-top:10px; padding:12px; border:1px solid #d4e2df; border-radius:9px; background:#f8fbfa; max-width:700px; }
+.community-discussion__thread h3 { font-size:1rem; margin:0 0 8px; }
+.community-discussion__thread ol { padding-left:22px; }
+.community-discussion__thread li { margin-bottom:12px; overflow-wrap:anywhere; }
+.community-discussion__thread li>button { background:transparent; color:#315853; border:1px solid #c6d6d2; border-radius:5px; cursor:pointer; font-size:.77rem; padding:3px 8px; }
+.community-discussion__thread li form { margin-top:7px; }
+.community-discussion__thread li select { margin-inline:6px; padding:5px; border:1px solid #9bb4ad; border-radius:5px; }
+.community-discussion__thread time { font-size:.8rem; color:#61746f; }
+.community-discussion__thread p { margin:5px 0; }
+.community-discussion__thread textarea { display:block; width:100%; box-sizing:border-box; min-height:78px; margin:6px 0; resize:vertical; font:inherit; }
+.community-discussion__thread button[type=submit] { padding:8px 14px; border-radius:7px; font:inherit; }
+.community-discussion__thread button:disabled { opacity:.6; }
+@media(max-width:680px) { .community-contribution__fields { flex-wrap:wrap; } .community-contribution input { flex-basis:100%; order:2; } .community-contribution__fields>button { order:3; } }

@@ -5,6 +5,9 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "functions": {
+    "api/community.js": {
+      "maxDuration": 15
+    },
     "api/gihub-auth.js": {
       "maxDuration": 10
     },
@@ -22,6 +25,10 @@
     }
   },
   "rewrites": [
+    {
+      "source": "/api/community",
+      "destination": "/api/community"
+    },
     {
       "source": "/api/gihub-auth/login",
       "destination": "/api/gihub-auth?action=login"

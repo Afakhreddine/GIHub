@@ -7,6 +7,8 @@ import scheduleResources from "./data/scheduleResources.js";
 import { isPublicApprovedResource, sanitizeScheduleResourceForPublic } from "./scheduleResourcesModel.js";
 import Home from "./Home.jsx";
 import AuthProfile from "./AuthProfile.jsx";
+import { ContributionBar, Discussion } from "./Community.jsx";
+import { articleTarget, podcastTarget, quizTarget } from "./communityTargets.js";
 import { publicTabForPath, publicPathForTab } from "./publicRoutes.js";
 import { resolveGuidelineLink } from "./guidelineLinks.js";
 
@@ -68,7 +70,7 @@ function Spinner({ size=16, color="#0b93bb" }) {
   return <span style={{ display:"inline-block", width:size, height:size, border:`2px solid ${color}33`, borderTop:`2px solid ${color}`, borderRadius:"50%", animation:"spin 0.7s linear infinite", flexShrink:0 }} />;
 }
 
-function ContentCard({ item, type }) {
+function ContentCard({ item, type, account }) {
   const [hov, setHov] = useState(false);
   const ac = SECTION_META[type]?.color || "#0b93bb";
   const isWeekly = type === "weekly";
@@ -101,6 +103,7 @@ function ContentCard({ item, type }) {
           </button>
         </div>
       )}
+      {isWeekly&&<Discussion target={articleTarget(item)} account={account} />}
       {hov&&item.url&&(
         <div style={{ fontSize:11, color:ac, fontFamily:"monospace", marginTop:2 }}>View source ↗</div>
       )}
@@ -108,7 +111,7 @@ function ContentCard({ item, type }) {
   );
 }
 
-function WeeklyPodcastPanel({ podcasts = weeklyPodcasts }) {
+function WeeklyPodcastPanel({ podcasts = weeklyPodcasts, account }) {
   const [selectedId, setSelectedId] = useState(podcasts[0]?.id || "");
   if (!podcasts.length) return null;
 
@@ -146,11 +149,12 @@ function WeeklyPodcastPanel({ podcasts = weeklyPodcasts }) {
         <a href={selected.audioUrl} download style={{ color:"#0b779b", fontSize:12, fontWeight:700, textDecoration:"none" }}>Download MP3 ↧</a>
         <span style={{ color:"#536b7b", fontSize:11, fontFamily:"monospace" }}>Rolling archive: latest {podcasts.length} Weekly Update podcasts stored in-repo</span>
       </div>
+      <Discussion key={selected.id} target={podcastTarget(selected)} account={account} label="Discuss this episode" />
     </section>
   );
 }
 
-function ContentSection({ type }) {
+function ContentSection({ type, account }) {
   const meta = SECTION_META[type];
   const [search, setSearch]     = useState("");
   const isRepoManaged = type === "weekly";
@@ -229,12 +233,12 @@ function ContentSection({ type }) {
             style={{ background:"#fff", border:"1px solid #bfdce5", borderRadius:10, color:"#17324d", fontSize:13, padding:"9px 12px 9px 32px", outline:"none", width:170 }}/>
         </div>
       </div>
-      {type === "weekly" && <WeeklyPodcastPanel />}
+      {type === "weekly" && <WeeklyPodcastPanel account={account} />}
       {search&&<div style={{ marginBottom:14, fontSize:12, color:"#536b7b", fontFamily:"monospace" }}>{filtered.length} result{filtered.length!==1?"s":""} for "{search}" <button onClick={()=>setSearch("")} style={{ background:"none", border:"none", color:"#0b93bb", fontSize:12, cursor:"pointer" }}>✕</button></div>}
       {filtered.length===0
         ?<div style={{ textAlign:"center", padding:"40px 0", color:"#536b7b" }}>No results for "{search}"</div>
         :<div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(min(100%,440px),1fr))", gap:14 }}>
-           {filtered.map((item,i)=><ContentCard key={i} item={item} type={type}/>)}
+           {filtered.map((item,i)=><ContentCard key={i} item={item} type={type} account={account}/>)}
          </div>}
       {type === "guidelines" && pages > 1 && !search && (
         <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:12, marginTop:28 }}>
@@ -544,7 +548,7 @@ function QuizDisplay({ quiz }) {
 }
 
 // ── LECTURE DETAIL PANEL ──────────────────────────────────────────────────────
-function LectureDetailPanel({ event, onClose }) {
+function LectureDetailPanel({ event, onClose, account }) {
   const [data, setData]                   = useState(null);
   const [loading, setLoading]             = useState(true);
   const [showQuiz, setShowQuiz]           = useState(false);
@@ -637,7 +641,7 @@ function LectureDetailPanel({ event, onClose }) {
                   </button>
                 )}
                 {hasQuiz&&showQuiz&&(
-                  <QuizDisplay quiz={data.quiz}/>
+                  <><QuizDisplay quiz={data.quiz}/><Discussion target={quizTarget(event.slug)} account={account} label="Discuss this quiz" /></>
                 )}
               </div>
             );
@@ -659,6 +663,7 @@ function LectureDetailPanel({ event, onClose }) {
                       {item.authors&&<div style={{ fontSize:11, color:"#536b7b", fontStyle:"italic", marginBottom:4 }}>{item.authors}</div>}
                       <div style={{ fontSize:12, color:"#516779", lineHeight:1.7 }}>{item.oneLineSummary || item.summary}</div>
                       {(item.doi||item.pmid)&&<div style={{ marginTop:6, fontSize:10.5, color:"#536b7b", fontFamily:"monospace" }}>{item.doi?`DOI ${item.doi}`:`PMID ${item.pmid}`}</div>}
+                      <Discussion target={articleTarget(item)} account={account} />
                     </div>
                   ))}
                 </div>
@@ -672,7 +677,7 @@ function LectureDetailPanel({ event, onClose }) {
   );
 }
 
-function ScheduleSection() {
+function ScheduleSection({ account }) {
   const [selectedEvent, setSelectedEvent] = useState(() => {
     if (typeof window === "undefined") return null;
     const slug = new URLSearchParams(window.location.search).get("lecture");
@@ -740,7 +745,7 @@ function ScheduleSection() {
       {selectedEvent&&(
         <>
           <div onClick={closeSelectedEvent} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", zIndex:199 }}/>
-          <LectureDetailPanel event={selectedEvent} onClose={closeSelectedEvent}/>
+          <LectureDetailPanel event={selectedEvent} onClose={closeSelectedEvent} account={account}/>
         </>
       )}
     </div>
@@ -756,7 +761,16 @@ const TABS = [
   { id:"profile",    label:"Profile",             icon:"👤" },
 ];
 
-export default function GIHub({ initialActive = "home" }) {
+export default function GIHub({ initialActive = "home", initialAccount = null }) {
+  const [account, setAccount] = useState(initialAccount);
+  useEffect(() => {
+    let live = true;
+    const refresh = () => fetch('/api/gihub-auth/me').then(response => response.ok ? response.json() : null)
+      .then(value => { if (live) setAccount(value); }).catch(() => { if (live) setAccount(null); });
+    refresh();
+    window.addEventListener('gihub:auth-changed', refresh);
+    return () => { live = false; window.removeEventListener('gihub:auth-changed', refresh); };
+  }, []);
   const [active, setActive] = useState(
     // The standalone AI quiz was retired; old links fall back to Guidelines.
     initialActive === "quiz" ? "guidelines" : initialActive
@@ -805,13 +819,14 @@ export default function GIHub({ initialActive = "home" }) {
           </div>
         </div>
       </div>
+      <ContributionBar account={account}/>
       <div style={{ maxWidth:1100, margin:"0 auto", padding:"38px 32px 0" }}>
         {active==="home"&&<Home onNavigate={navigate}/>}
         {active==="guidelines"&&<GuidelinesSection/>}
-        {active==="weekly"    &&<ContentSection key="weekly"     type="weekly"/>}
+        {active==="weekly"    &&<ContentSection key="weekly"     type="weekly" account={account}/>}
         {active==="education" &&<EducationSection/>}
-        {active==="schedule"  &&<ScheduleSection/>}
-        {active==="profile"   &&<AuthProfile/>}
+        {active==="schedule"  &&<ScheduleSection account={account}/>}
+        {active==="profile"   &&<AuthProfile initialAccount={initialAccount || undefined}/>}
       </div>
       {active!=="home"&&<div style={{ maxWidth:1100, margin:"52px auto 0", padding:"18px 32px 0", borderTop:"1px solid #d6eaf0" }}>
         <p style={{ fontSize:10.5, color:"#536b7b", textAlign:"center", lineHeight:2, fontFamily:"monospace" }}>

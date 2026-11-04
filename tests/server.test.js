@@ -14,6 +14,7 @@ test('every api/*.js handler is mounted, and helper modules are not', async () =
   assert.deepEqual(Object.keys(apiHandlers).sort(), withHandlers.sort());
   assert.deepEqual(Object.keys(apiHandlers).sort(), [
     'claude',
+    'community',
     'gihub-auth',
     'schedule-review-data',
     'schedule-review-publish',
