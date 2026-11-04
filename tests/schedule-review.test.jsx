@@ -6,7 +6,7 @@ import scheduleResources from "../src/data/scheduleResources.js";
 import ScheduleReview from "../src/ScheduleReview.jsx";
 import ReviewHub from "../src/ReviewHub.jsx";
 import { parseScheduleResourcesModuleSource } from "../api/schedule-review-data.js";
-import { filterScheduleResourcesToApproved, parseScheduleResourcesSource } from "../api/schedule-review-publish.js";
+import { filterScheduleResourcesToApproved, parseScheduleResourcesSource, scheduleResourcesMatchApproved } from "../api/schedule-review-publish.js";
 import { flattenScheduleReviewItems } from "../src/scheduleReviewModel.js";
 
 test("schedule review route renders cards and publish controls", () => {
@@ -41,8 +41,9 @@ test("schedule publish filter preserves prior-approved resources and filters onl
       ],
       newsAndArticles:[
         { title:"Preserve archive article", url:"https://example.com/archive", source:"Journal", sourceRepository:"weekly-archive" },
-        { title:"Keep new article", url:"https://example.com/a1", source:"Journal", sourceRepository:"targeted-online-pull" },
-        { title:"Drop new article", url:"https://example.com/a2", source:"Journal", sourceRepository:"targeted-online-pull" },
+        { title:"Preserve older targeted article", url:"https://example.com/older", source:"Journal", sourceRepository:"targeted-online-pull", status:"approved" },
+        { title:"Keep new article", url:"https://example.com/a1", source:"Journal", sourceRepository:"targeted-online-pull", status:"candidate" },
+        { title:"Drop new article", url:"https://example.com/a2", source:"Journal", sourceRepository:"targeted-online-pull", status:"candidate" },
       ],
       quiz:[],
       quizStatus:"pending-autocontent-pdf-pull",
@@ -53,7 +54,11 @@ test("schedule publish filter preserves prior-approved resources and filters onl
   const filtered = filterScheduleResourcesToApproved(resources, approvedItems);
   assert.deepEqual(filtered["topic-a"].guidelines.map(item => item.title), ["Preserve guideline", "Keep new guideline"]);
   assert.ok(filtered["topic-a"].guidelines.every(item => item.status === "approved"));
-  assert.deepEqual(filtered["topic-a"].newsAndArticles.map(item => item.title), ["Preserve archive article", "Keep new article"]);
+  assert.deepEqual(filtered["topic-a"].newsAndArticles.map(item => item.title), ["Preserve archive article", "Preserve older targeted article", "Keep new article"]);
+  assert.equal(filtered["topic-a"].newsAndArticles[1].status, "approved");
+  assert.equal(filtered["topic-a"].newsAndArticles[2].status, "approved");
+  assert.equal(scheduleResourcesMatchApproved(resources, approvedItems), false, "candidate status requires branch preparation before merge");
+  assert.equal(scheduleResourcesMatchApproved(filtered, approvedItems), true);
   assert.equal(filtered["topic-a"].quizStatus, "pending-autocontent-pdf-pull");
   assert.equal(filtered["topic-a"].resourceStatus, "approved");
 });
