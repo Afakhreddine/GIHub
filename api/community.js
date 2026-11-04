@@ -79,7 +79,7 @@ export function createCommunityHandler({ env = process.env, fetchImpl = globalTh
       if (kind === 'submission') {
         const destination = req.body?.destination;
         const description = safeText(req.body?.description, 1500);
-        if (!['weekly', 'schedule'].includes(destination) || description.length < 8) return res.status(400).json({ error: 'Choose a destination and describe the article (8–1500 characters)' });
+        if (!['weekly', 'schedule'].includes(destination) || (description.length < 8 && !/^(?:PMID[:\s]*)?\d{5,9}$/i.test(description))) return res.status(400).json({ error: 'Choose a destination and enter a PMID, DOI, or article description' });
         const record = { id: crypto.randomUUID(), destination, description, authorId: account.user.id, authorName: account.profile.displayName || account.user.name, createdAt: new Date(now()).toISOString(), status: 'pending' };
         if (!await saveCommunityItem('submission', record, store)) return res.status(429).json({ error: 'Daily contribution limit reached' });
         return res.status(201).json({ id: record.id, status: record.status });

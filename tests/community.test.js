@@ -80,9 +80,12 @@ test('article contributions require a live account, valid origin and destination
   const { items } = await queued.json();
   assert.equal(items[0].description, payload.description);
   assert.equal(items[0].authorId, 7);
+  assert.equal((await post(base, { ...payload, description: '1234567' }, cookie)).status, 201);
   assert.equal((await review(base, 'submissions', id, 'reviewed')).status, 200);
   const cleared = await request(base, '/api/community?queue=submissions', { headers: { Authorization: `Bearer ${env.GIHUB_COMMUNITY_REVIEW_TOKEN}` } });
-  assert.equal((await cleared.json()).items.length, 0);
+  const remaining = (await cleared.json()).items;
+  assert.equal(remaining.length, 1);
+  assert.equal(remaining[0].description, '1234567');
 }));
 
 test('published article, episode and quiz threads stay moderated; unknown and candidate targets rejected', async () => withServer(async ({ base }) => {
@@ -110,4 +113,12 @@ test('community request body is bounded and never silently accepts oversized pay
   const result = await post(base, { kind: 'submission', destination: 'weekly', description: 'a'.repeat(12000) }, cookie);
   assert.equal(result.status, 413);
   assert.equal(result.headers.get('cache-control'), 'no-store');
+}));
+
+test('Redis-backed daily contribution limit rejects an eleventh write', async () => withServer(async ({ base, redis }) => {
+  const cookie = await login(base);
+  const payload = { kind: 'submission', destination: 'weekly', description: 'PMID 123456789' };
+  for (let i = 0; i < 10; i += 1) assert.equal((await post(base, payload, cookie)).status, 201);
+  assert.equal((await post(base, payload, cookie)).status, 429);
+  assert.equal(redis.writes, 10);
 }));

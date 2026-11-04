@@ -32,7 +32,7 @@ export function ContributionBar({ account }) {
         <button type="button" aria-pressed={destination === 'weekly'} onClick={() => setDestination('weekly')}>Weekly Update</button>
         <button type="button" aria-pressed={destination === 'schedule'} onClick={() => setDestination('schedule')}>Schedule</button>
       </div>
-      <input id="community-article" required minLength={8} maxLength={1500} value={description} onChange={event => setDescription(event.target.value)} placeholder="PMID, DOI, or describe the article and journal — we’ll find it!" />
+      <input id="community-article" required minLength={5} maxLength={1500} value={description} onChange={event => setDescription(event.target.value)} placeholder="PMID, DOI, or describe the article and journal — we’ll find it!" />
       <button type="submit" disabled={busy}>{busy ? 'Saving…' : 'Contribute'}</button>
     </div>
     <small>Article leads go to editorial review, not directly to the site. Do not include patient-identifying information.</small>
