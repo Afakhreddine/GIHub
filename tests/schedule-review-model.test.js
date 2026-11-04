@@ -31,10 +31,13 @@ test("schedule resources flatten into reviewable guideline and article cards", (
   assert.ok(items.every(item => item.slug && item.title));
 });
 
-test("schedule review only queues new targeted online search-result cards", () => {
+test("schedule review queues new guideline and article candidates but not trusted cards", () => {
   const resources = {
     "topic-a": {
-      guidelines:[{ org:"ACG", title:"Already trusted guideline", url:"https://example.com/g" }],
+      guidelines:[
+        { org:"ACG", title:"Already trusted guideline", url:"https://example.com/g" },
+        { org:"AASLD", title:"New guideline candidate", url:"https://example.com/new-g", status:"candidate" },
+      ],
       newsAndArticles:[
         { title:"Already approved archive card", url:"https://example.com/archive", sourceRepository:"weekly-archive" },
         { title:"New online candidate", url:"https://example.com/new", sourceRepository:"targeted-online-pull" },
@@ -43,8 +46,8 @@ test("schedule review only queues new targeted online search-result cards", () =
   };
   const allItems = flattenScheduleResources(resources);
   const reviewItems = flattenScheduleReviewItems(resources, new Set(["topic-a"]));
-  assert.equal(allItems.length, 3);
-  assert.deepEqual(reviewItems.map(item => item.title), ["New online candidate"]);
+  assert.equal(allItems.length, 4);
+  assert.deepEqual(reviewItems.map(item => item.title), ["New guideline candidate", "New online candidate"]);
 });
 
 test("schedule review defaults to the current published schedule slugs", () => {
@@ -54,6 +57,11 @@ test("schedule review defaults to the current published schedule slugs", () => {
         { title:"Old September card", url:"https://example.com/old", sourceRepository:"targeted-online-pull" },
       ],
     },
+    "portal-hypertension": {
+      newsAndArticles:[
+        { title:"Pending November lecture card", url:"https://example.com/portal", sourceRepository:"targeted-online-pull" },
+      ],
+    },
     "appendix-and-anus-pathology": {
       newsAndArticles:[
         { title:"Current November card", url:"https://example.com/current", sourceRepository:"targeted-online-pull" },
@@ -61,7 +69,7 @@ test("schedule review defaults to the current published schedule slugs", () => {
     },
   };
   const items = flattenScheduleReviewItems(resources);
-  assert.deepEqual(items.map(item => item.title), ["Current November card"]);
+  assert.deepEqual(items.map(item => item.title), ["Pending November lecture card", "Current November card"]);
 });
 
 test("schedule review filters and publication readiness mirror weekly review", () => {

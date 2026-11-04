@@ -60,15 +60,19 @@ export function filterScheduleResourcesToApproved(resources = {}, approvedItems 
   const approved = new Set((approvedItems || []).map(identity));
   const next = structuredClone(resources || {});
   for (const [slug, resource] of Object.entries(next)) {
-    resource.guidelines = (resource.guidelines || []).map((item) => ({ ...item, status:item.status || "approved" }));
+    resource.guidelines = (resource.guidelines || [])
+      .filter((item) => item.status !== "candidate" || approved.has(identity({ ...item, slug, kind:"Guideline", title:item.title || "", url:item.url || "" })))
+      .map((item) => ({ ...item, status:"approved" }));
     resource.newsAndArticles = (resource.newsAndArticles || [])
       .filter((item) => {
         if (!isReviewableNewSearchItem(item)) return true;
         return approved.has(identity({ ...item, slug, kind:"News and Articles", title:item.title || item.headline || "", url:item.url || "", pmid:item.pmid || "", doi:item.doi || "" }));
       })
       .map((item) => isReviewableNewSearchItem(item) ? ({ ...item, status:"approved" }) : item);
-    resource.resourceStatus = "approved";
-    resource.resourceNotes = "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.";
+    if (resource.resourceStatus !== "awaiting-conference-sources") {
+      resource.resourceStatus = "approved";
+      resource.resourceNotes = "Previously approved cards were preserved; new article and guideline candidates were filtered through Schedule Review. Lecture activation still requires a source-PDF quiz.";
+    }
   }
   return next;
 }

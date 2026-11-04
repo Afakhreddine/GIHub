@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { CALENDAR_MONTH, CALENDAR_EVENTS, LECTURE_TOPICS } from "../src/scheduleConfig.js";
+import { CALENDAR_MONTH, CALENDAR_EVENTS, LECTURE_TOPICS, RESOURCE_TOPICS } from "../src/scheduleConfig.js";
 
 test("November 2026 calendar follows the dated source image in chronological order", () => {
   assert.equal(CALENDAR_MONTH, "November 2026");
@@ -20,6 +20,13 @@ test("November 2026 calendar follows the dated source image in chronological ord
   ]);
 });
 
-test("only a lecture with approved resources and a quiz is clickable", () => {
+test("pending named lectures can be enriched without becoming clickable", () => {
+  assert.deepEqual(RESOURCE_TOPICS.map(({ slug }) => slug), [
+    "appendix-and-anus-pathology", "portal-hypertension", "cirrhosis-101", "post-aasld-update",
+  ]);
   assert.deepEqual(LECTURE_TOPICS.map(({ slug }) => slug), ["appendix-and-anus-pathology"]);
+  for (const slug of ["portal-hypertension", "cirrhosis-101", "post-aasld-update"]) {
+    assert.ok(RESOURCE_TOPICS.some(topic => topic.slug === slug));
+    assert.ok(!CALENDAR_EVENTS.some(event => event.slug === slug));
+  }
 });

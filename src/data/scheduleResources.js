@@ -1604,7 +1604,46 @@ const scheduleResources = {
         "status": "approved"
       }
     ],
-    "newsAndArticles": [],
+    "newsAndArticles": [
+      {
+        "section": "News and Articles",
+        "title": "Challenges in Consistent Histologic Diagnosis of Superficially Invasive Anal Squamous Cell Carcinoma.",
+        "oneLineSummary": "Eight pathologists reviewed 20 suspected early-invasive anal lesions; agreement was moderate (κ=0.46), highlighting diagnostic variability.",
+        "doi": "",
+        "pmid": "40635196",
+        "source": "Archives of pathology & laboratory medicine",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/40635196/",
+        "date": "Jul 2025",
+        "topic": "Appendix and Anus Pathology",
+        "type": "Research",
+        "relevanceScore": 9,
+        "relevanceReason": "PubMed-verified, selected for Appendix and Anus Pathology review.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull-curated",
+        "addedAt": "2026-11-04",
+        "eventDate": "2026-11-06"
+      },
+      {
+        "section": "News and Articles",
+        "title": "The clinical and pathological features of low-grade appendiceal mucinous neoplasm (LAMN).",
+        "oneLineSummary": "Retrospective 68-patient LAMN series describing pathological perforation and pseudomyxoma peritonei at diagnosis; single-center limitations apply.",
+        "doi": "",
+        "pmid": "41925804",
+        "source": "Discover oncology",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/41925804/",
+        "date": "Apr 2026",
+        "topic": "Appendix and Anus Pathology",
+        "type": "Research",
+        "relevanceScore": 9,
+        "relevanceReason": "PubMed-verified, selected for Appendix and Anus Pathology review.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull-curated",
+        "addedAt": "2026-11-04",
+        "eventDate": "2026-11-06"
+      }
+    ],
     "quiz": [
       {
         "question": "A 54-year-old patient presents with a visible anal mass. During physical examination, gentle distraction of the gluteal cheeks allows complete visualization of the entire lesion, which is centered 3 cm from the anal orifice. How should this lesion be classified according to standardized anatomical terminology?",
@@ -1732,7 +1771,7 @@ const scheduleResources = {
       "ascrs-anal-squamous-cell-cancers-2018-source-page.pdf"
     ],
     "quizGeneratedAt": "2026-10-10T04:20:00.000Z",
-    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
+    "resourceNotes": "Existing ASCRS guidelines and quiz preserved; two PubMed-verified pathology articles await Schedule Review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "approved"
   },
@@ -2903,6 +2942,139 @@ const scheduleResources = {
     "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "approved"
+  },
+  "portal-hypertension": {
+    "guidelines": [
+      {
+        "org": "AASLD",
+        "year": "2024",
+        "month": "May",
+        "topic": "Portal Hypertension",
+        "title": "AASLD Practice Guidance on risk stratification and management of portal hypertension and varices in cirrhosis.",
+        "summary": "Guidance on clinically significant portal hypertension, risk assessment, nonselective beta blockers and variceal prevention.",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/37870298/",
+        "status": "candidate"
+      }
+    ],
+    "newsAndArticles": [
+      {
+        "section": "News and Articles",
+        "title": "Efficacy and Safety of Carvedilol in Cirrhosis Patients With New-Onset Uncomplicated Ascites Without High-Risk Esophageal Varices (CARVE-AS Trial).",
+        "oneLineSummary": "Open-label randomized trial (104 patients): carvedilol reduced ascites complications and portal pressure; limited sample and design warrant appraisal.",
+        "doi": "",
+        "pmid": "40689908",
+        "source": "The American journal of gastroenterology",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/40689908/",
+        "date": "Jun 2026",
+        "topic": "Portal Hypertension",
+        "type": "Research",
+        "relevanceScore": 9,
+        "relevanceReason": "PubMed-verified, selected for Portal Hypertension review.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull-curated",
+        "addedAt": "2026-11-04",
+        "eventDate": "2026-11-10"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Refining the Baveno VII criteria for clinically significant portal hypertension: An individual patient data meta-analysis.",
+        "oneLineSummary": "Individual-patient meta-analysis (1,433 patients) examines Baveno VII liver-stiffness and platelet thresholds for CSPH, including an obesity/MASLD limitation.",
+        "doi": "",
+        "pmid": "41138818",
+        "source": "Journal of hepatology",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/41138818/",
+        "date": "Mar 2026",
+        "topic": "Portal Hypertension",
+        "type": "Meta-Analysis",
+        "relevanceScore": 9,
+        "relevanceReason": "PubMed-verified, selected for Portal Hypertension review.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull-curated",
+        "addedAt": "2026-11-04",
+        "eventDate": "2026-11-10"
+      }
+    ],
+    "quiz": [],
+    "resourceNotes": "Guideline and article candidates await Schedule Review; lecture stays non-clickable until approved resources and source-PDF quiz are ready.",
+    "quizStatus": "pending-source-pdf-quiz",
+    "resourceStatus": "candidate"
+  },
+  "cirrhosis-101": {
+    "guidelines": [
+      {
+        "org": "ACG",
+        "year": "2026",
+        "month": "Oct",
+        "topic": "Cirrhosis",
+        "title": "ACG Clinical Guideline: Preventive Care for Patients With Cirrhosis.",
+        "summary": "Prevention-focused recommendations for cirrhosis complications, infections, nutrition, exercise and osteoporosis care.",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/42831646/",
+        "status": "candidate"
+      },
+      {
+        "org": "AASLD",
+        "year": "2024",
+        "month": "Jun",
+        "topic": "Cirrhosis",
+        "title": "AASLD Practice Guidance on Acute-on-chronic liver failure and the management of critically ill patients with cirrhosis.",
+        "summary": "Guidance on diagnosis and management of acute-on-chronic liver failure and cirrhosis in critical illness.",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/37939273/",
+        "status": "candidate"
+      }
+    ],
+    "newsAndArticles": [
+      {
+        "section": "News and Articles",
+        "title": "Inpatient Management of Patients With Cirrhosis.",
+        "oneLineSummary": "Clinical review of current inpatient guidance for bleeding, infection, ascites and renal injury in cirrhosis.",
+        "doi": "",
+        "pmid": "41974013",
+        "source": "Annals of internal medicine",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/41974013/",
+        "date": "Apr 2026",
+        "topic": "Cirrhosis",
+        "type": "Review",
+        "relevanceScore": 9,
+        "relevanceReason": "PubMed-verified, selected for Cirrhosis review.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull-curated",
+        "addedAt": "2026-11-04",
+        "eventDate": "2026-11-20"
+      },
+      {
+        "section": "News and Articles",
+        "title": "Simvastatin and Rifaximin in Decompensated Cirrhosis: A Randomized Clinical Trial.",
+        "oneLineSummary": "Phase 3 placebo-controlled trial (237 patients): simvastatin plus rifaximin did not reduce acute-on-chronic liver failure or overall cirrhosis complications.",
+        "doi": "",
+        "pmid": "39908052",
+        "source": "JAMA",
+        "sourceRepository": "targeted-online-pull",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/39908052/",
+        "date": "Feb 2025",
+        "topic": "Cirrhosis",
+        "type": "Research",
+        "relevanceScore": 9,
+        "relevanceReason": "PubMed-verified, selected for Cirrhosis review.",
+        "status": "candidate",
+        "addedBy": "schedule-targeted-online-pull-curated",
+        "addedAt": "2026-11-04",
+        "eventDate": "2026-11-20"
+      }
+    ],
+    "quiz": [],
+    "resourceNotes": "Guideline and article candidates await Schedule Review; lecture stays non-clickable until approved resources and source-PDF quiz are ready.",
+    "quizStatus": "pending-source-pdf-quiz",
+    "resourceStatus": "candidate"
+  },
+  "post-aasld-update": {
+    "guidelines": [],
+    "newsAndArticles": [],
+    "quiz": [],
+    "resourceStatus": "awaiting-conference-sources",
+    "resourceNotes": "No session-specific resources proposed before speaker material or meeting highlights are available. Do not use a generic hepatology search."
   }
 };
 
