@@ -51,6 +51,7 @@ export default function AuthProfile({ initialAccount, skipSessionCheck = false }
       setAccount(data);
       setProfile(data.profile);
       formElement.reset();
+      window.dispatchEvent(new Event('gihub:auth-changed'));
     } catch (error) {
       setMessage(error.status === 401 ? 'Email or password not recognized. Check your EndoEval account.' : 'Sign-in is temporarily unavailable. Please try again.');
     } finally {
@@ -71,6 +72,7 @@ export default function AuthProfile({ initialAccount, skipSessionCheck = false }
       setAccount(data);
       setProfile(data.profile);
       setMessage('Profile saved.');
+      window.dispatchEvent(new Event('gihub:auth-changed'));
     } catch (error) {
       if (error.status === 401) setAccount(null);
       setMessage(error.status === 409 ? 'Profile could not be saved. Please try again.' : error.status === 400 ? 'Please check the profile field lengths.' : 'Profile could not be saved. Please try again.');
@@ -117,6 +119,7 @@ export default function AuthProfile({ initialAccount, skipSessionCheck = false }
       await authRequest('logout', { method: 'POST' });
       setAccount(null);
       setProfile(EMPTY_PROFILE);
+      window.dispatchEvent(new Event('gihub:auth-changed'));
     } catch {
       setMessage('Could not sign out. You are still signed in. Please try again.');
     } finally {
