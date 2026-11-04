@@ -1,3 +1,5 @@
+import { validCommunityApprovals } from "./communityReviewMatch.js";
+
 const STORAGE_KEY = "gihub_weekly_review_decisions_v1";
 
 export function isWeeklyReviewPath(pathname) {
@@ -20,7 +22,8 @@ export function weeklyReviewDataApiPath(source) {
 }
 
 export function weeklyItemId(item) {
-  return `${item.date}|${item.title}`;
+  const base = `${item.date}|${item.title}`;
+  return item.sourceRepository === "community-suggestion" ? `${base}|community-suggestion|${item.suggestionId || ""}|${item.pmid || "unresolved"}` : base;
 }
 
 export function filterWeeklyItems(items, { query, type, decision, decisions }) {
@@ -65,7 +68,7 @@ export function weeklyReviewDecisionCounts(items, decisions) {
 export function canPublishWeeklyReview(items, decisions) {
   if (!items.length) return false;
   const counts = weeklyReviewDecisionCounts(items, decisions);
-  return counts.approved > 0 && counts.reviewed === counts.total && counts.unreviewed === 0;
+  return counts.approved > 0 && counts.reviewed === counts.total && counts.unreviewed === 0 && validCommunityApprovals(items, decisions, weeklyItemId);
 }
 
 export function buildApprovalSummary(items, decisions) {

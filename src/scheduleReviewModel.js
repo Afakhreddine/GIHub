@@ -1,4 +1,5 @@
 import { RESOURCE_TOPICS } from "./scheduleConfig.js";
+import { validCommunityApprovals } from "./communityReviewMatch.js";
 
 const STORAGE_KEY = "gihub_schedule_review_decisions_v1";
 
@@ -26,7 +27,7 @@ export function scheduleReviewDataApiPath(source) {
 }
 
 export function scheduleReviewItemId(item) {
-  return `${item.slug}|${item.kind}|${item.title}|${item.url || item.pmid || item.doi || ""}`;
+  return `${item.slug}|${item.kind}|${item.title}|${item.url || item.pmid || item.doi || ""}${item.sourceRepository === "community-suggestion" ? `|community-suggestion|${item.suggestionId || ""}|${item.pmid || "unresolved"}` : ""}`;
 }
 
 export function flattenScheduleResources(resources = {}) {
@@ -59,7 +60,7 @@ export function flattenScheduleResources(resources = {}) {
 }
 
 export function isNewScheduleSearchCard(item) {
-  return (item?.kind === "News and Articles" && item?.sourceRepository === "targeted-online-pull")
+  return (item?.kind === "News and Articles" && (item?.sourceRepository === "targeted-online-pull" || (item?.sourceRepository === "community-suggestion" && item?.status === "candidate")))
     || (item?.kind === "Guideline" && item?.status === "candidate");
 }
 
@@ -117,7 +118,7 @@ export function scheduleReviewDecisionCounts(items, decisions) {
 export function canPublishScheduleReview(items, decisions) {
   if (!items.length) return false;
   const counts = scheduleReviewDecisionCounts(items, decisions);
-  return counts.approved > 0 && counts.reviewed === counts.total && counts.unreviewed === 0;
+  return counts.approved > 0 && counts.reviewed === counts.total && counts.unreviewed === 0 && validCommunityApprovals(items, decisions, scheduleReviewItemId);
 }
 
 export function buildScheduleApprovalSummary(items, decisions) {
