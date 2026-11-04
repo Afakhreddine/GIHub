@@ -1,4 +1,4 @@
-import { LECTURE_TOPICS } from "./scheduleConfig.js";
+import { RESOURCE_TOPICS } from "./scheduleConfig.js";
 
 const STORAGE_KEY = "gihub_schedule_review_decisions_v1";
 
@@ -59,10 +59,11 @@ export function flattenScheduleResources(resources = {}) {
 }
 
 export function isNewScheduleSearchCard(item) {
-  return item?.kind === "News and Articles" && item?.sourceRepository === "targeted-online-pull";
+  return (item?.kind === "News and Articles" && item?.sourceRepository === "targeted-online-pull")
+    || (item?.kind === "Guideline" && item?.status === "candidate");
 }
 
-export function currentScheduleSlugs(topics = LECTURE_TOPICS) {
+export function currentScheduleSlugs(topics = RESOURCE_TOPICS) {
   return new Set((topics || []).map((topic) => topic.slug).filter(Boolean));
 }
 

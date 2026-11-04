@@ -59,18 +59,18 @@ export default function ScheduleReview({ resources = {} }) {
           return;
         }
         const itemCount = flattenScheduleReviewItems(body.resources);
-        setSourceStatus(`Reviewing PR #${body.pr} · ${itemCount.length} new Schedule search-result cards · loading saved decisions…`);
+        setSourceStatus(`Reviewing PR #${body.pr} · ${itemCount.length} new Schedule resource cards · loading saved decisions…`);
         try {
           const saved = body.savedDecisions || {};
           if (saved && Object.keys(saved).length) {
             setDecisions(saved);
             saveScheduleDecisions(window.localStorage, saved);
-            setSourceStatus(`Reviewing PR #${body.pr} · ${itemCount.length} new Schedule search-result cards · saved decisions restored`);
+            setSourceStatus(`Reviewing PR #${body.pr} · ${itemCount.length} new Schedule resource cards · saved decisions restored`);
           } else if (!cancelled) {
-            setSourceStatus(`Reviewing PR #${body.pr} · ${itemCount.length} new Schedule search-result cards`);
+            setSourceStatus(`Reviewing PR #${body.pr} · ${itemCount.length} new Schedule resource cards`);
           }
         } catch {
-          if (!cancelled) setSourceStatus(`Reviewing PR #${body.pr} · ${itemCount.length} new Schedule search-result cards · using local decisions`);
+          if (!cancelled) setSourceStatus(`Reviewing PR #${body.pr} · ${itemCount.length} new Schedule resource cards · using local decisions`);
         }
       })
       .catch((error) => {
@@ -84,10 +84,10 @@ export default function ScheduleReview({ resources = {} }) {
     setDecisions(next);
     saveScheduleDecisions(window.localStorage, next);
     if (reviewPullNumber) {
-      setSourceStatus(`Reviewing PR #${reviewPullNumber} · ${reviewItems.length} new Schedule search-result cards · saving decisions…`);
+      setSourceStatus(`Reviewing PR #${reviewPullNumber} · ${reviewItems.length} new Schedule resource cards · saving decisions…`);
       saveServerDecisions(reviewPullNumber, next)
-        .then(() => setSourceStatus(`Reviewing PR #${reviewPullNumber} · ${reviewItems.length} new Schedule search-result cards · decisions saved`))
-        .catch(() => setSourceStatus(`Reviewing PR #${reviewPullNumber} · ${reviewItems.length} new Schedule search-result cards · local decision saved; server save failed`));
+        .then(() => setSourceStatus(`Reviewing PR #${reviewPullNumber} · ${reviewItems.length} new Schedule resource cards · decisions saved`))
+        .catch(() => setSourceStatus(`Reviewing PR #${reviewPullNumber} · ${reviewItems.length} new Schedule resource cards · local decision saved; server save failed`));
     }
   }
 
@@ -123,8 +123,8 @@ export default function ScheduleReview({ resources = {} }) {
     <main style={{ minHeight:"100vh", background:"#080f1e", color:"#d0e0ff", fontFamily:"Georgia,'Times New Roman',serif", padding:"32px" }}>
       <div style={{ maxWidth:1180, margin:"0 auto" }}>
         <p style={{ fontSize:11, color:"#5b8af0", fontFamily:"monospace", letterSpacing:1.2 }}>GIHUB · SCHEDULE REVIEW SANDBOX</p>
-        <h1 style={{ fontSize:28, fontWeight:700, color:"#e0eeff", margin:"8px 0" }}>📅 Schedule Search-Result Review</h1>
-        <p style={{ fontSize:13, color:"#5a6a88", marginBottom:8 }}>Approve, hold, or reject only the new online-search article candidates. Existing guidelines and already-approved Weekly/Archive cards are preserved automatically.</p>
+        <h1 style={{ fontSize:28, fontWeight:700, color:"#e0eeff", margin:"8px 0" }}>📅 Schedule Resource Review</h1>
+        <p style={{ fontSize:13, color:"#5a6a88", marginBottom:8 }}>Approve, hold, or reject new article and guideline candidates. Existing approved cards are preserved. Pending lectures do not become clickable until their approved resources and quiz are ready.</p>
         {sourceStatus && <p style={{ fontSize:12, color:"#5b8af0", margin:"0 0 24px", fontFamily:"monospace" }}>{sourceStatus}</p>}
         {!sourceStatus && <div style={{ marginBottom:24 }} />}
         <label style={{ display:"block", color:"#6a8aaa", fontSize:12, marginBottom:22 }}>
