@@ -16,6 +16,15 @@ const env = { GIHUB_SESSION_SECRET: 'a-test-session-secret-that-is-at-least-thir
 const profile = { user: { id: 7, email: 'doctor@example.com', name: 'Doctor' }, profile: { username: 'doctor', displayName: 'Dr. Doctor', specialty: '', institution: '', bio: '' } };
 const token = `${Buffer.from('{}').toString('base64url')}.${Buffer.from(JSON.stringify({ exp: 1_800_003_600, id: 7 })).toString('base64url')}.signature`;
 
+function sameSignals(a, b) {
+  if (a.doi && b.doi) return a.doi === b.doi;
+  if (a.pmid && b.pmid) return a.pmid === b.pmid;
+  if (a.exact === b.exact) return true;
+  if (a.tokens.length < 5 || b.tokens.length < 5) return false;
+  const shared = b.tokens.filter(word => a.tokens.includes(word)).length;
+  return shared >= 5 && shared / Math.min(a.tokens.length, b.tokens.length) >= 0.8 && shared / Math.max(a.tokens.length, b.tokens.length) >= 0.7;
+}
+
 function fakeRedis() {
   const strings = new Map();
   const sorted = new Map();
@@ -38,8 +47,9 @@ function fakeRedis() {
         if (kind === 'comment' && status === 'rejected') sorted.set(thread, (sorted.get(thread) || []).filter(entry => entry.id !== id));
       }
     } else if (command === 'EVAL') {
-      const [, , rate, record, index, pending, duplicate, json, score, id, limit] = args;
+      const [, , rate, record, index, pending, duplicate, recent, json, score, id, limit, , identity] = args;
       if (duplicate !== record && strings.has(duplicate)) return Response.json({ result: -1 });
+      if (recent !== index && (sorted.get(recent) || []).some(entry => Number(score) - Number(entry.score) <= 600000 && sameSignals(JSON.parse(identity), JSON.parse(entry.id)))) return Response.json({ result: -1 });
       const count = Number(strings.get(rate) || 0) + 1;
       strings.set(rate, String(count));
       result = count > limit ? 0 : 1;
@@ -47,6 +57,7 @@ function fakeRedis() {
         strings.set(record, json);
         if (duplicate !== record) strings.set(duplicate, '1');
         for (const key of new Set([index, pending])) sorted.set(key, [...(sorted.get(key) || []), { id, score }]);
+        if (recent !== index) sorted.set(recent, [...(sorted.get(recent) || []), { id: identity, score }]);
         writes += 1;
       }
     } else if (command === 'ZREVRANGE' || command === 'ZRANGE') result = [...(sorted.get(args[0]) || [])].sort((a,b)=>command === 'ZRANGE' ? a.score-b.score : b.score-a.score).slice(Number(args[1]), Number(args[2])+1).map(item => item.id);
@@ -109,6 +120,49 @@ test('article contributions require a live account, valid origin and destination
   assert.equal(remaining[0].description, '1234567');
 }));
 
+test('a near-duplicate article lead from the same account enters review only once', async () => withServer(async ({ base, redis }) => {
+  const cookie = await login(base);
+  const first = { kind: 'submission', destination: 'weekly', description: 'Recent article on fecal calprotectin for chronic diarrhea and IBD, was done in China' };
+  assert.equal((await post(base, first, cookie)).status, 201);
+  const second = { ...first, description: 'Recent study on fecal calprotectin and chronic diarrhea/IBD. Done in China in hospitalized patients' };
+  const duplicate = await post(base, second, cookie);
+  assert.equal(duplicate.status, 409);
+  assert.match((await duplicate.json()).error, /already suggested/i);
+  assert.equal(redis.writes, 1);
+  assert.equal((await post(base, { ...second, destination: 'schedule' }, cookie)).status, 201);
+}));
+
+test('identical simultaneous submissions are atomically deduplicated', async () => withServer(async ({ base, redis }) => {
+  const cookie = await login(base);
+  const lead = { kind: 'submission', destination: 'weekly', description: 'PMID 123456789' };
+  const responses = await Promise.all([post(base, lead, cookie), post(base, lead, cookie)]);
+  assert.deepEqual(responses.map(response => response.status).sort(), [201, 409]);
+  assert.equal(redis.writes, 1);
+}));
+
+test('simultaneous differently worded suggestions for the same article create one lead', async () => withServer(async ({ base, redis }) => {
+  const cookie = await login(base);
+  const a = { kind: 'submission', destination: 'weekly', description: 'Recent article on fecal calprotectin for chronic diarrhea and IBD, was done in China' };
+  const b = { ...a, description: 'Recent study on fecal calprotectin and chronic diarrhea/IBD. Done in China in hospitalized patients' };
+  const responses = await Promise.all([post(base, a, cookie), post(base, b, cookie)]);
+  assert.deepEqual(responses.map(response => response.status).sort(), [201, 409]);
+  assert.equal(redis.writes, 1);
+}));
+
+test('different Arabic suggestions do not collide in the exact duplicate key', async () => withServer(async ({ base }) => {
+  const cookie = await login(base);
+  const first = { kind: 'submission', destination: 'weekly', description: 'مراجعة سريرية عن تنظير القولون' };
+  assert.equal((await post(base, first, cookie)).status, 201);
+  assert.equal((await post(base, { ...first, description: 'دراسة جديدة عن علاج التهاب الكبد' }, cookie)).status, 201);
+}));
+
+test('distinct DOI leads remain separate even with similar descriptions', async () => withServer(async ({ base }) => {
+  const cookie = await login(base);
+  const first = { kind: 'submission', destination: 'weekly', description: 'China IBD fecal calprotectin chronic diarrhea DOI 10.1234/first' };
+  assert.equal((await post(base, first, cookie)).status, 201);
+  assert.equal((await post(base, { ...first, description: 'China IBD fecal calprotectin chronic diarrhea DOI 10.1234/second' }, cookie)).status, 201);
+}));
+
 test('published article, episode and quiz threads appear immediately; reported comments can be hidden', async () => withServer(async ({ base }) => {
   const cookie = await login(base);
   const targets = [articleTarget(weekly[0]), podcastTarget(podcasts[0]), quizTarget('stomach-pathology')];
@@ -149,9 +203,9 @@ test('community request body is bounded and never silently accepts oversized pay
 
 test('Redis-backed daily contribution limit rejects an eleventh write', async () => withServer(async ({ base, redis }) => {
   const cookie = await login(base);
-  const payload = { kind: 'submission', destination: 'weekly', description: 'PMID 123456789' };
-  for (let i = 0; i < 10; i += 1) assert.equal((await post(base, payload, cookie)).status, 201);
-  assert.equal((await post(base, payload, cookie)).status, 429);
+  const payload = i => ({ kind: 'submission', destination: 'weekly', description: `PMID ${123450000 + i}` });
+  for (let i = 0; i < 10; i += 1) assert.equal((await post(base, payload(i), cookie)).status, 201);
+  assert.equal((await post(base, payload(10), cookie)).status, 429);
   assert.equal(redis.writes, 10);
 }));
 
