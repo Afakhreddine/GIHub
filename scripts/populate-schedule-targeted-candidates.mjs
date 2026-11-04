@@ -3,11 +3,13 @@ import fs from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { buildScheduleResourcesFile } from "../src/scheduleResourcesModel.js";
 import scheduleResources from "../src/data/scheduleResources.js";
-import { CALENDAR_EVENTS, LECTURE_TOPICS } from "../src/scheduleConfig.js";
+import { CALENDAR_EVENTS, RESOURCE_TOPICS } from "../src/scheduleConfig.js";
 
 export const DEFAULT_TARGETED_CANDIDATES_PER_TOPIC = 2;
 
 const TOPIC_TERM_RULES = [
+  { test:/portal hypertension|portal hypertens|variceal/i, terms:["portal hypertension", "cirrhotic portal hypertension", "nonselective beta blocker", "carvedilol portal hypertension", "clinically significant portal hypertension", "transjugular intrahepatic portosystemic shunt"] },
+  { test:/cirrhosis/i, terms:["cirrhosis", "decompensated cirrhosis", "ascites cirrhosis", "cirrhosis management", "hepatic encephalopathy", "cirrhosis complications"] },
   { test:/colon.*polyp|polyp.*colon|adenoma|serrated/i, terms:["colon polyp", "colorectal polyp", "colorectal adenoma", "serrated lesion", "sessile serrated", "adenomatous polyposis"] },
   { test:/appendix|appendiceal|anus|anal|anorectal/i, terms:["appendiceal neoplasm", "appendiceal tumor", "appendiceal mucinous", "anal dysplasia", "anal cancer", "anorectal pathology"] },
   { test:/celiac|coeliac|gluten/i, terms:["celiac disease", "coeliac disease", "gluten enteropathy", "villous atrophy", "gluten-free diet"] },
@@ -86,20 +88,23 @@ export function buildPubMedSearch({ topic, label, slug, eventDate }, { lookbackY
 }
 
 export function buildTopicConfigsFromCalendar(events = CALENDAR_EVENTS, options = {}) {
-  const bySlug = new Map((LECTURE_TOPICS || []).map(topic => [topic.slug, topic]));
+  const bySlug = new Map((RESOURCE_TOPICS || []).map(topic => [topic.slug, topic]));
   return Object.fromEntries(
     events
-      .filter(event => event?.slug && event?.topic)
+      .filter(event => (event?.slug && event?.topic) || (event?.resourceSlug && event?.resourceTopic))
       .map(event => {
-        const lecture = bySlug.get(event.slug);
-        const label = lecture?.label || event.topic;
+        const slug = event.slug || event.resourceSlug;
+        const topic = event.topic || event.resourceTopic;
+        const lecture = bySlug.get(slug);
+        const label = lecture?.label || topic;
         const config = {
           label,
-          topic: event.topic,
+          topic,
           eventDate: event.date,
+          searchDeferred: !!event.resourceSearchDeferred,
           minTargetedCandidates: options.minTargetedCandidates || DEFAULT_TARGETED_CANDIDATES_PER_TOPIC,
         };
-        return [event.slug, { ...config, search: buildPubMedSearch({ ...config, slug:event.slug }, options) }];
+        return [slug, { ...config, search: config.searchDeferred ? "" : buildPubMedSearch({ ...config, slug }, options) }];
       })
   );
 }
@@ -223,11 +228,17 @@ export async function populateScheduleTargetedCandidates({ resources = scheduleR
   for (const [slug, config] of Object.entries(topicConfigs)) {
     const resource = nextResources[slug] || { guidelines: [], newsAndArticles: [], quiz: [] };
     const existing = resource.newsAndArticles || [];
-    const existingNonTargeted = existing.filter(item => item?.sourceRepository !== "targeted-online-pull");
-    const existingTargeted = existing.filter(item => item?.sourceRepository === "targeted-online-pull");
-    const needed = config.minTargetedCandidates;
-    audit[slug] = { existing: existing.length, prunedTargeted: existingTargeted.length, needed, added: [], search: config.search };
-
+    const isReplaceablePull = item => item?.sourceRepository === "targeted-online-pull" && item?.addedBy !== "schedule-targeted-online-pull-curated";
+    const existingNonTargeted = existing.filter(item => !isReplaceablePull(item));
+    const existingTargeted = existing.filter(isReplaceablePull);
+    const needed = Math.max(0, config.minTargetedCandidates - existingNonTargeted.filter(item => item?.sourceRepository === "targeted-online-pull").length);
+    audit[slug] = { existing: existing.length, prunedTargeted: existingTargeted.length, needed, added: [], search: config.search, deferred:!!config.searchDeferred };
+    if (config.searchDeferred || needed === 0) {
+      // Do not invent a post-conference source list, or replace human-curated candidates.
+      resource.newsAndArticles = existingNonTargeted;
+      nextResources[slug] = resource;
+      continue;
+    }
     const seen = new Set(existingNonTargeted.map(identity));
     const pmids = await searchPmids(config.search, 30);
     await sleep(500);

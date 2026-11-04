@@ -11,7 +11,7 @@ import { flattenScheduleReviewItems } from "../src/scheduleReviewModel.js";
 
 test("schedule review route renders cards and publish controls", () => {
   const html = renderToStaticMarkup(React.createElement(ScheduleReview, { resources:scheduleResources }));
-  assert.match(html, /Schedule Search-Result Review/);
+  assert.match(html, /Schedule Resource Review/);
   assert.match(html, /Search Schedule cards/);
   assert.match(html, /Publish approved/);
   assert.match(html, /Approve/);
@@ -34,7 +34,11 @@ test("schedule review data parser extracts scheduleResources object", () => {
 test("schedule publish filter preserves prior-approved resources and filters only new search cards", () => {
   const resources = {
     "topic-a": {
-      guidelines:[{ org:"ACG", title:"Preserve guideline", url:"https://example.com/g1" }],
+      guidelines:[
+        { org:"ACG", title:"Preserve guideline", url:"https://example.com/g1", status:"approved" },
+        { org:"AASLD", title:"Keep new guideline", url:"https://example.com/g2", status:"candidate" },
+        { org:"ASGE", title:"Drop new guideline", url:"https://example.com/g3", status:"candidate" },
+      ],
       newsAndArticles:[
         { title:"Preserve archive article", url:"https://example.com/archive", source:"Journal", sourceRepository:"weekly-archive" },
         { title:"Keep new article", url:"https://example.com/a1", source:"Journal", sourceRepository:"targeted-online-pull" },
@@ -47,7 +51,8 @@ test("schedule publish filter preserves prior-approved resources and filters onl
   const items = flattenScheduleReviewItems(resources, new Set(["topic-a"]));
   const approvedItems = items.filter(item => /Keep/.test(item.title));
   const filtered = filterScheduleResourcesToApproved(resources, approvedItems);
-  assert.deepEqual(filtered["topic-a"].guidelines.map(item => item.title), ["Preserve guideline"]);
+  assert.deepEqual(filtered["topic-a"].guidelines.map(item => item.title), ["Preserve guideline", "Keep new guideline"]);
+  assert.ok(filtered["topic-a"].guidelines.every(item => item.status === "approved"));
   assert.deepEqual(filtered["topic-a"].newsAndArticles.map(item => item.title), ["Preserve archive article", "Keep new article"]);
   assert.equal(filtered["topic-a"].quizStatus, "pending-autocontent-pdf-pull");
   assert.equal(filtered["topic-a"].resourceStatus, "approved");
