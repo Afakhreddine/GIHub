@@ -29,6 +29,15 @@ export const apiHandlers = {
 export function createApp(handlers = apiHandlers, { gihubAuthHandler = gihubAuth } = {}) {
   const app = express();
   app.disable("x-powered-by");
+  // The www hostname serves this app too, but auth accepts the canonical
+  // origin only. Move page visits before they load forms or make API calls.
+  // Never redirect credential-bearing POST/PATCH requests across origins.
+  app.use((req, res, next) => {
+    const host = String(req.headers.host || '').split(':')[0].toLowerCase();
+    if (host !== 'www.mygihub.com' || !['GET', 'HEAD'].includes(req.method)) return next();
+    const requestPath = req.originalUrl.startsWith('/') ? req.originalUrl : '/';
+    return res.redirect(302, `https://mygihub.com${requestPath}`);
+  });
   app.use("/api/gihub-auth", (req, res, next) => {
     res.set("Cache-Control", "no-store");
     next();
