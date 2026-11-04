@@ -35,6 +35,7 @@ export function ContributionBar({ account }) {
       <input id="community-article" required minLength={8} maxLength={1500} value={description} onChange={event => setDescription(event.target.value)} placeholder="PMID, DOI, or describe the article and journal — we’ll find it!" />
       <button type="submit" disabled={busy}>{busy ? 'Saving…' : 'Contribute'}</button>
     </div>
+    <small>Article leads go to editorial review, not directly to the site. Do not include patient-identifying information.</small>
     {notice && <p role="status">{notice}</p>}
   </form>;
 }
@@ -70,7 +71,7 @@ export function Discussion({ target, account, label = 'Discuss' }) {
     {open && <div className="community-discussion__thread">
       <h3>Discussion</h3>
       {items.length ? <ol>{items.map(item => <li key={item.id}><strong>{item.authorName}</strong> <time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleDateString()}</time><p>{item.body}</p></li>)}</ol> : <p>No published comments yet.</p>}
-      {account ? <form onSubmit={submit}><label>Join the discussion<textarea required minLength={3} maxLength={2000} value={body} onChange={event => setBody(event.target.value)} placeholder="Share a question or insight. Please don't include patient-identifying details." /></label><button type="submit" disabled={busy}>{busy ? 'Saving…' : 'Post comment'}</button></form> : <p>Sign in through Profile to comment.</p>}
+      {account ? <form onSubmit={submit}><label>Join the discussion<textarea required minLength={3} maxLength={2000} value={body} onChange={event => setBody(event.target.value)} placeholder="Share a question or insight. Please don't include patient-identifying details." /></label><small>Reviewed before publication; your display name will appear with an approved comment.</small><button type="submit" disabled={busy}>{busy ? 'Saving…' : 'Post comment'}</button></form> : <p>Sign in through Profile to comment.</p>}
       {notice && <p role="status">{notice}</p>}
     </div>}
   </div>;
