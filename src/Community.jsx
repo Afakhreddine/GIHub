@@ -46,6 +46,8 @@ export function Discussion({ target, account, label = 'Discuss' }) {
   const [body, setBody] = useState('');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
+  const [reportId, setReportId] = useState(null);
+  const [reason, setReason] = useState('privacy');
   useEffect(() => {
     if (!open || !target) return;
     const controller = new AbortController();
@@ -60,9 +62,21 @@ export function Discussion({ target, account, label = 'Discuss' }) {
     setBusy(true);
     setNotice('');
     try {
-      await requestCommunity('/api/community', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: 'comment', target, body }) });
+      const comment = await requestCommunity('/api/community', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: 'comment', target, body }) });
+      setItems(current => [comment, ...current]);
       setBody('');
-      setNotice('Comment received. It will appear after editorial review.');
+      setNotice('Comment posted. It is visible to readers now.');
+    } catch (error) { setNotice(error.message); }
+    finally { setBusy(false); }
+  }
+  async function report(event) {
+    event.preventDefault();
+    setBusy(true);
+    setNotice('');
+    try {
+      await requestCommunity('/api/community', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: 'report', commentId: reportId, reason }) });
+      setNotice('Report sent to the editorial team.');
+      setReportId(null);
     } catch (error) { setNotice(error.message); }
     finally { setBusy(false); }
   }
@@ -70,8 +84,11 @@ export function Discussion({ target, account, label = 'Discuss' }) {
     <button type="button" aria-expanded={open} onClick={() => setOpen(value => !value)}>{open ? 'Hide discussion' : label}</button>
     {open && <div className="community-discussion__thread">
       <h3>Discussion</h3>
-      {items.length ? <ol>{items.map(item => <li key={item.id}><strong>{item.authorName}</strong> <time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleDateString()}</time><p>{item.body}</p></li>)}</ol> : <p>No published comments yet.</p>}
-      {account ? <form onSubmit={submit}><label>Join the discussion<textarea required minLength={3} maxLength={2000} value={body} onChange={event => setBody(event.target.value)} placeholder="Share a question or insight. Please don't include patient-identifying details." /></label><small>Reviewed before publication; your display name will appear with an approved comment.</small><button type="submit" disabled={busy}>{busy ? 'Saving…' : 'Post comment'}</button></form> : <p>Sign in through Profile to comment.</p>}
+      {items.length ? <ol>{items.map(item => <li key={item.id}><strong>{item.authorName}</strong> <time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleDateString()}</time><p>{item.body}</p>
+        {account && <><button type="button" aria-label={`Report comment by ${item.authorName}`} onClick={() => { setReportId(reportId === item.id ? null : item.id); setNotice(''); }}>Report</button>
+          {reportId === item.id && <form onSubmit={report}><label>Why are you reporting this comment?<select value={reason} onChange={event => setReason(event.target.value)}><option value="privacy">Patient privacy</option><option value="inaccurate">Clinical inaccuracy</option><option value="spam">Spam</option><option value="abuse">Abuse</option><option value="other">Other</option></select></label><button type="submit" disabled={busy}>Send report</button></form>}</>}
+      </li>)}</ol> : <p>No comments yet.</p>}
+      {account ? <form onSubmit={submit}><label>Join the discussion<textarea required minLength={3} maxLength={2000} value={body} onChange={event => setBody(event.target.value)} placeholder="Share a question or insight. Please don't include patient-identifying details." /></label><small>Comments are public immediately. Your display name will appear; you can report problematic comments for editorial review.</small><button type="submit" disabled={busy}>{busy ? 'Saving…' : 'Post comment'}</button></form> : <p>Sign in through Profile to comment or report.</p>}
       {notice && <p role="status">{notice}</p>}
     </div>}
   </div>;

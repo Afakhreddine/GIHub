@@ -7,9 +7,9 @@ if (!token || token.length < 32) {
   process.exitCode = 2;
 } else {
   const args = process.argv.slice(2);
-  const queue = args[0] === 'comments' ? 'comments' : 'submissions';
-  const mark = ['mark', 'mark-comment'].includes(args[0]);
-  const chosen = args[0] === 'mark-comment' ? 'comments' : queue;
+  const queue = ['submissions', 'comments', 'reports'].includes(args[0]) ? args[0] : 'submissions';
+  const mark = ['mark', 'mark-comment', 'mark-report'].includes(args[0]);
+  const chosen = args[0] === 'mark-comment' ? 'comments' : args[0] === 'mark-report' ? 'reports' : queue;
   const headers = { Authorization: `Bearer ${token}`, Origin: new URL(base).origin };
   const items = [];
   let offset = 0;

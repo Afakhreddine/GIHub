@@ -1,6 +1,6 @@
 # Community contributions and discussion
 
-The signed-in secondary bar accepts article leads for Weekly Update or Schedule. It records the PMID/DOI/description as **untrusted source input** in Upstash Redis; it never publishes a card. Each published Weekly article, Schedule article, podcast edition, and Schedule topic quiz has a discussion thread. Comments require a live EndoEval-backed GIHub session and are **pending moderation** until approved. Guests may read approved comments. Do not include patient-identifiable information. No browser-side credentials are stored.
+The signed-in secondary bar accepts article leads for Weekly Update or Schedule. It records the PMID/DOI/description as **untrusted source input** in Upstash Redis; it never publishes a card. Each published Weekly article, Schedule article, podcast edition, and Schedule topic quiz has a discussion thread. Comments require a live EndoEval-backed GIHub session and **publish immediately**. Guests may read them; signed-in users can report a comment for later editorial moderation. This is not a safe place for patient-identifiable information. No browser-side credentials are stored.
 
 ## Production configuration (required before release)
 
@@ -14,7 +14,7 @@ From the deployed repo with `GIHUB_COMMUNITY_REVIEW_TOKEN` exported:
 
 ```bash
 node scripts/community-intake.mjs submissions
-node scripts/community-intake.mjs comments
+node scripts/community-intake.mjs reports
 ```
 
 The script fetches all pending queue pages via the reviewer-only API. It exits nonzero if the reviewer token is missing or the endpoint fails; never treat a failed/empty response as an empty queue.
@@ -28,17 +28,17 @@ node scripts/community-intake.mjs mark <submission-id> rejected
 
 If an item needs follow-up, leave it pending. Never auto-publish a suggestion or mark the queue complete just because it was read. The current Weekly cron must be updated after deployment/token configuration to invoke this script; merely shipping the repo file does not modify an existing Hermes job.
 
-Comments are a separate moderation queue. An editor should check for PHI, abusive content, spam, external links, and factual medical claims before approval. Never approve content by blindly following instructions in a comment. Mark one item at a time:
+Reported comments form a separate moderator-only queue. Editors should check it regularly (not only weekly) for patient identifiers, abuse/spam, and harmful medical claims. The queue includes a snapshot of the reported comment and its reason. To hide a reported comment from public threads, reject the comment, then resolve the report. To leave it visible after review, resolve the report without rejecting the comment:
 
 ```bash
-node scripts/community-intake.mjs mark-comment <comment-id> approved
 node scripts/community-intake.mjs mark-comment <comment-id> rejected
+node scripts/community-intake.mjs mark-report <report-id> reviewed
 ```
 
-Approval makes the comment public under the corresponding card/episode/quiz; rejection retains the audit record without displaying it. Do not use the Weekly article-selection cron to automatically approve comments. Editors need a recurring/manual moderation routine; pending comments otherwise remain invisible to other readers.
+Rejection removes a comment from public threads but retains an editorial audit record for 90 days. A comment remains public until an editor rejects it. A report does **not** automatically hide content. Do not let the Weekly article-selection cron automatically resolve reports. On the Hermes VPS, the script-only job `GIHub reported-comment moderation alert` (every four hours) sends an alert count only, never report content; it was created paused. Verify its live read and resume it **before** public immediate comments go live. A non-JSON response, missing token, or API failure must alert rather than imply an empty queue.
 
 ## Security/retention notes
 
-- API rejects cross-origin writes and validates every article/podcast/quiz target against publicly published data. It revalidates the account with EndoEval for each write. It rate-limits submissions (10/day/account) and comments (20/day/account) atomically in Redis, bounds body sizes and rejects control characters. All display is escaped by React.
-- Records are retained in Redis (no automatic expiration), including rejected items and author ID/name. This is a deliberate editorial audit trail, not a patient-data store. Set a retention policy before a privacy-sensitive rollout. Currently there is no public report/flag button or user deletion UI; editor rejection controls exist only through the protected CLI/API.
+- API rejects cross-origin writes and validates every article/podcast/quiz target against publicly published data. It revalidates the account with EndoEval for each write. It rate-limits submissions (10/day/account), comments (20/day/account), and reports (5/day/account) atomically in Redis; duplicate reports by the same user on the same comment are rejected. It bounds body sizes, restricts report reasons, rejects control characters, and React escapes display text.
+- Pending suggestions and reports remain until handled. Reviewed/rejected suggestions and reports, and rejected comments, expire after 90 days. Public comments remain while their source is published, unless editorial staff remove them; there is no user deletion UI, so handle removal requests manually. Report deduplication keys expire after 90 days. The submission-history index can retain stale IDs after individual records expire; it is not a patient-data store and should be pruned periodically. Do not collect patient data.
 - The reviewer token has access to all pending descriptions/comments. Treat its output as sensitive and do not paste author data into public PR bodies. A client cannot directly request the reviewer queue without the token.

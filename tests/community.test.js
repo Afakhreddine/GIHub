@@ -1,12 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
+import crypto from 'node:crypto';
 import { createApp, apiHandlers } from '../app.js';
 import { createGihubAuthHandler } from '../api/gihub-auth.js';
 import { createCommunityHandler } from '../api/community.js';
 import { articleTarget, podcastTarget, quizTarget } from '../src/communityTargets.js';
 import weekly from '../src/data/weekly.js';
 import podcasts from '../src/data/weeklyPodcasts.js';
+import { itemKey, targetKey } from '../src/communityStore.js';
 
 const origin = 'https://mygihub.com';
 const now = () => 1_800_000_000_000;
@@ -24,13 +26,26 @@ function fakeRedis() {
     }
     const [command, ...args] = JSON.parse(options.body);
     let result;
-    if (command === 'EVAL') {
-      const [, , rate, record, index, pending, json, score, id, limit] = args;
+    if (command === 'EVAL' && args[1] === '3') {
+      const [, , record, pending, thread, status, reviewedAt, id, kind] = args;
+      const item = strings.has(record) ? JSON.parse(strings.get(record)) : null;
+      if (!item) result = null;
+      else if (item.status === 'rejected' && status !== 'rejected') result = -1;
+      else {
+        result = JSON.stringify({ ...item, status, reviewedAt });
+        strings.set(record, result);
+        sorted.set(pending, (sorted.get(pending) || []).filter(entry => entry.id !== id));
+        if (kind === 'comment' && status === 'rejected') sorted.set(thread, (sorted.get(thread) || []).filter(entry => entry.id !== id));
+      }
+    } else if (command === 'EVAL') {
+      const [, , rate, record, index, pending, duplicate, json, score, id, limit] = args;
+      if (duplicate !== record && strings.has(duplicate)) return Response.json({ result: -1 });
       const count = Number(strings.get(rate) || 0) + 1;
       strings.set(rate, String(count));
       result = count > limit ? 0 : 1;
       if (result) {
         strings.set(record, json);
+        if (duplicate !== record) strings.set(duplicate, '1');
         for (const key of new Set([index, pending])) sorted.set(key, [...(sorted.get(key) || []), { id, score }]);
         writes += 1;
       }
@@ -42,7 +57,13 @@ function fakeRedis() {
     else throw new Error(`Unexpected Redis ${command}`);
     return Response.json({ result });
   };
-  return { fetchImpl, get writes() { return writes; } };
+  function seedComment(record, score) {
+    strings.set(itemKey('comment', record.id), JSON.stringify(record));
+    const index = itemKey('comments', targetKey(record.target));
+    sorted.set(index, [...(sorted.get(index) || []), { id: record.id, score }]);
+    if (record.status === 'pending') sorted.set(itemKey('comments', 'pending'), [...(sorted.get(itemKey('comments', 'pending')) || []), { id: record.id, score }]);
+  }
+  return { fetchImpl, seedComment, get writes() { return writes; } };
 }
 
 async function withServer(run) {
@@ -88,7 +109,7 @@ test('article contributions require a live account, valid origin and destination
   assert.equal(remaining[0].description, '1234567');
 }));
 
-test('published article, episode and quiz threads stay moderated; unknown and candidate targets rejected', async () => withServer(async ({ base }) => {
+test('published article, episode and quiz threads appear immediately; reported comments can be hidden', async () => withServer(async ({ base }) => {
   const cookie = await login(base);
   const targets = [articleTarget(weekly[0]), podcastTarget(podcasts[0]), quizTarget('stomach-pathology')];
   for (const target of targets) {
@@ -96,13 +117,24 @@ test('published article, episode and quiz threads stay moderated; unknown and ca
     assert.equal(created.status, 201, target);
     const { id } = await created.json();
     const path = `/api/community?target=${encodeURIComponent(target)}`;
-    assert.deepEqual((await (await request(base, path)).json()).items, []);
-    assert.equal((await review(base, 'comments', id, 'approved')).status, 200);
     const visible = (await (await request(base, path)).json()).items;
     assert.equal(visible.length, 1);
     assert.equal(visible[0].authorName, 'Dr. Doctor');
     assert.equal(visible[0].body, 'Helpful clinical observation.');
     assert.equal(visible[0].authorId, undefined);
+    const report = await post(base, { kind: 'report', commentId: id, reason: 'privacy' }, cookie);
+    assert.equal(report.status, 201);
+    assert.equal((await post(base, { kind: 'report', commentId: id, reason: 'privacy' }, cookie)).status, 409);
+    const flagged = await request(base, '/api/community?queue=reports', { headers: { Authorization: `Bearer ${env.GIHUB_COMMUNITY_REVIEW_TOKEN}` } });
+    assert.equal(flagged.status, 200);
+    const reports = (await flagged.json()).items;
+    assert.ok(reports.some(item => item.commentId === id && item.commentBody === 'Helpful clinical observation.'));
+    assert.equal((await post(base, { kind: 'report', commentId: id, reason: 'free-text-not-allowed' }, cookie)).status, 400);
+    assert.equal((await post(base, { kind: 'report', commentId: id, reason: 'privacy' })).status, 401);
+    assert.equal((await review(base, 'comments', id, 'rejected')).status, 200);
+    assert.deepEqual((await (await request(base, path)).json()).items, []);
+    const ticket = reports.find(item => item.commentId === id);
+    assert.equal((await review(base, 'reports', ticket.id, 'reviewed')).status, 200);
   }
   assert.equal((await post(base, { kind: 'comment', target: 'article:pmid:fake', body: 'Test' }, cookie)).status, 400);
   assert.equal((await request(base, '/api/community?target=podcast%3Afake')).status, 400);
@@ -121,4 +153,39 @@ test('Redis-backed daily contribution limit rejects an eleventh write', async ()
   for (let i = 0; i < 10; i += 1) assert.equal((await post(base, payload, cookie)).status, 201);
   assert.equal((await post(base, payload, cookie)).status, 429);
   assert.equal(redis.writes, 10);
+}));
+
+test('report limit rejects a sixth distinct comment without creating a ticket', async () => withServer(async ({ base, redis }) => {
+  const cookie = await login(base);
+  const target = articleTarget(weekly[0]);
+  for (let i = 0; i < 6; i += 1) {
+    const comment = await post(base, { kind: 'comment', target, body: `Observation ${i}` }, cookie);
+    assert.equal(comment.status, 201);
+    const { id } = await comment.json();
+    const report = await post(base, { kind: 'report', commentId: id, reason: 'spam' }, cookie);
+    assert.equal(report.status, i === 5 ? 429 : 201);
+  }
+  assert.equal(redis.writes, 11);
+}));
+
+test('old visible comments survive more than a page of rejected thread records', async () => withServer(async ({ base, redis }) => {
+  const target = articleTarget(weekly[0]);
+  const older = { id: crypto.randomUUID(), target, status: 'approved', body: 'Older useful comment', authorName: 'Dr. Doe', createdAt: '2026-11-04T00:00:00Z' };
+  redis.seedComment(older, 1);
+  for (let i = 2; i <= 102; i += 1) redis.seedComment({ ...older, id: crypto.randomUUID(), status: 'rejected' }, i);
+  const result = await request(base, `/api/community?target=${encodeURIComponent(target)}`);
+  assert.equal(result.status, 200);
+  assert.deepEqual((await result.json()).items.map(item => item.id), [older.id]);
+}));
+
+test('legacy pending comment approval clears the queue and a rejected comment cannot be restored', async () => withServer(async ({ base, redis }) => {
+  const target = articleTarget(weekly[0]);
+  const id = crypto.randomUUID();
+  redis.seedComment({ id, target, status: 'pending', body: 'Previously pending comment', authorName: 'Dr. Doe' }, 1);
+  assert.equal((await review(base, 'comments', id, 'approved')).status, 200);
+  const queue = await request(base, '/api/community?queue=comments', { headers: { Authorization: `Bearer ${env.GIHUB_COMMUNITY_REVIEW_TOKEN}` } });
+  assert.deepEqual((await queue.json()).items, []);
+  assert.equal((await review(base, 'comments', id, 'rejected')).status, 200);
+  assert.equal((await review(base, 'comments', id, 'approved')).status, 409);
+  assert.deepEqual((await (await request(base, `/api/community?target=${encodeURIComponent(target)}`)).json()).items, []);
 }));

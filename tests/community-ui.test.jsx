@@ -28,7 +28,7 @@ test('weekly cards and podcast expose discussions; comments use stable article i
   assert.match(articleTarget(weekly[0]), /^article:/);
 });
 
-test('signed-out readers see discussions but cannot post; signed-in readers can post for moderation', () => {
+test('signed-out readers see discussions but cannot post; signed-in readers see contribution form', () => {
   const target = articleTarget(weekly[0]);
   const anon = renderToStaticMarkup(<Discussion target={target} label="article" account={null} />);
   assert.match(anon, /article/);
