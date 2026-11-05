@@ -20,10 +20,13 @@ test('signed-in contribution bar persists across all main tabs and offers both d
   assert.doesNotMatch(renderToStaticMarkup(<App initialActive="weekly" />), /Have an article for the Weekly Update or Schedule\?/);
 });
 
-test('weekly cards and podcast expose discussions; comments use stable article identities', () => {
-  const html = renderToStaticMarkup(<App initialActive="weekly" initialAccount={account} />);
-  assert.match(html, /Discuss this episode/);
-  assert.match(html, /Discuss/);
+test('weekly, podcast, and quiz discussion buttons say Comment rather than Discuss', () => {
+  const weeklyHtml = renderToStaticMarkup(<App initialActive="weekly" initialAccount={account} />);
+  assert.match(weeklyHtml, /Comment on this episode/);
+  assert.match(weeklyHtml, />Comment<\/button>/);
+  assert.doesNotMatch(weeklyHtml, /Discuss this episode|>Discuss<\/button>/);
+  const quizHtml = renderToStaticMarkup(<Discussion target="quiz:stomach-pathology" label="Comment on this quiz" account={account} />);
+  assert.match(quizHtml, /Comment on this quiz/);
   assert.equal(articleTarget({ doi: 'https://doi.org/10.1234/AB' }), articleTarget({ doi: '10.1234/ab' }));
   assert.match(articleTarget(weekly[0]), /^article:/);
 });

@@ -40,7 +40,7 @@ export function ContributionBar({ account }) {
   </form>;
 }
 
-export function Discussion({ target, account, label = 'Discuss' }) {
+export function Discussion({ target, account, label = 'Comment' }) {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [body, setBody] = useState('');
@@ -81,14 +81,14 @@ export function Discussion({ target, account, label = 'Discuss' }) {
     finally { setBusy(false); }
   }
   return <div className="community-discussion" onClick={event => event.stopPropagation()}>
-    <button type="button" aria-expanded={open} onClick={() => setOpen(value => !value)}>{open ? 'Hide discussion' : label}</button>
+    <button type="button" aria-expanded={open} onClick={() => setOpen(value => !value)}>{open ? 'Hide comments' : label}</button>
     {open && <div className="community-discussion__thread">
       <h3>Discussion</h3>
       {items.length ? <ol>{items.map(item => <li key={item.id}><strong>{item.authorName}</strong> <time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleDateString()}</time><p>{item.body}</p>
         {account && <><button type="button" aria-label={`Report comment by ${item.authorName}`} onClick={() => { setReportId(reportId === item.id ? null : item.id); setNotice(''); }}>Report</button>
           {reportId === item.id && <form onSubmit={report}><label>Why are you reporting this comment?<select value={reason} onChange={event => setReason(event.target.value)}><option value="privacy">Patient privacy</option><option value="inaccurate">Clinical inaccuracy</option><option value="spam">Spam</option><option value="abuse">Abuse</option><option value="other">Other</option></select></label><button type="submit" disabled={busy}>Send report</button></form>}</>}
       </li>)}</ol> : <p>No comments yet.</p>}
-      {account ? <form onSubmit={submit}><label>Join the discussion<textarea required minLength={3} maxLength={2000} value={body} onChange={event => setBody(event.target.value)} placeholder="Share a question or insight. Please don't include patient-identifying details." /></label><small>Comments are public immediately. Your display name will appear; you can report problematic comments for editorial review.</small><button type="submit" disabled={busy}>{busy ? 'Saving…' : 'Post comment'}</button></form> : <p>Sign in through Profile to comment or report.</p>}
+      {account ? <form onSubmit={submit}><label>Join the discussion<textarea required minLength={3} maxLength={2000} value={body} onChange={event => setBody(event.target.value)} placeholder="Share a question or insight. Please don't include patient-identifying details." /></label><small>Comments are public immediately. Your display name will appear; you can report problematic comments for editorial review.</small><button type="submit" disabled={busy}>{busy ? 'Saving…' : 'Post comment'}</button></form> : <p>Use the Sign in tab to comment or report.</p>}
       {notice && <p role="status">{notice}</p>}
     </div>}
   </div>;
