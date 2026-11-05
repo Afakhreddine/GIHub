@@ -149,7 +149,7 @@ function WeeklyPodcastPanel({ podcasts = weeklyPodcasts, account }) {
         <a href={selected.audioUrl} download style={{ color:"#0b779b", fontSize:12, fontWeight:700, textDecoration:"none" }}>Download MP3 ↧</a>
         <span style={{ color:"#536b7b", fontSize:11, fontFamily:"monospace" }}>Rolling archive: latest {podcasts.length} Weekly Update podcasts stored in-repo</span>
       </div>
-      <Discussion key={selected.id} target={podcastTarget(selected)} account={account} label="Discuss this episode" />
+      <Discussion key={selected.id} target={podcastTarget(selected)} account={account} label="Comment on this episode" />
     </section>
   );
 }
@@ -641,7 +641,7 @@ function LectureDetailPanel({ event, onClose, account }) {
                   </button>
                 )}
                 {hasQuiz&&showQuiz&&(
-                  <><QuizDisplay quiz={data.quiz}/><Discussion target={quizTarget(event.slug)} account={account} label="Discuss this quiz" /></>
+                  <><QuizDisplay quiz={data.quiz}/><Discussion target={quizTarget(event.slug)} account={account} label="Comment on this quiz" /></>
                 )}
               </div>
             );
@@ -813,7 +813,7 @@ export default function GIHub({ initialActive = "home", initialAccount = null })
             {TABS.map(t=>(
               <button key={t.id} type="button" onClick={()=>navigate(t.id)}
                 style={{ background:active===t.id?"#eaf8fc":"transparent", border:"none", borderBottom:`3px solid ${active===t.id?"#0b93bb":"transparent"}`, borderRadius:"10px 10px 0 0", color:active===t.id?"#0b779b":"#536b7b", padding:"12px 18px", fontSize:13, fontWeight:active===t.id?700:600, transition:"all 0.18s", whiteSpace:"nowrap", cursor:"pointer" }}>
-                {t.icon} {t.label}
+                {t.icon} {t.id === "profile" && !account ? "Sign in" : t.label}
               </button>
             ))}
           </div>

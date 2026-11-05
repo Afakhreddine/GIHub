@@ -103,6 +103,7 @@ test('failed logout retains the signed-in account and alerts; successful 204 cle
 test('invalid profile values show a field-neutral validation message', async () => {
   await mount(async document => {
     globalThis.fetch = async () => Response.json({ error: 'Invalid profile' }, { status: 400 });
+    await act(async () => document.querySelector('button.auth-profile__edit').click());
     await act(async () => document.querySelector('form').dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true })));
     const alert = document.querySelector('[role="alert"]')?.textContent || '';
     assert.match(alert, /profile field lengths/i);
@@ -117,10 +118,35 @@ test('hidden profile fields are preserved on save and conflict errors do not men
       body = JSON.parse(options.body);
       return Response.json({ error: 'Username is already taken' }, { status: 409 });
     };
+    await act(async () => document.querySelector('button.auth-profile__edit').click());
     await act(async () => document.querySelector('form').dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true })));
     assert.deepEqual(body, account.profile);
     assert.match(document.body.textContent, /Welcome, Doctor/);
     assert.doesNotMatch(document.body.textContent, /Username|Specialty|Institution/i);
     assert.match(document.querySelector('[role="alert"]')?.textContent || '', /profile could not be saved/i);
+  });
+});
+
+test('Edit opens profile fields, Cancel hides them, and a successful save collapses them again', async () => {
+  await mount(async document => {
+    assert.equal(document.querySelector('.auth-profile__form:not([data-password-change])'), null);
+    await act(async () => document.querySelector('button.auth-profile__edit').click());
+    const form = document.querySelector('.auth-profile__form:not([data-password-change])');
+    assert.equal(form.querySelector('input[type="email"]').readOnly, true);
+    assert.equal(form.querySelector('input[type="email"]').value, 'doctor@example.com');
+    assert.equal(form.querySelector('input:not([type="email"])').value, 'Doctor');
+    await act(async () => form.querySelector('button.auth-profile__cancel').click());
+    assert.equal(document.querySelector('.auth-profile__form:not([data-password-change])'), null);
+    await act(async () => document.querySelector('button.auth-profile__edit').click());
+    const calls = [];
+    globalThis.fetch = async (url, options) => {
+      calls.push({ url, options });
+      return Response.json({ ...account, profile: { ...account.profile, displayName: 'Saved Doctor' } });
+    };
+    await act(async () => document.querySelector('.auth-profile__form:not([data-password-change])').dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true })));
+    assert.deepEqual(calls.map(call => [call.url, call.options.method]), [['/api/gihub-auth/profile', 'PATCH']]);
+    assert.equal(document.querySelector('.auth-profile__form:not([data-password-change])'), null);
+    assert.match(document.body.textContent, /Welcome, Saved Doctor/);
+    assert.match(document.querySelector('[role="status"]')?.textContent || '', /Profile saved/);
   });
 });
