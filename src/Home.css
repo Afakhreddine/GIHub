@@ -24,6 +24,9 @@
 .coastal-home__text-link, .coastal-home__schedule-link { border: 0; background: transparent; color: #087c9e; font-size: .83rem; font-weight: 800; white-space: nowrap; }
 .coastal-home__text-link:hover, .coastal-home__schedule-link:hover { text-decoration: underline; }
 .coastal-home__card-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
+.coastal-home__card-wrap { display: flex; flex-direction: column; min-width: 0; }
+.coastal-home__card-wrap > .coastal-home__card { flex: 1; }
+.coastal-home__card-wrap > .community-discussion, .coastal-home__weekly-entry > .community-discussion, .coastal-home__timeline li > .community-discussion { margin: 8px 0 0; }
 .coastal-home__card { display: flex; flex-direction: column; min-width: 0; padding: 23px; border: 1px solid var(--coastal-line); border-radius: 22px; background: #fff; box-shadow: 0 12px 36px rgba(26,86,128,.06); }
 .coastal-home a.coastal-home__card, .coastal-home a.coastal-home__weekly-item, .coastal-home__timeline a { color: inherit; font-weight: inherit; text-decoration: none; cursor: pointer; transition: background .18s ease, border-color .18s ease, box-shadow .18s ease; }
 .coastal-home a.coastal-home__card:hover { border-color: #7fc5d8; box-shadow: 0 16px 38px rgba(26,86,128,.13); }

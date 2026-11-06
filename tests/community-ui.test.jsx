@@ -1,10 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import React from 'react';
+import React, { act } from 'react';
+import { createRoot } from 'react-dom/client';
+import { JSDOM } from 'jsdom';
 import { renderToStaticMarkup } from 'react-dom/server';
 import App from '../src/App.jsx';
 import { ContributionBar, Discussion } from '../src/Community.jsx';
-import { articleTarget } from '../src/communityTargets.js';
+import { articleTarget, guidelineTarget } from '../src/communityTargets.js';
+import guidelines from '../src/data/guidelines.js';
+import scheduleResources from '../src/data/scheduleResources.js';
 import weekly from '../src/data/weekly.js';
 
 const account = { user: { id: 7, name: 'Doctor' }, profile: { displayName: 'Dr. Doctor' } };
@@ -29,6 +33,47 @@ test('weekly, podcast, and quiz discussion buttons say Comment rather than Discu
   assert.match(quizHtml, /Comment on this quiz/);
   assert.equal(articleTarget({ doi: 'https://doi.org/10.1234/AB' }), articleTarget({ doi: '10.1234/ab' }));
   assert.match(articleTarget(weekly[0]), /^article:/);
+});
+
+test('a repository guideline has the same comment target on the Guidelines page as on Home', async () => {
+  const dom = new JSDOM('<div id="root"></div>', { url: 'https://mygihub.com/guidelines' });
+  const previous = { window: globalThis.window, document: globalThis.document, fetch: globalThis.fetch, IS_REACT_ACT_ENVIRONMENT: globalThis.IS_REACT_ACT_ENVIRONMENT };
+  try {
+    globalThis.window = dom.window;
+    globalThis.document = dom.window.document;
+    globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+    globalThis.fetch = async (url, options = {}) => url === '/api/gihub-auth/me'
+      ? Response.json(account)
+      : Response.json({ data: options.body?.includes('guidelines-new') ? [] : [guidelines[0]], total: 1 });
+    const root = createRoot(dom.window.document.getElementById('root'));
+    await act(async () => { root.render(<App initialActive="guidelines" initialAccount={account} />); });
+    const target = guidelineTarget(guidelines[0]);
+    assert.ok(dom.window.document.querySelector(`[data-community-target="${target}"]`));
+    await act(async () => root.unmount());
+  } finally {
+    Object.assign(globalThis, previous);
+    dom.window.close();
+  }
+});
+
+test('a published Schedule guideline resource keeps its own shared comment thread', async () => {
+  const slug = 'appendix-and-anus-pathology';
+  const item = scheduleResources[slug].guidelines[0];
+  const dom = new JSDOM('<div id="root"></div>', { url: `https://mygihub.com/schedule?lecture=${slug}` });
+  const previous = { window: globalThis.window, document: globalThis.document, fetch: globalThis.fetch, IS_REACT_ACT_ENVIRONMENT: globalThis.IS_REACT_ACT_ENVIRONMENT };
+  try {
+    globalThis.window = dom.window;
+    globalThis.document = dom.window.document;
+    globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+    globalThis.fetch = async () => Response.json(account);
+    const root = createRoot(dom.window.document.getElementById('root'));
+    await act(async () => { root.render(<App initialActive="schedule" initialAccount={account} />); });
+    assert.ok(dom.window.document.querySelector(`[data-community-target="${guidelineTarget(item)}"]`));
+    await act(async () => root.unmount());
+  } finally {
+    Object.assign(globalThis, previous);
+    dom.window.close();
+  }
 });
 
 test('signed-out readers see discussions but cannot post; signed-in readers see contribution form', () => {

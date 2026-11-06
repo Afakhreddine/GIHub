@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { articleTarget } from './communityTargets.js';
 import './Community.css';
 
 async function requestCommunity(url, options = {}) {
@@ -38,6 +39,23 @@ export function ContributionBar({ account }) {
     <small>Article leads go to editorial review, not directly to the site. Do not include patient-identifying information.</small>
     {notice && <p role="status">{notice}</p>}
   </form>;
+}
+
+export function WeeklyVote({ item, account, vote = { score: 0, myVote: 0 }, ready, onVote }) {
+  const [busy, setBusy] = useState(false);
+  const target = articleTarget(item);
+  if (!target) return null;
+  async function choose(value) {
+    if (!account || !ready || busy) return;
+    setBusy(true);
+    try { await onVote(target, vote.myVote === value ? 0 : value); }
+    finally { setBusy(false); }
+  }
+  return <div className="community-vote" data-vote-target={target} onClick={event => event.stopPropagation()}>
+    <button type="button" aria-label={`Upvote ${item.title || item.headline}`} aria-pressed={vote.myVote === 1} title={account ? 'Upvote article' : 'Sign in to vote'} disabled={!account || !ready || busy} onClick={() => choose(1)}>▲ Upvote</button>
+    <span aria-label={`Net score ${vote.score || 0}`}>{vote.score || 0}</span>
+    <button type="button" aria-label={`Downvote ${item.title || item.headline}`} aria-pressed={vote.myVote === -1} title={account ? 'Downvote article' : 'Sign in to vote'} disabled={!account || !ready || busy} onClick={() => choose(-1)}>▼ Downvote</button>
+  </div>;
 }
 
 export function Discussion({ target, account, label = 'Comment' }) {
@@ -80,7 +98,7 @@ export function Discussion({ target, account, label = 'Comment' }) {
     } catch (error) { setNotice(error.message); }
     finally { setBusy(false); }
   }
-  return <div className="community-discussion" onClick={event => event.stopPropagation()}>
+  return <div className="community-discussion" data-community-target={target} onClick={event => event.stopPropagation()}>
     <button type="button" aria-expanded={open} onClick={() => setOpen(value => !value)}>{open ? 'Hide comments' : label}</button>
     {open && <div className="community-discussion__thread">
       <h3>Discussion</h3>

@@ -8,6 +8,8 @@ import weeklyPodcasts from "./data/weeklyPodcasts.js";
 import scheduleResources from "./data/scheduleResources.js";
 import { CALENDAR_MONTH, CALENDAR_EVENTS } from "./scheduleConfig.js";
 import { isPublicApprovedResource, sanitizeScheduleResourceForPublic } from "./scheduleResourcesModel.js";
+import { Discussion } from "./Community.jsx";
+import { articleTarget, guidelineTarget, lectureTarget } from "./communityTargets.js";
 import "./Home.css";
 
 const publishedWeekly = weekly.filter(isPublicApprovedResource);
@@ -31,7 +33,7 @@ function SectionButton({ id, children, onNavigate, className = "" }) {
   return <button type="button" className={className} onClick={() => onNavigate(id)}>{children}</button>;
 }
 
-export default function Home({ onNavigate }) {
+export default function Home({ onNavigate, account }) {
   const [featuredGuidelines, setFeaturedGuidelines] = useState(fallbackGuidelines);
   useEffect(() => {
     const controller = new AbortController();
@@ -64,11 +66,11 @@ export default function Home({ onNavigate }) {
           <section className="coastal-home__section" aria-labelledby="coastal-guidelines-title">
             <div className="coastal-home__heading"><div><p className="coastal-home__eyebrow">Clinical guidelines</p><h2 id="coastal-guidelines-title">Grounded in the source.</h2></div><SectionButton id="guidelines" onNavigate={onNavigate} className="coastal-home__text-link">Browse all guidelines <span aria-hidden="true">↗</span></SectionButton></div>
             <div className="coastal-home__card-grid">
-              {featuredGuidelines.map(item => <a className="coastal-home__card" href={resolveGuidelineLink(item).url} target="_blank" rel="noopener noreferrer" aria-label={`${resolveGuidelineLink(item).label === "View source ↗" ? "Open source" : "Search PubMed"} for ${item.title} (opens in new tab)`} key={`${item.org}-${item.title}`}>
+              {featuredGuidelines.map(item => <div className="coastal-home__card-wrap" key={`${item.org}-${item.year}-${item.title}`}><a className="coastal-home__card" href={resolveGuidelineLink(item).url} target="_blank" rel="noopener noreferrer" aria-label={`${resolveGuidelineLink(item).label === "View source ↗" ? "Open source" : "Search PubMed"} for ${item.title} (opens in new tab)`}>
                 <div className="coastal-home__card-meta"><span className="coastal-home__pill">{item.org}</span><span>{item.month} {item.year}</span></div>
                 <h3>{item.title}</h3><p>{item.summary}</p>
                 <div className="coastal-home__card-footer"><span>{item.topic}</span><span aria-hidden="true">↗</span></div>
-              </a>)}
+              </a><Discussion target={guidelineTarget(item)} account={account} /></div>)}
             </div>
           </section>
 
@@ -76,10 +78,10 @@ export default function Home({ onNavigate }) {
             <section className="coastal-home__section" aria-labelledby="coastal-weekly-title">
               <div className="coastal-home__heading"><div><p className="coastal-home__eyebrow">Weekly update</p><h2 id="coastal-weekly-title">On the reading list.</h2></div><SectionButton id="weekly" onNavigate={onNavigate} className="coastal-home__text-link">See all updates <span aria-hidden="true">↗</span></SectionButton></div>
               <div className="coastal-home__weekly-list">
-                {recentWeekly.map(item => <a className="coastal-home__weekly-item" href={sourceUrl(item.studyUrl || item.url)} target="_blank" rel="noopener noreferrer" aria-label={`Open source for ${item.title} (opens in new tab)`} key={`${item.title}-${item.date}`}>
+                {recentWeekly.map(item => <div className="coastal-home__weekly-entry" key={`${item.title}-${item.date}`}><a className="coastal-home__weekly-item" href={sourceUrl(item.studyUrl || item.url)} target="_blank" rel="noopener noreferrer" aria-label={`Open source for ${item.title} (opens in new tab)`}>
                   <div className="coastal-home__card-meta"><span className="coastal-home__pill coastal-home__pill--green">{item.type}</span><span>{item.date}</span></div>
                   <h3>{item.title}</h3><p>{item.source}{item.topic ? ` · ${item.topic}` : ""}</p>
-                </a>)}
+                </a><Discussion target={articleTarget(item)} account={account} /></div>)}
               </div>
             </section>
 
@@ -91,7 +93,7 @@ export default function Home({ onNavigate }) {
                 return <li key={`${event.date}-${event.slug}`}><a href={`/schedule?lecture=${encodeURIComponent(event.slug)}`} aria-label={`Open lecture resources for ${event.topic}`}>
                   <time dateTime={event.date}><strong>{new Date(`${event.date}T12:00:00`).toLocaleDateString("en-US", { day: "numeric" })}</strong><span>{new Date(`${event.date}T12:00:00`).toLocaleDateString("en-US", { month: "short" })}</span></time>
                   <div><h3>{event.topic}</h3><p>{event.label}</p><small>{count ? `${count} public reading resources` : "View schedule for details"}</small></div>
-                </a></li>;
+                </a><Discussion target={lectureTarget(event.slug)} account={account} /></li>;
               })}</ol> : <p className="coastal-home__empty">No upcoming lectures in the published {CALENDAR_MONTH} calendar. Check the schedule for updates.</p>}
               <SectionButton id="schedule" onNavigate={onNavigate} className="coastal-home__schedule-link">View full schedule <span aria-hidden="true">→</span></SectionButton>
             </section>

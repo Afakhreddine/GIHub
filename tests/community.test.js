@@ -5,7 +5,12 @@ import crypto from 'node:crypto';
 import { createApp, apiHandlers } from '../app.js';
 import { createGihubAuthHandler } from '../api/gihub-auth.js';
 import { createCommunityHandler } from '../api/community.js';
-import { articleTarget, podcastTarget, quizTarget } from '../src/communityTargets.js';
+import { articleTarget, guidelineTarget, lectureTarget, podcastTarget, quizTarget } from '../src/communityTargets.js';
+import { CALENDAR_EVENTS } from '../src/scheduleConfig.js';
+import guidelines from '../src/data/guidelines.js';
+import guidelineSupplements from '../src/data/guidelineSupplements.js';
+import scheduleResources from '../src/data/scheduleResources.js';
+import { isPublicApprovedResource } from '../src/scheduleResourcesModel.js';
 import weekly from '../src/data/weekly.js';
 import podcasts from '../src/data/weeklyPodcasts.js';
 import { itemKey, targetKey } from '../src/communityStore.js';
@@ -28,6 +33,7 @@ function sameSignals(a, b) {
 function fakeRedis() {
   const strings = new Map();
   const sorted = new Map();
+  const voteHashes = new Map();
   let writes = 0;
   const fetchImpl = async (url, options) => {
     if (url.startsWith('https://endoeval.com')) {
@@ -35,7 +41,26 @@ function fakeRedis() {
     }
     const [command, ...args] = JSON.parse(options.body);
     let result;
-    if (command === 'EVAL' && args[1] === '3') {
+    if (command === 'EVAL' && args[0].startsWith('-- vote')) {
+      const [, , hashKey, scoreKey, rateKey, userId, value] = args;
+      const hash = voteHashes.get(hashKey) || new Map();
+      const old = Number(hash.get(userId) || 0);
+      const requested = Number(value);
+      if (old === requested) result = [Number(strings.get(scoreKey) || 0), old];
+      else {
+        const attempts = Number(strings.get(rateKey) || 0) + 1;
+        strings.set(rateKey, String(attempts));
+        if (attempts > 30) result = 'rate-limited';
+        else {
+          if (requested === 0) hash.delete(userId);
+          else hash.set(userId, requested);
+          voteHashes.set(hashKey, hash);
+          const score = Number(strings.get(scoreKey) || 0) + requested - old;
+          strings.set(scoreKey, String(score));
+          result = [score, requested];
+        }
+      }
+    } else if (command === 'EVAL' && args[1] === '3') {
       const [, , record, pending, thread, status, reviewedAt, id, kind] = args;
       const item = strings.has(record) ? JSON.parse(strings.get(record)) : null;
       if (!item) result = null;
@@ -62,19 +87,21 @@ function fakeRedis() {
       }
     } else if (command === 'ZREVRANGE' || command === 'ZRANGE') result = [...(sorted.get(args[0]) || [])].sort((a,b)=>command === 'ZRANGE' ? a.score-b.score : b.score-a.score).slice(Number(args[1]), Number(args[2])+1).map(item => item.id);
     else if (command === 'MGET') result = args.map(key => strings.get(key) || null);
+    else if (command === 'HGET') result = voteHashes.get(args[0])?.get(args[1]) || null;
     else if (command === 'GET') result = strings.get(args[0]) || null;
     else if (command === 'SET') { strings.set(args[0], args[1]); result = 'OK'; }
     else if (command === 'ZREM') { sorted.set(args[0], (sorted.get(args[0]) || []).filter(item => item.id !== args[1])); result = 1; }
     else throw new Error(`Unexpected Redis ${command}`);
     return Response.json({ result });
   };
+  function seedGuidelineRepo(items) { strings.set('gihub:guidelines:repo', JSON.stringify(items)); }
   function seedComment(record, score) {
     strings.set(itemKey('comment', record.id), JSON.stringify(record));
     const index = itemKey('comments', targetKey(record.target));
     sorted.set(index, [...(sorted.get(index) || []), { id: record.id, score }]);
     if (record.status === 'pending') sorted.set(itemKey('comments', 'pending'), [...(sorted.get(itemKey('comments', 'pending')) || []), { id: record.id, score }]);
   }
-  return { fetchImpl, seedComment, get writes() { return writes; } };
+  return { fetchImpl, seedComment, seedGuidelineRepo, get writes() { return writes; } };
 }
 
 async function withServer(run) {
@@ -192,6 +219,59 @@ test('published article, episode and quiz threads appear immediately; reported c
   }
   assert.equal((await post(base, { kind: 'comment', target: 'article:pmid:fake', body: 'Test' }, cookie)).status, 400);
   assert.equal((await request(base, '/api/community?target=podcast%3Afake')).status, 400);
+}));
+
+test('published Weekly articles accept one signed-in vote per account, allow switching and removal, and expose public scores', async () => withServer(async ({ base }) => {
+  const target = articleTarget(weekly.find(isPublicApprovedResource));
+  const url = '/api/community?votes=weekly';
+  const before = await request(base, url);
+  assert.equal(before.status, 200);
+  assert.equal((await before.json()).votes[target].score, 0);
+  assert.equal((await post(base, { kind: 'vote', target, value: 1 })).status, 401);
+  const cookie = await login(base);
+  assert.equal((await post(base, { kind: 'vote', target, value: 1 }, cookie, 'https://evil.example')).status, 403);
+  assert.equal((await post(base, { kind: 'vote', target: 'article:pmid:unpublished', value: 1 }, cookie)).status, 400);
+  assert.equal((await post(base, { kind: 'vote', target, value: 2 }, cookie)).status, 400);
+  const cast = async value => {
+    const response = await post(base, { kind: 'vote', target, value }, cookie);
+    assert.equal(response.status, 200);
+    return response.json();
+  };
+  assert.deepEqual(await cast(1), { target, score: 1, myVote: 1 });
+  assert.deepEqual(await cast(1), { target, score: 1, myVote: 1 });
+  assert.deepEqual(await cast(-1), { target, score: -1, myVote: -1 });
+  assert.deepEqual(await cast(0), { target, score: 0, myVote: 0 });
+  assert.equal((await (await request(base, url)).json()).votes[target].score, 0);
+  assert.equal((await (await request(base, url, { headers: { Cookie: cookie } })).json()).votes[target].myVote, 0);
+}));
+
+test('published Home guideline and lecture comments share protected threads with their section', async () => withServer(async ({ base, redis }) => {
+  const cookie = await login(base);
+  const live = { org: 'AGA', year: '2026', month: 'Nov', title: 'New verified GI guideline', url: 'https://example.org/gi' };
+  redis.seedGuidelineRepo([live, guidelines[0]]);
+  const lecture = CALENDAR_EVENTS.find(event => event.slug && event.topic);
+  assert.ok(lecture);
+  for (const target of [guidelineTarget(live), guidelineTarget(guidelines[0]), lectureTarget(lecture.slug)]) {
+    const created = await post(base, { kind: 'comment', target, body: 'Same thread across Home and section.' }, cookie);
+    assert.equal(created.status, 201, target);
+    const visible = await request(base, `/api/community?target=${encodeURIComponent(target)}`);
+    assert.equal(visible.status, 200);
+    assert.deepEqual((await visible.json()).items.map(item => item.body), ['Same thread across Home and section.']);
+  }
+  assert.equal((await post(base, { kind: 'comment', target: guidelineTarget({ ...live, title: 'Unpublished source' }), body: 'No' }, cookie)).status, 400);
+  assert.equal((await post(base, { kind: 'comment', target: lectureTarget('unpublished-lecture'), body: 'No' }, cookie)).status, 400);
+}));
+
+test('guideline comments reject a stale fallback card when the published repository omits it', async () => withServer(async ({ base, redis }) => {
+  const scheduleTargets = new Set(Object.values(scheduleResources).flatMap(resource => resource.guidelines?.map(guidelineTarget) || []));
+  const supplementTargets = new Set(guidelineSupplements.map(guidelineTarget));
+  const stale = guidelines.find(item => !scheduleTargets.has(guidelineTarget(item)) && !supplementTargets.has(guidelineTarget(item)));
+  assert.ok(stale);
+  redis.seedGuidelineRepo([{ org: 'AGA', year: '2026', title: 'Only published item', url: 'https://example.org/source' }]);
+  const target = guidelineTarget(stale);
+  assert.equal((await request(base, `/api/community?target=${encodeURIComponent(target)}`)).status, 400);
+  const cookie = await login(base);
+  assert.equal((await post(base, { kind: 'comment', target, body: 'Should not be accepted' }, cookie)).status, 400);
 }));
 
 test('community request body is bounded and never silently accepts oversized payloads', async () => withServer(async ({ base }) => {
