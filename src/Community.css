@@ -9,6 +9,11 @@
 .community-contribution__fields>button,.community-discussion button[type=submit] { background:#126a61; color:white; border:0; cursor:pointer; }
 .community-contribution p { margin:4px 0 0; font-size:.85rem; }
 .community-discussion { margin-top:12px; color:#233; }
+.community-vote { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:.78rem; color:#17324d; }
+.community-vote button { padding:5px 10px; border:1px solid #baccc9; border-radius:18px; background:#fff; color:#126a61; cursor:pointer; font:inherit; }
+.community-vote button[aria-pressed="true"] { background:#126a61; color:#fff; }
+.community-vote button:disabled { opacity:.65; cursor:not-allowed; }
+.community-vote span { min-width:18px; text-align:center; font-weight:800; }
 .community-discussion>button { background:transparent; border:1px solid #baccc9; border-radius:20px; color:#126a61; padding:5px 12px; cursor:pointer; font:inherit; }
 .community-discussion__thread { margin-top:10px; padding:12px; border:1px solid #d4e2df; border-radius:9px; background:#f8fbfa; max-width:700px; }
 .community-discussion__thread h3 { font-size:1rem; margin:0 0 8px; }

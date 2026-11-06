@@ -1,19 +1,34 @@
 import crypto from 'node:crypto';
 import { authenticatedGihubAccount } from './gihub-auth.js';
-import { articleTarget, podcastTarget, quizTarget } from '../src/communityTargets.js';
-import { communityConfigured, itemKey, listCommunityItems, listPublishedComments, redisCommand, saveCommunityItem, setCommunityItemStatus, targetKey } from '../src/communityStore.js';
+import { articleTarget, guidelineTarget, lectureTarget, podcastTarget, quizTarget } from '../src/communityTargets.js';
+import { dedupeGuidelines } from './claude.js';
+import guidelineSupplements from '../src/data/guidelineSupplements.js';
+import { CALENDAR_EVENTS } from '../src/scheduleConfig.js';
+import { castVote, communityConfigured, itemKey, listCommunityItems, listPublishedComments, readVotes, redisCommand, saveCommunityItem, setCommunityItemStatus, targetKey } from '../src/communityStore.js';
 import weekly from '../src/data/weekly.js';
 import archive from '../src/data/weeklyArchive.js';
 import schedule from '../src/data/scheduleResources.js';
 import podcasts from '../src/data/weeklyPodcasts.js';
 import { isPublicApprovedResource, sanitizeScheduleResourceForPublic } from '../src/scheduleResourcesModel.js';
 
+const WEEKLY_TARGETS = [...new Set(weekly.filter(isPublicApprovedResource).map(articleTarget).filter(Boolean))];
 const TARGETS = new Set([
-  ...[...weekly, ...archive].filter(isPublicApprovedResource).map(articleTarget),
+  ...WEEKLY_TARGETS,
+  ...archive.filter(isPublicApprovedResource).map(articleTarget),
   ...Object.values(schedule).flatMap(resource => sanitizeScheduleResourceForPublic(resource).newsAndArticles?.map(articleTarget) || []),
+  ...Object.values(schedule).flatMap(resource => sanitizeScheduleResourceForPublic(resource).guidelines?.map(guidelineTarget) || []),
+  ...CALENDAR_EVENTS.filter(event => event.topic && event.slug && !/cancel(?:led|ed)?|no conference/i.test(event.label || '')).map(event => lectureTarget(event.slug)),
   ...podcasts.map(podcastTarget),
   ...Object.entries(schedule).filter(([, resource]) => resource.quiz?.length).map(([slug]) => quizTarget(slug)),
 ].filter(Boolean));
+
+async function publishedTarget(target, store) {
+  if (TARGETS.has(target)) return true;
+  if (!target.startsWith('guideline:') || target.length > 500) return false;
+  let repo = await redisCommand(['GET', 'gihub:guidelines:repo'], store);
+  for (let i = 0; i < 3 && typeof repo === 'string'; i += 1) repo = JSON.parse(repo);
+  return dedupeGuidelines([...(Array.isArray(repo) ? repo : []), ...guidelineSupplements]).some(item => guidelineTarget(item) === target);
+}
 
 function reviewer(req, env) {
   const secret = env.GIHUB_COMMUNITY_REVIEW_TOKEN;
@@ -67,8 +82,12 @@ export function createCommunityHandler({ env = process.env, fetchImpl = globalTh
         return res.status(404).json({ error: 'Not found' });
       }
       if (req.method === 'GET') {
+        if (req.query?.votes === 'weekly') {
+          const viewer = req.headers.cookie ? await authenticate(req) : null;
+          return res.status(200).json({ votes: await readVotes(WEEKLY_TARGETS, viewer?.user?.id, store) });
+        }
         const target = req.query?.target;
-        if (typeof target !== 'string' || !TARGETS.has(target)) return res.status(400).json({ error: 'Unknown published content' });
+        if (typeof target !== 'string' || !(await publishedTarget(target, store))) return res.status(400).json({ error: 'Unknown published content' });
         const items = await listPublishedComments(itemKey('comments', targetKey(target)), store);
         return res.status(200).json({ items: items.map(({ id, target: subject, authorName, body, createdAt }) => ({ id, target: subject, authorName, body, createdAt })) });
       }
@@ -77,6 +96,13 @@ export function createCommunityHandler({ env = process.env, fetchImpl = globalTh
       const account = await authenticate(req);
       if (!account) return res.status(401).json({ error: 'Sign in to participate' });
       const kind = req.body?.kind;
+      if (kind === 'vote') {
+        const { target, value } = req.body || {};
+        if (!WEEKLY_TARGETS.includes(target) || ![-1, 0, 1].includes(value)) return res.status(400).json({ error: 'Choose a published Weekly article and a valid vote' });
+        const result = await castVote(target, account.user.id, value, store);
+        if (result === 'rate-limited') return res.status(429).json({ error: 'Too many vote changes. Please try again later.' });
+        return res.status(200).json({ target, score: Number(result[0]), myVote: Number(result[1]) });
+      }
       if (kind === 'submission') {
         const destination = req.body?.destination;
         const description = safeText(req.body?.description, 1500);
@@ -90,7 +116,7 @@ export function createCommunityHandler({ env = process.env, fetchImpl = globalTh
       if (kind === 'comment') {
         const target = req.body?.target;
         const body = safeText(req.body?.body, 2000);
-        if (typeof target !== 'string' || !TARGETS.has(target) || body.length < 3) return res.status(400).json({ error: 'Choose published content and enter a comment (3–2000 characters)' });
+        if (typeof target !== 'string' || !(await publishedTarget(target, store)) || body.length < 3) return res.status(400).json({ error: 'Choose published content and enter a comment (3–2000 characters)' });
         const record = { id: crypto.randomUUID(), target, body, authorId: account.user.id, authorName: account.profile.displayName || account.user.name, createdAt: new Date(now()).toISOString(), status: 'approved' };
         if (await saveCommunityItem('comment', record, store) !== 1) return res.status(429).json({ error: 'Daily comment limit reached' });
         const { id, authorName, createdAt } = record;
@@ -103,7 +129,7 @@ export function createCommunityHandler({ env = process.env, fetchImpl = globalTh
         const source = await redisCommand(['GET', itemKey('comment', commentId)], store);
         if (!source) return res.status(404).json({ error: 'Comment not found' });
         const comment = JSON.parse(source);
-        if (comment.status !== 'approved' || !TARGETS.has(comment.target)) return res.status(404).json({ error: 'Comment not found' });
+        if (comment.status !== 'approved' || !(await publishedTarget(comment.target, store))) return res.status(404).json({ error: 'Comment not found' });
         const record = { id: crypto.randomUUID(), commentId, target: comment.target, commentBody: comment.body, commentAuthorName: comment.authorName, reason, authorId: account.user.id, createdAt: new Date(now()).toISOString(), status: 'pending' };
         const saved = await saveCommunityItem('report', record, store);
         if (saved === -1) return res.status(409).json({ error: 'Already reported this comment' });

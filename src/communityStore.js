@@ -20,6 +20,30 @@ export async function redisCommand(command, { env = globalThis.process.env, fetc
 export function itemKey(kind, id) { return `gihub:community:${kind}:${id}`; }
 export function userSubmissionIndex(userId, destination) { return itemKey('submissions-by-user', targetKey(`${userId}:${destination}`)); }
 export function targetKey(target) { return crypto.createHash('sha256').update(target).digest('hex'); }
+export function voteKey(target) { return itemKey('votes', targetKey(target)); }
+export function voteScoreKey(target) { return itemKey('vote-score', targetKey(target)); }
+
+const CAST_VOTE = `-- vote
+local previous = tonumber(redis.call('HGET', KEYS[1], ARGV[1]) or '0')
+local requested = tonumber(ARGV[2])
+if previous == requested then return {tonumber(redis.call('GET', KEYS[2]) or '0'), previous} end
+local attempts = redis.call('INCR', KEYS[3])
+if attempts == 1 then redis.call('EXPIRE', KEYS[3], 60) end
+if attempts > 30 then return 'rate-limited' end
+if requested == 0 then redis.call('HDEL', KEYS[1], ARGV[1])
+else redis.call('HSET', KEYS[1], ARGV[1], requested) end
+local score = redis.call('INCRBY', KEYS[2], requested - previous)
+return {score, requested}`;
+
+export async function castVote(target, userId, value, options = {}) {
+  return redisCommand(['EVAL', CAST_VOTE, '3', voteKey(target), voteScoreKey(target), itemKey('vote-rate', String(userId)), String(userId), String(value)], options);
+}
+
+export async function readVotes(targets, userId, options = {}) {
+  const scores = await redisCommand(['MGET', ...targets.map(voteScoreKey)], options);
+  const mine = userId == null ? [] : await Promise.all(targets.map(target => redisCommand(['HGET', voteKey(target), String(userId)], options)));
+  return Object.fromEntries(targets.map((target, index) => [target, { score: Number(scores?.[index] || 0), myVote: Number(mine[index] || 0) }]));
+}
 
 function submissionIdentity(description, id) {
   const doi = description.match(/\b10\.\d{4,9}\/[^\s]+/i)?.[0].replace(/[.,;)]+$/, '').toLowerCase() || '';
