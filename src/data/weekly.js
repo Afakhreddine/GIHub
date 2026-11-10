@@ -157,6 +157,45 @@ const weekly = [
     "summary": "In a retrospective international PBC cohort of 1,591 patients, statin use in 224 was associated with lower decompensation risk (adjusted HR 0.22, P=.04) and major liver events (adjusted HR 0.49, P=.016), while five users stopped for elevated liver chemistries. The data are reassuring when statins are cardiovascularly indicated but do not establish PBC treatment benefit because selection bias and residual confounding remain and the findings are unpublished conference data. Source verified; AI-assisted summary requires human review before merge.",
     "url": "https://www.gastroendonews.com/Hepatology-in-Focus/Article/10-26/Statins-Reduce-Liver-Events-and-Decompensation-in-PBC/82129",
     "studyUrl": ""
+  },
+  {
+    "type": "News",
+    "impactLevel": "Noteworthy",
+    "multiSource": false,
+    "date": "Oct 2026",
+    "topic": "Colonoscopy in Older Adults",
+    "title": "Colonoscopy in older adults: balancing complications, competing mortality, and polypectomy",
+    "authors": "Caroline Helwick",
+    "source": "Gastroenterology & Endoscopy News / JAMA / DDW 2026",
+    "summary": "An October print report links a retrospective VA cohort of 91,952 adults aged 75 or older (estimated 10-year CRC death 0.5% after prior adenoma vs 0.4% without; non-CRC death about 47%) with a 45-study DDW 2026 abstract reporting higher colonoscopy complications at age 80 or older. A separate propensity-matched DDW abstract (118,272 pairs) reported lower 30-day complications with polypectomy than diagnostic colonoscopy (3.6% vs 4.9%) and lower seven-year all-cause mortality (16.9% vs 19.6%), but selection/confounding prevents a causal survival claim; decisions should account for frailty, life expectancy, and individual preferences. Source and JAMA study verified; conference estimates are news-reported, not independently verified from full abstracts; AI-assisted summary requires human review before merge.",
+    "url": "https://www.gastroendonews.com/Endoscopy-Suite/Article/10-26/Colonoscopy-in-Older-Adults-Risks-and-Benefits/81791",
+    "studyUrl": "https://doi.org/10.1001/jama.2026.3414"
+  },
+  {
+    "type": "Research",
+    "impactLevel": "Noteworthy",
+    "multiSource": false,
+    "date": "Oct 2026",
+    "topic": "Pancreatic Duct / EUS",
+    "title": "EUS feature-based model distinguishes main-duct IPMN from chronic pancreatitis",
+    "authors": "Jianing Li et al.",
+    "source": "Gastrointestinal Endoscopy",
+    "summary": "In a single-center retrospective series of 123 patients with indeterminate main-duct dilation (40 with surgically confirmed main-duct IPMN; 83 with chronic pancreatitis), an EUS-feature random-forest model achieved test AUC 0.946 and F1 0.879; in patients without duct stones, AUC was 0.830. The October 2026 print article appeared online April 18, 2026, and its selected population, differing diagnostic reference standards, small test set, and lack of external validation preclude routine adoption. Publisher abstract verified; AI-assisted summary requires human review before merge.",
+    "url": "https://www.sciencedirect.com/science/article/pii/S0016510726002853",
+    "studyUrl": "https://doi.org/10.1016/j.gie.2026.04.013"
+  },
+  {
+    "type": "Guideline",
+    "impactLevel": "High Impact",
+    "multiSource": false,
+    "date": "Oct 2026",
+    "topic": "ERCP Safety",
+    "title": "ASGE society document reviews adverse events of ERCP and related procedures",
+    "authors": "ASGE Standards of Practice Committee; Nauzer Forbes et al.",
+    "source": "ASGE / Gastrointestinal Endoscopy",
+    "summary": "This October 2026 print ASGE practice-guideline document (online July 1, 2026) reviews adverse-event rates and risk factors for ERCP and related techniques, including pancreatic intervention and cholangioscopy, to inform consent and risk assessment. It is an evidence synthesis rather than a new comparative patient study or a replacement for procedure-specific prevention guidance; consider a separate Guidelines repository entry if approved. Publisher full text and classification verified; AI-assisted summary requires human review before merge.",
+    "url": "https://www.sciencedirect.com/science/article/pii/S0016510726067428",
+    "studyUrl": "https://doi.org/10.1016/j.gie.2026.05.007"
   }
 ];
 
