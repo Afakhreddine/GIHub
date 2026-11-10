@@ -19,7 +19,10 @@ async function mount(run) {
   const root = createRoot(dom.window.document.getElementById('root'));
   const warnings = [];
   const originalError = console.error;
-  console.error = (...args) => { warnings.push(args.join(' ')); };
+  console.error = (...args) => {
+    const message = args.join(' ');
+    if (!message.includes('[DEP0205]')) warnings.push(message);
+  };
   try {
     await act(async () => { root.render(<AuthProfile initialAccount={account} skipSessionCheck />); });
     await run(dom.window.document);
