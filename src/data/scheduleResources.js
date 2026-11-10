@@ -3,47 +3,7 @@
 
 const scheduleResources = {
   "stomach-pathology": {
-    "guidelines": [
-      {
-        "org": "AGA",
-        "year": "2020",
-        "month": "February",
-        "topic": "Gastric Intestinal Metaplasia",
-        "urgency": "Moderate",
-        "title": "AGA Clinical Practice Guidelines on Management of Gastric Intestinal Metaplasia",
-        "summary": "This AGA guideline addresses the management of incidentally detected gastric intestinal metaplasia, recommending H. pylori testing and eradication and providing conditional guidance against routine surveillance endoscopy in most patients. It uses GRADE methodology and applies to adults with GIM identified on upper endoscopy.",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/31816298/",
-        "relevanceScore": 12,
-        "relevanceReason": "Matched schedule topic terms: gastric, h pylori, intestinal metaplasia",
-        "status": "candidate"
-      },
-      {
-        "org": "ACG",
-        "year": "2024",
-        "month": "September",
-        "topic": "Helicobacter Pylori",
-        "urgency": "High",
-        "title": "ACG Clinical Guideline: Treatment of Helicobacter pylori Infection",
-        "summary": "Evidence-based recommendations for the diagnosis and treatment of H. pylori infection in clinical practice.",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/39626064/",
-        "relevanceScore": 7,
-        "relevanceReason": "Matched schedule topic terms: h pylori, helicobacter",
-        "status": "candidate"
-      },
-      {
-        "org": "ASGE",
-        "year": "2023",
-        "month": "November",
-        "topic": "Esophageal and Gastric Cancer – ESD",
-        "urgency": "High",
-        "title": "American Society for Gastrointestinal Endoscopy guideline on endoscopic submucosal dissection for the management of early esophageal and gastric cancers: summary and recommendations",
-        "summary": "GRADE-based guideline on the role of ESD versus EMR and surgery for management of early esophageal squamous cell carcinoma, esophageal adenocarcinoma, and gastric adenocarcinoma. Published in Gastrointest Endosc 2023; Volume 98, Issue 5.",
-        "url": "https://www.asge.org/home/resources/publications/guidelines/american-society-for-gastrointestinal-endoscopy-guideline-on-endoscopic-submucosal-dissection-for-the-management-of-early-esophageal-and-gastric-cancers",
-        "relevanceScore": 7,
-        "relevanceReason": "Matched schedule topic terms: gastric, gastric cancer",
-        "status": "candidate"
-      }
-    ],
+    "guidelines": [],
     "newsAndArticles": [
       {
         "section": "News and Articles",
@@ -193,51 +153,11 @@ const scheduleResources = {
     ],
     "fetchedAt": "2026-09-11T00:00:00.000Z",
     "resourceStatus": "approved",
-    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
+    "resourceNotes": "Previously approved cards were preserved; new article and guideline candidates were filtered through Schedule Review. Lecture activation still requires a source-PDF quiz.",
     "quizGeneratedAt": "2026-09-16T00:10:00.000Z"
   },
   "gi-bleeding": {
-    "guidelines": [
-      {
-        "org": "ACG",
-        "year": "2021",
-        "month": "February",
-        "topic": "Upper GI Bleeding",
-        "urgency": "High",
-        "title": "ACG Clinical Guideline: Upper Gastrointestinal and Ulcer Bleeding",
-        "summary": "Guidelines for management of patients with overt upper gastrointestinal bleeding including risk assessment and endoscopic therapy.",
-        "url": "https://docs.bvsalud.org/biblioref/2021/07/1281327/acg_clinical_guideline__upper_gastrointestinal_and14.pdf",
-        "relevanceScore": 7,
-        "relevanceReason": "Matched schedule topic terms: bleeding, ulcer bleeding",
-        "status": "candidate"
-      },
-      {
-        "org": "ASGE",
-        "year": "2023",
-        "month": "May",
-        "topic": "Acute Upper GI Bleeding",
-        "urgency": "High",
-        "title": "ASGE guideline on the role of endoscopy in the management of acute non-variceal upper GI bleeding: summary and recommendations",
-        "summary": "Updated GRADE-based guideline on endoscopic management of acute non-variceal upper GI bleeding with recommendations on risk stratification, timing, hemostatic methods, and post-hemostasis care. Published in Gastrointestinal Endoscopy Volume 98.",
-        "url": "https://www.asge.org/home/resources/publications/guidelines",
-        "relevanceScore": 6,
-        "relevanceReason": "Matched schedule topic terms: bleeding, variceal, hemostasis",
-        "status": "candidate"
-      },
-      {
-        "org": "AASLD",
-        "year": "2025",
-        "month": "Jan",
-        "topic": "General GI",
-        "urgency": "High",
-        "title": "TIPS, Variceal Embolization, and Retrograde Transvenous Obliteration",
-        "summary": "AASLD practice guideline/guidance topic page for TIPS, Variceal Embolization, and Retrograde Transvenous Obliteration, included from the official AASLD practice-guidelines disease library.",
-        "url": "https://www.aasld.org/practice-guidelines/transjugular-intrahepatic-portosystemic-shunt-tips",
-        "relevanceScore": 2,
-        "relevanceReason": "Matched schedule topic terms: variceal",
-        "status": "candidate"
-      }
-    ],
+    "guidelines": [],
     "newsAndArticles": [],
     "quiz": [
       {
@@ -367,38 +287,11 @@ const scheduleResources = {
     ],
     "fetchedAt": "2026-09-11T00:00:00.000Z",
     "resourceStatus": "approved",
-    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
+    "resourceNotes": "Previously approved cards were preserved; new article and guideline candidates were filtered through Schedule Review. Lecture activation still requires a source-PDF quiz.",
     "quizGeneratedAt": "2026-09-16T00:10:00.000Z"
   },
   "hypertriglyceridemia-acute-pancreatitis": {
-    "guidelines": [
-      {
-        "org": "ASGE",
-        "year": "2023",
-        "month": "April",
-        "topic": "Benign Pancreatic Disease",
-        "urgency": "Moderate",
-        "title": "ASGE guideline on the role of endoscopy in the management of benign pancreatic disease: summary and recommendations",
-        "summary": "Updated ASGE GRADE-based guideline on the endoscopic management of benign pancreatic conditions including acute pancreatitis, pancreatic duct disruption, and pancreatic fluid collections. Provides specific recommendations on drainage technique selection and timing.",
-        "url": "https://www.asge.org/home/resources/publications/guidelines/asge-guideline-on-benign-pancreatic-disease-summary",
-        "relevanceScore": 12,
-        "relevanceReason": "Matched schedule topic terms: pancreatitis, acute pancreatitis, benign pancreatic disease",
-        "status": "candidate"
-      },
-      {
-        "org": "ACG",
-        "year": "2024",
-        "month": "March",
-        "topic": "Acute Pancreatitis",
-        "urgency": "High",
-        "title": "American College of Gastroenterology Guidelines: Management of Acute Pancreatitis",
-        "summary": "Comprehensive guidelines for the diagnosis, risk stratification, and management of acute pancreatitis.",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/38857482/",
-        "relevanceScore": 7,
-        "relevanceReason": "Matched schedule topic terms: pancreatitis, acute pancreatitis",
-        "status": "candidate"
-      }
-    ],
+    "guidelines": [],
     "newsAndArticles": [],
     "quiz": [
       {
@@ -528,64 +421,11 @@ const scheduleResources = {
     ],
     "fetchedAt": "2026-09-11T00:00:00.000Z",
     "resourceStatus": "approved",
-    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
+    "resourceNotes": "Previously approved cards were preserved; new article and guideline candidates were filtered through Schedule Review. Lecture activation still requires a source-PDF quiz.",
     "quizGeneratedAt": "2026-09-16T00:10:00.000Z"
   },
   "liver-pathology": {
-    "guidelines": [
-      {
-        "org": "ACG",
-        "year": "2023",
-        "month": "June",
-        "topic": "Nonalcoholic Fatty Liver Disease / MASLD",
-        "urgency": "Moderate",
-        "title": "ACG Clinical Guideline: Nonalcoholic Fatty Liver Disease (NAFLD/MASLD)",
-        "summary": "Guideline on the diagnosis, staging, and management of metabolic dysfunction-associated steatotic liver disease (formerly NAFLD/NASH), including lifestyle interventions, pharmacotherapy, and monitoring for fibrosis progression. Published Am J Gastroenterol June 2023.",
-        "url": "https://gi.org/guidelines/",
-        "relevanceScore": 17,
-        "relevanceReason": "Matched schedule topic terms: liver, fibrosis, steatotic, fatty liver, masld",
-        "status": "candidate"
-      },
-      {
-        "org": "AASLD",
-        "year": "2023",
-        "month": "May",
-        "topic": "NAFLD/MASLD",
-        "urgency": "High",
-        "title": "AASLD Practice Guidance on the clinical assessment and management of nonalcoholic fatty liver disease",
-        "summary": "Comprehensive guidance on diagnosis and management of NAFLD emphasizing advances in noninvasive risk stratification and therapeutics.",
-        "url": "https://pubmed.ncbi.nlm.nih.gov/36727674/",
-        "relevanceScore": 11,
-        "relevanceReason": "Matched schedule topic terms: liver, fatty liver, masld, nafld",
-        "status": "candidate"
-      },
-      {
-        "org": "ASGE",
-        "year": "2026",
-        "month": "January",
-        "topic": "Esophageal & Gastric Varices in Cirrhosis",
-        "urgency": "High",
-        "title": "ASGE Guideline on management of esophageal and gastric varices in patients with cirrhosis",
-        "summary": "Forthcoming ASGE guideline providing evidence-based recommendations on screening, surveillance, and endoscopic treatment of esophageal and gastric varices in cirrhotic patients, including band ligation and cyanoacrylate injection. Addresses primary and secondary prophylaxis strategies in the context of updated portal hypertension management.",
-        "url": "https://www.asge.org/home/resources/publications/guidelines/asge-guideline-varices-cirrhosis",
-        "relevanceScore": 7,
-        "relevanceReason": "Matched schedule topic terms: cirrhosis, portal hypertension",
-        "status": "candidate"
-      },
-      {
-        "org": "AGA",
-        "year": "2026",
-        "month": "Mar",
-        "topic": "General GI",
-        "urgency": "High",
-        "title": "Clinical care pathway for the risk stratification and management of patients with MASLD",
-        "summary": "AGA guidance addressing Clinical care pathway for the risk stratification and management of patients with MASLD. Included in the repo-managed guideline library from society guidance pages with an item-level source link when available.",
-        "url": "https://gastro.org/clinical-guidance/clinical-care-pathway-for-the-risk-stratification-and-management-of-patients-with-masld/",
-        "relevanceScore": 2,
-        "relevanceReason": "Matched schedule topic terms: masld",
-        "status": "candidate"
-      }
-    ],
+    "guidelines": [],
     "newsAndArticles": [
       {
         "section": "News and Articles",
@@ -754,51 +594,11 @@ const scheduleResources = {
     ],
     "fetchedAt": "2026-09-11T00:00:00.000Z",
     "resourceStatus": "approved",
-    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
+    "resourceNotes": "Previously approved cards were preserved; new article and guideline candidates were filtered through Schedule Review. Lecture activation still requires a source-PDF quiz.",
     "quizGeneratedAt": "2026-09-16T00:10:00.000Z"
   },
   "ibd": {
-    "guidelines": [
-      {
-        "org": "ASGE",
-        "year": "2024",
-        "month": "November",
-        "topic": "Inflammatory Bowel Disease – Endoscopic Diagnosis and Management",
-        "urgency": "Moderate",
-        "title": "American Society for Gastrointestinal Endoscopy guideline on the endoscopic diagnosis and management of adult inflammatory bowel disease: summary and recommendations",
-        "summary": "This ASGE guideline provides updated evidence-based recommendations for the endoscopic diagnosis, surveillance, and management of adult inflammatory bowel disease (IBD), including Crohn's disease and ulcerative colitis. It addresses the role of colonoscopy, chromoendoscopy, dysplasia surveillance, and endoscopic therapy for IBD-related strictures and complications.",
-        "url": "https://www.asge.org/home/resources/publications/guidelines/american-society-for-gastrointestinal-endoscopy-guideline-on-the-endoscopic-diagnosis-and-management-of-adult-inflammatory-bowel-disease--summary-and-recommendations",
-        "relevanceScore": 19,
-        "relevanceReason": "Matched schedule topic terms: inflammatory bowel, crohn, crohn s, ulcerative colitis, colitis",
-        "status": "candidate"
-      },
-      {
-        "org": "AGA",
-        "year": "2025",
-        "month": "November",
-        "topic": "Crohn's Disease Pharmacologic Management",
-        "urgency": "High",
-        "title": "AGA Living Clinical Practice Guideline on the Pharmacologic Management of Moderate-to-Severe Crohn's Disease",
-        "summary": "This living guideline provides 16 recommendations for pharmacologic management of moderate-to-severe Crohn's disease, focusing on advanced therapies, immunomodulators, and combination therapy. It includes recommendations for early advanced therapy and treating to endoscopic remission.",
-        "url": "https://www.gastrojournal.org/article/S0016-5085(25)06091-3/fulltext",
-        "relevanceScore": 7,
-        "relevanceReason": "Matched schedule topic terms: crohn, crohn s",
-        "status": "candidate"
-      },
-      {
-        "org": "ACG",
-        "year": "2025",
-        "month": "June",
-        "topic": "Ulcerative Colitis",
-        "urgency": "High",
-        "title": "ACG Clinical Guideline Update: Ulcerative Colitis in Adults",
-        "summary": "Updated guideline for the management of adult patients with ulcerative colitis providing evidence-based recommendations for treatment approaches.",
-        "url": "https://www.guidelinecentral.com/guideline/13311/",
-        "relevanceScore": 7,
-        "relevanceReason": "Matched schedule topic terms: ulcerative colitis, colitis",
-        "status": "candidate"
-      }
-    ],
+    "guidelines": [],
     "newsAndArticles": [
       {
         "section": "News and Articles",
@@ -1024,51 +824,11 @@ const scheduleResources = {
     ],
     "fetchedAt": "2026-09-11T00:00:00.000Z",
     "resourceStatus": "approved",
-    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
+    "resourceNotes": "Previously approved cards were preserved; new article and guideline candidates were filtered through Schedule Review. Lecture activation still requires a source-PDF quiz.",
     "quizGeneratedAt": "2026-09-16T00:10:00.000Z"
   },
   "ibd-gi-tumors-pathology": {
-    "guidelines": [
-      {
-        "org": "ASGE",
-        "year": "2024",
-        "month": "November",
-        "topic": "Inflammatory Bowel Disease – Endoscopic Diagnosis and Management",
-        "urgency": "Moderate",
-        "title": "American Society for Gastrointestinal Endoscopy guideline on the endoscopic diagnosis and management of adult inflammatory bowel disease: summary and recommendations",
-        "summary": "This ASGE guideline provides updated evidence-based recommendations for the endoscopic diagnosis, surveillance, and management of adult inflammatory bowel disease (IBD), including Crohn's disease and ulcerative colitis. It addresses the role of colonoscopy, chromoendoscopy, dysplasia surveillance, and endoscopic therapy for IBD-related strictures and complications.",
-        "url": "https://www.asge.org/home/resources/publications/guidelines/american-society-for-gastrointestinal-endoscopy-guideline-on-the-endoscopic-diagnosis-and-management-of-adult-inflammatory-bowel-disease--summary-and-recommendations",
-        "relevanceScore": 14,
-        "relevanceReason": "Matched schedule topic terms: inflammatory bowel, crohn, ulcerative colitis, dysplasia",
-        "status": "candidate"
-      },
-      {
-        "org": "ACG",
-        "year": "2025",
-        "month": "Aug",
-        "topic": "IBD",
-        "urgency": "High",
-        "title": "Global Consensus Statement on the Management of Pregnancy in Inflammatory Bowel Disease",
-        "summary": "ACG guidance addressing Global Consensus Statement on the Management of Pregnancy in Inflammatory Bowel Disease. Included in the repo-managed guideline library from society guidance pages with an item-level source link when available.",
-        "url": "https://www.doi.org/10.14309/ajg.0000000000003651",
-        "relevanceScore": 5,
-        "relevanceReason": "Matched schedule topic terms: inflammatory bowel",
-        "status": "candidate"
-      },
-      {
-        "org": "AGA",
-        "year": "2024",
-        "month": "December",
-        "topic": "Ulcerative Colitis Pharmacologic Management",
-        "urgency": "High",
-        "title": "AGA Living Clinical Practice Guideline on Pharmacological Management of Moderate-to-Severe Ulcerative Colitis",
-        "summary": "This living guideline provides comprehensive recommendations for pharmacological management of moderate-to-severe ulcerative colitis. It includes 14 recommendations on advanced therapies, combination therapy, and treatment positioning.",
-        "url": "https://www.gastrojournal.org/article/S0016-5085(24)05563-X/fulltext",
-        "relevanceScore": 5,
-        "relevanceReason": "Matched schedule topic terms: ulcerative colitis",
-        "status": "candidate"
-      }
-    ],
+    "guidelines": [],
     "newsAndArticles": [
       {
         "section": "News and Articles",
@@ -1294,7 +1054,7 @@ const scheduleResources = {
     ],
     "fetchedAt": "2026-09-11T00:00:00.000Z",
     "resourceStatus": "approved",
-    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
+    "resourceNotes": "Previously approved cards were preserved; new article and guideline candidates were filtered through Schedule Review. Lecture activation still requires a source-PDF quiz.",
     "quizGeneratedAt": "2026-09-16T00:10:00.000Z"
   },
   "colon-polyps-pathology": {
@@ -1577,7 +1337,7 @@ const scheduleResources = {
       "usmstf-endoscopic-removal-colorectal-lesions-2020.pdf"
     ],
     "quizGeneratedAt": "2026-10-10T04:20:00.000Z",
-    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
+    "resourceNotes": "Previously approved cards were preserved; new article and guideline candidates were filtered through Schedule Review. Lecture activation still requires a source-PDF quiz.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "approved"
   },
@@ -1619,7 +1379,7 @@ const scheduleResources = {
         "type": "Research",
         "relevanceScore": 9,
         "relevanceReason": "PubMed-verified, selected for Appendix and Anus Pathology review.",
-        "status": "candidate",
+        "status": "approved",
         "addedBy": "schedule-targeted-online-pull-curated",
         "addedAt": "2026-11-04",
         "eventDate": "2026-11-06"
@@ -1638,7 +1398,7 @@ const scheduleResources = {
         "type": "Research",
         "relevanceScore": 9,
         "relevanceReason": "PubMed-verified, selected for Appendix and Anus Pathology review.",
-        "status": "candidate",
+        "status": "approved",
         "addedBy": "schedule-targeted-online-pull-curated",
         "addedAt": "2026-11-04",
         "eventDate": "2026-11-06"
@@ -1771,7 +1531,7 @@ const scheduleResources = {
       "ascrs-anal-squamous-cell-cancers-2018-source-page.pdf"
     ],
     "quizGeneratedAt": "2026-10-10T04:20:00.000Z",
-    "resourceNotes": "Existing ASCRS guidelines and quiz preserved; two PubMed-verified pathology articles await Schedule Review.",
+    "resourceNotes": "Previously approved cards were preserved; new article and guideline candidates were filtered through Schedule Review. Lecture activation still requires a source-PDF quiz.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "approved"
   },
@@ -1971,7 +1731,7 @@ const scheduleResources = {
       "acg-celiac-disease-guideline-2023.pdf"
     ],
     "quizGeneratedAt": "2026-10-10T04:20:00.000Z",
-    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
+    "resourceNotes": "Previously approved cards were preserved; new article and guideline candidates were filtered through Schedule Review. Lecture activation still requires a source-PDF quiz.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "approved"
   },
@@ -2182,7 +1942,7 @@ const scheduleResources = {
       "acg-celiac-disease-guideline-2023.pdf"
     ],
     "quizGeneratedAt": "2026-10-10T04:20:00.000Z",
-    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
+    "resourceNotes": "Previously approved cards were preserved; new article and guideline candidates were filtered through Schedule Review. Lecture activation still requires a source-PDF quiz.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "approved"
   },
@@ -2656,7 +2416,7 @@ const scheduleResources = {
       "gihub_aga_living_cade_guideline_2025.pdf"
     ],
     "quizGeneratedAt": "2026-10-27T02:25:00.000Z",
-    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
+    "resourceNotes": "Previously approved cards were preserved; new article and guideline candidates were filtered through Schedule Review. Lecture activation still requires a source-PDF quiz.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "approved"
   },
@@ -2939,7 +2699,7 @@ const scheduleResources = {
       "usmstf-endoscopic-removal-colorectal-lesions-2020.pdf"
     ],
     "quizGeneratedAt": "2026-10-10T04:20:00.000Z",
-    "resourceNotes": "Existing guideline/WeeklyArchive cards were preserved automatically; new targeted online-search cards were filtered through Schedule Review.",
+    "resourceNotes": "Previously approved cards were preserved; new article and guideline candidates were filtered through Schedule Review. Lecture activation still requires a source-PDF quiz.",
     "fetchedAt": "2026-10-01T00:00:00.000Z",
     "resourceStatus": "approved"
   },
@@ -2953,7 +2713,7 @@ const scheduleResources = {
         "title": "AASLD Practice Guidance on risk stratification and management of portal hypertension and varices in cirrhosis.",
         "summary": "Guidance on clinically significant portal hypertension, risk assessment, nonselective beta blockers and variceal prevention.",
         "url": "https://pubmed.ncbi.nlm.nih.gov/37870298/",
-        "status": "candidate"
+        "status": "approved"
       }
     ],
     "newsAndArticles": [
@@ -2971,7 +2731,7 @@ const scheduleResources = {
         "type": "Research",
         "relevanceScore": 9,
         "relevanceReason": "PubMed-verified, selected for Portal Hypertension review.",
-        "status": "candidate",
+        "status": "approved",
         "addedBy": "schedule-targeted-online-pull-curated",
         "addedAt": "2026-11-04",
         "eventDate": "2026-11-10"
@@ -2990,16 +2750,16 @@ const scheduleResources = {
         "type": "Meta-Analysis",
         "relevanceScore": 9,
         "relevanceReason": "PubMed-verified, selected for Portal Hypertension review.",
-        "status": "candidate",
+        "status": "approved",
         "addedBy": "schedule-targeted-online-pull-curated",
         "addedAt": "2026-11-04",
         "eventDate": "2026-11-10"
       }
     ],
     "quiz": [],
-    "resourceNotes": "Guideline and article candidates await Schedule Review; lecture stays non-clickable until approved resources and source-PDF quiz are ready.",
+    "resourceNotes": "Previously approved cards were preserved; new article and guideline candidates were filtered through Schedule Review. Lecture activation still requires a source-PDF quiz.",
     "quizStatus": "pending-source-pdf-quiz",
-    "resourceStatus": "candidate"
+    "resourceStatus": "approved"
   },
   "cirrhosis-101": {
     "guidelines": [
@@ -3011,7 +2771,7 @@ const scheduleResources = {
         "title": "ACG Clinical Guideline: Preventive Care for Patients With Cirrhosis.",
         "summary": "Prevention-focused recommendations for cirrhosis complications, infections, nutrition, exercise and osteoporosis care.",
         "url": "https://pubmed.ncbi.nlm.nih.gov/42831646/",
-        "status": "candidate"
+        "status": "approved"
       },
       {
         "org": "AASLD",
@@ -3021,7 +2781,7 @@ const scheduleResources = {
         "title": "AASLD Practice Guidance on Acute-on-chronic liver failure and the management of critically ill patients with cirrhosis.",
         "summary": "Guidance on diagnosis and management of acute-on-chronic liver failure and cirrhosis in critical illness.",
         "url": "https://pubmed.ncbi.nlm.nih.gov/37939273/",
-        "status": "candidate"
+        "status": "approved"
       }
     ],
     "newsAndArticles": [
@@ -3039,7 +2799,7 @@ const scheduleResources = {
         "type": "Review",
         "relevanceScore": 9,
         "relevanceReason": "PubMed-verified, selected for Cirrhosis review.",
-        "status": "candidate",
+        "status": "approved",
         "addedBy": "schedule-targeted-online-pull-curated",
         "addedAt": "2026-11-04",
         "eventDate": "2026-11-20"
@@ -3058,16 +2818,16 @@ const scheduleResources = {
         "type": "Research",
         "relevanceScore": 9,
         "relevanceReason": "PubMed-verified, selected for Cirrhosis review.",
-        "status": "candidate",
+        "status": "approved",
         "addedBy": "schedule-targeted-online-pull-curated",
         "addedAt": "2026-11-04",
         "eventDate": "2026-11-20"
       }
     ],
     "quiz": [],
-    "resourceNotes": "Guideline and article candidates await Schedule Review; lecture stays non-clickable until approved resources and source-PDF quiz are ready.",
+    "resourceNotes": "Previously approved cards were preserved; new article and guideline candidates were filtered through Schedule Review. Lecture activation still requires a source-PDF quiz.",
     "quizStatus": "pending-source-pdf-quiz",
-    "resourceStatus": "candidate"
+    "resourceStatus": "approved"
   },
   "post-aasld-update": {
     "guidelines": [],
