@@ -76,3 +76,9 @@ test("schedule queue ignores unrelated open PRs that merely mention scheduling",
   assert.equal(result.body.reviewStatus, "no-open-pr");
   assert.deepEqual(result.body.resources, {});
 });
+
+test("canonical Schedule review selects staged November resource PR, not infrastructure fixes", () => {
+  const staged = { number:100, state:"open", title:"Stage November schedule resources for guideline and article review", head:{ ref:"fix/november-schedule-review" }, updated_at:"2026-11-10T00:00:00Z" };
+  const infrastructure = { number:108, state:"open", title:"Fix Schedule review infrastructure", head:{ ref:"fix/schedule-review-infrastructure" }, updated_at:"2026-11-11T00:00:00Z" };
+  assert.equal(chooseLatestScheduleReviewPull([staged, infrastructure])?.number, 100);
+});
