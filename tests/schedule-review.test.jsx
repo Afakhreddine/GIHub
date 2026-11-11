@@ -7,9 +7,9 @@ import ScheduleReview from "../src/ScheduleReview.jsx";
 import ReviewHub from "../src/ReviewHub.jsx";
 import WeeklyReview from "../src/WeeklyReview.jsx";
 import { parseScheduleResourcesModuleSource } from "../api/schedule-review-data.js";
-import { filterScheduleResourcesToApproved, parseScheduleResourcesSource, scheduleResourcesMatchApproved, validateScheduleCommunityBranch, validateSchedulePublishRequest } from "../api/schedule-review-publish.js";
-import { flattenScheduleReviewItems, scheduleReviewItemId } from "../src/scheduleReviewModel.js";
-import { sanitizeScheduleResourceForPublic } from "../src/scheduleResourcesModel.js";
+ import { filterScheduleResourcesToApproved, parseScheduleResourcesSource, scheduleResourcesMatchApproved, validateScheduleCommunityBranch, validateSchedulePublishRequest } from "../api/schedule-review-publish.js";
+ import { flattenScheduleReviewItems, scheduleReviewItemId } from "../src/scheduleReviewModel.js";
+ import { sanitizeScheduleResourceForPublic } from "../src/scheduleResourcesModel.js";
 
 test("schedule review route renders cards and publish controls", () => {
   const html = renderToStaticMarkup(React.createElement(ScheduleReview, { resources:scheduleResources }));
