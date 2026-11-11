@@ -12,8 +12,8 @@ test("weekly page features current podcast with prior-episode dropdown", () => {
   assert.match(html, /Rolling archive: latest 3 Weekly Update podcasts stored in-repo/);
   assert.match(html, new RegExp(weeklyPodcasts[0].audioUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(html, /Download MP3/);
-  assert.match(html, /Editorial corrections to this unedited recording/);
-  assert.match(html, /PCABs \(not PPIs\)/);
+  assert.match(html, /Editorial note:/);
+  assert.match(html, /17:29.*indomethacin.*cyclooxygenase/i);
   for (const podcast of weeklyPodcasts) {
     assert.match(html, new RegExp(podcast.displayDate.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }

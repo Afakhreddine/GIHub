@@ -9,11 +9,13 @@ test("weekly podcast metadata uses a rolling in-repo archive", () => {
   assert.ok(Array.isArray(weeklyPodcasts));
   assert.ok(weeklyPodcasts.length > 0);
   assert.ok(weeklyPodcasts.length <= 3, "keep only the latest 3 repo-stored podcasts");
-  assert.equal(weeklyPodcasts[0].id, "weekly-2026-11-02");
+  assert.equal(weeklyPodcasts[0].id, "weekly-2026-11-10");
   assert.equal(weeklyPodcasts[0].sourceCount, 6);
-  assert.equal(weeklyPodcasts[0].duration, "39:03");
-  assert.match(weeklyPodcasts[0].editorialNote, /PCABs \(not PPIs\)/);
-  assert.match(weeklyPodcasts[0].editorialNote, /06:08.*24:46.*31:28.*36:43/);
+  assert.equal(weeklyPodcasts[0].duration, "19:30");
+  assert.match(weeklyPodcasts[0].editorialNote, /17:29.*indomethacin.*cyclooxygenase/i);
+  assert.doesNotMatch(weeklyPodcasts[0].editorialNote, /ACLF|varix|stent|heart.disease/i);
+  assert.equal(weeklyPodcasts[1].id, "weekly-2026-11-02");
+  assert.equal(weeklyPodcasts[2].id, "weekly-2026-10-15");
 
   const dates = weeklyPodcasts.map(p => p.date);
   assert.deepEqual(dates, [...dates].sort().reverse(), "podcasts should be newest first");
@@ -33,6 +35,6 @@ test("weekly podcast metadata uses a rolling in-repo archive", () => {
     assert.ok(bytes < 50 * 1024 * 1024, `${localPath} should stay below GitHub's recommended 50 MB file size`);
     assert.equal(fs.readFileSync(localPath).subarray(0, 3).toString("latin1"), "ID3");
   }
-  const originalAttempt3 = fs.readFileSync(path.join("public", weeklyPodcasts[0].audioUrl.replace(/^\//, "")));
-  assert.equal(crypto.createHash("sha256").update(originalAttempt3).digest("hex"), "c4c0dbc16e7e1edd1d31eee3c10e0e476471de685a6dcf8880a3aff2106db8a9", "publish the original attempt 3 without audio edits");
+  const selectedAttempt3 = fs.readFileSync(path.join("public", weeklyPodcasts[0].audioUrl.replace(/^\//, "")));
+  assert.equal(crypto.createHash("sha256").update(selectedAttempt3).digest("hex"), "c2b6c282f12969216536215223cf212fa889bbf7b73368622dbd83f499f6f2ba", "publish selected Nov 10 attempt 3 without audio edits");
 });
