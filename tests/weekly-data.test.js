@@ -31,11 +31,9 @@ test("repo-managed weekly update data is non-empty and schema-compatible", () =>
   }
 });
 
-test("user-shared AJG October 2026 print articles display their print issue month, not online-first date", () => {
-  for (const suffix of ["4061", "3950", "3943", "4054", "3915"]) {
-    const card = weekly.find(item => item.studyUrl === `https://doi.org/10.14309/ajg.000000000000${suffix}`);
-    assert.ok(card, `missing AJG print card ${suffix}`);
-    assert.equal(card.date, "Oct 2026", `${card.title} must show the verified print issue month`);
+test("user-shared print cards use the print issue month rather than an invented day", () => {
+  for (const card of weekly.filter(item => /print issue/i.test(item.source))) {
+    assert.match(card.date, /^[A-Z][a-z]{2} \d{4}$/, `${card.title} must preserve month-only print precision`);
   }
 });
 

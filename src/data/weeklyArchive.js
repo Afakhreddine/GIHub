@@ -3,6 +3,66 @@
 
 const weeklyArchive = [
   {
+    "title": "How I Approach Refractory Constipation Symptoms",
+    "oneLineSummary": "Its visible first page recommends reviewing inadequate treatment trials and laxative dosing and considering a cleanout before maintenance therapy, while noting that persistent pain or bloating may need gut–brain–directed assessment rather than more stool-focused therapy.",
+    "doi": "10.14309/ajg.0000000000004061",
+    "pmid": "",
+    "source": "American Journal of Gastroenterology (October 2026 print issue; user-shared print page)",
+    "url": "https://doi.org/10.14309/ajg.0000000000004061",
+    "date": "Oct 2026",
+    "topic": "Motility / Constipation",
+    "type": "Opinion",
+    "archivedFrom": "2026-11-10"
+  },
+  {
+    "title": "Risk Factors of Proximal and Distal Advanced Colorectal Conventional and Serrated Neoplasia in Adults Younger Than 50 Years of Age",
+    "oneLineSummary": "Family history of colorectal cancer was associated with right-sided advanced neoplasia (OR 1.62); these associations may inform risk discussions but do not establish causality or change screening eligibility on their own.",
+    "doi": "10.14309/ajg.0000000000003950",
+    "pmid": "",
+    "source": "American Journal of Gastroenterology (October 2026 print issue; user-shared article page)",
+    "url": "https://doi.org/10.14309/ajg.0000000000003950",
+    "date": "Oct 2026",
+    "topic": "Colorectal Cancer Prevention",
+    "type": "Research",
+    "archivedFrom": "2026-11-10"
+  },
+  {
+    "title": "Proton Pump Inhibitors Are More Cost-Effective Than Potassium Competitive Acid Blockers for Gastroesophageal Reflux Disease",
+    "oneLineSummary": "A six-month decision-tree model found first-line potassium-competitive acid blockers cost $3,240 more than proton pump inhibitors for GERD, with an incremental cost-effectiveness ratio of $144,208 per quality-adjusted life-year against a $100,000 willingness-to-pay threshold.",
+    "doi": "10.14309/ajg.0000000000003943",
+    "pmid": "",
+    "source": "American Journal of Gastroenterology (October 2026 print issue; user-shared article page)",
+    "url": "https://doi.org/10.14309/ajg.0000000000003943",
+    "date": "Oct 2026",
+    "topic": "GERD",
+    "type": "Research",
+    "archivedFrom": "2026-11-10"
+  },
+  {
+    "title": "Evolving Concepts of Treatment Targets for Primary Biliary Cholangitis: A Global Perspective",
+    "oneLineSummary": "Nine international PBC experts compare evolving treatment-response definitions, risk stratification, second-line choices, and target-setting across regions where drug availability varies.",
+    "doi": "10.14309/ajg.0000000000004054",
+    "pmid": "",
+    "source": "American Journal of Gastroenterology (October 2026 print issue; user-shared review page)",
+    "url": "https://doi.org/10.14309/ajg.0000000000004054",
+    "date": "Oct 2026",
+    "topic": "Hepatology / PBC",
+    "type": "Opinion",
+    "archivedFrom": "2026-11-10"
+  },
+  {
+    "title": "Comparative Outcomes of Flexible Endoscopy, Rigid Endoscopy, and Open Surgery for the Zenker Diverticulum Repair: A Retrospective Matched Cohort Study",
+    "oneLineSummary": "Flexible endoscopy also had shorter stays and a nonsignificant trend toward fewer adverse events, but residual confounding and the small matched groups limit causal or long-term conclusions.",
+    "doi": "10.14309/ajg.0000000000003915",
+    "pmid": "",
+    "source": "American Journal of Gastroenterology (October 2026 print issue; user-shared article page)",
+    "url": "https://doi.org/10.14309/ajg.0000000000003915",
+    "date": "Oct 2026",
+    "topic": "Esophagus / Zenker Diverticulum",
+    "type": "Research",
+    "archivedFrom": "2026-11-10"
+  },
+  {
     "title": "Alcohol-attributable cancer mortality in the United States more than doubled since 1990",
     "oneLineSummary": "A secondary analysis of Global Burden of Disease estimates found annual U.S.",
     "doi": "10.1016/j.lana.2026.101599",
