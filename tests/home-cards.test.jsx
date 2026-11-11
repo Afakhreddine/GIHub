@@ -29,8 +29,8 @@ test('home guideline and weekly cards are entire source links without source but
 test('home comments use the identical article and guideline targets as their sections without nested links', () => {
   const home = renderToStaticMarkup(<App initialActive="home" />);
   const firstGuideline = recentGuidelines(guidelineSupplements)[0];
-  assert.match(home, new RegExp(`data-community-target="${guidelineTarget(firstGuideline)}"`));
-  assert.match(home, new RegExp(`data-community-target="${articleTarget(weekly.find(isPublicApprovedResource))}"`));
+  assert.ok(home.includes(`data-community-target="${guidelineTarget(firstGuideline)}"`));
+  assert.ok(home.includes(`data-community-target="${articleTarget(weekly.find(isPublicApprovedResource))}"`));
   assert.equal((home.match(/data-community-target="guideline:/g) || []).length, 3);
   assert.equal((home.match(/data-community-target="article:/g) || []).length, 3);
   assert.doesNotMatch(home, /<a[^>]*><button/);
