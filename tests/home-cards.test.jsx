@@ -32,9 +32,9 @@ test('home comments use the identical article and guideline targets as their sec
   const homeWeekly = [...weekly.filter(isPublicApprovedResource)]
     .sort((a, b) => (Date.parse(b.date) || 0) - (Date.parse(a.date) || 0))
     .slice(0, 3);
-  assert.match(home, new RegExp(`data-community-target="${guidelineTarget(firstGuideline)}"`));
+  assert.ok(home.includes(`data-community-target="${guidelineTarget(firstGuideline)}"`));
   for (const item of homeWeekly) {
-    assert.match(home, new RegExp(`data-community-target="${articleTarget(item)}"`));
+    assert.ok(home.includes(`data-community-target="${articleTarget(item)}"`));
   }
   assert.equal((home.match(/data-community-target="guideline:/g) || []).length, 3);
   assert.equal((home.match(/data-community-target="article:/g) || []).length, 3);
