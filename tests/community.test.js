@@ -12,6 +12,7 @@ import guidelineSupplements from '../src/data/guidelineSupplements.js';
 import scheduleResources from '../src/data/scheduleResources.js';
 import { isPublicApprovedResource } from '../src/scheduleResourcesModel.js';
 import weekly from '../src/data/weekly.js';
+import { isPublicApprovedResource } from '../src/scheduleResourcesModel.js';
 import podcasts from '../src/data/weeklyPodcasts.js';
 import { itemKey, targetKey } from '../src/communityStore.js';
 
@@ -192,7 +193,7 @@ test('distinct DOI leads remain separate even with similar descriptions', async 
 
 test('published article, episode and quiz threads appear immediately; reported comments can be hidden', async () => withServer(async ({ base }) => {
   const cookie = await login(base);
-  const targets = [articleTarget(weekly[0]), podcastTarget(podcasts[0]), quizTarget('stomach-pathology')];
+  const targets = [articleTarget(weekly.find(isPublicApprovedResource)), podcastTarget(podcasts[0]), quizTarget('stomach-pathology')];
   for (const target of targets) {
     const created = await post(base, { kind: 'comment', target, body: 'Helpful clinical observation.' }, cookie);
     assert.equal(created.status, 201, target);
@@ -291,7 +292,7 @@ test('Redis-backed daily contribution limit rejects an eleventh write', async ()
 
 test('report limit rejects a sixth distinct comment without creating a ticket', async () => withServer(async ({ base, redis }) => {
   const cookie = await login(base);
-  const target = articleTarget(weekly[0]);
+  const target = articleTarget(weekly.find(isPublicApprovedResource));
   for (let i = 0; i < 6; i += 1) {
     const comment = await post(base, { kind: 'comment', target, body: `Observation ${i}` }, cookie);
     assert.equal(comment.status, 201);
@@ -303,7 +304,7 @@ test('report limit rejects a sixth distinct comment without creating a ticket', 
 }));
 
 test('old visible comments survive more than a page of rejected thread records', async () => withServer(async ({ base, redis }) => {
-  const target = articleTarget(weekly[0]);
+  const target = articleTarget(weekly.find(isPublicApprovedResource));
   const older = { id: crypto.randomUUID(), target, status: 'approved', body: 'Older useful comment', authorName: 'Dr. Doe', createdAt: '2026-11-04T00:00:00Z' };
   redis.seedComment(older, 1);
   for (let i = 2; i <= 102; i += 1) redis.seedComment({ ...older, id: crypto.randomUUID(), status: 'rejected' }, i);
@@ -313,7 +314,7 @@ test('old visible comments survive more than a page of rejected thread records',
 }));
 
 test('legacy pending comment approval clears the queue and a rejected comment cannot be restored', async () => withServer(async ({ base, redis }) => {
-  const target = articleTarget(weekly[0]);
+  const target = articleTarget(weekly.find(isPublicApprovedResource));
   const id = crypto.randomUUID();
   redis.seedComment({ id, target, status: 'pending', body: 'Previously pending comment', authorName: 'Dr. Doe' }, 1);
   assert.equal((await review(base, 'comments', id, 'approved')).status, 200);
