@@ -575,7 +575,8 @@ const GUIDELINE_SUPPLEMENTS = [
     "urgency": "High",
     "title": "AASLD EXPO: Diagnosis and management of hepatitis delta virus (HDV) infection",
     "summary": "Recommends one-time HDV antibody screening for all HBsAg-positive individuals, confirmatory HDV RNA testing, fibrosis assessment and six-month HCC surveillance for chronic HDV, and consideration of bulevirtide-based therapy for adults with compensated disease.",
-    "url": "https://pubmed.ncbi.nlm.nih.gov/42992835/"
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42992835/",
+    "addedAt": "2026-11-11"
   }
 ];
 

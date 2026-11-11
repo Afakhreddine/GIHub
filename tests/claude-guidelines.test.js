@@ -219,6 +219,20 @@ test("/api/claude returns only fresh new-guideline alerts and includes repo-mana
   assert.equal(res.body.data[0].title, polyposis.title, "newest repo-managed addition should sort first by addedAt");
 });
 
+test("new-guidelines banner includes the approved HDV EXPO on Nov 11", async () => {
+  const originalNow = Date.now;
+  Date.now = () => Date.parse("2026-11-11T12:00:00Z");
+  mockRedis({ "gihub:guidelines:new": [] });
+  const res = mockResponse();
+  try {
+    await handler({ method:"POST", body:{ type:"content", section:"guidelines-new" } }, res);
+  } finally {
+    Date.now = originalNow;
+  }
+  assert.equal(res.statusCode, 200);
+  assert.ok(res.body.data.some(item => item.title === "AASLD EXPO: Diagnosis and management of hepatitis delta virus (HDV) infection" && item.url === "https://pubmed.ncbi.nlm.nih.gov/42992835/"));
+});
+
 test("new-guidelines banner includes recently approved repo-managed records on Nov 3", async () => {
   const originalNow = Date.now;
   Date.now = () => Date.parse("2026-11-03T12:00:00Z");
