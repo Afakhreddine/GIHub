@@ -11,6 +11,7 @@ import scheduleReviewPublish from "./api/schedule-review-publish.js";
 import weeklyReviewData from "./api/weekly-review-data.js";
 import weeklyReviewPublish from "./api/weekly-review-publish.js";
 import gihubAuth from "./api/gihub-auth.js";
+import community from "./api/community.js";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 export const distDir = path.join(root, "dist");
@@ -18,6 +19,7 @@ export const distDir = path.join(root, "dist");
 export const apiHandlers = {
   "claude": claude,
   "gihub-auth": gihubAuth,
+  "community": community,
   "schedule-review-data": scheduleReviewData,
   "schedule-review-publish": scheduleReviewPublish,
   "weekly-review-data": weeklyReviewData,
@@ -27,6 +29,15 @@ export const apiHandlers = {
 export function createApp(handlers = apiHandlers, { gihubAuthHandler = gihubAuth } = {}) {
   const app = express();
   app.disable("x-powered-by");
+  // The www hostname serves this app too, but auth accepts the canonical
+  // origin only. Move page visits before they load forms or make API calls.
+  // Never redirect credential-bearing POST/PATCH requests across origins.
+  app.use((req, res, next) => {
+    const host = String(req.headers.host || '').split(':')[0].toLowerCase();
+    if (host !== 'www.mygihub.com' || !['GET', 'HEAD'].includes(req.method)) return next();
+    const requestPath = req.originalUrl.startsWith('/') ? req.originalUrl : '/';
+    return res.redirect(302, `https://mygihub.com${requestPath}`);
+  });
   app.use("/api/gihub-auth", (req, res, next) => {
     res.set("Cache-Control", "no-store");
     next();
@@ -34,11 +45,14 @@ export function createApp(handlers = apiHandlers, { gihubAuthHandler = gihubAuth
   app.all(["/api/gihub-auth", "/api/gihub-auth/:action"], express.json({ limit: "8kb" }), async (req, res, next) => {
     try { await gihubAuthHandler(req, res); } catch (error) { next(error); }
   });
+  app.all('/api/community', express.json({ limit: '8kb' }), async (req, res, next) => {
+    try { await (handlers.community || community)(req, res); } catch (error) { next(error); }
+  });
   // Vercel accepts request bodies up to 4.5 MB; keep the same ceiling for legacy APIs.
   app.use(express.json({ limit: "4.5mb" }));
 
   for (const [name, handler] of Object.entries(handlers)) {
-    if (name === "gihub-auth") continue;
+    if (name === "gihub-auth" || name === 'community') continue;
     app.all(`/api/${name}`, async (req, res, next) => {
       try { await handler(req, res); } catch (error) { next(error); }
     });
@@ -53,7 +67,7 @@ export function createApp(handlers = apiHandlers, { gihubAuthHandler = gihubAuth
   });
 
   app.use((error, req, res, next) => {
-    if (req.path.startsWith("/api/gihub-auth")) {
+    if (req.path.startsWith("/api/gihub-auth") || req.path.startsWith('/api/community')) {
       if (res.headersSent) return next(error);
       res.set("Cache-Control", "no-store");
       const status = error?.type === "entity.too.large" ? 413 : (error instanceof SyntaxError ? 400 : 500);

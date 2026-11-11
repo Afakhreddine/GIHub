@@ -566,6 +566,16 @@ const GUIDELINE_SUPPLEMENTS = [
     "summary": "Provides six evidence-based recommendations covering antibody testing in AMA-negative suspected PBC, ursodeoxycholic acid first-line therapy, liver-stiffness prognostication, PPAR agonists after inadequate response or intolerance, linerixibat for moderate-to-severe pruritus, and post-transplant UDCA prophylaxis.",
     "url": "https://pubmed.ncbi.nlm.nih.gov/42914292/",
     "addedAt": "2026-11-01"
+  },
+  {
+    "org": "AASLD",
+    "year": "2026",
+    "month": "Nov",
+    "topic": "Viral Hepatitis",
+    "urgency": "High",
+    "title": "AASLD EXPO: Diagnosis and management of hepatitis delta virus (HDV) infection",
+    "summary": "Recommends one-time HDV antibody screening for all HBsAg-positive individuals, confirmatory HDV RNA testing, fibrosis assessment and six-month HCC surveillance for chronic HDV, and consideration of bulevirtide-based therapy for adults with compensated disease.",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/42992835/"
   }
 ];
 

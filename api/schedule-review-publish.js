@@ -1,4 +1,5 @@
 import { loadPrChecksState } from "../src/githubChecks.js";
+import { validCommunityApprovals, validCommunitySource } from "../src/communityReviewMatch.js";
 
 const DEFAULT_OWNER = "Afakhreddine";
 const DEFAULT_REPO = "GIHub";
@@ -33,15 +34,34 @@ export function validateSchedulePublishRequest(req, env = process.env) {
   } else if (!Array.isArray(req?.body?.approvedItems) || req.body.approvedItems.length === 0) {
     return { ok:false, status:400, error:"No approved schedule cards were provided for publication." };
   }
+  if (!isGuidelines) {
+    const selected = req.body.approvedItems;
+    if (!validCommunityApprovals(selected, Object.fromEntries(selected.map((_, index) => [index, "Approve"])), (_, index) => index)) {
+      return { ok:false, status:400, error:"Approve at most one verified PubMed match per reader suggestion." };
+    }
+  }
   return { ok:true, config, workflow:isGuidelines ? "guidelines" : "schedule" };
 }
 
 function identity(item) {
-  return `${item?.slug || ""}|${item?.kind || ""}|${item?.title || ""}|${item?.url || item?.pmid || item?.doi || ""}`;
+  return `${item?.slug || ""}|${item?.kind || ""}|${item?.title || ""}|${item?.url || item?.pmid || item?.doi || ""}${item?.sourceRepository === "community-suggestion" ? `|community-suggestion|${item?.suggestionId || ""}|${item?.pmid || "unresolved"}` : ""}`;
 }
 
 function isReviewableNewSearchItem(item) {
-  return item?.sourceRepository === "targeted-online-pull" && item?.status === "candidate";
+  return ["targeted-online-pull", "community-suggestion"].includes(item?.sourceRepository) && item?.status === "candidate";
+}
+
+export function validateScheduleCommunityBranch(branch = {}, base = {}, approvedItems = []) {
+  const approved = new Set(approvedItems.filter((item) => item.sourceRepository === "community-suggestion" && validCommunitySource(item)).map(identity));
+  const existing = new Set(Object.entries(base).flatMap(([slug, resource]) => (resource.newsAndArticles || []).filter((item) => item.sourceRepository === "community-suggestion" && item.status === "approved" && validCommunitySource(item)).map((item) => identity({ ...item, slug, kind:"News and Articles" }))));
+  for (const [slug, resource] of Object.entries(branch)) {
+    for (const item of resource.newsAndArticles || []) {
+      if (item.sourceRepository !== "community-suggestion" || item.status === "candidate") continue;
+      const key = identity({ ...item, slug, kind:"News and Articles" });
+      if (item.status !== "approved" || !validCommunitySource(item) || (!approved.has(key) && !existing.has(key))) return false;
+    }
+  }
+  return true;
 }
 
 export function parseScheduleResourcesSource(source) {
@@ -57,6 +77,11 @@ export function buildScheduleResourcesFile(resources) {
 }
 
 export function filterScheduleResourcesToApproved(resources = {}, approvedItems = []) {
+  for (const resource of Object.values(resources)) {
+    if ((resource.newsAndArticles || []).some((item) => item.sourceRepository === "community-suggestion" && item.status !== "candidate" && !validCommunitySource(item))) {
+      throw new Error("Cannot publish an unverified reader suggestion.");
+    }
+  }
   const approved = new Set((approvedItems || []).map(identity));
   const next = structuredClone(resources || {});
   for (const [slug, resource] of Object.entries(next)) {
@@ -183,6 +208,10 @@ export async function publishScheduleReview(config, payload) {
   if (pull.state !== "open") return { ok:false, published:false, reason:`PR #${config.pullNumber} is ${pull.state}.` };
 
   const { resources } = await loadScheduleResourcesFromRef(config, pull.head.ref);
+  const { resources:baseResources } = await loadScheduleResourcesFromRef(config, pull.base.ref);
+  if (!validateScheduleCommunityBranch(resources, baseResources, payload.approvedItems || [])) {
+    return { ok:false, published:false, reason:"PR contains an unselected or unverified reader suggestion." };
+  }
   const branchAlreadyPrepared = scheduleResourcesMatchApproved(resources, payload.approvedItems || []);
   if (!branchAlreadyPrepared) return updateScheduleResourcesOnBranch(config, pull, payload.approvedItems || [], payload.summary);
 

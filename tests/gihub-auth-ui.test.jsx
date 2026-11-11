@@ -10,12 +10,16 @@ const account = {
   profile: { username: 'dr_example', displayName: 'Dr. Example', specialty: 'Hepatology', institution: 'City Hospital', bio: 'Clinician educator.' },
 };
 
-test('navigation links to a GIHub profile without hiding public educational tabs', () => {
-  const html = renderToStaticMarkup(<App initialActive="home" />);
-  for (const label of ['Home', 'Clinical Guidelines', 'Weekly Update', 'Education', 'Schedule', 'Profile']) {
-    assert.match(html, new RegExp(`>${label}<| ${label}<`));
+test('navigation says Sign in to guests and Profile to signed-in readers', () => {
+  const guest = renderToStaticMarkup(<App initialActive="home" />);
+  for (const label of ['Home', 'Clinical Guidelines', 'Weekly Update', 'Education', 'Schedule', 'Sign in']) {
+    assert.match(guest, new RegExp(`>${label}<| ${label}<`));
   }
-  assert.match(html, /Grounded in the source\./);
+  assert.doesNotMatch(guest, /👤 Profile<\/button>/);
+  const signedIn = renderToStaticMarkup(<App initialActive="home" initialAccount={account} />);
+  assert.match(signedIn, /👤 Profile<\/button>/);
+  assert.doesNotMatch(signedIn, /👤 Sign in<\/button>/);
+  assert.match(guest, /Grounded in the source\./);
 });
 
 test('signed-out profile offers EndoEval login only, with no registration or GIHub password reset', () => {
@@ -29,13 +33,11 @@ test('signed-out profile offers EndoEval login only, with no registration or GIH
   assert.doesNotMatch(html, /Register|Create account/);
 });
 
-test('signed-in profile exposes editable basic fields and keeps email read-only', () => {
+test('signed-in profile keeps personal fields collapsed behind Edit profile', () => {
   const html = renderToStaticMarkup(<AuthProfile initialAccount={account} skipSessionCheck />);
-  assert.match(html, /<input type="email"[^>]*readOnly=""[^>]*value="doctor@example.com"/);
-  assert.match(html, /Email remains your sign-in/);
-  assert.match(html, /value="Dr\. Example"/);
-  assert.match(html, />Clinician educator\.<\/textarea>/);
-  assert.doesNotMatch(html, /Username|name="username"|dr_example|Hepatology|City Hospital|Specialty|Institution/i);
-  assert.match(html, /Save profile/);
+  assert.match(html, /Welcome, Dr\. Example/);
+  assert.match(html, />Edit profile<\/button>/);
+  assert.doesNotMatch(html, /<input type="email"|<textarea|Save profile|Email remains your sign-in/);
+  assert.doesNotMatch(html, /Username|dr_example|Hepatology|City Hospital|Specialty|Institution/i);
   assert.match(html, /Sign out/);
 });

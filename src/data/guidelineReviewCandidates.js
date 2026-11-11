@@ -4,38 +4,21 @@
 
 const guidelineReviewCandidates = [
   {
-    org: "AGA",
-    year: "2026",
-    month: "Oct",
-    topic: "Hepatology",
-    urgency: "High",
-    title: "AGA/AASLD Clinical Practice Guideline on Management of Primary Biliary Cholangitis",
-    summary: "Provides six evidence-based recommendations covering antibody testing in AMA-negative suspected PBC, ursodeoxycholic acid first-line therapy, liver-stiffness prognostication, PPAR agonists after inadequate response or intolerance, linerixibat for moderate-to-severe pruritus, and post-transplant UDCA prophylaxis.",
-    url: "https://pubmed.ncbi.nlm.nih.gov/42914292/",
-    pmid: "42914292",
-    doi: "10.1053/j.gastro.2026.08.025",
-    source: "PubMed / AGA clinical guidance / AASLD news",
-    detectedAt: "2026-10-25",
-    queuedAt: "2026-10-25",
-    status: "candidate-review",
-    reviewReason: "Carried forward from the October 25 review queue. AGA published the joint AGA/AASLD guideline on October 22, and PubMed indexed the Gastroenterology guideline record on October 23 as a Practice Guideline. The live merged repository has no matching PMID, DOI, or title. Its generic AASLD Primary Biliary Cholangitis page represents older guidance, so this medication-focused 2026 joint guideline is a materially updated successor rather than a duplicate."
-  },
-  {
     org: "AASLD",
     year: "2026",
-    month: "Oct",
-    topic: "Acute-on-Chronic Liver Failure",
+    month: "Nov",
+    topic: "Viral Hepatitis",
     urgency: "High",
-    title: "Acute-on-chronic liver failure: A global multisociety consensus on definitions",
-    summary: "Establishes a unified evidence-based framework for ACLF definition, diagnosis, grading, and management, including patient stratification, organ-failure assessment, critical care, and liver-transplantation considerations.",
-    url: "https://pubmed.ncbi.nlm.nih.gov/42960623/",
-    pmid: "42960623",
-    doi: "10.1097/hep.0000000000001891",
+    title: "AASLD EXPO: Diagnosis and management of hepatitis delta virus (HDV) infection",
+    summary: "Recommends one-time HDV antibody screening for all HBsAg-positive individuals, confirmatory HDV RNA testing, fibrosis assessment and six-month HCC surveillance for chronic HDV, and consideration of bulevirtide-based therapy for adults with compensated disease.",
+    url: "https://pubmed.ncbi.nlm.nih.gov/42992835/",
+    pmid: "42992835",
+    doi: "10.1097/HEP.0000000000001909",
     source: "PubMed / AASLD news / Hepatology",
-    detectedAt: "2026-11-01",
-    queuedAt: "2026-11-01",
+    detectedAt: "2026-11-08",
+    queuedAt: "2026-11-08",
     status: "candidate-review",
-    reviewReason: "New this cycle. AASLD announced the five-society consensus on October 30, and the article was published online in Hepatology the same day. The live merged repository has no matching PMID, DOI, or normalized title. GIHub's 2024 AASLD ACLF practice guidance remains a distinct predecessor; this 2026 global harmonization provides a new unified definition and framework across AASLD, EASL, APASL, ALEH, and SOLDA rather than duplicating that guidance."
+    reviewReason: "New this cycle. AASLD announced its second Expert-Based Practice Opinion on November 6, and PubMed indexed it the same day. The abstract verifies that the AASLD Practice Guidelines Committee commissioned the document and that it contains clinical screening, surveillance, and treatment statements. The 440-record live merged repository has no matching PMID, DOI, normalized title, or hepatitis delta guideline, so this is not a duplicate. The previously queued PBC guideline is already published, and the ACLF consensus was explicitly rejected in PR #81, so neither remains in the active review queue."
   }
 ];
 

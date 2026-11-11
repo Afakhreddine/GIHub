@@ -99,6 +99,31 @@ function sameOrigin(req, expected) {
   return req.headers.origin === expected;
 }
 
+// Shared read-only authentication for GIHub community endpoints. A cookie is not
+// sufficient by itself: EndoEval must still recognize its current bearer token.
+export async function authenticatedGihubAccount(req, {
+  env = process.env, fetchImpl = globalThis.fetch, now = Date.now,
+} = {}) {
+  if (!validSecret(env.GIHUB_SESSION_SECRET)) return null;
+  let origin;
+  try { origin = authOrigin(env.ENDOEVAL_AUTH_ORIGIN); } catch { return null; }
+  const session = decryptSession(cookieValue(req, COOKIE_NAME), sessionKey(env.GIHUB_SESSION_SECRET));
+  const timestamp = Math.floor(now() / 1000);
+  if (!session || typeof session.token !== 'string' || !Number.isSafeInteger(session.exp) ||
+      session.exp <= timestamp || !Number.isSafeInteger(session.expiresAt) ||
+      session.expiresAt <= timestamp || tokenExpiry(session.token) !== session.exp) return null;
+  try {
+    const response = await fetchImpl(`${origin}/api/auth/gihub-profile`, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${session.token}`, Accept: 'application/json' },
+      redirect: 'error', signal: AbortSignal.timeout(10_000),
+    });
+    if (!response.ok) return null;
+    const account = publicAccount(await response.json());
+    return account && String(account.user.id) === String(session.userId) ? account : null;
+  } catch { return null; }
+}
+
 export function createGihubAuthHandler({
   fetchImpl = globalThis.fetch,
   env = process.env,

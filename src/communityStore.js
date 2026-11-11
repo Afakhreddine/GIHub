@@ -1,0 +1,173 @@
+import crypto from 'node:crypto';
+
+export function communityConfigured(env = globalThis.process.env) {
+  return Boolean(env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN);
+}
+
+export async function redisCommand(command, { env = globalThis.process.env, fetchImpl = globalThis.fetch } = {}) {
+  if (!communityConfigured(env)) throw new Error('Community storage is unavailable');
+  const response = await fetchImpl(env.UPSTASH_REDIS_REST_URL, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${env.UPSTASH_REDIS_REST_TOKEN}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(command), redirect: 'error', signal: AbortSignal.timeout(8000),
+  });
+  if (!response.ok) throw new Error('Community storage is unavailable');
+  const body = await response.json();
+  if (body.error) throw new Error('Community storage is unavailable');
+  return body.result;
+}
+
+export function itemKey(kind, id) { return `gihub:community:${kind}:${id}`; }
+export function userSubmissionIndex(userId, destination) { return itemKey('submissions-by-user', targetKey(`${userId}:${destination}`)); }
+export function targetKey(target) { return crypto.createHash('sha256').update(target).digest('hex'); }
+export function voteKey(target) { return itemKey('votes', targetKey(target)); }
+export function voteScoreKey(target) { return itemKey('vote-score', targetKey(target)); }
+
+const CAST_VOTE = `-- vote
+local previous = tonumber(redis.call('HGET', KEYS[1], ARGV[1]) or '0')
+local requested = tonumber(ARGV[2])
+if previous == requested then return {tonumber(redis.call('GET', KEYS[2]) or '0'), previous} end
+local attempts = redis.call('INCR', KEYS[3])
+if attempts == 1 then redis.call('EXPIRE', KEYS[3], 60) end
+if attempts > 30 then return 'rate-limited' end
+if requested == 0 then redis.call('HDEL', KEYS[1], ARGV[1])
+else redis.call('HSET', KEYS[1], ARGV[1], requested) end
+local score = redis.call('INCRBY', KEYS[2], requested - previous)
+return {score, requested}`;
+
+export async function castVote(target, userId, value, options = {}) {
+  return redisCommand(['EVAL', CAST_VOTE, '3', voteKey(target), voteScoreKey(target), itemKey('vote-rate', String(userId)), String(userId), String(value)], options);
+}
+
+export async function readVotes(targets, userId, options = {}) {
+  const scores = await redisCommand(['MGET', ...targets.map(voteScoreKey)], options);
+  const mine = userId == null ? [] : await Promise.all(targets.map(target => redisCommand(['HGET', voteKey(target), String(userId)], options)));
+  return Object.fromEntries(targets.map((target, index) => [target, { score: Number(scores?.[index] || 0), myVote: Number(mine[index] || 0) }]));
+}
+
+function submissionIdentity(description, id) {
+  const doi = description.match(/\b10\.\d{4,9}\/[^\s]+/i)?.[0].replace(/[.,;)]+$/, '').toLowerCase() || '';
+  const pmid = description.match(/\bpmid\s*:?\s*(\d{5,9})\b/i)?.[1] || description.match(/^\d{5,9}$/)?.[0] || '';
+  const stop = new Set(['recent', 'article', 'study', 'paper', 'on', 'for', 'in', 'and', 'was', 'done', 'the', 'a', 'an', 'of', 'about', 'from', 'with']);
+  const tokens = [...new Set((description.toLowerCase().match(/[\p{L}\p{N}]+/gu) || []).filter(word => word.length > 2 && !stop.has(word)))];
+  const exact = description.normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
+  return JSON.stringify({ id, doi, pmid, exact, tokens });
+}
+
+const INSERT = `
+if KEYS[5] ~= KEYS[2] and redis.call('EXISTS', KEYS[5]) == 1 then return -1 end
+if KEYS[6] ~= KEYS[3] then
+  local current = cjson.decode(ARGV[6])
+  local recent = redis.call('ZREVRANGE', KEYS[6], 0, -1, 'WITHSCORES')
+  for i = 1, #recent, 2 do
+    if tonumber(ARGV[2]) - tonumber(recent[i + 1]) <= 600000 then
+      local previous = cjson.decode(recent[i])
+      local duplicate = false
+      if current.doi ~= '' and previous.doi ~= '' then
+        duplicate = current.doi == previous.doi
+      elseif current.pmid ~= '' and previous.pmid ~= '' then
+        duplicate = current.pmid == previous.pmid
+      elseif current.exact == previous.exact then
+        duplicate = true
+      elseif #current.tokens >= 5 and #previous.tokens >= 5 then
+        local seen = {}
+        for _, word in ipairs(current.tokens) do seen[word] = true end
+        local shared = 0
+        for _, word in ipairs(previous.tokens) do if seen[word] then shared = shared + 1 end end
+        duplicate = shared >= 5 and shared / math.min(#current.tokens, #previous.tokens) >= 0.8 and shared / math.max(#current.tokens, #previous.tokens) >= 0.7
+      end
+      if duplicate then return -1 end
+    end
+  end
+end
+local count = redis.call('INCR', KEYS[1])
+if count == 1 then redis.call('EXPIRE', KEYS[1], 86400) end
+if count > tonumber(ARGV[4]) then return 0 end
+redis.call('SET', KEYS[2], ARGV[1])
+redis.call('ZADD', KEYS[3], ARGV[2], ARGV[3])
+if KEYS[4] ~= KEYS[3] then redis.call('ZADD', KEYS[4], ARGV[2], ARGV[3]) end
+if KEYS[6] ~= KEYS[3] then
+  redis.call('ZADD', KEYS[6], ARGV[2], ARGV[6])
+  redis.call('ZREMRANGEBYSCORE', KEYS[6], '-inf', tonumber(ARGV[2]) - 600001)
+  redis.call('EXPIRE', KEYS[6], 600)
+end
+if KEYS[5] ~= KEYS[2] then
+  redis.call('SET', KEYS[5], '1')
+  redis.call('EXPIRE', KEYS[5], tonumber(ARGV[5]))
+end
+return 1`;
+
+export async function saveCommunityItem(kind, record, { env, fetchImpl } = {}) {
+  const user = String(record.authorId);
+  const index = kind === 'submission' ? itemKey('submissions', 'all') :
+    kind === 'report' ? itemKey('reports', 'pending') : itemKey('comments', targetKey(record.target));
+  const pending = kind === 'submission' ? itemKey('submissions', 'pending') :
+    kind === 'report' || record.status === 'approved' ? index : itemKey('comments', 'pending');
+  const duplicate = kind === 'report' ? itemKey('report-by-user', `${user}:${record.commentId}`) :
+    kind === 'submission' ? itemKey('submission-dedup', targetKey(`${user}:${record.destination}:${record.description.trim().toLowerCase().replace(/\s+/g, ' ')}`)) : itemKey(kind, record.id);
+  const recent = kind === 'submission' ? userSubmissionIndex(user, record.destination) : index;
+  const options = { env, fetchImpl };
+  return redisCommand(['EVAL', INSERT, '6', itemKey(`rate-${kind}`, user), itemKey(kind, record.id), index,
+    pending, duplicate, recent, JSON.stringify(record), Date.parse(record.createdAt), record.id,
+    kind === 'submission' ? 10 : kind === 'report' ? 5 : 20, kind === 'report' ? 7776000 : 600,
+    kind === 'submission' ? submissionIdentity(record.description, record.id) : ''], options);
+}
+
+export async function listCommunityItems(kind, index, { env, fetchImpl, offset = 0, oldestFirst = false } = {}) {
+  const options = { env, fetchImpl };
+  const ids = await redisCommand([oldestFirst ? 'ZRANGE' : 'ZREVRANGE', index, String(offset), String(offset + 100)], options);
+  if (!Array.isArray(ids) || ids.length === 0) return [];
+  const records = await redisCommand(['MGET', ...ids.map(id => itemKey(kind, id))], options);
+  return (records || []).flatMap(value => {
+    try { return value ? [JSON.parse(value)] : []; } catch { return []; }
+  });
+}
+
+const TRANSITION = `
+local source = redis.call('GET', KEYS[1])
+if not source then return nil end
+local item = cjson.decode(source)
+if item.status == 'rejected' and ARGV[1] ~= 'rejected' then return -1 end
+item.status = ARGV[1]
+item.reviewedAt = ARGV[2]
+local updated = cjson.encode(item)
+redis.call('SET', KEYS[1], updated)
+redis.call('ZREM', KEYS[2], ARGV[3])
+if ARGV[4] == 'comment' and ARGV[1] == 'rejected' then redis.call('ZREM', KEYS[3], ARGV[3]) end
+if ARGV[1] == 'rejected' or (ARGV[4] ~= 'comment' and ARGV[1] == 'reviewed') then
+  redis.call('EXPIRE', KEYS[1], 7776000)
+end
+return updated`;
+
+export async function listPublishedComments(index, options = {}) {
+  const items = [];
+  let offset = 0;
+  // Read further pages when older rejected records remain in a legacy index.
+  while (items.length < 100 && offset < 10000) {
+    const ids = await redisCommand(['ZREVRANGE', index, String(offset), String(offset + 100)], options);
+    if (!Array.isArray(ids) || !ids.length) break;
+    const records = await redisCommand(['MGET', ...ids.map(id => itemKey('comment', id))], options);
+    for (const value of records || []) {
+      if (!value) continue;
+      try {
+        const item = JSON.parse(value);
+        if (item.status === 'approved') items.push(item);
+      } catch { /* Ignore a corrupt record while keeping pagination aligned. */ }
+      if (items.length === 100) break;
+    }
+    offset += ids.length;
+    if (ids.length < 101) break;
+  }
+  return items;
+}
+
+export async function setCommunityItemStatus(kind, id, status, options = {}) {
+  const key = itemKey(kind, id);
+  const source = await redisCommand(['GET', key], options);
+  if (!source) return null;
+  const item = JSON.parse(source);
+  const pending = itemKey(kind === 'comment' ? 'comments' : kind === 'report' ? 'reports' : 'submissions', 'pending');
+  const thread = kind === 'comment' ? itemKey('comments', targetKey(item.target)) : pending;
+  const updated = await redisCommand(['EVAL', TRANSITION, '3', key, pending, thread, status, new Date().toISOString(), id, kind], options);
+  return updated === -1 ? { conflict: true } : updated ? JSON.parse(updated) : null;
+}

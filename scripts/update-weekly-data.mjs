@@ -33,6 +33,9 @@ function normalizeTitleKey(value) {
 }
 
 function weeklyDuplicateKeys(item) {
+  if (item?.sourceRepository === "community-suggestion") {
+    return item.pmid ? [`pmid:${item.pmid}`] : [`suggestion:${item.suggestionId || ""}:unresolved`];
+  }
   const sourceText = [item?.studyUrl, item?.url, item?.summary].filter(Boolean).join(" ");
   return [
     normalizeDoi(sourceText) && `doi:${normalizeDoi(sourceText)}`,
@@ -78,7 +81,7 @@ function validate(items) {
   if (!Array.isArray(items)) throw new Error("Input must be a JSON array");
   if (items.length === 0) throw new Error("Weekly update cannot be empty");
 
-  return items.map((item, i) => {
+  const normalized = items.map((item, i) => {
     const out = {
       type: String(item.type || "").trim(),
       impactLevel: String(item.impactLevel || "Noteworthy").trim(),
@@ -99,8 +102,48 @@ function validate(items) {
     }
     assertUrl(out.url, "url", i);
     assertUrl(out.studyUrl, "studyUrl", i);
+    if (item.sourceRepository === "community-suggestion") {
+      const pmid = String(item.pmid || "").trim();
+      const matchStatus = String(item.matchStatus || "");
+      const suggestionId = String(item.suggestionId || "").trim();
+      let pubmedUrl;
+      try { pubmedUrl = new URL(out.studyUrl); } catch { /* Invalid URL fails below. */ }
+      const linkedPmid = /^\d{6,9}$/.test(pmid) && pubmedUrl?.protocol === "https:" && pubmedUrl.hostname === "pubmed.ncbi.nlm.nih.gov" && pubmedUrl.pathname === `/${pmid}/` && !pubmedUrl.search && !pubmedUrl.hash;
+      if (!suggestionId || item.status !== "candidate" || !["confirmed", "provisional", "unresolved"].includes(matchStatus) || (matchStatus === "unresolved" ? (pmid || out.studyUrl) : !linkedPmid)) {
+        throw new Error(`Item ${i}: reader suggestion needs a matching PubMed PMID (or an unresolved candidate), suggestion ID, and candidate status`);
+      }
+      out.pmid = pmid;
+      out.sourceRepository = "community-suggestion";
+      out.status = item.status;
+      out.suggestionId = suggestionId;
+      out.matchStatus = matchStatus;
+      if (matchStatus === "provisional") {
+        const rank = Number(item.matchRank);
+        const count = Number(item.matchCount);
+        if (!Number.isInteger(rank) || !Number.isInteger(count) || count < 1 || count > 3 || rank < 1 || rank > count) throw new Error(`Item ${i}: provisional suggestion needs a rank within a shortlist of at most three`);
+        out.matchRank = rank;
+        out.matchCount = count;
+      }
+      if (item.matchReason) out.matchReason = String(item.matchReason).trim().slice(0, 500);
+    }
     return out;
   });
+  const groups = new Map();
+  for (const item of normalized) {
+    if (item.sourceRepository !== "community-suggestion") continue;
+    const group = groups.get(item.suggestionId) || [];
+    group.push(item);
+    groups.set(item.suggestionId, group);
+  }
+  for (const [suggestionId, group] of groups) {
+    const provisional = group.every((item) => item.matchStatus === "provisional");
+    const ranks = new Set(group.map((item) => item.matchRank));
+    const pmids = new Set(group.map((item) => item.pmid));
+    if (group.length > 3 || (group.length > 1 && !provisional) || (provisional && (ranks.size !== group.length || pmids.size !== group.length || group.some((item) => item.matchCount !== group.length)))) {
+      throw new Error(`Reader suggestion ${suggestionId}: inconsistent or oversized provisional shortlist`);
+    }
+  }
+  return normalized;
 }
 
 const input = process.argv[2];

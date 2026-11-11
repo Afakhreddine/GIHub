@@ -127,7 +127,8 @@ export default function WeeklyReview({ items = [] }) {
         </div>
         <div style={{ display:"grid", gap:14 }}>
           {visibleItems.map((item) => (
-            <article key={weeklyItemId(item)} style={{ background:"rgba(255,255,255,0.025)", border:"1px solid rgba(255,255,255,0.08)", borderLeft:"3px solid #e09a2a", borderRadius:12, padding:"20px 22px" }}>
+            <article key={weeklyItemId(item)} style={{ background:item.sourceRepository === "community-suggestion" ? "rgba(179,109,248,0.09)" : "rgba(255,255,255,0.025)", border:"1px solid rgba(255,255,255,0.08)", borderLeft:`3px solid ${item.sourceRepository === "community-suggestion" ? "#b36df8" : "#e09a2a"}`, borderRadius:12, padding:"20px 22px" }}>
+              {item.sourceRepository === "community-suggestion" && <><strong style={{ display:"inline-block", color:"#d5a8ff", fontSize:11, marginBottom:8 }}>Reader suggestion · {item.matchStatus === "confirmed" ? `confirmed PMID ${item.pmid}` : item.matchStatus === "provisional" ? `${item.matchRank === 1 ? "Best guess" : "Alternative"} · option ${item.matchRank} of ${item.matchCount} · PMID ${item.pmid} (provisional match)` : "no credible PMID match yet"}</strong>{item.matchReason && <p style={{ color:"#bda5d9", fontSize:12, margin:"2px 0 8px" }}>Match rationale: {item.matchReason}</p>}</>}
               <div style={{ fontSize:11, color:"#5a6a88", fontFamily:"monospace" }}>{item.type} · {item.topic} · {item.date}</div>
               <h2 style={{ fontSize:16, color:"#c8d8f0", margin:"8px 0" }}>{item.title}</h2>
               {item.authors && <p style={{ fontSize:11.5, color:"#445570", fontStyle:"italic", marginBottom:8 }}>{item.authors}</p>}

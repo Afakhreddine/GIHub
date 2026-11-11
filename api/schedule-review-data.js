@@ -24,7 +24,12 @@ export function parseGuidelineCandidatesModuleSource(source) {
 
 export function isScheduleReviewPull(pull) {
   const ref = String(pull?.head?.ref || "").toLowerCase();
-  // Only candidate-data PRs enter this queue; feature/cron fixes may mention scheduling.
+  const title = String(pull?.title || "").toLowerCase();
+  // A staged resource PR may use fix/ instead of chore/; require an explicit
+  // candidate-resource title so infrastructure/cron PRs never become the queue.
+  if (ref.startsWith("fix/") && ref.includes("schedule-review")) {
+    return /^stage\b.*\bschedule resources\b.*\breview\b/.test(title);
+  }
   return ref.startsWith("chore/") && ref.includes("schedule") && (ref.includes("review") || ref.includes("candidate") || ref.includes("resource") || ref.includes("article"));
 }
 

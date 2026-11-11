@@ -7,6 +7,9 @@ import scheduleResources from "./data/scheduleResources.js";
 import { isPublicApprovedResource, sanitizeScheduleResourceForPublic } from "./scheduleResourcesModel.js";
 import Home from "./Home.jsx";
 import AuthProfile from "./AuthProfile.jsx";
+import { ContributionBar, Discussion, WeeklyVote } from "./Community.jsx";
+import { sortWeeklyByVotes } from "./weeklyVotes.js";
+import { articleTarget, guidelineTarget, lectureTarget, podcastTarget, quizTarget } from "./communityTargets.js";
 import { publicTabForPath, publicPathForTab } from "./publicRoutes.js";
 import { resolveGuidelineLink } from "./guidelineLinks.js";
 
@@ -68,7 +71,7 @@ function Spinner({ size=16, color="#0b93bb" }) {
   return <span style={{ display:"inline-block", width:size, height:size, border:`2px solid ${color}33`, borderTop:`2px solid ${color}`, borderRadius:"50%", animation:"spin 0.7s linear infinite", flexShrink:0 }} />;
 }
 
-function ContentCard({ item, type }) {
+function ContentCard({ item, type, account, vote, voteReady, onVote }) {
   const [hov, setHov] = useState(false);
   const ac = SECTION_META[type]?.color || "#0b93bb";
   const isWeekly = type === "weekly";
@@ -101,6 +104,8 @@ function ContentCard({ item, type }) {
           </button>
         </div>
       )}
+      {isWeekly&&<><WeeklyVote item={item} account={account} vote={vote} ready={voteReady} onVote={onVote} /><Discussion target={articleTarget(item)} account={account} /></>}
+      {type==="guidelines"&&<Discussion target={guidelineTarget(item)} account={account} />}
       {hov&&item.url&&(
         <div style={{ fontSize:11, color:ac, fontFamily:"monospace", marginTop:2 }}>View source ↗</div>
       )}
@@ -108,7 +113,7 @@ function ContentCard({ item, type }) {
   );
 }
 
-function WeeklyPodcastPanel({ podcasts = weeklyPodcasts }) {
+function WeeklyPodcastPanel({ podcasts = weeklyPodcasts, account }) {
   const [selectedId, setSelectedId] = useState(podcasts[0]?.id || "");
   if (!podcasts.length) return null;
 
@@ -121,7 +126,7 @@ function WeeklyPodcastPanel({ podcasts = weeklyPodcasts }) {
         <div style={{ flex:"1 1 320px" }}>
           <div style={{ fontSize:11, fontWeight:800, color:"#a66b11", fontFamily:"monospace", letterSpacing:0.8, textTransform:"uppercase", marginBottom:6 }}>🎧 Weekly Podcast</div>
           <h2 style={{ fontSize:18, color:"#17324d", lineHeight:1.35, marginBottom:6 }}>{selected.title}</h2>
-          {selected.editorialNote && <p role="note" style={{ fontSize:12.5, color:"#754314", background:"#fff4db", border:"1px solid #e9c98f", padding:"10px 12px", borderRadius:8, lineHeight:1.6, maxWidth:760 }}><strong>Editorial corrections to this unedited recording:</strong> {selected.editorialNote}</p>}
+          {selected.editorialNote && <p role="note" style={{ fontSize:12.5, color:"#754314", background:"#fff4db", border:"1px solid #e9c98f", padding:"10px 12px", borderRadius:8, lineHeight:1.6, maxWidth:760 }}><strong>Editorial note:</strong> {selected.editorialNote}</p>}
           <p style={{ fontSize:12.5, color:"#516779", lineHeight:1.65, maxWidth:760 }}>{selected.description}</p>
           <div style={{ display:"flex", flexWrap:"wrap", gap:7, marginTop:10 }}>
             <Badge label={selected.displayDate} color="#17324d" />
@@ -146,11 +151,12 @@ function WeeklyPodcastPanel({ podcasts = weeklyPodcasts }) {
         <a href={selected.audioUrl} download style={{ color:"#0b779b", fontSize:12, fontWeight:700, textDecoration:"none" }}>Download MP3 ↧</a>
         <span style={{ color:"#536b7b", fontSize:11, fontFamily:"monospace" }}>Rolling archive: latest {podcasts.length} Weekly Update podcasts stored in-repo</span>
       </div>
+      <Discussion key={selected.id} target={podcastTarget(selected)} account={account} label="Comment on this episode" />
     </section>
   );
 }
 
-function ContentSection({ type }) {
+function ContentSection({ type, account }) {
   const meta = SECTION_META[type];
   const [search, setSearch]     = useState("");
   const isRepoManaged = type === "weekly";
@@ -161,6 +167,30 @@ function ContentSection({ type }) {
   const [page, setPage]   = useState(1);
   const [pages, setPages] = useState(1);
   const [total, setTotal] = useState(isRepoManaged ? STATIC[type].length : 0);
+  const [votes, setVotes] = useState({});
+  const [voteReady, setVoteReady] = useState(false);
+  const [voteMessage, setVoteMessage] = useState('');
+
+  useEffect(() => {
+    if (!isRepoManaged) return;
+    const controller = new AbortController();
+    setVoteReady(false);
+    fetch('/api/community?votes=weekly', { signal: controller.signal })
+      .then(response => { if (!response.ok) throw new Error('Vote totals are temporarily unavailable.'); return response.json(); })
+      .then(result => { setVotes(result.votes || {}); setVoteReady(true); setVoteMessage(''); })
+      .catch(error => { if (error.name !== 'AbortError') setVoteMessage('Vote totals are temporarily unavailable.'); });
+    return () => controller.abort();
+  }, [isRepoManaged, account?.user?.id]);
+
+  async function castWeeklyVote(target, value) {
+    try {
+      const response = await fetch('/api/community', { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ kind:'vote', target, value }) });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Vote was not saved.');
+      setVotes(current => ({ ...current, [target]: { score:result.score, myVote:result.myVote } }));
+      setVoteMessage('');
+    } catch (error) { setVoteMessage(error.message); }
+  }
 
   useEffect(() => { setPage(1); }, [type]);
 
@@ -208,6 +238,7 @@ function ContentSection({ type }) {
   }, [type, page, isRepoManaged]);
 
   const filtered = items.filter(i=>!search||JSON.stringify(i).toLowerCase().includes(search.toLowerCase()));
+  const displayed = isRepoManaged ? sortWeeklyByVotes(filtered, votes) : filtered;
 
   const statusEl = {
     loading: <><Spinner size={10} color="#536b7b"/> Loading…</>,
@@ -229,12 +260,13 @@ function ContentSection({ type }) {
             style={{ background:"#fff", border:"1px solid #bfdce5", borderRadius:10, color:"#17324d", fontSize:13, padding:"9px 12px 9px 32px", outline:"none", width:170 }}/>
         </div>
       </div>
-      {type === "weekly" && <WeeklyPodcastPanel />}
+      {type === "weekly" && <WeeklyPodcastPanel account={account} />}
+      {type === "weekly" && voteMessage && <p role="alert" style={{ marginBottom:12, color:'#8b3e3e', fontSize:12 }}>{voteMessage}</p>}
       {search&&<div style={{ marginBottom:14, fontSize:12, color:"#536b7b", fontFamily:"monospace" }}>{filtered.length} result{filtered.length!==1?"s":""} for "{search}" <button onClick={()=>setSearch("")} style={{ background:"none", border:"none", color:"#0b93bb", fontSize:12, cursor:"pointer" }}>✕</button></div>}
       {filtered.length===0
         ?<div style={{ textAlign:"center", padding:"40px 0", color:"#536b7b" }}>No results for "{search}"</div>
         :<div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(min(100%,440px),1fr))", gap:14 }}>
-           {filtered.map((item,i)=><ContentCard key={i} item={item} type={type}/>)}
+           {displayed.map((item,i)=><ContentCard key={`${articleTarget(item) || item.title || i}:${item.date || i}`} item={item} type={type} account={account} vote={votes[articleTarget(item)]} voteReady={voteReady} onVote={castWeeklyVote}/>)}
          </div>}
       {type === "guidelines" && pages > 1 && !search && (
         <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:12, marginTop:28 }}>
@@ -249,7 +281,7 @@ function ContentSection({ type }) {
   );
 }
 
-function SocietyWidget({ org, guidelines, search }) {
+function SocietyWidget({ org, guidelines, search, account }) {
   const [visibleCount, setVisibleCount] = useState(3);
   const [newOnly, setNewOnly]           = useState(false);
   const sentinelRef  = useRef(null);
@@ -312,6 +344,7 @@ function SocietyWidget({ org, guidelines, search }) {
                   <div style={{ fontSize:13, fontWeight:600, color:"#17324d", lineHeight:1.5, marginBottom:5 }}>{g.title}</div>
                   <div style={{ fontSize:12, color:"#516779", lineHeight:1.65 }}>{g.summary}</div>
                   <div style={{ fontSize:11, color:sc.color, marginTop:6 }}>{link.label}</div>
+                  <Discussion target={guidelineTarget(g)} account={account} />
                 </div>
               );
             })
@@ -322,7 +355,7 @@ function SocietyWidget({ org, guidelines, search }) {
   );
 }
 
-function GuidelinesSection() {
+function GuidelinesSection({ account }) {
   const [grouped, setGrouped]     = useState(null);
   const [status, setStatus]       = useState("loading");
   const [total, setTotal]         = useState(0);
@@ -419,7 +452,7 @@ function GuidelinesSection() {
       {grouped && (
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(min(100%,440px),1fr))", gap:16 }}>
           {["ACG","AGA","ASGE","AASLD"].map(org =>
-            grouped[org]?.length > 0 ? <SocietyWidget key={org} org={org} guidelines={grouped[org]} search={search}/> : null
+            grouped[org]?.length > 0 ? <SocietyWidget key={org} org={org} guidelines={grouped[org]} search={search} account={account}/> : null
           )}
         </div>
       )}
@@ -544,7 +577,7 @@ function QuizDisplay({ quiz }) {
 }
 
 // ── LECTURE DETAIL PANEL ──────────────────────────────────────────────────────
-function LectureDetailPanel({ event, onClose }) {
+function LectureDetailPanel({ event, onClose, account }) {
   const [data, setData]                   = useState(null);
   const [loading, setLoading]             = useState(true);
   const [showQuiz, setShowQuiz]           = useState(false);
@@ -594,6 +627,7 @@ function LectureDetailPanel({ event, onClose }) {
       </div>
 
       <div style={{ padding:24 }}>
+        <Discussion target={lectureTarget(event.slug)} account={account} label="Comment on this lecture" />
         {loading&&<div style={{ textAlign:"center", padding:"60px 0" }}><Spinner size={28}/><div style={{ marginTop:14, fontSize:13, color:"#536b7b" }}>Loading lecture content…</div></div>}
         {noData&&<div style={{ textAlign:"center", padding:"60px 0", color:"#536b7b" }}><div style={{ fontSize:32, marginBottom:12 }}>📭</div><div style={{ fontSize:13 }}>No content yet. Run the schedule cron to populate.</div></div>}
 
@@ -619,6 +653,7 @@ function LectureDetailPanel({ event, onClose }) {
                       </div>
                       <div style={{ fontSize:14, fontWeight:600, color:"#17324d", lineHeight:1.5, marginBottom:6 }}>{g.title}</div>
                       <div style={{ fontSize:12, color:"#516779", lineHeight:1.7 }}>{g.summary}</div>
+                      <Discussion target={guidelineTarget(g)} account={account} />
                     </div>
                   );})}
                 </div>
@@ -637,7 +672,7 @@ function LectureDetailPanel({ event, onClose }) {
                   </button>
                 )}
                 {hasQuiz&&showQuiz&&(
-                  <QuizDisplay quiz={data.quiz}/>
+                  <><QuizDisplay quiz={data.quiz}/><Discussion target={quizTarget(event.slug)} account={account} label="Comment on this quiz" /></>
                 )}
               </div>
             );
@@ -659,6 +694,7 @@ function LectureDetailPanel({ event, onClose }) {
                       {item.authors&&<div style={{ fontSize:11, color:"#536b7b", fontStyle:"italic", marginBottom:4 }}>{item.authors}</div>}
                       <div style={{ fontSize:12, color:"#516779", lineHeight:1.7 }}>{item.oneLineSummary || item.summary}</div>
                       {(item.doi||item.pmid)&&<div style={{ marginTop:6, fontSize:10.5, color:"#536b7b", fontFamily:"monospace" }}>{item.doi?`DOI ${item.doi}`:`PMID ${item.pmid}`}</div>}
+                      <Discussion target={articleTarget(item)} account={account} />
                     </div>
                   ))}
                 </div>
@@ -672,7 +708,7 @@ function LectureDetailPanel({ event, onClose }) {
   );
 }
 
-function ScheduleSection() {
+function ScheduleSection({ account }) {
   const [selectedEvent, setSelectedEvent] = useState(() => {
     if (typeof window === "undefined") return null;
     const slug = new URLSearchParams(window.location.search).get("lecture");
@@ -740,7 +776,7 @@ function ScheduleSection() {
       {selectedEvent&&(
         <>
           <div onClick={closeSelectedEvent} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", zIndex:199 }}/>
-          <LectureDetailPanel event={selectedEvent} onClose={closeSelectedEvent}/>
+          <LectureDetailPanel event={selectedEvent} onClose={closeSelectedEvent} account={account}/>
         </>
       )}
     </div>
@@ -756,7 +792,16 @@ const TABS = [
   { id:"profile",    label:"Profile",             icon:"👤" },
 ];
 
-export default function GIHub({ initialActive = "home" }) {
+export default function GIHub({ initialActive = "home", initialAccount = null }) {
+  const [account, setAccount] = useState(initialAccount);
+  useEffect(() => {
+    let live = true;
+    const refresh = () => fetch('/api/gihub-auth/me').then(response => response.ok ? response.json() : null)
+      .then(value => { if (live) setAccount(value); }).catch(() => { if (live) setAccount(null); });
+    refresh();
+    window.addEventListener('gihub:auth-changed', refresh);
+    return () => { live = false; window.removeEventListener('gihub:auth-changed', refresh); };
+  }, []);
   const [active, setActive] = useState(
     // The standalone AI quiz was retired; old links fall back to Guidelines.
     initialActive === "quiz" ? "guidelines" : initialActive
@@ -799,19 +844,20 @@ export default function GIHub({ initialActive = "home" }) {
             {TABS.map(t=>(
               <button key={t.id} type="button" onClick={()=>navigate(t.id)}
                 style={{ background:active===t.id?"#eaf8fc":"transparent", border:"none", borderBottom:`3px solid ${active===t.id?"#0b93bb":"transparent"}`, borderRadius:"10px 10px 0 0", color:active===t.id?"#0b779b":"#536b7b", padding:"12px 18px", fontSize:13, fontWeight:active===t.id?700:600, transition:"all 0.18s", whiteSpace:"nowrap", cursor:"pointer" }}>
-                {t.icon} {t.label}
+                {t.icon} {t.id === "profile" && !account ? "Sign in" : t.label}
               </button>
             ))}
           </div>
         </div>
       </div>
+      <ContributionBar account={account}/>
       <div style={{ maxWidth:1100, margin:"0 auto", padding:"38px 32px 0" }}>
-        {active==="home"&&<Home onNavigate={navigate}/>}
-        {active==="guidelines"&&<GuidelinesSection/>}
-        {active==="weekly"    &&<ContentSection key="weekly"     type="weekly"/>}
+        {active==="home"&&<Home onNavigate={navigate} account={account}/>}
+        {active==="guidelines"&&<GuidelinesSection account={account}/>}
+        {active==="weekly"    &&<ContentSection key="weekly"     type="weekly" account={account}/>}
         {active==="education" &&<EducationSection/>}
-        {active==="schedule"  &&<ScheduleSection/>}
-        {active==="profile"   &&<AuthProfile/>}
+        {active==="schedule"  &&<ScheduleSection account={account}/>}
+        {active==="profile"   &&<AuthProfile initialAccount={initialAccount || undefined}/>}
       </div>
       {active!=="home"&&<div style={{ maxWidth:1100, margin:"52px auto 0", padding:"18px 32px 0", borderTop:"1px solid #d6eaf0" }}>
         <p style={{ fontSize:10.5, color:"#536b7b", textAlign:"center", lineHeight:2, fontFamily:"monospace" }}>

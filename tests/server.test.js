@@ -2,7 +2,38 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
-import { apiHandlers } from '../app.js';
+import { once } from 'node:events';
+import http from 'node:http';
+import { apiHandlers, createApp } from '../app.js';
+
+function requestWithHost(base, route, method, headers) {
+  return new Promise((resolve, reject) => {
+    const request = http.request(`${base}${route}`, { method, headers }, response => {
+      response.resume();
+      response.on('end', () => resolve({ status: response.statusCode, headers: response.headers }));
+    });
+    request.on('error', reject);
+    request.end();
+  });
+}
+
+test('www page requests redirect to the canonical sign-in origin before rendering', async () => {
+  const server = createApp(apiHandlers, { gihubAuthHandler: (req, res) => res.status(403).json({ error: 'Origin rejected' }) }).listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  const base = `http://127.0.0.1:${server.address().port}`;
+  try {
+    const www = await requestWithHost(base, '/profile?from=phone', 'GET', { Host: 'www.mygihub.com' });
+    assert.equal(www.status, 302);
+    assert.equal(www.headers.location, 'https://mygihub.com/profile?from=phone');
+    const canonical = await requestWithHost(base, '/api/gihub-auth/me', 'GET', { Host: 'mygihub.com', 'X-Forwarded-Host': 'www.mygihub.com' });
+    assert.equal(canonical.status, 403);
+    const post = await requestWithHost(base, '/api/gihub-auth/login', 'POST', { Host: 'www.mygihub.com' });
+    assert.equal(post.status, 403); // Do not redirect a credential-bearing POST.
+  } finally {
+    server.close();
+    await once(server, 'close');
+  }
+});
 
 test('every api/*.js handler is mounted, and helper modules are not', async () => {
   const withHandlers = [];
@@ -14,6 +45,7 @@ test('every api/*.js handler is mounted, and helper modules are not', async () =
   assert.deepEqual(Object.keys(apiHandlers).sort(), withHandlers.sort());
   assert.deepEqual(Object.keys(apiHandlers).sort(), [
     'claude',
+    'community',
     'gihub-auth',
     'schedule-review-data',
     'schedule-review-publish',

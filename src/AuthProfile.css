@@ -25,6 +25,6 @@
 .auth-profile__external { color: #087c9e; font-size: .8rem; font-weight: 750; text-decoration: none; }
 .auth-profile__external:hover { text-decoration: underline; }
 .auth-profile__message { margin: 0; color: #8b3e3e; font-size: .83rem; line-height: 1.5; }
-.auth-profile__actions + .auth-profile__message { color: #116e59; }
+.auth-profile__message[role="status"] { color: #116e59; }
 @media (max-width: 620px) { .auth-profile__header { flex-direction: column; } .auth-profile__primary, .auth-profile__secondary { width: 100%; } .auth-profile__actions { align-items: stretch; flex-direction: column; } }
 @media (prefers-reduced-motion: reduce) { .auth-profile * { scroll-behavior: auto !important; } }

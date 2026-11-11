@@ -145,7 +145,9 @@ export default function ScheduleReview({ resources = {} }) {
         </div>
         <div style={{ display:"grid", gap:14 }}>
           {visibleItems.map((item) => (
-            <article key={scheduleReviewItemId(item)} style={{ background:"rgba(255,255,255,0.025)", border:"1px solid rgba(255,255,255,0.08)", borderLeft:`3px solid ${item.kind === "Guideline" ? "#5b8af0" : "#00b8d4"}`, borderRadius:12, padding:"20px 22px" }}>
+            <article key={scheduleReviewItemId(item)} style={{ background:item.sourceRepository === "community-suggestion" ? "rgba(179,109,248,0.09)" : "rgba(255,255,255,0.025)", border:"1px solid rgba(255,255,255,0.08)", borderLeft:`3px solid ${item.sourceRepository === "community-suggestion" ? "#b36df8" : item.kind === "Guideline" ? "#5b8af0" : "#00b8d4"}`, borderRadius:12, padding:"20px 22px" }}>
+              {item.sourceRepository === "community-suggestion" && <strong style={{ display:"inline-block", color:"#d5a8ff", fontSize:11, marginBottom:8 }}>Reader suggestion · {item.matchStatus === "confirmed" ? `confirmed PMID ${item.pmid}` : item.matchStatus === "provisional" ? `${item.matchRank === 1 ? "Best guess" : "Alternative"} · option ${item.matchRank} of ${item.matchCount} · PMID ${item.pmid} (provisional match)` : "no credible PMID match yet"}</strong>}
+              {item.sourceRepository === "community-suggestion" && item.suggestedLecture && <p style={{ color:"#d5a8ff", fontSize:12, margin:"2px 0 8px" }}>Best guess: {item.suggestedLecture.label} ({item.suggestedLecture.confidence} confidence){item.suggestedLecture.reason ? ` — ${item.suggestedLecture.reason}` : ""}</p>}
               <div style={{ display:"flex", gap:7, flexWrap:"wrap", alignItems:"center", fontSize:11, color:"#5a6a88", fontFamily:"monospace" }}>
                 <span>{item.slug}</span><span>·</span><span>{item.kind}</span><span>·</span><span>{item.source}</span>{item.date && <><span>·</span><span>{item.date}</span></>}
                 {item.status && <span style={{ color:item.status === "approved" ? "#4caf7d" : "#e09a2a" }}>· {item.status}</span>}

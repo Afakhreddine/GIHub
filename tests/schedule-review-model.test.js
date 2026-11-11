@@ -70,6 +70,18 @@ test("schedule review defaults to the current published schedule slugs", () => {
   };
   const items = flattenScheduleReviewItems(resources);
   assert.deepEqual(items.map(item => item.title), ["Pending November lecture card", "Current November card"]);
+
+});
+
+test("Schedule shortlist requires one selected citation per reader suggestion", () => {
+  const options = flattenScheduleReviewItems({ "portal-hypertension":{ newsAndArticles:[
+    { title:"Option A", url:"https://pubmed.ncbi.nlm.nih.gov/42476609/", pmid:"42476609", sourceRepository:"community-suggestion", status:"candidate", suggestionId:"lead-123", matchStatus:"provisional" },
+    { title:"Option B", url:"https://pubmed.ncbi.nlm.nih.gov/34414201/", pmid:"34414201", sourceRepository:"community-suggestion", status:"candidate", suggestionId:"lead-123", matchStatus:"provisional" },
+  ] } }, new Set(["portal-hypertension"]));
+  const both = Object.fromEntries(options.map(item => [scheduleReviewItemId(item), "Approve"]));
+  assert.equal(canPublishScheduleReview(options, both), false);
+  assert.equal(canPublishScheduleReview(options, { ...both, [scheduleReviewItemId(options[1])]:"Reject" }), true);
+
 });
 
 test("schedule review filters and publication readiness mirror weekly review", () => {

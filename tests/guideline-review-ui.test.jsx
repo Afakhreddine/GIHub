@@ -9,11 +9,9 @@ import candidates from "../src/data/guidelineReviewCandidates.js";
 test("guideline review route renders candidate and publish controls", () => {
   const html = renderToStaticMarkup(React.createElement(GuidelineReview, { items:candidates }));
   assert.match(html, /Guideline Candidate Review/);
-  assert.match(html, /AGA\/AASLD Clinical Practice Guideline on Management of Primary Biliary Cholangitis/);
-  assert.match(html, /Acute-on-chronic liver failure: A global multisociety consensus on definitions/);
+  assert.match(html, /AASLD EXPO: Diagnosis and management of hepatitis delta virus/);
   assert.match(html, /Publish approved/);
-  assert.match(html, /PubMed 42914292/);
-  assert.match(html, /PubMed 42960623/);
+  assert.match(html, /PubMed 42992835/);
 });
 
 test("review hub includes Guidelines tab", () => {

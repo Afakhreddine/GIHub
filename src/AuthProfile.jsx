@@ -24,12 +24,13 @@ export default function AuthProfile({ initialAccount, skipSessionCheck = false }
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [passwordMessage, setPasswordMessage] = useState('');
+  const [editingProfile, setEditingProfile] = useState(false);
 
   useEffect(() => {
     if (skipSessionCheck || initialAccount !== undefined) return;
     const controller = new AbortController();
     authRequest('me', { signal: controller.signal })
-      .then(data => { setAccount(data); setProfile(data.profile); })
+      .then(data => { setAccount(data); setProfile(data.profile); setEditingProfile(false); })
       .catch(error => { if (error.name !== 'AbortError' && error.status !== 401) setMessage('Profile service is temporarily unavailable.'); })
       .finally(() => setLoading(false));
     return () => controller.abort();
@@ -50,7 +51,9 @@ export default function AuthProfile({ initialAccount, skipSessionCheck = false }
       const data = await authRequest('me');
       setAccount(data);
       setProfile(data.profile);
+      setEditingProfile(false);
       formElement.reset();
+      window.dispatchEvent(new window.Event('gihub:auth-changed'));
     } catch (error) {
       setMessage(error.status === 401 ? 'Email or password not recognized. Check your EndoEval account.' : 'Sign-in is temporarily unavailable. Please try again.');
     } finally {
@@ -70,7 +73,9 @@ export default function AuthProfile({ initialAccount, skipSessionCheck = false }
       });
       setAccount(data);
       setProfile(data.profile);
+      setEditingProfile(false);
       setMessage('Profile saved.');
+      window.dispatchEvent(new window.Event('gihub:auth-changed'));
     } catch (error) {
       if (error.status === 401) setAccount(null);
       setMessage(error.status === 409 ? 'Profile could not be saved. Please try again.' : error.status === 400 ? 'Please check the profile field lengths.' : 'Profile could not be saved. Please try again.');
@@ -117,6 +122,8 @@ export default function AuthProfile({ initialAccount, skipSessionCheck = false }
       await authRequest('logout', { method: 'POST' });
       setAccount(null);
       setProfile(EMPTY_PROFILE);
+      setEditingProfile(false);
+      window.dispatchEvent(new window.Event('gihub:auth-changed'));
     } catch {
       setMessage('Could not sign out. You are still signed in. Please try again.');
     } finally {
@@ -142,14 +149,18 @@ export default function AuthProfile({ initialAccount, skipSessionCheck = false }
 
   return <section className="auth-profile" aria-labelledby="gihub-profile-title">
     <div className="auth-profile__header"><div><p className="auth-profile__eyebrow">GIHub profile</p><h1 id="gihub-profile-title">Welcome, {profile.displayName || account.user.name}</h1><p>Your profile is stored with EndoEval and revalidated whenever GIHub loads it.</p></div><button className="auth-profile__secondary" type="button" onClick={logout} disabled={busy}>Sign out</button></div>
-    <form key="signed-in" className="auth-profile__card auth-profile__form" onSubmit={saveProfile}>
+    {editingProfile ? <form key="signed-in" className="auth-profile__card auth-profile__form" onSubmit={saveProfile}>
       <label>Email<input type="email" value={account.user.email} readOnly aria-describedby="email-help" /></label>
       <small id="email-help">Email remains your sign-in on GIHub and EndoEval.</small>
       <label>Display name<input value={profile.displayName} maxLength={200} onChange={event => setProfile({ ...profile, displayName: event.target.value })} /></label>
       <label>Bio<textarea value={profile.bio} maxLength={4000} rows={6} onChange={event => setProfile({ ...profile, bio: event.target.value })} /></label>
-      <div className="auth-profile__actions"><button className="auth-profile__primary" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save profile'}</button></div>
+      <div className="auth-profile__actions"><button className="auth-profile__primary" type="submit" disabled={busy}>{busy ? 'Saving…' : 'Save profile'}</button><button className="auth-profile__secondary auth-profile__cancel" type="button" disabled={busy} onClick={() => { setProfile(account.profile); setMessage(''); setEditingProfile(false); }}>Cancel</button></div>
       {message && <p className="auth-profile__message" role={message === 'Profile saved.' ? 'status' : 'alert'}>{message}</p>}
-    </form>
+    </form> : <div className="auth-profile__card auth-profile__summary">
+      <p>Your profile details are saved. Select Edit profile to update them.</p>
+      <button className="auth-profile__primary auth-profile__edit" type="button" disabled={busy} onClick={() => { setMessage(''); setEditingProfile(true); }}>Edit profile</button>
+      {message && <p className="auth-profile__message" role={message === 'Profile saved.' ? 'status' : 'alert'}>{message}</p>}
+    </div>}
     <form data-password-change="" className="auth-profile__card auth-profile__form auth-profile__password" onSubmit={changePassword}>
       <h2>Change your EndoEval password</h2>
       <p>This changes the password for the same account on GIHub and EndoEval.</p>

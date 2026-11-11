@@ -32,7 +32,10 @@ test("November Appendix and Anus lecture uses verified guideline records and no 
     lecture.guidelines.map(item => item.url),
     ["https://pubmed.ncbi.nlm.nih.gov/31725580/", "https://pubmed.ncbi.nlm.nih.gov/29878949/"],
   );
-  assert.deepEqual(sanitizeScheduleResourceForPublic(lecture).newsAndArticles, []);
+  assert.deepEqual(
+    sanitizeScheduleResourceForPublic(lecture).newsAndArticles.map(item => [item.pmid, item.status]),
+    [["40635196", "approved"], ["41925804", "approved"]],
+  );
   assert.equal(lecture.quiz.length, 10);
 });
 
