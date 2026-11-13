@@ -14,9 +14,18 @@ function jwt(exp = NOW_SECONDS + 3600) {
 }
 
 async function withServer(fetchImpl, run, options = {}) {
+  const env = options.env || {
+    GIHUB_SESSION_SECRET: SECRET,
+    ENDOEVAL_AUTH_ORIGIN: 'https://endoeval.com',
+    UPSTASH_REDIS_REST_URL: 'https://audit-store.invalid',
+    UPSTASH_REDIS_REST_TOKEN: 'test-audit-store-token',
+  };
+  const upstreamAndAudit = (url, request) => url === env.UPSTASH_REDIS_REST_URL
+    ? Response.json({ result:1 })
+    : fetchImpl(url, request);
   const auth = createGihubAuthHandler({
-    fetchImpl,
-    env: options.env || { GIHUB_SESSION_SECRET: SECRET, ENDOEVAL_AUTH_ORIGIN: 'https://endoeval.com' },
+    fetchImpl: upstreamAndAudit,
+    env,
     now: options.now || (() => NOW_SECONDS * 1000),
     publicOrigin: ORIGIN,
   });

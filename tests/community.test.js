@@ -41,7 +41,9 @@ function fakeRedis() {
     }
     const [command, ...args] = JSON.parse(options.body);
     let result;
-    if (command === 'EVAL' && args[0].startsWith('-- vote')) {
+    if (command === 'EVAL' && args[1] === '2' && args[2] === 'gihub:auth:successful-logins') {
+      result = 1;
+    } else if (command === 'EVAL' && args[0].startsWith('-- vote')) {
       const [, , hashKey, scoreKey, rateKey, userId, value] = args;
       const hash = voteHashes.get(hashKey) || new Map();
       const old = Number(hash.get(userId) || 0);
