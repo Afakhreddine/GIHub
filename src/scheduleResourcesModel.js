@@ -211,6 +211,15 @@ export function isPublicScheduleNewsArticle(item = {}) {
   return !["rejected", "reject", "held", "hold"].includes(String(item.status || "").toLowerCase());
 }
 
+export function hasApprovedScheduleQuiz(resource = {}) {
+  return ["repo-managed-complete", "autocontent-complete"].includes(resource?.quizStatus)
+    && Array.isArray(resource?.quiz)
+    && resource.quiz.length >= 10
+    && resource.quiz.every(validateQuizItem)
+    && Array.isArray(resource?.quizSourcePdfs)
+    && resource.quizSourcePdfs.length > 0;
+}
+
 export function sanitizeScheduleResourceForPublic(resource = {}) {
   return {
     ...resource,
@@ -219,7 +228,7 @@ export function sanitizeScheduleResourceForPublic(resource = {}) {
     newsAndArticles: (resource.newsAndArticles || []).filter(isPublicScheduleNewsArticle),
     articles: (resource.articles || []).filter(isPublicScheduleNewsArticle),
     news: (resource.news || []).filter(isPublicScheduleNewsArticle),
-    quiz: Array.isArray(resource.quiz) ? resource.quiz : [],
+    quiz: hasApprovedScheduleQuiz(resource) ? resource.quiz : [],
   };
 }
 

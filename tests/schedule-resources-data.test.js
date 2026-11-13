@@ -2,27 +2,40 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import scheduleResources from "../src/data/scheduleResources.js";
 import { CALENDAR_EVENTS } from "../src/scheduleConfig.js";
-import { sanitizeScheduleResourceForPublic } from "../src/scheduleResourcesModel.js";
+import { hasApprovedScheduleQuiz, sanitizeScheduleResourceForPublic } from "../src/scheduleResourcesModel.js";
 
 const clickableEvents = CALENDAR_EVENTS.filter(event => event.slug);
 
-test("current schedule topics have public guidelines and quizzes", () => {
-  assert.deepEqual(clickableEvents.map(event => event.slug), ["appendix-and-anus-pathology"]);
+test("all named topics have a public detail bundle without exposing unapproved content", () => {
+  assert.deepEqual(clickableEvents.map(event => event.slug), ["appendix-and-anus-pathology", "portal-hypertension", "cirrhosis-101", "post-aasld-update"]);
   for (const event of clickableEvents) {
     const resource = scheduleResources[event.slug];
     assert.ok(resource, `${event.slug} should have a schedule resource bundle`);
     assert.ok(Array.isArray(resource.guidelines), `${event.slug} guidelines should be an array`);
     assert.ok(Array.isArray(resource.newsAndArticles), `${event.slug} newsAndArticles should be an array`);
-    assert.ok(resource.guidelines.length > 0, `${event.slug} should include at least one guideline`);
-    assert.ok(Array.isArray(resource.quiz) && resource.quiz.length > 0, `${event.slug} should include an interactive quiz`);
-    assert.equal(resource.quizStatus, "repo-managed-complete");
+    assert.ok(Array.isArray(resource.quiz), `${event.slug} should have a quiz slot`);
     const publicResource = sanitizeScheduleResourceForPublic(resource);
-    assert.ok(publicResource.guidelines.length > 0, `${event.slug} should expose approved guidelines publicly`);
-    assert.ok(publicResource.quiz.length > 0, `${event.slug} should expose a public quiz`);
+    assert.ok(publicResource.guidelines.every(item => item.status === "approved"), `${event.slug} must expose only approved guidelines`);
+    assert.equal(publicResource.quiz.length, hasApprovedScheduleQuiz(resource) ? resource.quiz.length : 0);
     assert.ok(
       publicResource.newsAndArticles.every(item => item.sourceRepository !== "targeted-online-pull" || item.status === "approved"),
       `${event.slug} public articles must not include unapproved targeted online-search cards`,
     );
+  }
+});
+
+test("only complete source-based quizzes become public", () => {
+  const approved = scheduleResources["appendix-and-anus-pathology"];
+  assert.equal(hasApprovedScheduleQuiz(approved), true);
+  assert.equal(sanitizeScheduleResourceForPublic(approved).quiz.length, 10);
+  for (const partial of [
+    { ...approved, quiz: approved.quiz.slice(0, 1), quizStatus: "autocontent-incomplete" },
+    { ...approved, quizStatus: "autocontent-incomplete" },
+    { ...approved, quizSourcePdfs: [] },
+    { ...approved, quiz: approved.quiz.slice(0, 1) },
+  ]) {
+    assert.equal(hasApprovedScheduleQuiz(partial), false);
+    assert.deepEqual(sanitizeScheduleResourceForPublic(partial).quiz, []);
   }
 });
 
