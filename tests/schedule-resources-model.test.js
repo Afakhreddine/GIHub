@@ -123,5 +123,5 @@ test("public schedule resource sanitizer hides only unapproved targeted-search c
     "Approved targeted search card",
     "Legacy trusted archive card",
   ]);
-  assert.equal(publicResource.quiz.length, 1);
+  assert.equal(publicResource.quiz.length, 0, "one-question, unverified quiz stays hidden");
 });

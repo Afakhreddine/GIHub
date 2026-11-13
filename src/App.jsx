@@ -4,7 +4,7 @@ import GUIDELINES from "./data/guidelines.js";
 import WEEKLY from "./data/weekly.js";
 import weeklyPodcasts from "./data/weeklyPodcasts.js";
 import scheduleResources from "./data/scheduleResources.js";
-import { isPublicApprovedResource, sanitizeScheduleResourceForPublic } from "./scheduleResourcesModel.js";
+import { hasApprovedScheduleQuiz, isPublicApprovedResource, sanitizeScheduleResourceForPublic } from "./scheduleResourcesModel.js";
 import Home from "./Home.jsx";
 import AuthProfile from "./AuthProfile.jsx";
 import { ContributionBar, Discussion, WeeklyVote } from "./Community.jsx";
@@ -613,8 +613,8 @@ function LectureDetailPanel({ event, onClose, account }) {
     ...(data?.articles || []).map(a => ({ ...a, title:a.title, source:a.journal || a.source, oneLineSummary:a.summary })),
     ...(data?.news || []).map(n => ({ ...n, title:n.title || n.headline, oneLineSummary:n.summary })),
   ];
-  const noData = !loading && (!data || (!data.guideline?.length && !newsAndArticles.length && !data.quiz?.length));
-  const hasQuiz = data?.quiz?.length > 0;
+  const noData = !loading && !data;
+  const hasQuiz = hasApprovedScheduleQuiz(data);
 
   return (
     <div style={{ position:"fixed", top:0, right:0, bottom:0, width:"min(600px,100vw)", background:"#f8fdff", borderLeft:"1px solid #d3e7ed", zIndex:200, overflowY:"auto", boxShadow:"-8px 0 32px rgba(23,50,77,0.18)" }}>
@@ -629,13 +629,13 @@ function LectureDetailPanel({ event, onClose, account }) {
       <div style={{ padding:24 }}>
         <Discussion target={lectureTarget(event.slug)} account={account} label="Comment on this lecture" />
         {loading&&<div style={{ textAlign:"center", padding:"60px 0" }}><Spinner size={28}/><div style={{ marginTop:14, fontSize:13, color:"#536b7b" }}>Loading lecture content…</div></div>}
-        {noData&&<div style={{ textAlign:"center", padding:"60px 0", color:"#536b7b" }}><div style={{ fontSize:32, marginBottom:12 }}>📭</div><div style={{ fontSize:13 }}>No content yet. Run the schedule cron to populate.</div></div>}
+        {noData&&<div style={{ textAlign:"center", padding:"60px 0", color:"#536b7b" }}><p>No approved content yet. Resources will appear after publication in Review.</p><p>A source-based topic quiz has not been completed and approved yet.</p></div>}
 
         {!loading&&data&&(
           <div style={{ display:"flex", flexDirection:"column", gap:32 }}>
 
             {/* Guidelines — most recent shown by default, expand for rest */}
-            {data.guideline?.length>0&&(()=>{
+            {data.guideline?.length>0 ? (()=>{
               const sorted = sortByDate(data.guideline);
               const visible = showAllGuidelines ? sorted : [sorted[0]];
               return (
@@ -664,19 +664,9 @@ function LectureDetailPanel({ event, onClose, account }) {
                   </button>
                 )}
 
-                {/* Quiz button — only shown if quiz data exists */}
-                {hasQuiz&&!showQuiz&&(
-                  <button onClick={()=>setShowQuiz(true)}
-                    style={{ marginTop:14, background:"linear-gradient(135deg,#0b779b,#128566)", border:"1px solid #0b779b", color:"#fff", padding:"8px 16px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:6 }}>
-                    🧠 Show Topic Quiz
-                  </button>
-                )}
-                {hasQuiz&&showQuiz&&(
-                  <><QuizDisplay quiz={data.quiz}/><Discussion target={quizTarget(event.slug)} account={account} label="Comment on this quiz" /></>
-                )}
               </div>
             );
-          })()}
+          })() : <div><div style={{ fontSize:12, fontWeight:700, color:"#0b93bb", fontFamily:"monospace" }}>⚕️ RELEVANT GUIDELINES</div><p>No approved guidelines yet. They will appear after publication in Review.</p></div>}
 
             {/* News and Articles */}
             {newsAndArticles.length>0&&(
@@ -700,6 +690,14 @@ function LectureDetailPanel({ event, onClose, account }) {
                 </div>
               </div>
             )}
+            {!newsAndArticles.length&&<div><div style={{ fontSize:12, fontWeight:700, color:"#0b779b", fontFamily:"monospace" }}>📡 NEWS AND ARTICLES</div><p>No approved articles yet. They will appear after publication in Review.</p></div>}
+
+            <div>
+              {hasQuiz&&!showQuiz&&<button onClick={()=>setShowQuiz(true)}
+                style={{ background:"linear-gradient(135deg,#0b779b,#128566)", border:"1px solid #0b779b", color:"#fff", padding:"8px 16px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer" }}>🧠 Show Topic Quiz</button>}
+              {hasQuiz&&showQuiz&&<><QuizDisplay quiz={data.quiz}/><Discussion target={quizTarget(event.slug)} account={account} label="Comment on this quiz" /></>}
+              {!hasQuiz&&<div><div style={{ fontSize:12, fontWeight:700, color:"#0b93bb", fontFamily:"monospace" }}>🧠 TOPIC QUIZ</div><p>A source-based topic quiz has not been completed and approved yet.</p></div>}
+            </div>
 
           </div>
         )}
