@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { recordGihubLogin } from '../src/loginAuditStore.js';
 
 const COOKIE_NAME = 'gihub_session';
 const MAX_SESSION_SECONDS = 12 * 60 * 60;
@@ -98,6 +99,7 @@ function publicAccount(data) {
 function sameOrigin(req, expected) {
   return req.headers.origin === expected;
 }
+
 
 // Shared read-only authentication for GIHub community endpoints. A cookie is not
 // sufficient by itself: EndoEval must still recognize its current bearer token.
@@ -325,6 +327,11 @@ export function createGihubAuthHandler({
       return send(res, 401, { error: 'Invalid email or password' });
     }
     const maxAge = Math.min(MAX_SESSION_SECONDS, exp - nowSeconds);
+    try {
+      await recordGihubLogin(data.user, { env, fetchImpl, now });
+    } catch {
+      return send(res, 503, { error: 'Sign-in is temporarily unavailable. Please try again.' });
+    }
     loginAttempts.delete(attemptKey);
     const encrypted = encryptSession({ token: data.token, userId: data.user.id, exp, expiresAt: nowSeconds + maxAge }, key);
     res.setHeader('Set-Cookie', `${COOKIE_NAME}=${encrypted}; Max-Age=${maxAge}; Path=/; HttpOnly; Secure; SameSite=Lax`);
