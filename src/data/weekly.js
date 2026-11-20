@@ -1,4 +1,26 @@
+// Repo-managed GIHub weekly update data.
+// Update with: node scripts/update-weekly-data.mjs <weekly.json>
+
 const weekly = [
+  {
+    "type": "Research",
+    "impactLevel": "Noteworthy",
+    "multiSource": false,
+    "date": "Sep 2026",
+    "topic": "IBD / Chronic Diarrhea",
+    "title": "The Diagnostic Accuracy of Fecal Calprotectin for Colonoscopic Abnormalities in Patients With Chronic Diarrhea",
+    "authors": "Liu X et al.",
+    "source": "J Gastroenterol Hepatol",
+    "summary": "In a prospective study across 15 centers in China (556 patients with chronic diarrhea and 152 nondiarrhea controls), fecal calprotectin identified IBD with an AUC of 0.929 at an optimal cutoff of 157.0 μg/g; its AUC for colorectal inflammation was 0.896. Accuracy for high-risk adenomas was limited (AUC 0.587), and the abstract does not establish whether participants were hospitalized. Source verified against PubMed; AI-assisted summary requires human review before publication.",
+    "url": "https://doi.org/10.1111/jgh.70591",
+    "studyUrl": "https://pubmed.ncbi.nlm.nih.gov/42476609/",
+    "pmid": "42476609",
+    "sourceRepository": "community-suggestion",
+    "status": "candidate",
+    "suggestionId": "7cdfd46a24124eed",
+    "matchStatus": "confirmed",
+    "matchReason": "Contributor confirmed this 2026 Chinese multicenter chronic-diarrhea study; its abstract does not establish hospitalization."
+  },
   {
     "type": "Research",
     "impactLevel": "High Impact",
