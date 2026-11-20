@@ -1,20 +1,4 @@
-// Repo-managed GIHub weekly update data.
-// Update with: node scripts/update-weekly-data.mjs <weekly.json>
-
 const weekly = [
-  {
-    "type": "Research",
-    "impactLevel": "High Impact",
-    "multiSource": false,
-    "date": "Nov 13, 2026",
-    "topic": "Primary Biliary Cholangitis",
-    "title": "Saroglitazar tops placebo on biochemical response in PBC trial",
-    "authors": "",
-    "source": "news.gastro.org / Hepatology",
-    "summary": "In the 148-patient randomized EPICS-III phase 3 analysis, biochemical response at week 52 occurred in 56.7% with saroglitazar versus 9.8% with placebo, while serious adverse events occurred in 6% versus 11% and hypertension in 12% versus 2%. The result supports a potential second-line PBC option, but the drug was investigational and the 52-week trial did not establish effects on decompensation, transplantation, or mortality. Source verified; AI-assisted summary requires human review before merge.",
-    "url": "https://news.gastro.org/issues/2026/november-2026/saroglitazar-tops-placebo-on-biochemical-response-in-pbc-trial/",
-    "studyUrl": "https://doi.org/10.1097/HEP.0000000000001895"
-  },
   {
     "type": "Research",
     "impactLevel": "High Impact",
@@ -27,19 +11,6 @@ const weekly = [
     "summary": "In a 10,799-patient randomized noninferiority trial, interim CRC incidence at 5.5 years was 0.77% when first surveillance occurred at 5 years versus 0.82% at 3 years; the upper 99.12% confidence bound was 0.68 percentage points. This may support de-escalation, but the prespecified primary endpoint is at 10 years and the noninferiority margin was 0.7 percentage points. Source verified; AI-assisted summary requires human review before merge.",
     "url": "https://www.healio.com/news/gastroenterology/20261109/data-support-extending-surveillance-to-5-years-after-highrisk-adenoma-removal",
     "studyUrl": "https://pubmed.ncbi.nlm.nih.gov/42748427/"
-  },
-  {
-    "type": "Research",
-    "impactLevel": "High Impact",
-    "multiSource": false,
-    "date": "Nov 10, 2026",
-    "topic": "Barrett’s Esophagus",
-    "title": "Two Barrett’s biomarkers tied to progression, but neither shown superior",
-    "authors": "",
-    "source": "news.gastro.org / Gastro Hep Advances",
-    "summary": "Across 23 observational studies with 6,655 patients, high-risk TSP-9 and aberrant p53 were associated with progression (pooled HR 7.65 and 5.05), with negative predictive values of 91.1% and 94.7%. Sensitivity was modest, the comparison was indirect, and no randomized management trial has shown that biomarker-guided surveillance improves outcomes or cost-effectiveness. Source verified; AI-assisted summary requires human review before merge.",
-    "url": "https://news.gastro.org/issues/2026/november-2026/two-barretts-biomarkers-tied-to-progression-but-neither-shown-superior/",
-    "studyUrl": "https://pubmed.ncbi.nlm.nih.gov/42866690/"
   },
   {
     "type": "Research",
@@ -58,32 +29,6 @@ const weekly = [
     "type": "Research",
     "impactLevel": "High Impact",
     "multiSource": false,
-    "date": "Nov 10, 2026",
-    "topic": "Ulcerative Colitis",
-    "title": "Obefazimod may improve UC symptoms as early as week 1",
-    "authors": "",
-    "source": "news.gastro.org / ACG 2026 abstract",
-    "summary": "In a pooled 1,272-patient phase 3 induction analysis, week-8 remission was 18% and 21% with obefazimod 25 mg and 50 mg versus 4.4% with placebo, and symptomatic response separated by week 1 with 50 mg. The rapid refractory-UC signal is promising, but results were conference-only, subgroup P values were nominal, and no peer-reviewed direct study link was available. Source verified; AI-assisted summary requires human review before merge.",
-    "url": "https://news.gastro.org/issues/2026/november-2026/obefazimod-may-improve-uc-symptoms-as-early-as-week-1/",
-    "studyUrl": ""
-  },
-  {
-    "type": "Research",
-    "impactLevel": "Noteworthy",
-    "multiSource": false,
-    "date": "Nov 12, 2026",
-    "topic": "Ulcerative Colitis",
-    "title": "Oral icotrokinra: Most patients with UC remain in response at week 76",
-    "authors": "",
-    "source": "news.gastro.org / ACG 2026 abstract",
-    "summary": "Among 136 selected week-28 responders continuing icotrokinra, clinical response was 73%-81%, remission 56%-59%, and endoscopic improvement 64%-68% at week 76. The oral IL-23 receptor blocker has a durable signal, but responder enrichment, no concurrent placebo, exploratory outcomes, local endoscopy reads, and unpublished data prevent estimating effectiveness in the original population. Source verified; AI-assisted summary requires human review before merge.",
-    "url": "https://news.gastro.org/issues/2026/november-2026/oral-icotrokinra-most-patients-with-uc-remain-in-response-at-week-76/",
-    "studyUrl": ""
-  },
-  {
-    "type": "Research",
-    "impactLevel": "High Impact",
-    "multiSource": false,
     "date": "Nov 11, 2026",
     "topic": "Ulcerative Colitis",
     "title": "Vedolizumab may prolong time to first ulcerative colitis-related complication",
@@ -91,32 +36,6 @@ const weekly = [
     "source": "healio.com / UEG Week 2026 abstract",
     "summary": "The randomized VERDICT treat-to-target trial reported that almost 60% achieved their assigned steroid-free target by 48 weeks and that targeting disease clearance prolonged time to a UC-related complication versus targeting symptomatic remission. The accessible conference report omitted sample size, hazard ratio, event counts, and confidence intervals, so the signal is important but not yet practice-ready. Source verified; AI-assisted summary requires human review before merge.",
     "url": "https://www.healio.com/news/gastroenterology/20261109/vedolizumab-may-prolong-time-to-first-ulcerative-colitis-related-complication",
-    "studyUrl": ""
-  },
-  {
-    "type": "Research",
-    "impactLevel": "High Impact",
-    "multiSource": false,
-    "date": "Nov 9, 2026",
-    "topic": "Alcohol Use Disorder / Liver Disease",
-    "title": "Pemvidutide reduces heavy drinking in alcohol use disorder",
-    "authors": "",
-    "source": "gastroendonews.com / The Liver Meeting 2026 abstract",
-    "summary": "In the 100-patient randomized RECLAIM phase 2 trial, heavy-drinking days fell by 4.20 per week with pemvidutide versus 2.75 with placebo (between-group 95% CI -2.32 to -0.58), while 64.4% versus 34.8% achieved a two-level WHO drinking-risk reduction. This novel liver-relevant AUD signal requires phase 3 confirmation because follow-up was short and results remain a conference abstract without a peer-reviewed direct study link. Source verified; AI-assisted summary requires human review before merge.",
-    "url": "https://www.gastroendonews.com/Hepatology-in-Focus/Article/10-26/Pemvidutide-Reduces-Heavy-Drinking-in-Alcohol-Use-Disorder/82139",
-    "studyUrl": ""
-  },
-  {
-    "type": "Research",
-    "impactLevel": "High Impact",
-    "multiSource": false,
-    "date": "Nov 9, 2026",
-    "topic": "Primary Biliary Cholangitis",
-    "title": "Elafibranor normalizes ALP in primary biliary cholangitis",
-    "authors": "",
-    "source": "gastroendonews.com / The Liver Meeting 2026 abstract",
-    "summary": "In the 92-patient randomized ELSPIRE phase 3 trial, ALP normalized at one year in 85% with elafibranor versus 23% with placebo, with mean reductions of 36% versus 4%. The result may broaden biochemical goals in PBC, but it is conference-only, uses a surrogate endpoint, lacks detailed adverse-event counts, and does not establish clinical-outcome benefit. Source verified; AI-assisted summary requires human review before merge.",
-    "url": "https://www.gastroendonews.com/Hepatology-in-Focus/Article/10-26/Elafibranor-Normalizes-ALP-in-Primary-Biliary-Cholangitis/82136",
     "studyUrl": ""
   },
   {
@@ -130,32 +49,6 @@ const weekly = [
     "source": "gastroendonews.com / The Liver Meeting 2026 abstract",
     "summary": "In pooled B-Well follow-up, 19% of bepirovirsen-treated patients achieved functional cure at week 72 and 91% of those maintained it at week 96; among patients with baseline HBsAg at or below 1,000 IU/mL, 26% achieved cure and 91% maintained it. This selected-responder conference analysis extends rather than replaces the primary B-Well result already in the Weekly archive and had no concurrent durability-stage comparator. Source verified; AI-assisted summary requires human review before merge.",
     "url": "https://www.gastroendonews.com/Hepatology-in-Focus/Article/10-26/Bepirovirsen-Demonstrates-Durable-Functional-Cure-in-HBV/82138",
-    "studyUrl": ""
-  },
-  {
-    "type": "Opinion",
-    "impactLevel": "High Impact",
-    "multiSource": false,
-    "date": "Nov 12, 2026",
-    "topic": "Hepatocellular Carcinoma Surveillance",
-    "title": "HCC surveillance: practical strategies to close implementation gaps",
-    "authors": "",
-    "source": "gastroendonews.com",
-    "summary": "This expert review reports that only 24% of eligible patients completed HCC surveillance across 29 studies and that mailed ultrasound/AFP orders increased completion from 28% to 54% in one trial. It offers actionable outreach, reminder, and ultrasound-visualization-score steps, but it synthesizes heterogeneous older studies rather than presenting one new index study. Source verified; AI-assisted summary requires human review before merge.",
-    "url": "https://www.gastroendonews.com/Hepatology-in-Focus/Article/10-26/HCC-Surveillance-Gaps-and-Strategies-to-Reach-Patients/81788",
-    "studyUrl": ""
-  },
-  {
-    "type": "News",
-    "impactLevel": "Noteworthy",
-    "multiSource": false,
-    "date": "Nov 11, 2026",
-    "topic": "Pediatric MASLD",
-    "title": "Advances in adult MASH care could be a catalyst for pediatric trials",
-    "authors": "",
-    "source": "healio.com",
-    "summary": "A news feature reports that 93% of 145 children receiving semaglutide in a retrospective cohort achieved at least 30% relative liver-fat reduction versus 25% of contemporaneous controls. The signal is source-only and partly unpublished, adult MASH drugs remain unapproved for pediatric MASH, and lifestyle plus family-based care remain standard pending dedicated trials. Source verified; AI-assisted summary requires human review before merge.",
-    "url": "https://www.healio.com/news/gastroenterology/20261111/advances-in-adult-mash-care-could-be-catalyst-for-pediatric-trials-treatment",
     "studyUrl": ""
   },
   {
