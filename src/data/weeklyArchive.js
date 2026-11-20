@@ -3,6 +3,102 @@
 
 const weeklyArchive = [
   {
+    "title": "Global study links liver transplant to survival gains in severe ACLF",
+    "oneLineSummary": "In the prospective 63-center CHANCE cohort of 995 adults, one-year mortality was 21% among recipients transplanted with ACLF grade 3 versus 88% among grade 3 patients declined for transplant; grade 2 rates were 11% and 73%.",
+    "doi": "10.1016/j.jhep.2026.09.015",
+    "pmid": "",
+    "source": "news.gastro.org / Journal of Hepatology",
+    "url": "https://doi.org/10.1016/j.jhep.2026.09.015",
+    "date": "Nov 6, 2026",
+    "topic": "Transplant Hepatology / ACLF",
+    "type": "Research",
+    "archivedFrom": "2026-11-20"
+  },
+  {
+    "title": "Upadacitinib ranked first for UC induction in network meta-analysis",
+    "oneLineSummary": "The analysis can inform individualized induction choices, but comparisons were mostly indirect, trial definitions varied, safety estimates were less certain, and maintenance efficacy was not assessed.",
+    "doi": "10.1016/j.cgh.2026.09.038",
+    "pmid": "",
+    "source": "news.gastro.org / Clinical Gastroenterology and Hepatology",
+    "url": "https://doi.org/10.1016/j.cgh.2026.09.038",
+    "date": "Nov 6, 2026",
+    "topic": "Ulcerative Colitis",
+    "type": "Research",
+    "archivedFrom": "2026-11-20"
+  },
+  {
+    "title": "Two antihypertensive classes tied to lower liver-event risk in MASLD",
+    "oneLineSummary": "Cardiovascular and renal indications remain primary because baseline-only exposure, elastography-based outcomes, tertiary-center selection, and residual confounding preclude a causal liver-benefit claim.",
+    "doi": "10.1016/j.cgh.2026.09.041",
+    "pmid": "",
+    "source": "news.gastro.org / Clinical Gastroenterology and Hepatology",
+    "url": "https://doi.org/10.1016/j.cgh.2026.09.041",
+    "date": "Nov 3, 2026",
+    "topic": "MASLD",
+    "type": "Research",
+    "archivedFrom": "2026-11-20"
+  },
+  {
+    "title": "Participation in stool-based screening program cut colorectal cancer mortality by 43%",
+    "oneLineSummary": "Organized stool testing and better completion may produce meaningful population benefit, but the 43% estimate depends on adherence and contamination adjustments and is not the original intent-to-treat effect.",
+    "doi": "10.1001/jamanetworkopen.2026.29856",
+    "pmid": "",
+    "source": "healio.com / JAMA Network Open",
+    "url": "https://doi.org/10.1001/jamanetworkopen.2026.29856",
+    "date": "Nov 5, 2026",
+    "topic": "Colorectal Cancer Screening",
+    "type": "Research",
+    "archivedFrom": "2026-11-20"
+  },
+  {
+    "title": "EUS-guided coil and glue injection for primary prevention of gastric variceal bleeding",
+    "oneLineSummary": "The approach is promising for selected high-risk varices, but treatment was nonrandomized, broader bleeding, decompensation, and survival outcomes were neutral, and the result remains an unpublished abstract.",
+    "doi": "",
+    "pmid": "",
+    "source": "gastroendonews.com / The Liver Meeting 2026 abstract",
+    "url": "https://www.gastroendonews.com/Hepatology-in-Focus/Article/10-26/EUS-Guided-Coil-and-Glue-to-Prevent-Gastric-Variceal-Bleeding/82130",
+    "date": "Nov 7, 2026",
+    "topic": "Portal Hypertension / Gastric Varices",
+    "type": "Research",
+    "archivedFrom": "2026-11-20"
+  },
+  {
+    "title": "Colonoscopy in older adults: balancing complications, competing mortality, and polypectomy",
+    "oneLineSummary": "A separate propensity-matched DDW abstract (118,272 pairs) reported lower 30-day complications with polypectomy than diagnostic colonoscopy (3.6% vs 4.9%) and lower seven-year all-cause mortality (16.9% vs 19.6%), but selection/confounding prevents a causal survival claim; decisi",
+    "doi": "10.1001/jama.2026.3414",
+    "pmid": "",
+    "source": "Gastroenterology & Endoscopy News / JAMA / DDW 2026",
+    "url": "https://doi.org/10.1001/jama.2026.3414",
+    "date": "Oct 2026",
+    "topic": "Colonoscopy in Older Adults",
+    "type": "News",
+    "archivedFrom": "2026-11-20"
+  },
+  {
+    "title": "EUS feature-based model distinguishes main-duct IPMN from chronic pancreatitis",
+    "oneLineSummary": "The October 2026 print article appeared online April 18, 2026, and its selected population, differing diagnostic reference standards, small test set, and lack of external validation preclude routine adoption.",
+    "doi": "10.1016/j.gie.2026.04.013",
+    "pmid": "",
+    "source": "Gastrointestinal Endoscopy",
+    "url": "https://doi.org/10.1016/j.gie.2026.04.013",
+    "date": "Oct 2026",
+    "topic": "Pancreatic Duct / EUS",
+    "type": "Research",
+    "archivedFrom": "2026-11-20"
+  },
+  {
+    "title": "ASGE society document reviews adverse events of ERCP and related procedures",
+    "oneLineSummary": "This October 2026 print ASGE practice-guideline document (online July 1, 2026) reviews adverse-event rates and risk factors for ERCP and related techniques, including pancreatic intervention and cholangioscopy, to inform consent and risk assessment.",
+    "doi": "10.1016/j.gie.2026.05.007",
+    "pmid": "",
+    "source": "ASGE / Gastrointestinal Endoscopy",
+    "url": "https://doi.org/10.1016/j.gie.2026.05.007",
+    "date": "Oct 2026",
+    "topic": "ERCP Safety",
+    "type": "Guideline",
+    "archivedFrom": "2026-11-20"
+  },
+  {
     "title": "How I Approach Refractory Constipation Symptoms",
     "oneLineSummary": "Its visible first page recommends reviewing inadequate treatment trials and laxative dosing and considering a cleanout before maintenance therapy, while noting that persistent pain or bloating may need gut–brain–directed assessment rather than more stool-focused therapy.",
     "doi": "10.14309/ajg.0000000000004061",
