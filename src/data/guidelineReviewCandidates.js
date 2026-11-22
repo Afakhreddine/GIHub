@@ -4,21 +4,21 @@
 
 const guidelineReviewCandidates = [
   {
-    org: "AASLD",
+    org: "AGA",
     year: "2026",
     month: "Nov",
-    topic: "Viral Hepatitis",
-    urgency: "High",
-    title: "AASLD EXPO: Diagnosis and management of hepatitis delta virus (HDV) infection",
-    summary: "Recommends one-time HDV antibody screening for all HBsAg-positive individuals, confirmatory HDV RNA testing, fibrosis assessment and six-month HCC surveillance for chronic HDV, and consideration of bulevirtide-based therapy for adults with compensated disease.",
-    url: "https://pubmed.ncbi.nlm.nih.gov/42992835/",
-    pmid: "42992835",
-    doi: "10.1097/HEP.0000000000001909",
-    source: "PubMed / AASLD news / Hepatology",
-    detectedAt: "2026-11-08",
-    queuedAt: "2026-11-08",
+    topic: "Liver Diagnostics",
+    urgency: "Moderate",
+    title: "AGA Clinical Practice Update on the Role of Liver Biopsy: Commentary",
+    summary: "Reviews evidence and best practices for liver biopsy in liver diseases, abnormal liver tests, and liver masses, including the role of noninvasive testing and biopsy approaches. The AGA Institute commissioned and approved this Clinical Practice Update for timely clinical guidance.",
+    url: "https://pubmed.ncbi.nlm.nih.gov/43062379/",
+    pmid: "43062379",
+    doi: "10.1016/j.cgh.2026.09.015",
+    source: "PubMed / Clinical Gastroenterology and Hepatology",
+    detectedAt: "2026-11-20",
+    queuedAt: "2026-11-22",
     status: "candidate-review",
-    reviewReason: "New this cycle. AASLD announced its second Expert-Based Practice Opinion on November 6, and PubMed indexed it the same day. The abstract verifies that the AASLD Practice Guidelines Committee commissioned the document and that it contains clinical screening, surveillance, and treatment statements. The 440-record live merged repository has no matching PMID, DOI, normalized title, or hepatitis delta guideline, so this is not a duplicate. The previously queued PBC guideline is already published, and the ACLF consensus was explicitly rejected in PR #81, so neither remains in the active review queue."
+    reviewReason: "New this cycle. PubMed indexed this AGA Clinical Practice Update on November 20 after online publication on November 19. The abstract verifies that it was commissioned and approved by the AGA Institute CPU Committee and AGA Governing Board, and PubMed classifies it as a Practice Guideline. The 441-record live merged repository has no matching PMID, DOI, normalized title, or AGA liver-biopsy update. Its distinct AGA scope is not a duplicate of the older generic AASLD Liver Biopsy topic record. The previously queued AASLD hepatitis delta EXPO was approved and published in PR #110, so it was removed from the active review queue."
   }
 ];
 
