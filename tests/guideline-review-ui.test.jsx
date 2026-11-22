@@ -9,9 +9,9 @@ import candidates from "../src/data/guidelineReviewCandidates.js";
 test("guideline review route renders candidate and publish controls", () => {
   const html = renderToStaticMarkup(React.createElement(GuidelineReview, { items:candidates }));
   assert.match(html, /Guideline Candidate Review/);
-  assert.match(html, /AASLD EXPO: Diagnosis and management of hepatitis delta virus/);
+  assert.match(html, /AGA Clinical Practice Update on the Role of Liver Biopsy/);
   assert.match(html, /Publish approved/);
-  assert.match(html, /PubMed 42992835/);
+  assert.match(html, /PubMed 43062379/);
 });
 
 test("review hub includes Guidelines tab", () => {
