@@ -13,7 +13,8 @@ test("weekly page features current podcast with prior-episode dropdown", () => {
   assert.match(html, new RegExp(weeklyPodcasts[0].audioUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(html, /Download MP3/);
   assert.match(html, /Editorial note:/);
-  assert.match(html, /17:29.*indomethacin.*cyclooxygenase/i);
+  assert.match(html, /surveillance.*perfectly safe.*interim/i);
+  assert.match(html, /endoscopic healing.*enough for most/i);
   for (const podcast of weeklyPodcasts) {
     assert.match(html, new RegExp(podcast.displayDate.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
