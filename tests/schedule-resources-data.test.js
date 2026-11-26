@@ -16,12 +16,36 @@ test("all named topics have a public detail bundle without exposing unapproved c
     assert.ok(Array.isArray(resource.quiz), `${event.slug} should have a quiz slot`);
     const publicResource = sanitizeScheduleResourceForPublic(resource);
     assert.ok(publicResource.guidelines.every(item => item.status === "approved"), `${event.slug} must expose only approved guidelines`);
-    assert.equal(publicResource.quiz.length, hasApprovedScheduleQuiz(resource) ? resource.quiz.length : 0);
+    assert.equal(hasApprovedScheduleQuiz(resource), true, `${event.slug} must have a complete source-PDF-backed quiz`);
+    assert.equal(publicResource.quiz.length, 10, `${event.slug} must publish ten quiz questions`);
     assert.ok(
       publicResource.newsAndArticles.every(item => item.sourceRepository !== "targeted-online-pull" || item.status === "approved"),
       `${event.slug} public articles must not include unapproved targeted online-search cards`,
     );
   }
+});
+
+test("Post-AASLD quiz identifies official meeting abstracts rather than an unverified speaker presentation", () => {
+  const resource = scheduleResources["post-aasld-update"];
+  assert.match(resource.resourceNotes, /2026 AASLD late-breaking abstracts/i);
+  assert.match(resource.resourceNotes, /not.*speaker.*presentation/i);
+  assert.ok(resource.quizSourcePdfs?.includes("2026-late-breaking-abstracts.pdf"));
+});
+
+test("new November quizzes retain source-grounded clinical qualifications", () => {
+  const portal = scheduleResources["portal-hypertension"].quiz;
+  assert.match(portal[1].options.find(option => option.startsWith(`${portal[1].correct}. `)), /of initial endoscopy/);
+  assert.match(portal[2].question, /screening upper endoscopy performed previously found no varices/);
+  assert.match(portal[6].explanation, /awaits confirmation/);
+  assert.match(portal[8].question, /after an episode of gastric variceal hemorrhage/);
+  const cirrhosis = scheduleResources["cirrhosis-101"].quiz;
+  assert.doesNotMatch(cirrhosis[2].explanation, /overall mortality/);
+  assert.match(cirrhosis[7].explanation, /albumin.*day 1.*day 3/);
+  const meeting = scheduleResources["post-aasld-update"].quiz;
+  assert.match(meeting[0].explanation, /nine.*available.*nine.*100%/i);
+  assert.match(meeting[4].question, /ALP ≤ULN and ≥15% reduction/);
+  assert.match(meeting[6].explanation, /does not establish NA discontinuation/);
+  assert.match(meeting[7].explanation, /adjusted treatment difference/);
 });
 
 test("only complete source-based quizzes become public", () => {
@@ -125,6 +149,7 @@ test("schedule topic quiz text is cleaned for plain-text rendering when quizzes 
       for (const field of fields) {
         assert.doesNotMatch(field, /\$[^$\n]+\$/, `quiz text should not contain raw inline math delimiters: ${field}`);
         assert.doesNotMatch(field, /\\%/, `quiz text should render literal percent signs: ${field}`);
+        assert.doesNotMatch(field, /\\(?:text|alpha|beta|gamma|delta|mu|times|ge|le|sim|log)\b/, `quiz text should not contain TeX commands: ${field}`);
       }
     }
   }

@@ -316,7 +316,7 @@ const scheduleResources = {
         ],
         "correct": "A",
         "explanation": "The trial concluded that methylnaltrexone treatment did not achieve superiority over placebo for reducing disease severity.",
-        "hint": "Think about whether the peripherally acting \\mu-opioid receptor antagonist successfully altered the trajectory of the disease."
+        "hint": "Think about whether the peripherally acting µ-opioid receptor antagonist successfully altered the trajectory of the disease."
       },
       {
         "question": "A prospective cohort study on infected pancreatic necrosis (IPN) identified several predictors of mortality. Which of the following factors was included in the five-predictor logistic regression nomogram?",
@@ -1490,7 +1490,7 @@ const scheduleResources = {
         "hint": "Assess whether this specific subgroup of perianal lesions can be cured without radiation toxicity."
       },
       {
-        "question": "An HIV-positive patient with a CD4 count of 350 cells/\\mu\\text{L} and undetectable viral load is diagnosed with stage II (T2N0M0) anal canal squamous cell carcinoma. How should his primary oncologic treatment compare to that of an HIV-negative patient?",
+        "question": "An HIV-positive patient with a CD4 count of 350 cells/µL and undetectable viral load is diagnosed with stage II (T2N0M0) anal canal squamous cell carcinoma. How should his primary oncologic treatment compare to that of an HIV-negative patient?",
         "options": [
           "A. Chemotherapy doses should be reduced by 50% empirically to prevent severe myelosuppression.",
           "B. He should receive standard full-dose chemoradiotherapy identical to immunocompetent patients.",
@@ -1662,7 +1662,7 @@ const scheduleResources = {
           "D. It is pathognomonic for celiac disease and mandates immediate initiation of a strict gluten-free diet."
         ],
         "correct": "C",
-        "explanation": "Lymphocytic duodenosis (\\ge 25 intraepithelial lymphocytes per 100 epithelial cells) without villous atrophy is common in the general population and is most frequently caused by non-celiac etiologies.",
+        "explanation": "Lymphocytic duodenosis (≥25 intraepithelial lymphocytes per 100 epithelial cells) without villous atrophy is common in the general population and is most frequently caused by non-celiac etiologies.",
         "hint": "Recall that increased intraepithelial lymphocytes without villous atrophy can stem from various common medications or non-celiac gastrointestinal conditions."
       },
       {
@@ -2756,10 +2756,137 @@ const scheduleResources = {
         "eventDate": "2026-11-10"
       }
     ],
-    "quiz": [],
+    "quiz": [
+      {
+        "question": "A 54-year-old male with compensated cirrhosis secondary to metabolic dysfunction-associated steatotic liver disease (MASLD) and a non-obese BMI (24 kg/m^2) undergoes noninvasive risk stratification. Transient elastography demonstrates a liver stiffness measurement (LSM) of 22 kPa and a laboratory evaluation reveals a platelet count of 95,000/µL. Upper endoscopy has not been performed. According to AASLD guidance, what is the most appropriate management plan?",
+        "options": [
+          "A. Initiate propranolol at 20 mg twice daily and titrate every 2–3 days until resting heart rate is 55–60 bpm.",
+          "B. Initiate carvedilol at 6.25 mg daily, titrating to 12.5 mg daily after 2–3 days if tolerated, without requiring a screening upper endoscopy.",
+          "C. Perform an upper endoscopy immediately to confirm the presence of esophageal varices before starting any pharmacological therapy.",
+          "D. Perform hepatic venous pressure gradient (HVPG) measurement to confirm CSPH before initiating nonselective beta-blocker therapy."
+        ],
+        "correct": "B",
+        "explanation": "In patients with compensated cirrhosis, an LSM of 20–25 kPa with a platelet count <150,000/µL meets AASLD noninvasive rule-in criteria for clinically significant portal hypertension (CSPH), and starting carvedilol directly obviates the need for screening upper endoscopy.",
+        "hint": "Consider how noninvasive algorithms identify clinically significant portal hypertension to guide primary prophylaxis without invasive or endoscopic procedures."
+      },
+      {
+        "question": "A 62-year-old female with Child-Turcotte-Pugh (CTP) class B cirrhosis (score 8) presents to the emergency department with acute hematemesis. Initial resuscitation is started, and urgent upper endoscopy performed 6 hours after presentation demonstrates actively bleeding medium-sized esophageal varices. Endoscopic variceal ligation (EVL) successfully achieves initial hemostasis. The patient has no history of hepatic encephalopathy or cardiac disease. Which of the following is the most appropriate next step in management to improve long-term survival?",
+        "options": [
+          "A. Perform preemptive transjugular intrahepatic portosystemic shunt (TIPS) creation within 72 hours (ideally within 24 hours) of initial endoscopy.",
+          "B. Maintain a liberal red blood cell transfusion strategy targeting a hemoglobin level >10 g/dL.",
+          "C. Transfuse fresh frozen plasma to correct the elevated INR prior to considering further interventions.",
+          "D. Continue IV vasoactive therapy for 5 days and initiate oral propranolol upon discharge, scheduling repeat EVL in 2–4 weeks."
+        ],
+        "correct": "A",
+        "explanation": "Preemptive TIPS within 72 hours (ideally <24 hours) is indicated for patients with CTP class B score >7 with active bleeding at endoscopy or CTP class C (score 10–13) to significantly reduce rebleeding and mortality.",
+        "hint": "Focus on risk stratification criteria for early interventional vascular procedures in acute variceal bleeding."
+      },
+      {
+        "question": "A 48-year-old male with compensated cirrhosis secondary to chronic hepatitis C virus infection (achieved sustained virological response 2 years ago) has a contraindication to beta-blockers due to severe asthma. A screening upper endoscopy performed previously found no varices. His liver disease has since remained quiescent after viral cure. If beta-blockers cannot be given, at what interval should surveillance upper endoscopy be repeated?",
+        "options": [
+          "A. Every 3 years",
+          "B. Every 2 years",
+          "C. Every 1 year",
+          "D. Screening endoscopy is never indicated once viral cure is achieved"
+        ],
+        "correct": "A",
+        "explanation": "In patients with compensated cirrhosis with no varices on a completed baseline upper endoscopy in whom liver injury is quiescent (e.g., post-SVR or alcohol abstinence) and NSBBs are contraindicated, endoscopic surveillance should be performed every 3 years.",
+        "hint": "Recall how the activity status of the underlying etiology alters the interval for variceal surveillance endoscopies."
+      },
+      {
+        "question": "A 59-year-old male with alcohol-associated cirrhosis is admitted with acute hematemesis. On arrival, blood pressure is 88/54 mmHg, heart rate is 112 bpm, hemoglobin is 6.5 g/dL, INR is 2.1, and platelet count is 45,000/µL. Which of the following represents the correct initial resuscitation strategy according to AASLD guidance?",
+        "options": [
+          "A. Transfuse packed red blood cells to a target hemoglobin of 9–10 g/dL and administer fresh frozen plasma to correct the INR <1.5 before endoscopy.",
+          "B. Perform routine pre-endoscopic endotracheal intubation and nasogastric tube insertion for gastric lavage in all patients presenting with hematemesis.",
+          "C. Initiate intravenous octreotide and antimicrobial prophylaxis immediately, target hemoglobin ~ 7 g/dL, and avoid routine transfusion of fresh frozen plasma or platelets.",
+          "D. Administer high-dose IV proton pump inhibitor monotherapy and delay vasoactive agents until endoscopic confirmation of varices."
+        ],
+        "correct": "C",
+        "explanation": "Management of acute variceal hemorrhage requires immediate initiation of vasoactive agents and IV antibiotics, restrictive blood transfusion usually targeting hemoglobin around 7 g/dL while individualizing the target in hemodynamic instability, and avoidance of routine FFP or platelet transfusions.",
+        "hint": "Think about fluid and blood product management principles designed to prevent exacerbating portal venous hypertension."
+      },
+      {
+        "question": "A 50-year-old male with cirrhosis presents with melena. Upper endoscopy reveals bleeding isolated gastric varices (IGV1) located in the gastric fundus. Cross-sectional imaging shows a large spontaneous splenorenal shunt. Which of the following options is recommended as a first-line definitive intervention for controlling bleeding or preventing rebleeding from these cardiofundal varices?",
+        "options": [
+          "A. Placement of a self-expanding esophageal metal stent",
+          "B. Endoscopic variceal ligation (EVL) repeated every 2–4 weeks until obliteration",
+          "C. Retrograde transvenous variceal obliteration (BRTO or related obliterative techniques) or TIPS",
+          "D. Surgical portacaval shunt creation"
+        ],
+        "correct": "C",
+        "explanation": "For acute hemorrhage or secondary prophylaxis of cardiofundal gastric varices (GOV2/IGV1), first-line options include endoscopic cyanoacrylate injection, TIPS, or retrograde transvenous obliteration (BRTO/PARTO).",
+        "hint": "Differentiate the anatomical management of fundal gastric varices from that of esophageal varices."
+      },
+      {
+        "question": "A 52-year-old female with compensated NASH cirrhosis undergoes screening upper endoscopy, which demonstrates severe portal hypertensive gastropathy (PHG) without esophageal or gastric varices. She has no history of GI bleeding, but laboratory studies show mild iron-deficiency anemia. What is the recommended management for her PHG according to AASLD guidance?",
+        "options": [
+          "A. Refer immediately for transjugular intrahepatic portosystemic shunt (TIPS) placement.",
+          "B. Administer daily high-dose oral proton pump inhibitors.",
+          "C. Initiate nonselective beta-blocker (NSBB) therapy such as carvedilol.",
+          "D. Perform endoscopic argon plasma coagulation (APC) of the gastric mucosa."
+        ],
+        "correct": "C",
+        "explanation": "Patients with severe PHG are presumed to have CSPH and should receive prophylactic NSBB therapy, to lower portal pressure and reduce decompensation risk; argon plasma coagulation has limited evidence for selected patients with chronic PHG bleeding but is not first-line prophylaxis here.",
+        "hint": "Consider the pathophysiological driver of mucosal congestion in portal hypertension and the pharmacological class that directly lowers portal venous inflow."
+      },
+      {
+        "question": "A 61-year-old man with cirrhosis and recurrent ascites recently recovered from an esophageal variceal bleed treated with EVL. Which statement best reflects evidence for adding simvastatin to secondary prophylaxis in his situation?",
+        "options": [
+          "A. One trial added simvastatin to propranolol plus EVL and suggested a mortality signal, but this requires confirmation; assess TIPS for recurrent ascites and weigh statin myotoxicity, especially in Child-Pugh B–C.",
+          "B. Simvastatin with carvedilol plus EVL is proven to prevent ACLF death in patients with recurrent ascites and should replace TIPS assessment.",
+          "C. Atorvastatin 80 mg daily is proven to lower HVPG by at least 50% and should be routinely substituted for EVL.",
+          "D. All statins are absolutely contraindicated in every patient with cirrhosis, regardless of indication or liver function."
+        ],
+        "correct": "A",
+        "explanation": "A single trial of simvastatin added to propranolol and EVL suggested improved survival, but the finding awaits confirmation and does not establish simvastatin as routine secondary prophylaxis. Myotoxicity warrants caution in Child-Pugh B–C; recurrent ascites also warrants assessment for TIPS.",
+        "hint": "Separate an exploratory mortality signal from an established treatment recommendation and assess recurrent ascites independently."
+      },
+      {
+        "question": "A 44-year-old pregnant patient at 14 weeks gestation with known cirrhosis secondary to autoimmune hepatitis presents for her initial prenatal GI consultation. She has never had an upper endoscopy or variceal bleeding, and is not currently taking a beta-blocker. Which statement correctly reflects AASLD recommendations for variceal screening during pregnancy?",
+        "options": [
+          "A. If acute variceal hemorrhage occurs during pregnancy, terlipressin is the preferred vasoactive drug of choice.",
+          "B. Unscreened pregnant patients with cirrhosis should undergo upper endoscopy early in the second trimester.",
+          "C. Upper endoscopy is strictly contraindicated throughout pregnancy due to risk of fetal hypoxia.",
+          "D. Screening upper endoscopy should be deferred until 6 weeks postpartum in all compensated patients."
+        ],
+        "correct": "B",
+        "explanation": "AASLD guidance recommends that patients with cirrhosis planning pregnancy undergo EGD within 1 year of conception; unscreened pregnant patients should undergo screening EGD early in the second trimester.",
+        "hint": "Review the recommended timing for endoscopic evaluation in pregnant patients who were not screened prior to conception."
+      },
+      {
+        "question": "A 57-year-old male with compensated cirrhosis presents after an episode of gastric variceal hemorrhage. Cross-sectional MRI reveals isolated splenic vein thrombosis with marked left-sided portal hypertension and prominent gastric fundal varices. Liver synthetic function is entirely normal (CTP class A). He has no esophageal varices. What treatment options should be evaluated after hemorrhage from the gastric fundal varices in this patient?",
+        "options": [
+          "A. Long-term carvedilol titration to resting heart rate <55 bpm",
+          "B. Evaluation for splenectomy, splenic vein stenting, or splenic artery embolization",
+          "C. Endoscopic variceal ligation (EVL) of the gastric fundal varices every 2 weeks",
+          "D. Preemptive TIPS placement to reduce the portacaval pressure gradient"
+        ],
+        "correct": "B",
+        "explanation": "Gastric varices resulting from isolated splenic vein thrombosis represent \"left-sided\" (prehepatic/segmental) portal hypertension, where splenectomy, splenic vein stenting, or splenic artery embolization are treatment options to evaluate after bleeding from isolated splenic vein thrombosis; selection depends on anatomy and clinical context.",
+        "hint": "Identify the unique pathophysiological cause of left-sided portal hypertension and how it differs from intrahepatic sinusoidal portal hypertension."
+      },
+      {
+        "question": "A 65-year-old male with NASH cirrhosis and known small esophageal varices is scheduled to undergo transesophageal echocardiography (TEE) as part of a pre-cardiac surgery workup. The cardiology team requests a routine screening upper endoscopy immediately prior to TEE to clear him for the procedure. According to AASLD practice guidance, what is the appropriate recommendation?",
+        "options": [
+          "A. TEE is strictly contraindicated in any patient with documented esophageal varices.",
+          "B. A Sengstaken-Blakemore tube should be prophylactically placed prior to inserting the TEE probe.",
+          "C. Endoscopic variceal ligation (EVL) must be performed prior to TEE if varices are present, regardless of size.",
+          "D. Routine upper endoscopy prior to TEE is not recommended because TEE does not pose a significant risk of inducing variceal hemorrhage."
+        ],
+        "correct": "D",
+        "explanation": "Evidence shows that TEE in patients with esophageal varices does not carry a significant risk of precipitating variceal bleeding; thus routine pre-TEE endoscopy is not recommended.",
+        "hint": "Assess whether diagnostic TEE probe passage significantly increases the risk of variceal rupture in cirrhotic patients."
+      }
+    ],
     "resourceNotes": "Previously approved cards were preserved; new article and guideline candidates were filtered through Schedule Review. Lecture activation still requires a source-PDF quiz.",
-    "quizStatus": "pending-source-pdf-quiz",
-    "resourceStatus": "approved"
+    "quizStatus": "autocontent-complete",
+    "resourceStatus": "approved",
+    "quizSourcePdfs": [
+      "aasld-guidance-hepatology.pdf",
+      "carve-as-ajg.pdf",
+      "baveno-jhep-preproof.pdf"
+    ],
+    "quizGeneratedAt": "2026-11-20T16:30:00Z"
   },
   "cirrhosis-101": {
     "guidelines": [
@@ -2824,17 +2951,273 @@ const scheduleResources = {
         "eventDate": "2026-11-20"
       }
     ],
-    "quiz": [],
+    "quiz": [
+      {
+        "question": "A 54-year-old male with Child-Pugh class A alcohol-related cirrhosis presents to the emergency department with acute upper gastrointestinal bleeding secondary to esophageal varices. Endoscopic band ligation is successfully performed, and he is initiated on intravenous ceftriaxone. According to recent ACG guidelines on preventive care in cirrhosis, what is the recommended duration for prophylactic antibiotic therapy in this patient?",
+        "options": [
+          "A. A standard course of 7 to 10 days",
+          "B. Prophylactic antibiotics should be completely withheld in Child-Pugh class A patients",
+          "C. Continuous oral norfloxacin until complete variceal obliteration is achieved",
+          "D. A short course of 2 to 3 days"
+        ],
+        "correct": "D",
+        "explanation": "The ACG guideline conditionally suggests a 2–3-day prophylactic antibiotic course after upper-GI bleeding in cirrhosis. Evidence in Child-Pugh A is less certain, and higher infection risk may warrant a longer course; other inpatient guidance still describes a 5-day or until-discharge approach.",
+        "hint": "Consider recent evidence comparing short-duration regimens to traditional extended antibiotic courses regarding noninferiority in mortality."
+      },
+      {
+        "question": "A 58-year-old female with compensated MASLD cirrhosis has a transient elastography liver stiffness measurement of 26 kPa and a platelet count of 120,000/µL, meeting noninvasive criteria for clinically significant portal hypertension (CSPH). Screening endoscopy shows no varices. According to ACG guidelines, what is the primary clinical benefit of initiating carvedilol in this patient?",
+        "options": [
+          "A. Primary chemoprevention against hepatocellular carcinoma",
+          "B. Reversing established liver stiffness and histological fibrosis",
+          "C. Eliminating the need for semiannual hepatocellular carcinoma surveillance",
+          "D. Reducing the incidence of first-episode ascites"
+        ],
+        "correct": "D",
+        "explanation": "Carvedilol therapy in patients with compensated cirrhosis and noninvasively or invasively demonstrated CSPH significantly reduces the risk of overall hepatic decompensation, primarily driven by a reduced incidence of first-onset ascites.",
+        "hint": "Think about the main decompensation event prevented by nonselective beta-blocker therapy in compensated portal hypertension."
+      },
+      {
+        "question": "A 62-year-old male with cirrhosis and a history of overt hepatic encephalopathy (HE) is admitted to the hospital with a recurrent episode of overt HE while maintained on lactulose therapy (producing 3 soft stools daily). After treating the acute precipitating urinary tract infection and restoring normal sensorium, what is the most appropriate outpatient pharmacological regimen to prevent recurrent overt HE?",
+        "options": [
+          "A. Initiate rifaximin monotherapy as primary prevention for minimal hepatic encephalopathy",
+          "B. Add rifaximin to the ongoing lactulose maintenance therapy",
+          "C. Discontinue lactulose and switch to rifaximin monotherapy",
+          "D. Discontinue lactulose and initiate daily branched-chain amino acid supplements"
+        ],
+        "correct": "B",
+        "explanation": "In patients who experience recurrent overt HE despite lactulose maintenance, adding adjunctive rifaximin significantly reduces recurrent HE episodes and related hospitalizations.",
+        "hint": "Focus on the evidence-based dual combination therapy recommended after breakthrough encephalopathy on single-agent disaccharides."
+      },
+      {
+        "question": "A 65-year-old male with compensated hepatitis C-related cirrhosis (Child-Pugh class A) presents for routine outpatient evaluation. He is functional and a suitable candidate for potential curative liver resection or transplantation if a tumor is detected. Which surveillance strategy for hepatocellular carcinoma (HCC) is recommended by ACG guidelines?",
+        "options": [
+          "A. Multiparametric liver MRI every 2 years",
+          "B. Triphasic abdominal CT scan every 12 months",
+          "C. Liver ultrasound combined with alpha-fetoprotein (AFP) testing every 6 months",
+          "D. Serum alpha-fetoprotein (AFP) testing alone every 3 months"
+        ],
+        "correct": "C",
+        "explanation": "Semiannual surveillance combining liver ultrasound and serum alpha-fetoprotein provides optimal sensitivity for early-stage HCC detection and overall survival benefit in treatment candidates.",
+        "hint": "Recall the optimal combination of imaging and biomarker modalities and their recommended screening interval."
+      },
+      {
+        "question": "A 56-year-old female with cirrhosis and tense ascites undergoes a therapeutic large-volume abdominal paracentesis, during which 6.5 liters of fluid are removed. To prevent paracentesis-induced circulatory dysfunction (PICD) and acute kidney injury, what post-procedure management is indicated?",
+        "options": [
+          "A. Withholding intravenous fluids while administering high-dose oral furosemide",
+          "B. Intravenous normal saline (0.9% NaCl) at a 1:1 volume replacement ratio",
+          "C. Intravenous 25% albumin solution at 6 to 8 grams per liter of fluid removed",
+          "D. Intravenous terlipressin infusion for 24 hours post-paracentesis"
+        ],
+        "correct": "C",
+        "explanation": "For paracenteses exceeding 5 liters, administering IV albumin at 6 to 8 g per liter removed significantly reduces post-procedure circulatory dysfunction, hyponatremia, and acute kidney injury.",
+        "hint": "Identify the standard plasma expander and dosage formula anchored to the 5-liter paracentesis volume threshold."
+      },
+      {
+        "question": "A 50-year-old male with compensated cirrhosis is found to have large esophageal varices with red wale markings on screening endoscopy. Carvedilol is selected for primary prophylaxis against variceal hemorrhage. Which clinical principle should guide carvedilol dosing and titration?",
+        "options": [
+          "A. Carvedilol should be titrated up to 50 mg daily to achieve effective intrahepatic pressure reduction",
+          "B. Titrate carvedilol upward until the resting heart rate decreases to 55 beats per minute",
+          "C. Administer carvedilol toward a target daily dose of 12.5 mg without titrating to pulse heart rate targets",
+          "D. Carvedilol must always be combined with endoscopic variceal ligation (EVL) as mandatory first-line therapy"
+        ],
+        "correct": "C",
+        "explanation": "Carvedilol's portal pressure-lowering effect depends on anti-alpha-1 adrenergic activity in addition to nonselective beta-blockade; its hemodynamic effect is independent of heart rate slowing, so titration to pulse targets is inappropriate. Aim for about 12.5 mg/day if tolerated, adjusting for blood pressure; a 50-mg dose is not the portal-hypertension target.",
+        "hint": "Distinguish carvedilol's unique alpha-1 mechanism from traditional nonselective beta-blockers regarding heart rate titration."
+      },
+      {
+        "question": "A 52-year-old female with Child-Pugh class B cirrhosis visits the outpatient clinic for routine health maintenance. She has documented immunity to hepatitis A and hepatitis B. Which combination of respiratory immunizations is recommended by ACG guidelines?",
+        "options": [
+          "A. Live attenuated intranasal influenza vaccine and single-dose SARS-CoV-2 mRNA vaccine",
+          "B. Bivalent RSV vaccine and 5-year pneumococcal vaccine only",
+          "C. Annual influenza vaccine only, as SARS-CoV-2 and RSV vaccines are unstudied in liver disease",
+          "D. Annual influenza, updated SARS-CoV-2 series, and bivalent RSV vaccine"
+        ],
+        "correct": "D",
+        "explanation": "ACG guidelines strongly recommend annual influenza vaccination, the SARS-CoV-2 series, and bivalent RSV immunization for all patients with cirrhosis aged 50 years or older to prevent severe viral respiratory decompensation.",
+        "hint": "Consider the age threshold of 50 years for specific respiratory viral vaccines alongside routine annual immunizations."
+      },
+      {
+        "question": "A 61-year-old male with cirrhosis and ascites is admitted from home with low-grade fever and diffuse abdominal discomfort (community-acquired infection). A diagnostic paracentesis yields fluid with an absolute polymorphonuclear (PMN) leukocyte count of 450/µL. Ascitic fluid cultures are pending. What is the standard immediate management step?",
+        "options": [
+          "A. Administer oral norfloxacin 400 mg daily for 5 days",
+          "B. Repeat diagnostic paracentesis in 48 hours to confirm PMN progression before treating",
+          "C. Withhold antimicrobial therapy until fluid cultures demonstrate bacterial growth",
+          "D. Initiate empirical intravenous third-generation cephalosporin therapy"
+        ],
+        "correct": "D",
+        "explanation": "An ascitic fluid PMN count ≥ 250/µL establishes the diagnosis of spontaneous bacterial peritonitis (SBP) and warrants immediate empirical intravenous antibiotic therapy without waiting for culture results. For community-acquired SBP, a third-generation cephalosporin is appropriate; give IV albumin (1.5 g/kg on day 1 and 1 g/kg on day 3) as indicated, while nosocomial infection may require broader antibiotic coverage.",
+        "hint": "Recall the numerical diagnostic cutoff for polymorphonuclear cells in ascitic fluid that dictates immediate empirical treatment."
+      },
+      {
+        "question": "A 57-year-old male with decompensated cirrhosis and sarcopenia expresses concern that eating protein will elevate his serum ammonia and trigger hepatic encephalopathy. He asks whether he should restrict his dietary protein intake. Based on ACG and AASLD nutrition guidelines, what dietary counsel should be provided?",
+        "options": [
+          "A. Prescribe 1.2 to 1.5 g/kg ideal body weight/day of protein and 30 to 35 kcal/kg/day without protein restriction",
+          "B. Initiate parenteral nutrition and suspend all oral intake for 4 weeks",
+          "C. Encourage a high-fat, low-carbohydrate diet with total protein limited to 0.8 g/kg/day",
+          "D. Restrict dietary protein to less than 0.5 g/kg/day until encephalopathy risk resolves"
+        ],
+        "correct": "A",
+        "explanation": "Protein restriction is harmful and contraindicated in cirrhosis because it worsens muscle wasting and sarcopenia; guidelines recommend 1.2–1.5 g/kg ideal body weight/day of protein and adequate caloric intake.",
+        "hint": "Consider modern consensus target ranges for protein intake (g/kg ideal body weight) designed to combat sarcopenia."
+      },
+      {
+        "question": "A 63-year-old female with compensated cirrhosis undergoes dual-energy X-ray absorptiometry (DEXA) screening, demonstrating a T-score of -2.7 at the lumbar spine, fulfilling criteria for osteoporosis. Screening endoscopy performed 3 months ago demonstrated non-bleeding small esophageal varices. Which statement correctly reflects guideline guidance regarding osteoporosis therapy in this patient?",
+        "options": [
+          "A. Pharmacotherapy for osteoporosis must be withheld until all esophageal varices are eradicated by band ligation",
+          "B. Esophageal varices alone do not preclude bisphosphonate therapy after usual treatment-risk assessment",
+          "C. Teriparatide is the only permitted therapeutic agent because bisphosphonates cause direct hepatotoxicity in cirrhosis",
+          "D. Oral bisphosphonates are strictly contraindicated due to a high risk of precipitating acute variceal rupture"
+        ],
+        "correct": "B",
+        "explanation": "The ACG guideline suggests bisphosphonates for osteoporosis in cirrhosis; varices alone are not a contraindication to oral therapy. Assess usual drug-specific and esophageal risks before treatment; evidence about bleeding risk in this subgroup is low certainty.",
+        "hint": "Recall whether documented gastroesophageal varices represent an absolute contraindication to oral bisphosphonate use."
+      }
+    ],
     "resourceNotes": "Previously approved cards were preserved; new article and guideline candidates were filtered through Schedule Review. Lecture activation still requires a source-PDF quiz.",
-    "quizStatus": "pending-source-pdf-quiz",
-    "resourceStatus": "approved"
+    "quizStatus": "autocontent-complete",
+    "resourceStatus": "approved",
+    "quizSourcePdfs": [
+      "acg-preventive-care-2026.pdf",
+      "aasld-aclf-2024.pdf",
+      "annals-inpatient-cirrhosis-2026.pdf",
+      "jama-simvastatin-rifaximin-2025.pdf"
+    ],
+    "quizGeneratedAt": "2026-11-20T16:30:00Z"
   },
   "post-aasld-update": {
     "guidelines": [],
     "newsAndArticles": [],
-    "quiz": [],
-    "resourceStatus": "awaiting-conference-sources",
-    "resourceNotes": "No session-specific resources proposed before speaker material or meeting highlights are available. Do not use a generic hepatology search."
+    "quiz": [
+      {
+        "question": "A patient with chronic hepatitis B (CHB) on nucleos(t)ide analogue (NA) therapy achieved a complete response (HBsAg < 0.05 IU/mL and HBV DNA < 10 IU/mL) following treatment with the antisense oligonucleotide AHB-137. After discontinuing NA therapy, the patient enrolled in the long-term follow-up study AB-10-8004. Among complete responders with available data who completed 9 months of off-treatment follow-up, what was the observed durability rate of functional cure (FC)?",
+        "options": [
+          "A. 94.1% (16/17)",
+          "B. 50.0% (2/4)",
+          "C. 100% (9/9)",
+          "D. 85.7% (6/7)"
+        ],
+        "correct": "C",
+        "explanation": "Among nine complete responders with available month-9 follow-up, all nine maintained off-treatment functional cure (100%) at 15 months after NA cessation. This small selected subgroup does not establish an all-participant cure rate.",
+        "hint": "Consider the long-term durability results reported at 15 months post-NA discontinuation for complete responders."
+      },
+      {
+        "question": "PBGENE-HBV is an investigational lipid nanoparticle (LNP) formulation evaluated in the ELIMINATE-B Phase 1b trial for chronic hepatitis B. Which molecular mechanism and cellular target underpin PBGENE-HBV's therapeutic approach?",
+        "options": [
+          "A. Inhibition of NTCP-mediated viral entry via monoclonal antibody loop domain blockade.",
+          "B. Delivery of ARCUS nuclease mRNA to eliminate and inactivate covalently closed circular DNA (cccDNA).",
+          "C. Target-specific binding to the HBV S region using GalNAc-conjugated siRNA.",
+          "D. Activation of innate immune Toll-like receptor 7 (TLR7) to stimulate endogenous interferon production."
+        ],
+        "correct": "B",
+        "explanation": "PBGENE-HBV uses ARCUS nuclease mRNA delivered via LNPs to directly cut, eliminate, and inactivate intranuclear cccDNA, the precursor template for viral replication.",
+        "hint": "Focus on the enzyme class packaged inside the LNP that directly disrupts the persistent intranuclear viral DNA template."
+      },
+      {
+        "question": "In the 48-week double-blind Phase 2 DD01-DN-02 trial evaluating the dual GLP-1/glucagon receptor agonist zabopegdutide (DD01 40 mg weekly) versus placebo in patients with MASLD/MASH (biopsy F1–F3 fibrosis was one eligibility route), what proportion of participants in the per-protocol histologic analysis treated with zabopegdutide achieved BOTH ≥ 1-stage fibrosis improvement AND MASH resolution without worsening of either feature?",
+        "options": [
+          "A. 50.0% in the zabopegdutide group versus 15.8% in the placebo group (p = 0.03).",
+          "B. 62.5% in the zabopegdutide group versus 5.3% in the placebo group (p < 0.001).",
+          "C. 87.5% in the zabopegdutide group versus 10.5% in the placebo group (p < 0.001).",
+          "D. 37.5% in the zabopegdutide group versus 5.3% in the placebo group (p = 0.02)."
+        ],
+        "correct": "D",
+        "explanation": "Simultaneous achievement of both histological endpoints (≥ 1-stage fibrosis improvement and MASH resolution without worsening of either) occurred in 37.5% of zabopegdutide-treated patients compared to 5.3% of placebo controls.",
+        "hint": "Differentiate between single histologic endpoints, dual histologic endpoints, and non-invasive fat responder rates."
+      },
+      {
+        "question": "A Phase III multi-center randomized trial evaluated simvastatin 40 mg daily versus placebo for up to 2 years in 142 patients with compensated cirrhosis and non-invasively diagnosed clinically significant portal hypertension (CSPH). What did the trial conclude regarding its primary composite endpoint of incident hepatic decompensation or hepatocellular carcinoma (HCC)?",
+        "options": [
+          "A. Simvastatin resulted in a significant increase in 2-year decompensation events due to statin-induced hepatotoxicity (p = 0.01).",
+          "B. The hazard ratio was 0.41 (p = 0.064), demonstrating a 59% lower estimated hazard that trended toward benefit but did not reach statistical significance on primary ITT Cox analysis.",
+          "C. Simvastatin demonstrated a statistically significant reduction in the primary ITT Cox model endpoint (HR = 0.25, p = 0.005).",
+          "D. Placebo was superior to simvastatin in reducing incident variceal hemorrhage and ascites development (p = 0.04)."
+        ],
+        "correct": "B",
+        "explanation": "Intention-to-treat Cox modeling showed an HR of 0.41 (p = 0.064, events per 100 PY: 5.49 vs 12.85), indicating a strong numerical trend toward risk reduction that did not achieve statistical significance for the primary Cox endpoint.",
+        "hint": "Look closely at the primary ITT Cox model hazard ratio and p-value compared to its numerical point estimate."
+      },
+      {
+        "question": "The IDEAL Phase III randomized trial evaluated seladelpar 10 mg daily versus placebo in patients with primary biliary cholangitis (PBC) who had baseline alkaline phosphatase (ALP) levels between 1× and 1.67× ULN. What proportion met the trial-defined ALP-normalization composite (ALP ≤ULN and ≥15% reduction from baseline) at Month 12?",
+        "options": [
+          "A. 33.8% of seladelpar-treated patients achieved ALP normalization compared to 5.4% with placebo (p < 0.01).",
+          "B. 75.4% of seladelpar-treated patients achieved ALP normalization compared to 16.1% with placebo (p < 0.0001).",
+          "C. 52.3% of seladelpar-treated patients achieved ALP normalization compared to 6.5% with placebo (p < 0.0001).",
+          "D. There was no statistically significant difference in ALP normalization between seladelpar and placebo (p = 0.12)."
+        ],
+        "correct": "B",
+        "explanation": "Seladelpar demonstrated high efficacy in patients with mild ALP elevations (1–1.67× ULN), achieving a 75.4% trial-defined normalization composite response rate (ALP ≤ULN plus ≥15% reduction from baseline) at 12 months vs 16.1% for placebo.",
+        "hint": "Distinguish between the percentage of patients reaching the composite normalization endpoint at Month 12 versus mean percent reduction or earlier timepoints."
+      },
+      {
+        "question": "TQ-A3334 is an oral TLR7 agonist investigated in NA-treated patients with chronic hepatitis B. In a randomized Phase II trial, which regimen produced a mean HBsAg reduction of -1.78 log10 IU/mL at Week 48 and resulted in HBsAg seroclearance in 20.83% of treated subjects?",
+        "options": [
+          "A. TQ-A3334 0.2 mg once daily (QD)",
+          "B. TQ-A3334 0.5 mg every other day (QOD)",
+          "C. Placebo plus NA",
+          "D. TQ-A3334 0.5 mg once daily (QD)"
+        ],
+        "correct": "D",
+        "explanation": "The high-dose TQ-A3334 0.5 mg QD regimen had a greater HBsAg reduction than placebo in this trial (-1.78 log10 IU/mL at Week 48) and was the only group to achieve HBsAg seroclearance (20.83%) and seroconversion (16.67%).",
+        "hint": "Higher daily dosing of this innate immune activator provided markedly greater HBsAg clearance compared to intermittent or lower daily schedules."
+      },
+      {
+        "question": "The Phase 2b ENRICH study evaluated a therapeutic strategy for chronic hepatitis B consisting of a 12-week priming regimen with BRII-179 followed by 48 weeks of elebsiran plus pegylated interferon alfa (PEG-IFNα). What rate of sustained HBsAg loss was maintained across the overall population at 24 weeks post-end-of-treatment (post-EOT)?",
+        "options": [
+          "A. 41.9%",
+          "B. 75.0%",
+          "C. 32.4%",
+          "D. 15.9%"
+        ],
+        "correct": "C",
+        "explanation": "BRII-179 priming followed by elebsiran plus PEG-IFNα was associated with HBsAg loss in 48 of 148 participants (32.4%) at 24 weeks after treatment ended. The abstract does not establish NA discontinuation or a full functional-cure endpoint for the cohort.",
+        "hint": "Differentiate the percentage of patients achieving HBsAg loss at EOT from the sustained response rate measured 24 weeks post-EOT."
+      },
+      {
+        "question": "Saroglitazar magnesium is a dual PPAR-α/γ agonist with predominant α activity evaluated in the 52-week Phase 2b EVIDENCES X trial for MASH. Which histological outcome was successfully met as the primary endpoint in patients receiving saroglitazar magnesium 4 mg daily?",
+        "options": [
+          "A. Resolution of steatohepatitis without worsening of liver fibrosis (39.1% vs 13.7% placebo, p = 0.002).",
+          "B. Eradication of hepatocellular ballooning without any change in metabolic parameters (p = 0.04).",
+          "C. Complete regression of cirrhosis to stage F0 fibrosis (p < 0.0001).",
+          "D. Histological improvement in liver fibrosis by ≥ 1 stage without worsening of NAS (p = 0.001)."
+        ],
+        "correct": "A",
+        "explanation": "Saroglitazar 4 mg met its primary endpoint of MASH resolution without worsening fibrosis (39.1% vs 13.7% placebo, adjusted treatment difference 24.9 percentage points, p = 0.002).",
+        "hint": "Review which specific histologic endpoint reached statistical significance versus which secondary histologic endpoint did not."
+      },
+      {
+        "question": "DR10624 is a long-acting triple agonist evaluated in a 12-week Phase 2 study for MASLD/MASH. What is the receptor activation profile of DR10624, and what was the relative reduction in liver fat content (LFC) achieved with the 50 mg dose group at Week 12?",
+        "options": [
+          "A. THR-β / FXR / SGLT2 triple agonist; -18.0% relative LFC reduction.",
+          "B. GLP-1 receptor / GIP receptor / Glucagon receptor triple agonist; -32.3% relative LFC reduction.",
+          "C. PPAR-α / PPAR-δ / PPAR-γ triple agonist; -58.8% relative LFC reduction.",
+          "D. FGF21 receptor / Glucagon receptor / GLP-1 receptor triple agonist; -80.3% relative LFC reduction."
+        ],
+        "correct": "D",
+        "explanation": "DR10624 is a first-in-class tri-agonist targeting FGF21R, GlucagonR, and GLP-1R, with a least-squares mean relative MRI-PDFF liver-fat change of -80.3% at 50 mg weekly in this short Phase 2 study, not a biopsy-proven fibrosis outcome.",
+        "hint": "Identify the specific metabolic pathway combination including an FGF factor and its corresponding peak liver fat reduction."
+      },
+      {
+        "question": "AX-0810 is an investigational GalNAc-conjugated Axiomer RNA editing oligonucleotide evaluated in a Phase 1 study. What molecular target does AX-0810 modify, and what key pharmacodynamic change confirms its target engagement in the 22 healthy participants studied?",
+        "options": [
+          "A. Cleavage of genomic cccDNA via RNA-guided nucleases, resulting in marked reductions of serum pregenomic RNA.",
+          "B. Site-specific editing of SLC10A1 mRNA to reduce NTCP-mediated hepatic bile acid uptake, resulting in dose-dependent increases in plasma conjugated and total bile acids.",
+          "C. Editing of hepatic PNPLA3 mRNA to enhance lipolysis, resulting in rapid clearance of intrahepatic triglycerides.",
+          "D. Selective degradation of HBsAg transcripts to block viral envelope secretion, resulting in serum HBsAg loss."
+        ],
+        "correct": "B",
+        "explanation": "AX-0810 selectively edits SLC10A1 mRNA (encoding NTCP) to decrease hepatic conjugated bile acid uptake, leading to dose-dependent increases in plasma conjugated and total bile acids. No pruritus or liver injury was reported in this small short study; long-term safety and clinical efficacy remain untested.",
+        "hint": "Consider how editing the mRNA of the sodium taurocholate cotransporting polypeptide affects systemic bile acid levels."
+      }
+    ],
+    "resourceStatus": "approved",
+    "resourceNotes": "The topic quiz is based on official 2026 AASLD late-breaking abstracts, not a verified record of the speaker's presentation. Session-specific readings remain unavailable; conference abstracts are preliminary evidence, not practice guidance.",
+    "quizSourceNote": "Based on selected official 2026 AASLD late-breaking abstracts, not a recap of the speaker's presentation. These preliminary findings are not practice guidance.",
+    "quizSourceUrl": "https://www.aasld.org/sites/default/files/2026-11/2026-late-breaking-abstracts.pdf",
+    "quizStatus": "autocontent-complete",
+    "quizSourcePdfs": [
+      "2026-late-breaking-abstracts.pdf"
+    ],
+    "quizGeneratedAt": "2026-11-20T16:30:00Z"
   }
 };
 

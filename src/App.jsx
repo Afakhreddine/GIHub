@@ -695,7 +695,7 @@ function LectureDetailPanel({ event, onClose, account }) {
             <div>
               {hasQuiz&&!showQuiz&&<button onClick={()=>setShowQuiz(true)}
                 style={{ background:"linear-gradient(135deg,#0b779b,#128566)", border:"1px solid #0b779b", color:"#fff", padding:"8px 16px", borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer" }}>🧠 Show Topic Quiz</button>}
-              {hasQuiz&&showQuiz&&<><QuizDisplay quiz={data.quiz}/><Discussion target={quizTarget(event.slug)} account={account} label="Comment on this quiz" /></>}
+              {hasQuiz&&showQuiz&&<><QuizDisplay quiz={data.quiz}/>{data.quizSourceNote&&<p style={{ fontSize:11, color:"#536b7b", lineHeight:1.6, marginTop:10 }}>{data.quizSourceNote}{data.quizSourceUrl&&<> <a href={data.quizSourceUrl} target="_blank" rel="noopener noreferrer">Original source PDF ↗</a></>}</p>}<Discussion target={quizTarget(event.slug)} account={account} label="Comment on this quiz" /></>}
               {!hasQuiz&&<div><div style={{ fontSize:12, fontWeight:700, color:"#0b93bb", fontFamily:"monospace" }}>🧠 TOPIC QUIZ</div><p>A source-based topic quiz has not been completed and approved yet.</p></div>}
             </div>
 

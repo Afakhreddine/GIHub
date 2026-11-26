@@ -2,8 +2,13 @@ const LETTERS = ["A", "B", "C", "D"];
 
 export function cleanQuizText(text) {
   return String(text || "")
-    // AutoContent sometimes emits plain numeric values as inline math, e.g. $40$ mg, $< 7$ g/dL.
-    // GIHub renders quiz copy as plain text, so strip only the math delimiters while preserving content.
+    // AutoContent's TeX fragments are not rendered by the plain-text quiz UI.
+    .replace(/\\log_\{(\d+)\}/g, "log$1")
+    .replace(/\\(alpha|beta|gamma|delta|mu|times|ge|le|sim)\b/g, (_, symbol) => ({
+      alpha: "α", beta: "β", gamma: "γ", delta: "δ", mu: "µ", times: "×",
+      ge: "≥", le: "≤", sim: "~",
+    })[symbol])
+    .replace(/\\text\{([^}]*)\}/g, (_, value) => value === "--" ? "–" : value)
     .replace(/\$\s*([^$\n]+?)\s*\$/g, "$1")
     .replace(/\\%/g, "%")
     .replace(/\s+/g, " ")
