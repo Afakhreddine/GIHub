@@ -33,6 +33,11 @@ test("cleans AutoContent inline math artifacts from quiz text", () => {
     "octreotide long-acting release (40 mg every 28 days)",
   );
   assert.equal(cleanQuizText("Hemoglobin $< 7$ g/dL and hematocrit $< 35\\%$"), "Hemoglobin < 7 g/dL and hematocrit < 35%");
+  assert.equal(
+    cleanQuizText(String.raw`LSM $20\text{--}25\text{ kPa}$, platelets $120,000/\mu\text{L}$, ALP $1.67\times\text{ ULN}$ and Hb $\ge 7\text{ g/dL}$`),
+    "LSM 20–25 kPa, platelets 120,000/µL, ALP 1.67× ULN and Hb ≥ 7 g/dL",
+  );
+  assert.equal(cleanQuizText(String.raw`Change $-1.78 \log_{10}\text{ IU/mL}$ and PPAR-$\alpha/\gamma$`), "Change -1.78 log10 IU/mL and PPAR-α/γ");
 });
 
 test("normalizes AutoContent quiz output into GIHub's UI-friendly quiz shape", () => {
